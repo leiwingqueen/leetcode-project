@@ -5,6 +5,7 @@ import sun.swing.StringUIClientPropertyKey;
 /**
  * 数组路径
  * https://leetcode-cn.com/problems/ju-zhen-zhong-de-lu-jing-lcof/
+ * DFS算法+可行性减枝
  */
 public class Shuzulujing {
     public boolean exist(char[][] board, String word) {
