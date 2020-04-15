@@ -46,10 +46,10 @@ public class SubTree {
         if (isSub(A,B)) {
             return true;
         }
-        if (A.left!=null&&isSub(A.left,B)) {
+        if (A.left!=null&&isSubStructure(A.left,B)) {
             return true;
         }
-        if (A.right!=null&&isSub(A.right,B)) {
+        if (A.right!=null&&isSubStructure(A.right,B)) {
             return true;
         }
         return false;
@@ -76,6 +76,15 @@ public class SubTree {
     }
 
     public static void main(String[] args) {
-
+        TreeNode node1=new TreeNode(2);
+        TreeNode node2=new TreeNode(3);
+        TreeNode node3=new TreeNode(2);
+        TreeNode node4=new TreeNode(1);
+        node1.left=node2;
+        node1.right=node3;
+        node2.left=node4;
+        SubTree subTree=new SubTree();
+        boolean subStructure = subTree.isSubStructure(node1, new TreeNode(1));
+        System.out.println(subStructure);
     }
 }
