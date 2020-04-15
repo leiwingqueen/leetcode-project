@@ -1,17 +1,6 @@
 package com.liyongquan.linklist;
 
 public class AddTwoNumber {
-    /**
-     * Definition for singly-linked list.
-     */
-    public static class ListNode {
-        int val;
-        ListNode next;
-
-        ListNode(int x) {
-            val = x;
-        }
-    }
 
     public static class Solution {
         public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
