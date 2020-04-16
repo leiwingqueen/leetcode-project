@@ -1,5 +1,7 @@
 package com.liyongquan.stack;
 
+import java.util.Stack;
+
 /**
  * 输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否为该栈的弹出顺序。
  * 假设压入栈的所有数字均不相等。例如，序列 {1,2,3,4,5} 是某栈的压栈序列，
@@ -36,6 +38,33 @@ package com.liyongquan.stack;
  */
 public class PushPopSequence {
     public boolean validateStackSequences(int[] pushed, int[] popped) {
+        Stack<Integer> stack=new Stack<>();
+        int length=pushed.length;
+        int i1=0;
+        int i2=0;
+        while (i2<length){
+            //只能pop的场景
+            if (i1>=length) {
+                if (stack.peek().intValue()!=popped[i2]) {
+                    return false;
+                }
+                i2++;
+                stack.pop();
+                continue;
+            }
+            //优先尝试pop，不能再使用push
+            if(!stack.isEmpty()&&stack.peek().intValue()==popped[i2]){
+                i2++;
+                stack.pop();
+            }else {
+                stack.push(pushed[i1]);
+                i1++;
+            }
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
 
     }
 }
