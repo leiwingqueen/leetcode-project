@@ -70,5 +70,6 @@ public class PrintTree2 {
                 queue.add(poll.right);
             }
         }
+        return null;
     }
 }
