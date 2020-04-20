@@ -30,6 +30,14 @@ import java.util.TreeMap;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class NumCounter2 {
+    /**
+     * https://leetcode-cn.com/problems/shu-zu-zhong-shu-zi-chu-xian-de-ci-shu-lcof/solution/zhi-chu-xian-yi-ci-de-shu-xi-lie-wei-yun-suan-by-a/
+     *
+     * 注意，算法复杂度是O(n)，而空间复杂度要求O(1)，因此解题的关键在于使用位运算。
+     * 这方法太巧妙，其实不好想到。。。
+     * @param nums
+     * @return
+     */
     public int[] singleNumbers(int[] nums) {
         SortedMap<Integer, Integer> map = new TreeMap<>(Integer::compareTo);
         for (int num : nums) {
