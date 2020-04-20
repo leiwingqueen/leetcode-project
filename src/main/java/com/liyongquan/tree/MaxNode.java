@@ -53,21 +53,21 @@ public class MaxNode {
      */
     public int kthLargest(TreeNode root, int k) {
         List<Integer> result=new LinkedList<>();
-        scan(root,0,result,k);
+        scan(root,result,k);
         return result.get(k-1);
     }
 
-    private void scan(TreeNode node, int index, List<Integer> result,int k){
+    private void scan(TreeNode node, List<Integer> result,int k){
         //只需要找到前K个，提前终结流程
-        if (k==index) {
+        if (k==result.size()) {
             return;
         }
         if (node==null) {
             return;
         }
-        scan(node.right, index, result,k);
+        scan(node.right, result,k);
         result.add(node.val);
-        scan(node.left, index, result,k);
+        scan(node.left, result,k);
     }
 
     public static void main(String[] args) {
