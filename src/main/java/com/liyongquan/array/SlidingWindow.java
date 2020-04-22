@@ -88,4 +88,18 @@ public class SlidingWindow {
     }
 
     //TODO:还有一种双端队列的解法
+    /**
+     * 回忆 面试题30. 包含min函数的栈 ，其使用 单调栈 实现了随意入栈、出栈情况下的 O(1)O(1)O(1) 时间获取 “栈内最小值” 。
+     * 本题同理，不同点在于 “出栈操作” 删除的是 “列表尾部元素” ，而 “窗口滑动” 删除的是 “列表首部元素” 。
+     *
+     * 窗口对应的数据结构为 双端队列 ，本题使用 单调队列 即可解决以上问题。遍历数组时，每轮保证单调队列 dequedequedeque ：
+     *
+     *     dequedequedeque 内 仅包含窗口内的元素 ⇒\Rightarrow⇒ 每轮窗口滑动移除了元素 nums[i−1]nums[i - 1]nums[i−1] ，需将 dequedequedeque 内的对应元素一起删除。
+     *     dequedequedeque 内的元素 非严格递减 ⇒\Rightarrow⇒ 每轮窗口滑动添加了元素 nums[j+1]nums[j + 1]nums[j+1] ，需将 dequedequedeque 内所有 <nums[j+1]< nums[j + 1]<nums[j+1] 的元素删除。
+     *
+     * 作者：jyd
+     * 链接：https://leetcode-cn.com/problems/hua-dong-chuang-kou-de-zui-da-zhi-lcof/solution/mian-shi-ti-59-i-hua-dong-chuang-kou-de-zui-da-1-6/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     */
 }
