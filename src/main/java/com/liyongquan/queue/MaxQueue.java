@@ -1,5 +1,10 @@
 package com.liyongquan.queue;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * 请定义一个队列并实现函数 max_value 得到队列里的最大值，要求函数max_value、push_back 和 pop_front 的均摊时间复杂度都是O(1)。
  *
@@ -31,6 +36,8 @@ package com.liyongquan.queue;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class MaxQueue {
+    private Queue<Integer> queue=new LinkedList<>();
+    private Deque<Integer> deque=new LinkedList<>();
     /**
      * 使用双端队列实现，事实上也不能完全实现O(1)的性能
      */
@@ -39,14 +46,25 @@ public class MaxQueue {
     }
 
     public int max_value() {
-        return -1;
+        return deque.size()>0?deque.peek():-1;
     }
 
     public void push_back(int value) {
-
+        queue.offer(value);
+        while (deque.size()>0&&deque.peekLast()<value){
+            deque.pollLast();
+        }
+        deque.offer(value);
     }
 
     public int pop_front() {
-        return -1;
+        if (queue.size()<=0) {
+            return -1;
+        }
+        Integer poll = queue.poll();
+        if (deque.peek().intValue()==poll.intValue()) {
+            deque.poll();
+        }
+        return poll.intValue();
     }
 }
