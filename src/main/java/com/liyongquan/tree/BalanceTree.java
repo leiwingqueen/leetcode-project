@@ -56,7 +56,7 @@ public class BalanceTree {
 
     private BalanceResult dfs(TreeNode node, int depth) {
         if (node == null) {
-            return BalanceResult.of(depth - 1, true);
+            return BalanceResult.of(depth, true);
         }
         BalanceResult left = dfs(node.left, depth + 1);
         if (!left.balance) {
