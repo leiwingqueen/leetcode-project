@@ -88,7 +88,7 @@ public class MinAbs {
                 min = right;
             }
             int j = minDfs(root.right);
-            if (min < 0 || j - root.val < min) {
+            if (j>0 && (min < 0 || j - root.val < min)) {
                 min = j - root.val;
             }
         }
@@ -115,5 +115,9 @@ public class MinAbs {
             return i;
         }
         return node.val;
+    }
+
+    public static void main(String[] args) {
+
     }
 }
