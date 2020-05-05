@@ -1,5 +1,8 @@
 package com.liyongquan.tree;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * 给定一个二叉搜索树（Binary Search Tree），把它转换成为累加树（Greater Tree)，使得每个节点的值是原来的节点值加上所有大于它的节点值之和。
  * <p>
@@ -34,27 +37,51 @@ public class GreaterTree {
         return root;
     }
 
-    private void dfs(TreeNode root, int rightValue) {
-        if (root == null) {
-            return;
+    private int dfs(TreeNode node, int value) {
+        if (node == null) {
+            return 0;
         }
-        if (root.right != null) {
-            dfs(root.right, rightValue);
-            root.val += root.right.val;
+        int sum = 0;
+        if (node.right != null) {
+            int rightSum = dfs(node.right, value);
+            node.val += rightSum;
+            sum += rightSum;
+        } else {
+            node.val += value;
         }
-        if (root.left != null) {
-            dfs(root.left, rightValue + root.val);
+        sum += node.val;
+        if (node.left != null) {
+            int leftSum = dfs(node.left, node.val);
+            sum += leftSum;
         }
-        root.val += rightValue;
+        return sum;
     }
 
     public static void main(String[] args) {
-        TreeNode head=new TreeNode(5);
-        TreeNode left=new TreeNode(2);
-        TreeNode right=new TreeNode(13);
-        head.left=left;
-        head.right=right;
-        GreaterTree tree=new GreaterTree();
+        TreeNode head = new TreeNode(2);
+        TreeNode left = new TreeNode(0);
+        TreeNode right = new TreeNode(3);
+        head.left = left;
+        head.right = right;
+        left.left = new TreeNode(-4);
+        left.right = new TreeNode(1);
+        GreaterTree tree = new GreaterTree();
         tree.convertBST(head);
+        print(head);
+    }
+
+    private static void print(TreeNode node) {
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(node);
+        while (!queue.isEmpty()) {
+            TreeNode poll = queue.poll();
+            System.out.println(poll.val);
+            if (poll.left != null) {
+                queue.add(poll.left);
+            }
+            if (poll.right != null) {
+                queue.add(poll.right);
+            }
+        }
     }
 }
