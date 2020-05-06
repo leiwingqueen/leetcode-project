@@ -54,14 +54,4 @@ public class SumTree {
         }
         return result;
     }
-
-    public static void main(String[] args) {
-
-    }
-
-    private TreeNode buildTree(String[] array) {
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.add(new TreeNode(Integer.valueOf(array[0])));
-
-    }
 }
