@@ -22,31 +22,33 @@ package com.liyongquan.binarySort;
  */
 public class FindPosition {
     public int[] searchRange(int[] nums, int target) {
-        int search = search(nums,  target);
-        if (search < 0) {
+        int left = search(nums, target, true);
+        if (left < 0) {
             return new int[]{-1, -1};
         }
-        int left, right;
-        left = right = search;
-        while (true) {
-            boolean end = true;
-            if (left - 1 >= 0 && nums[left - 1] == target) {
-                left--;
-                end = false;
-            }
-            if (right + 1 < nums.length && nums[right + 1] == target) {
-                right++;
-                end = false;
-            }
-            if (end) {
-                break;
-            }
-        }
+        int right = search(nums, target, false);
         return new int[]{left, right};
+//        int left, right;
+//        left = right = left;
+//        while (true) {
+//            boolean end = true;
+//            if (left - 1 >= 0 && nums[left - 1] == target) {
+//                left--;
+//                end = false;
+//            }
+//            if (right + 1 < nums.length && nums[right + 1] == target) {
+//                right++;
+//                end = false;
+//            }
+//            if (end) {
+//                break;
+//            }
+//        }
+//        return new int[]{left, right};
     }
 
-    private int search(int[] nums, int target) {
-        if (nums.length<=0) {
+    private int search(int[] nums, int target, boolean l) {
+        if (nums.length <= 0) {
             return -1;
         }
         int left = 0;
@@ -54,7 +56,11 @@ public class FindPosition {
         while (left < right) {
             int middle = (left + right) / 2;
             if (nums[middle] == target) {
-                return middle;
+                if (l) {
+                    right = middle;
+                } else {
+                    left = middle + 1;
+                }
             } else if (nums[middle] < target) {
                 left = middle + 1;
             } else {
