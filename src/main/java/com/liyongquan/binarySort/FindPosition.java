@@ -22,7 +22,7 @@ package com.liyongquan.binarySort;
  */
 public class FindPosition {
     public int[] searchRange(int[] nums, int target) {
-        int search = search(nums, 0, nums.length - 1, target);
+        int search = search(nums,  target);
         if (search < 0) {
             return new int[]{-1, -1};
         }
@@ -45,20 +45,22 @@ public class FindPosition {
         return new int[]{left, right};
     }
 
-    private int search(int[] nums, int start, int end, int target) {
-        if (start > end) {
+    private int search(int[] nums, int target) {
+        if (nums.length<=0) {
             return -1;
         }
-        if (start == end) {
-            return target == nums[start] ? start : -1;
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int middle = (left + right) / 2;
+            if (nums[middle] == target) {
+                return middle;
+            } else if (nums[middle] < target) {
+                left = middle + 1;
+            } else {
+                right = middle - 1;
+            }
         }
-        int middle = (start + end) / 2;
-        if (nums[middle] == target) {
-            return middle;
-        } else if (nums[middle] < target) {
-            return search(nums, middle + 1, end, target);
-        } else {
-            return search(nums, start, middle - 1, target);
-        }
+        return nums[left] == target ? left : -1;
     }
 }

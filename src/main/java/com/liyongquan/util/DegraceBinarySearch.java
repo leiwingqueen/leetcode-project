@@ -3,10 +3,10 @@ package com.liyongquan.util;
 /**
  * 二分查找递归实现方案
  */
-public class DegraceBinarySearch implements IBinarySearch{
+public class DegraceBinarySearch implements IBinarySearch {
     @Override
     public int search(int[] nums, int target) {
-        return search(nums,0,nums.length-1,target);
+        return search(nums, 0, nums.length - 1, target);
     }
 
     private int search(int[] nums, int start, int end, int target) {
