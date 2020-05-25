@@ -24,6 +24,29 @@ public class MyHashMapTest {
     }
 
     @Test
+    public void put2() {
+        MyHashMap hashMap = new MyHashMap();
+        for (int i = 0; i < 100; i++) {
+            hashMap.put(i, i);
+        }
+        for (int i = 0; i < 100; i++) {
+            assertEquals(i, hashMap.get(i));
+        }
+    }
+
+    /**
+     * 哈希碰撞
+     */
+    @Test
+    public void put3() {
+        MyHashMap hashMap = new MyHashMap();
+        hashMap.put(0,0);
+        hashMap.put(16,16);
+        assertEquals(0,hashMap.get(0));
+        assertEquals(16,hashMap.get(16));
+    }
+
+    @Test
     public void get() {
     }
 
