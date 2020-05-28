@@ -1,6 +1,7 @@
 package com.liyongquan.design;
 
 import java.util.Stack;
+import java.util.function.Supplier;
 
 /**
  * 使用栈实现队列的下列操作：
@@ -51,32 +52,26 @@ public class MyQueue {
      * Removes the element from in front of queue and returns that element.
      */
     public int pop() {
-        if (!out.isEmpty()) {
-            return out.pop();
-        }
-        while (!in.isEmpty()) {
-            Integer pop = in.pop();
-            out.push(pop);
-        }
-        if (!out.isEmpty()) {
-            return out.pop();
-        }
-        return -1;
+        return peekOrPop(()->out.pop());
     }
 
     /**
      * Get the front element.
      */
     public int peek() {
+        return peekOrPop(()->out.peek());
+    }
+
+    private int peekOrPop(Supplier<Integer> supplier) {
         if (!out.isEmpty()) {
-            return out.peek();
+            return supplier.get();
         }
         while (!in.isEmpty()) {
             Integer pop = in.pop();
             out.push(pop);
         }
         if (!out.isEmpty()) {
-            return out.peek();
+            return supplier.get();
         }
         return -1;
     }
