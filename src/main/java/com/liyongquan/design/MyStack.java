@@ -2,7 +2,6 @@ package com.liyongquan.design;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.function.Supplier;
 
 /**
  * 使用队列实现栈的下列操作：
@@ -43,34 +42,44 @@ public class MyStack {
      * Removes the element on top of the stack and returns that element.
      */
     public int pop() {
-        return topOrPop(() -> out.poll());
+        if (in.isEmpty()) {
+            return -1;
+        }
+        while (in.size() > 1) {
+            Integer poll = in.poll();
+            out.offer(poll);
+        }
+        //swap
+        Queue<Integer> temp = in;
+        in = out;
+        out = temp;
+        return out.poll();
     }
 
     /**
      * Get the top element.
      */
     public int top() {
-        return topOrPop(() -> out.peek());
-    }
-
-    private int topOrPop(Supplier<Integer> supplier) {
-        if (!out.isEmpty()) {
-            return supplier.get();
+        if (in.isEmpty()) {
+            return -1;
         }
+        int last = -1;
         while (!in.isEmpty()) {
             Integer poll = in.poll();
             out.offer(poll);
+            last = poll;
         }
-        if (!out.isEmpty()) {
-            return supplier.get();
-        }
-        return -1;
+        //swap
+        Queue<Integer> temp = in;
+        in = out;
+        out = temp;
+        return last;
     }
 
     /**
      * Returns whether the stack is empty.
      */
     public boolean empty() {
-        return out.isEmpty() && in.isEmpty();
+        return in.isEmpty();
     }
 }
