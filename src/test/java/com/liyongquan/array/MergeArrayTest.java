@@ -9,7 +9,7 @@ public class MergeArrayTest {
     @Test
     public void merge() {
         int[] nums1 = {1, 2, 3, 0, 0, 0};
-        mergeArray.merge(nums1,3,new int[]{2,5,6},3);
+        mergeArray.merge2(nums1,3,new int[]{2,5,6},3);
         for (int i = 0; i < nums1.length; i++) {
             System.out.println(nums1[i]);
         }

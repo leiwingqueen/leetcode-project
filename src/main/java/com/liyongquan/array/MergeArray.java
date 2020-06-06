@@ -26,6 +26,7 @@ package com.liyongquan.array;
 public class MergeArray {
     /**
      * 原地算法，只需要额外O(1)的空间
+     *
      * @param nums1
      * @param m
      * @param nums2
@@ -41,6 +42,7 @@ public class MergeArray {
             } else if (nums1[p1] <= nums2[p2]) {
                 p1++;
             } else {
+                //这个统一往后移动一位的算法效率不高
                 for (int i = tail; i >= p1; i--) {
                     nums1[i + 1] = nums1[i];
                 }
@@ -51,4 +53,27 @@ public class MergeArray {
             }
         }
     }
+
+    /**
+     * 从后往前移动怎么样
+     *
+     * @param nums1
+     * @param m
+     * @param nums2
+     * @param n
+     */
+    public void merge2(int[] nums1, int m, int[] nums2, int n) {
+        int p1 = m - 1, p2 = n - 1, p = m + n - 1;
+        while (p2 >= 0) {
+            if (p1 < 0 || nums1[p1] <= nums2[p2]) {
+                nums1[p] = nums2[p2];
+                p2--;
+            } else {
+                nums1[p] = nums1[p1];
+                p1--;
+            }
+            p--;
+        }
+    }
+
 }
