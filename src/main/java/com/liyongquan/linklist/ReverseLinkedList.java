@@ -1,5 +1,8 @@
 package com.liyongquan.linklist;
 
+import java.util.List;
+import java.util.Stack;
+
 /**
  * 反转一个单链表。
  * <p>
@@ -16,7 +19,10 @@ package com.liyongquan.linklist;
  */
 public class ReverseLinkedList {
     /**
-     * 反转
+     * 反转(递归)
+     * 时间复杂度O(n)
+     * 空间复杂度O(n)
+     *
      * @param head
      * @return
      */
@@ -36,5 +42,30 @@ public class ReverseLinkedList {
         head.next = null;
         reverse[1].next = head;
         return new ListNode[]{reverse[0], head};
+    }
+
+    /**
+     * 迭代解法
+     * @param head
+     * @return
+     */
+    public ListNode reverseList2(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        Stack<ListNode> stack = new Stack<>();
+        ListNode node = head;
+        while (node != null) {
+            stack.push(node);
+        }
+        ListNode newhead = stack.pop();
+        ListNode cur = newhead;
+        while (!stack.isEmpty()) {
+            ListNode pop = stack.pop();
+            pop.next = null;
+            cur.next = pop;
+            cur = cur.next;
+        }
+        return newhead;
     }
 }
