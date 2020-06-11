@@ -1,6 +1,5 @@
 package com.liyongquan.linklist;
 
-import java.util.List;
 import java.util.Stack;
 
 /**
@@ -45,7 +44,8 @@ public class ReverseLinkedList {
     }
 
     /**
-     * 迭代解法
+     * 栈的解法
+     *
      * @param head
      * @return
      */
@@ -57,6 +57,7 @@ public class ReverseLinkedList {
         ListNode node = head;
         while (node != null) {
             stack.push(node);
+            node = node.next;
         }
         ListNode newhead = stack.pop();
         ListNode cur = newhead;
@@ -67,5 +68,20 @@ public class ReverseLinkedList {
             cur = cur.next;
         }
         return newhead;
+    }
+
+    public ListNode reverseList3(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ListNode cur = head;
+        ListNode next = null, before = null;
+        while (cur != null) {
+            next = cur.next;
+            cur.next = before;
+            before = cur;
+            cur = next;
+        }
+        return before;
     }
 }
