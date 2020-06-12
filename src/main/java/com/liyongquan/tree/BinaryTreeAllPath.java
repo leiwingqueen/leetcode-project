@@ -1,9 +1,6 @@
 package com.liyongquan.tree;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * 给定一个二叉树，返回所有从根节点到叶子节点的路径。
@@ -53,5 +50,45 @@ public class BinaryTreeAllPath {
             result.add(path);
         }
         return result;
+    }
+
+    /**
+     * 使用栈的解决方案
+     * 递归的方式本质跟栈是一样的，相当于我们需要把node和path这两个放到栈中
+     *
+     * @param root
+     * @return
+     */
+    public List<String> binaryTreePaths2(TreeNode root) {
+        if (root == null) {
+            return Collections.emptyList();
+        }
+        List<String> result = new LinkedList<>();
+        Stack<Path> stack = new Stack<>();
+        stack.push(new Path(root, String.valueOf(root.val)));
+        while (!stack.isEmpty()) {
+            Path pop = stack.pop();
+            if (pop.node.left == null && pop.node.right == null) {
+                result.add(pop.path);
+            } else {
+                if (pop.node.left != null) {
+                    stack.push(new Path(pop.node.left, pop.path + "->" + pop.node.left.val));
+                }
+                if (pop.node.right != null) {
+                    stack.push(new Path(pop.node.right, pop.path + "->" + pop.node.right.val));
+                }
+            }
+        }
+        return result;
+    }
+
+    private static class Path {
+        TreeNode node;
+        String path;
+
+        public Path(TreeNode node, String path) {
+            this.node = node;
+            this.path = path;
+        }
     }
 }
