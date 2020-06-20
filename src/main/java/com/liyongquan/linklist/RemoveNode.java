@@ -29,7 +29,7 @@ public class RemoveNode {
             return null;
         }
         //使用一个辅助的list用来保存列表的位置信息
-        List<ListNode> list = new ArrayList<>(2*n);
+        List<ListNode> list = new ArrayList<>(2 * n);
         ListNode cur = head;
         while (cur != null) {
             list.add(cur);
@@ -50,4 +50,30 @@ public class RemoveNode {
         }
     }
 
+    /**
+     * 遍历一次，官方解法,双指针
+     *
+     * @param head
+     * @param n
+     * @return
+     */
+    public ListNode removeNthFromEnd2(ListNode head, int n) {
+        if (head == null) {
+            return null;
+        }
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode p1, p2;
+        p1 = p2 = dummy;
+        for (int i = 0; i < n+1; i++) {
+            p2 = p2.next;
+        }
+        while (p2 != null) {
+            p2 = p2.next;
+            p1 = p1.next;
+        }
+        ListNode removeNode = p1.next;
+        p1.next = removeNode.next;
+        return dummy.next;
+    }
 }
