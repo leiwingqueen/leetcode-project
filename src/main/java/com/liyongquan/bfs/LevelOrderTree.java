@@ -38,6 +38,7 @@ public class LevelOrderTree {
     /**
      * 使用一个辅助的depth队列用于维护当前结点的深度。
      * BFS
+     *
      * @param root
      * @return
      */
@@ -73,6 +74,37 @@ public class LevelOrderTree {
             }
         }
         result.add(cur);
+        return result;
+    }
+
+    /**
+     * 每次从队列中把同一层的所有结点一并获取即可，不需要单独维护一个depth的队列
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrder2(TreeNode root) {
+        if (root == null) {
+            return Collections.emptyList();
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        List<List<Integer>> result = new LinkedList<>();
+        while (!queue.isEmpty()) {
+            List<Integer> cur = new LinkedList<>();
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode poll = queue.poll();
+                cur.add(poll.val);
+                if (poll.left != null) {
+                    queue.offer(poll.left);
+                }
+                if (poll.right != null) {
+                    queue.offer(poll.right);
+                }
+            }
+            result.add(cur);
+        }
         return result;
     }
 }
