@@ -43,7 +43,9 @@ public class NNums {
                     dp[i][j] = 1;
                 } else {
                     for (int k = 1; k <= 6; k++) {
-                        dp[i][j] += dp[i - 1][j - k];
+                        if (j>=k) {
+                            dp[i][j] += dp[i - 1][j - k];
+                        }
                     }
                 }
                 //如果到最后一行，直接计算最终结果
