@@ -39,18 +39,22 @@ public class Shunzi {
         }
         Collections.sort(list);
         int joker = 0;
-
         for (int i = 0; i < nums.length; i++) {
+            Integer cur = list.get(i);
             if (nums[i] == 0) {
                 joker++;
             } else {
-                if (i > 0 && nums[i - 1] != 0) {
-                    if (nums[i] == nums[i - 1] + 1) {
+                if (i == 0) {
+                    continue;
+                }
+                Integer pre = list.get(i - 1);
+                if (pre != 0) {
+                    if (cur == pre + 1) {
                         continue;
-                    } else if (nums[i] == nums[i - 1]) {
+                    } else if (cur == pre) {
                         return false;
                     } else if (joker > 0) {
-                        int padding = nums[i] - nums[i - 1] - 1;
+                        int padding = cur - pre - 1;
                         if (padding > joker) {
                             return false;
                         }
@@ -58,6 +62,39 @@ public class Shunzi {
                     } else {
                         return false;
                     }
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * bitmap解法
+     *
+     * @param nums
+     * @return
+     */
+    public boolean isStraight2(int[] nums) {
+        //bitmap存储
+        int[] bitmap = new int[14];
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < nums.length; i++) {
+            int num = nums[i];
+            if (num != 0 && num < min) {
+                min = num;
+            }
+            bitmap[num]++;
+        }
+        for (int i = min; i < min + 5 && i < 14; i++) {
+            //重复
+            if (bitmap[i] > 1) {
+                return false;
+            } else if (bitmap[i] == 0) {
+                //joker
+                if (bitmap[0] > 0) {
+                    bitmap[0]--;
+                } else {
+                    return false;
                 }
             }
         }
