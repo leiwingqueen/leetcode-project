@@ -1,6 +1,7 @@
 package com.liyongquan.array;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,6 +38,9 @@ public class SpiralOrder {
      * @return
      */
     public List<Integer> spiralOrder(int[][] matrix) {
+        if (matrix.length<=0) {
+            return Collections.emptyList();
+        }
         int row = matrix.length, col = matrix[0].length;
         int[][] visit = new int[row + 2][col + 2];
         //边界设置为已访问
@@ -54,7 +58,7 @@ public class SpiralOrder {
         int i = 1, j = 1;
         while (visit[i][j] == 0) {
             visit[i][j] = 1;
-            r.add(matrix[i-1][j-1]);
+            r.add(matrix[i - 1][j - 1]);
             int[] move = move(i, j, direct);
             //走到尽头，换一个方向
             if (visit[move[0]][move[1]] == 1) {
@@ -72,13 +76,13 @@ public class SpiralOrder {
 
     private int[] move(int i, int j, int direct) {
         if (direct == 0) {
-            i++;
-        } else if (direct == 1) {
             j++;
+        } else if (direct == 1) {
+            i++;
         } else if (direct == 2) {
-            i--;
-        } else {
             j--;
+        } else {
+            i--;
         }
         return new int[]{i, j};
     }
