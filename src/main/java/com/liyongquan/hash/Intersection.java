@@ -1,9 +1,6 @@
 package com.liyongquan.hash;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 给定两个数组，编写一个函数来计算它们的交集。
@@ -60,5 +57,32 @@ public class Intersection {
                 m1.put(i, m1.get(i) + 1);
             }
         }
+    }
+
+    /**
+     * 时间复杂度O(m+n)
+     * 空间复杂度O(m)
+     *
+     * @param nums1
+     * @param nums2
+     * @return
+     */
+    public int[] intersect2(int[] nums1, int[] nums2) {
+        Map<Integer, Integer> map = new HashMap<>(nums1.length);
+        for (int i = 0; i < nums1.length; i++) {
+            int count = map.getOrDefault(nums1[i], 0) + 1;
+            map.put(nums1[i], count);
+        }
+        int[] result = new int[map.size()];
+        int size = 0;
+        for (int i = 0; i < nums2.length; i++) {
+            int count = map.getOrDefault(nums2[i], 0);
+            if (count > 0) {
+                result[size++] = nums2[i];
+                count--;
+                map.put(nums2[i], count);
+            }
+        }
+        return Arrays.copyOfRange(result, 0, size);
     }
 }
