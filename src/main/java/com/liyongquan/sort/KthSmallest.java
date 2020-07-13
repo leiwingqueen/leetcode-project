@@ -39,12 +39,27 @@ public class KthSmallest {
         int index = 0;
         int p1 = 0, p2 = 0;
         while (index < a.length + b.length) {
-            if (p1 >= a.length || a[p1] >= b[p2]) {
+            if (p1 >= a.length) {
                 r[index++] = b[p2++];
-            } else {
-                r[index++] = b[p1++];
+            } else if (p2 >= b.length) {
+                r[index++] = a[p1++];
+            }else if(a[p1]>=b[p2]){
+                r[index++] = b[p2++];
+            }else{
+                r[index++] = a[p1++];
             }
         }
         return r;
+    }
+
+    public static void main(String[] args) {
+        KthSmallest smallest = new KthSmallest();
+        int[][] matrix = {
+                {3, 8, 3},
+                {3, 8, 8},
+                {3, 9, 13}
+        };
+        int i = smallest.kthSmallest(matrix, 8);
+        System.out.println(i);
     }
 }
