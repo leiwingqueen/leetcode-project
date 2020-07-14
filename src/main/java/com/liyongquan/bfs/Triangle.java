@@ -1,10 +1,7 @@
 package com.liyongquan.bfs;
 
-import com.liyongquan.stack.MinStack;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TransferQueue;
 
 /**
  * 给定一个三角形，找出自顶向下的最小路径和。每一步只能移动到下一行中相邻的结点上。
