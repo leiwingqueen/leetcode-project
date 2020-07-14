@@ -1,5 +1,8 @@
 package com.liyongquan.bfs;
 
+import com.liyongquan.stack.MinStack;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TransferQueue;
 
@@ -54,7 +57,7 @@ public class Triangle {
             return p;
         }
         if (j == i) {
-            return dfs(triangle, i - 1, j-1) + p;
+            return dfs(triangle, i - 1, j - 1) + p;
         } else if (j == 0) {
             return dfs(triangle, i - 1, j) + p;
         } else {
@@ -62,5 +65,40 @@ public class Triangle {
             int p2 = dfs(triangle, i - 1, j - 1);
             return Math.min(p1, p2) + p;
         }
+    }
+
+    /**
+     * 用DP的思路解法，逐层计算
+     *
+     * @param triangle
+     * @return
+     */
+    public int minimumTotal2(List<List<Integer>> triangle) {
+        if (triangle.size() == 1) {
+            return triangle.get(0).get(0);
+        }
+        List<Integer> pre = new ArrayList<>();
+        pre.add(triangle.get(0).get(0));
+        int min = Integer.MAX_VALUE;
+        for (int i = 1; i < triangle.size(); i++) {
+            List<Integer> now = new ArrayList<>();
+            for (int j = 0; j <= i; j++) {
+                int v = triangle.get(i).get(j);
+                int total;
+                if (j == 0) {
+                    total = pre.get(0) + v;
+                } else if (j == i) {
+                    total = pre.get(j - 1) + v;
+                } else {
+                    total = Math.min(pre.get(j - 1), pre.get(j)) + v;
+                }
+                now.add(total);
+                if (i == triangle.size() - 1 && total < min) {
+                    min = total;
+                }
+            }
+            pre = now;
+        }
+        return min;
     }
 }
