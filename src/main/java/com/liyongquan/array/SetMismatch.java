@@ -22,21 +22,25 @@ import java.util.List;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class SetMismatch {
+    /**
+     * bitmap解法
+     * 注意这里返回多第一个必须为重复多数字，第二个为缺失的数字
+     * @param nums
+     * @return
+     */
     public int[] findErrorNums(int[] nums) {
         int[] bitmap = new int[nums.length];
         for (int i = 0; i < nums.length; i++) {
             bitmap[nums[i] - 1]++;
         }
-        List<Integer> result = new ArrayList<>();
+        int[] result = new int[2];
         for (int i = 0; i < nums.length; i++) {
-            if (bitmap[i] != 1) {
-                result.add(i + 1);
+            if (bitmap[i] == 2) {
+                result[0] = i + 1;
+            } else if (bitmap[i] == 0) {
+                result[1] = i + 1;
             }
         }
-        int[] r=new int[result.size()];
-        for (int i = 0; i < result.size(); i++) {
-            r[i]=result.get(i);
-        }
-        return r;
+        return result;
     }
 }
