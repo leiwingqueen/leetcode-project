@@ -1,6 +1,5 @@
 package com.liyongquan.array;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
