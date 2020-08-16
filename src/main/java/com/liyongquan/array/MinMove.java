@@ -25,6 +25,7 @@ package com.liyongquan.array;
 public class MinMove {
     /**
      * 每次增加除最大数之外的n-1个数字，但是这种解法会超时
+     *
      * @param nums
      * @return
      */
@@ -68,5 +69,15 @@ public class MinMove {
                 return count;
             }
         }
+    }
+
+    public int minMoves2(int[] nums) {
+        int sum = nums[0];
+        int min = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            sum += nums[i];
+            min = Math.min(min, nums[i]);
+        }
+        return sum - min * nums.length;
     }
 }
