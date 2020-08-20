@@ -34,23 +34,31 @@ import java.util.Map;
  */
 public class Degree {
     public int findShortestSubArray(int[] nums) {
-        Map<Integer, Integer> map = new HashMap<>();
+        Map<Integer, Integer> left = new HashMap<>();
+        Map<Integer, Integer> right = new HashMap<>();
+        Map<Integer, Integer> count = new HashMap<>();
         int max = 0;
         for (int i = 0; i < nums.length; i++) {
-            Integer c = map.getOrDefault(nums[i], 0);
-            c++;
+            int num = nums[i];
+            int c = count.getOrDefault(num, 0) + 1;
+            count.put(num, c);
             if (c > max) {
                 max = c;
             }
-            map.put(nums[i], c++);
+            if (!left.containsKey(num)) {
+                left.put(num, i);
+            }
+            right.put(num, i);
         }
-        List<Integer> du = new ArrayList<>();
-        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-            if (entry.getValue() == max) {
-                du.add(entry.getKey());
+        int min = Integer.MAX_VALUE;
+        for (Map.Entry<Integer, Integer> kv : count.entrySet()) {
+            if (kv.getValue() == max) {
+                int len = right.get(kv.getKey()) - left.get(kv.getKey()) + 1;
+                if (len < min) {
+                    min = len;
+                }
             }
         }
-        //TODO
-        return 0;
+        return min;
     }
 }
