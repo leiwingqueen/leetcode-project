@@ -27,7 +27,7 @@ import java.util.Map;
 public class Duplicates {
     /**
      * 先使用额外空间解决
-     *
+     * <p>
      * 空间复杂度O(n)，时间复杂度O(n)
      *
      * @param nums
@@ -38,10 +38,29 @@ public class Duplicates {
         for (int i = 0; i < nums.length; i++) {
             count.put(nums[i], count.getOrDefault(nums[i], 0) + 1);
         }
-        List<Integer> result=new ArrayList<>();
+        List<Integer> result = new ArrayList<>();
         for (Map.Entry<Integer, Integer> c : count.entrySet()) {
-            if (c.getValue()>=2) {
+            if (c.getValue() >= 2) {
                 result.add(c.getKey());
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 使用翻转的方式解决
+     *
+     * @param nums
+     * @return
+     */
+    public List<Integer> findDuplicates2(int[] nums) {
+        List<Integer> result = new ArrayList<>();
+        for (int num : nums) {
+            int pos = Math.abs(num);
+            if (nums[pos - 1] < 0) {
+                result.add(pos);
+            } else {
+                nums[pos - 1] = -nums[pos - 1];
             }
         }
         return result;
