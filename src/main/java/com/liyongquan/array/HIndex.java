@@ -39,4 +39,20 @@ public class HIndex {
         }
         return list.size();
     }
+
+    /**
+     * 代码优化
+     * @param citations
+     * @return
+     */
+    public int hIndex2(int[] citations) {
+        Arrays.sort(citations);
+        for (int i = 0; i < citations.length; i++) {
+            if (i + 1 > citations[citations.length - i - 1]) {
+                return i;
+            }
+        }
+        return citations.length;
+    }
+
 }
