@@ -26,6 +26,7 @@ package com.liyongquan.greedy;
 public class DistributeCandies {
     /**
      * bitmap解法，常数级复杂度
+     *
      * @param candies
      * @return
      */
@@ -40,9 +41,15 @@ public class DistributeCandies {
             if (bitmap[i] > 0) {
                 count++;
                 c++;
-                i++;
             }
+            i++;
         }
         return count;
+    }
+
+    public static void main(String[] args) {
+        DistributeCandies candies = new DistributeCandies();
+        int i = candies.distributeCandies(new int[]{1, 1, 2, 2, 3, 3});
+        System.out.println(i);
     }
 }
