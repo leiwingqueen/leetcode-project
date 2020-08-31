@@ -34,13 +34,16 @@ public class LargestNumber {
                 i++;
                 j++;
             }
+            if (o1.length() == o2.length()) {
+                return 0;
+            }
             if (i >= o1.length()) {
                 i--;
-            }
-            if (j >= o2.length()) {
+                return o2.charAt(0) - o1.charAt(i);
+            } else {
                 j--;
+                return o2.charAt(j) - o1.charAt(0);
             }
-            return o2.charAt(j) - o1.charAt(i);
         });
         StringBuilder builder = new StringBuilder();
         for (String s : list) {
@@ -53,5 +56,7 @@ public class LargestNumber {
         LargestNumber number = new LargestNumber();
         String s = number.largestNumber(new int[]{3, 30, 34, 5, 9});
         System.out.println(s);
+        String s1 = number.largestNumber(new int[]{824, 938, 1399, 5607, 6973, 5703, 9609, 4398, 8247});
+        System.out.println(s1);
     }
 }
