@@ -26,24 +26,16 @@ public class LargestNumber {
             list.add(String.valueOf(nums[i]));
         }
         Collections.sort(list, (o1, o2) -> {
-            int i = 0, j = 0;
-            while (i < o1.length() && j < o2.length()) {
+            int i = 0, j = 0, c = 0;
+            while (c <= Math.max(o1.length(), o2.length())) {
                 if (o2.charAt(j) != o1.charAt(i)) {
                     return o2.charAt(j) - o1.charAt(i);
                 }
-                i++;
-                j++;
+                i = (i + 1) % o1.length();
+                j = (j + 1) % o2.length();
+                c++;
             }
-            if (o1.length() == o2.length()) {
-                return 0;
-            }
-            if (i >= o1.length()) {
-                i--;
-                return o2.charAt(0) - o1.charAt(i);
-            } else {
-                j--;
-                return o2.charAt(j) - o1.charAt(0);
-            }
+            return 0;
         });
         StringBuilder builder = new StringBuilder();
         for (String s : list) {
@@ -58,5 +50,7 @@ public class LargestNumber {
         System.out.println(s);
         String s1 = number.largestNumber(new int[]{824, 938, 1399, 5607, 6973, 5703, 9609, 4398, 8247});
         System.out.println(s1);
+        s = number.largestNumber(new int[]{121,12});
+        System.out.println(s);
     }
 }
