@@ -28,18 +28,16 @@ import java.util.List;
 public class CountBits {
     /**
      * 暴力解法
+     * <p>
+     * 时间复杂度 O(n*sizeof(interger))
      *
      * @param num
      * @return
      */
     public int[] countBits(int num) {
-        List<Integer> result = new ArrayList<>(num+1);
+        int[] r = new int[num + 1];
         for (int i = 0; i <= num; i++) {
-            result.add(cb(i));
-        }
-        int[] r = new int[result.size()];
-        for (int i = 0; i < result.size(); i++) {
-            r[i] = result.get(i);
+            r[i] = cb(i);
         }
         return r;
     }
@@ -53,5 +51,29 @@ public class CountBits {
             num /= 2;
         }
         return c;
+    }
+
+    /**
+     * 奇偶判断+dp
+     * 奇数：
+     * f(n)=f(n)+1
+     * 偶数：
+     * f(n)=f(n/2)
+     *
+     * @param num
+     * @return
+     */
+    public int[] countBits2(int num) {
+        int[] r = new int[num + 1];
+        for (int i = 1; i <= num; i++) {
+            //等价于取模
+            if ((i&1)==1) {
+                r[i]=r[i-1]+1;
+            }else{
+                //右移等价于/2
+                r[i]=r[i>>1];
+            }
+        }
+        return r;
     }
 }
