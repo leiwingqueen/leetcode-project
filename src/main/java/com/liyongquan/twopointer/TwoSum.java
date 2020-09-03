@@ -1,7 +1,5 @@
 package com.liyongquan.twopointer;
 
-import javafx.beans.binding.NumberBinding;
-
 /**
  * 给定一个已按照升序排列 的有序数组，找到两个数使得它们相加之和等于目标数。
  * <p>
@@ -34,8 +32,39 @@ public class TwoSum {
         for (int i = 0; i < numbers.length - 1; i++) {
             for (int j = i + 1; j < numbers.length; j++) {
                 if (numbers[i] + numbers[j] == target) {
-                    return new int[]{i+1, j+1};
+                    return new int[]{i + 1, j + 1};
                 }
+            }
+        }
+        return new int[]{};
+    }
+
+    /**
+     * 双指针解法。如何证明该解法的正确性？
+     *
+     * 对于数组A，假设左右边界的index为i,j
+     * 假设A[i]+A[j]>target，则我们可以认为(A[i],A[i+1])...(A[i],A[j-1])这些组合必然不满足需求(数组递增)，相当于右边界=j的所有可能的集合被消除了。
+     * 我们选择左边界i+1
+     *
+     * 这里有朋友会问题，为什么不能考虑j+1？
+     * 因为右边界是从右向左移动，如果目前的右边界为j，则可以认为j+1的场景已经不可能满足目标
+     *
+     * 左边界类似的问题
+     *
+     * @param numbers
+     * @param target
+     * @return
+     */
+    public int[] twoSum2(int[] numbers, int target) {
+        int left = 0, right = numbers.length - 1;
+        while (left < right) {
+            int sum = numbers[left] + numbers[right];
+            if (sum == target) {
+                return new int[]{left + 1, right + 1};
+            } else if (sum < target) {
+                left++;
+            } else {
+                right--;
             }
         }
         return new int[]{};
