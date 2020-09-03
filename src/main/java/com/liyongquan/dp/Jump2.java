@@ -22,6 +22,11 @@ package com.liyongquan.dp;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class Jump2 {
+    /**
+     * 官方解法是通过贪心解的，事实上有没可能通过dp来解
+     * @param nums
+     * @return
+     */
     public int jump(int[] nums) {
         return 0;
     }
