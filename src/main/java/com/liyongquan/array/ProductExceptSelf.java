@@ -23,19 +23,25 @@ package com.liyongquan.array;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class ProductExceptSelf {
+    /**
+     * 分别维护两个数组统计左右两侧的乘积
+     * 时间复杂度O(n)
+     * 空间复杂度O(n)
+     *
+     * @param nums
+     * @return
+     */
     public int[] productExceptSelf(int[] nums) {
         int[] left = new int[nums.length], right = new int[nums.length];
         int p = 1;
-        left[0] = 1;
-        for (int i = 1; i < nums.length; i++) {
-            p *= nums[i];
+        for (int i = 0; i < nums.length; i++) {
             left[i] = p;
+            p *= nums[i];
         }
         p = 1;
-        right[nums.length - 1] = 1;
-        for (int i = nums.length - 2; i > 0; i--) {
-            p *= nums[i];
+        for (int i = nums.length - 1; i >= 0; i--) {
             right[i] = p;
+            p *= nums[i];
         }
         int[] result = new int[nums.length];
         for (int i = 0; i < nums.length; i++) {
@@ -43,4 +49,30 @@ public class ProductExceptSelf {
         }
         return result;
     }
+
+
+    /**
+     * left和right有没可能统一维护一个数组呢？
+     * <p>
+     * 时间复杂度O(n)
+     * 空间复杂度O(1)【不包括返回的结构数组】
+     *
+     * @param nums
+     * @return
+     */
+    public int[] productExceptSelf2(int[] nums) {
+        int[] result = new int[nums.length];
+        int p = 1;
+        for (int i = 0; i < nums.length; i++) {
+            result[i] = p;
+            p *= nums[i];
+        }
+        p = 1;
+        for (int i = nums.length - 1; i >= 0; i--) {
+            result[i] *= p;
+            p *= nums[i];
+        }
+        return result;
+    }
+
 }
