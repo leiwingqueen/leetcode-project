@@ -31,7 +31,9 @@ public class GuessGame {
     public int guessNumber(int n) {
         int left = 1, right = n;
         while (left < right) {
-            int middle = (left + right) / 2;
+            //关键在这里，不能这样写,int 会溢出
+            //int middle = (left + right) / 2;
+            int middle = left + (right - left) / 2;
             int guess = guess(middle);
             if (guess == 0) {
                 return middle;
