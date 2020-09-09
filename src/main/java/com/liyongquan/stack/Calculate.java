@@ -67,8 +67,10 @@ public class Calculate {
                 }
                 num = 0;
             } else {
-                tokens.add(new Token(0, num));
-                num = 0;
+                if (i == s.length() - 1) {
+                    tokens.add(new Token(0, num));
+                }
+                //do nothing
             }
         }
         //语义分析
@@ -81,9 +83,9 @@ public class Calculate {
                 i++;
                 if (token.value == 0) {
                     stack.push(tokens.get(i).value);
-                } else if (token.value == 2) {
+                } else if (token.value == 1) {
                     stack.push(-tokens.get(i).value);
-                } else if (token.value == 3) {
+                } else if (token.value == 2) {
                     Integer pop = stack.pop();
                     stack.push(pop * tokens.get(i).value);
                 } else {
@@ -114,7 +116,7 @@ public class Calculate {
 
     public static void main(String[] args) {
         Calculate calculate = new Calculate();
-        int r = calculate.calculate("3+2*2");
+        int r = calculate.calculate(" 3+5 / 2 ");
         System.out.println(r);
     }
 }
