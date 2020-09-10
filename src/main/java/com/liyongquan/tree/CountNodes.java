@@ -1,6 +1,8 @@
 package com.liyongquan.tree;
 
-import javafx.util.Pair;
+
+import com.liyongquan.linklist.RotateLinkList;
+import org.omg.CORBA.OMGVMCID;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -55,14 +57,32 @@ public class CountNodes {
     }
 
     /**
-     * 假设我们找到最右下方结点的位置，就可以确定整个树的结点数量
-     * 假设最右下方的结点为第h层，从右往左数第r个位置。
-     * 则接待数量为2^0+2^1+...2^h-1-r+1
+     * https://leetcode-cn.com/problems/count-complete-tree-nodes/solution/chang-gui-jie-fa-he-ji-bai-100de-javajie-fa-by-xia/
+     * 二分法，这个解法妙啊。
+     * 时间复杂度O(log(n))
      *
      * @param root
      * @return
      */
     public int countNodes2(TreeNode root) {
-        return 0;
+        if (root == null) {
+            return 0;
+        }
+        int left = depth(root.left);
+        int right = depth(root.right);
+        if (left == right) {
+            return countNodes2(root.right) + (1 << left);
+        } else {
+            return countNodes2(root.left) + (1 << right);
+        }
+    }
+
+    private int depth(TreeNode node) {
+        int depth = 0;
+        while (node != null) {
+            depth++;
+            node = node.left;
+        }
+        return depth;
     }
 }
