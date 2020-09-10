@@ -1,5 +1,7 @@
 package com.liyongquan.tree;
 
+import java.util.zip.CheckedOutputStream;
+
 /**
  * 给定一个二叉树，它的每个结点都存放着一个整数值。
  * <p>
@@ -32,19 +34,38 @@ package com.liyongquan.tree;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class PathSum {
+    /**
+     * 双重dfs，其实性能会很糟糕
+     * @param root
+     * @param sum
+     * @return
+     */
     public int pathSum(TreeNode root, int sum) {
+        if (root == null) {
+            return 0;
+        }
+        int count = dfs(root, sum);
+        if (root.left != null) {
+            count += pathSum(root.left, sum);
+        }
+        if (root.right != null) {
+            count += pathSum(root.right, sum);
+        }
+        return count;
+    }
+
+    private int dfs(TreeNode root, int sum) {
         if (root == null) {
             return 0;
         }
         int count = root.val == sum ? 1 : 0;
         if (root.left != null) {
-            count += pathSum(root.left, sum - root.val);
-            count += pathSum(root.left, sum);
+            count += dfs(root.left, sum - root.val);
         }
         if (root.right != null) {
-            count += pathSum(root.right, sum - root.val);
-            count += pathSum(root.right, sum);
+            count += dfs(root.right, sum - root.val);
         }
+        //System.out.println("节点:"+root.val+"的路径和为:"+ count);
         return count;
     }
 }
