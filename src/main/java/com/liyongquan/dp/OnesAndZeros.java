@@ -31,7 +31,7 @@ package com.liyongquan.dp;
 public class OnesAndZeros {
     /**
      * dp方程：
-     * f(k,m,n)=max{f(k-1,m-S[k][0],n-S[k][1]),f(k-1,m,n)}
+     * f(k,m,n)=max{f(k-1,m-S[k][0],n-S[k][1])+1,f(k-1,m,n)}
      * k为前k个字符串能组成的最大组合，S[k][0]，S[k][1]为第k个字符串的0,1个数，
      *
      * @param strs
@@ -65,10 +65,10 @@ public class OnesAndZeros {
         }
         //dp迭代
         for (int i = 1; i < strs.length; i++) {
-            for (int j = 1; j <= m; j++) {
-                for (int k = 1; k <= n; k++) {
+            for (int j = 0; j <= m; j++) {
+                for (int k = 0; k <= n; k++) {
                     if (s[i][0] <= j && s[i][1] <= k) {
-                        dp[i][j][k] = Math.max(dp[i - 1][j - s[i][0]][k - s[i][1]], dp[i - 1][m][n]);
+                        dp[i][j][k] = Math.max(dp[i - 1][j - s[i][0]][k - s[i][1]] + 1, dp[i - 1][m][n]);
                     } else {
                         dp[i][j][k] = dp[i - 1][m][n];
                     }
@@ -76,5 +76,14 @@ public class OnesAndZeros {
             }
         }
         return dp[strs.length - 1][m][n];
+    }
+
+    public static void main(String[] args) {
+        OnesAndZeros onesAndZeros = new OnesAndZeros();
+        /*int maxForm = onesAndZeros.findMaxForm(new String[]{"10", "0001", "111001", "1", "0"},
+                5, 3);
+        System.out.println(maxForm);*/
+        int maxForm1 = onesAndZeros.findMaxForm(new String[]{"10", "0", "1"}, 1, 1);
+        System.out.println(maxForm1);
     }
 }
