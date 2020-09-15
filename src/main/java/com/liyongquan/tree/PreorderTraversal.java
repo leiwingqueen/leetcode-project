@@ -1,8 +1,6 @@
 package com.liyongquan.tree;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * 给定一个二叉树，返回它的 前序 遍历。
@@ -56,7 +54,9 @@ public class PreorderTraversal {
         if (root == null) {
             return result;
         }
-        Stack<TreeNode> stack = new Stack<>();
+        //stack改为使用linklist，减少扩容带来的性能开销
+        //Stack<TreeNode> stack = new Stack<>();
+        Deque<TreeNode> stack = new LinkedList<>();
         stack.push(root);
         while (!stack.isEmpty()) {
             TreeNode node = stack.pop();
