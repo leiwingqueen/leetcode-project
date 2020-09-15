@@ -68,9 +68,9 @@ public class OnesAndZeros {
             for (int j = 0; j <= m; j++) {
                 for (int k = 0; k <= n; k++) {
                     if (s[i][0] <= j && s[i][1] <= k) {
-                        dp[i][j][k] = Math.max(dp[i - 1][j - s[i][0]][k - s[i][1]] + 1, dp[i - 1][m][n]);
+                        dp[i][j][k] = Math.max(dp[i - 1][j - s[i][0]][k - s[i][1]] + 1, dp[i - 1][j][k]);
                     } else {
-                        dp[i][j][k] = dp[i - 1][m][n];
+                        dp[i][j][k] = dp[i - 1][j][k];
                     }
                 }
             }
@@ -83,7 +83,9 @@ public class OnesAndZeros {
         /*int maxForm = onesAndZeros.findMaxForm(new String[]{"10", "0001", "111001", "1", "0"},
                 5, 3);
         System.out.println(maxForm);*/
-        int maxForm1 = onesAndZeros.findMaxForm(new String[]{"10", "0", "1"}, 1, 1);
-        System.out.println(maxForm1);
+        /*int maxForm1 = onesAndZeros.findMaxForm(new String[]{"10", "0", "1"}, 1, 1);
+        System.out.println(maxForm1);*/
+        int maxForm2 = onesAndZeros.findMaxForm(new String[]{"10", "0001", "111001", "1", "0"}, 4, 3);
+        System.out.println(maxForm2);
     }
 }
