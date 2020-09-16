@@ -8,45 +8,33 @@ public class TicketTest {
     @Test
     public void match() {
         //刚好满足
-        Ticket ticket = new Ticket();
-        Ticket.TicketPair match = ticket.match(new int[]{1, 2, 5, 3}, 4);
-        System.out.println("发票的金额总和:" + match.weight);
-        StringBuilder builder = new StringBuilder();
-        for (Integer i : match.list) {
-            builder.append(i + ",");
-        }
-        System.out.println("选择的发票序号:" + builder);
-        Assert.assertEquals(4, match.weight);
-        match = ticket.match(new int[]{1, 2, 5, 3}, 9);
-        System.out.println("发票的金额总和:" + match.weight);
-        builder = new StringBuilder();
-        for (Integer i : match.list) {
-            builder.append(i + ",");
-        }
-        System.out.println("选择的发票序号:" + builder);
-        Assert.assertEquals(9, match.weight);
+        baseTest(new int[]{1, 2, 5, 3}, 4, 4);
+        baseTest(new int[]{1, 2, 5, 3}, 9, 9);
         //不足的场景
-        match = ticket.match(new int[]{1, 2, 5, 3}, 13);
-        System.out.println("发票的金额总和:" + match.weight);
-        builder = new StringBuilder();
-        for (Integer i : match.list) {
-            builder.append(i + ",");
-        }
-        System.out.println("选择的发票序号:" + builder);
-        Assert.assertEquals(-1, match.weight);
+        baseTest(new int[]{1, 2, 5, 3}, 13, -1);
     }
 
     @Test
     public void match_over() {
-        //有多余的场景
+        baseTest(new int[]{1, 4, 5, 9}, 7, 9);
+        baseTest(new int[]{1, 4, 5, 9, 34, 5, 4}, 16, 17);
+    }
+
+    private void baseTest(int[] tickets, int w, int expect) {
+        System.out.println("=================================");
         Ticket ticket = new Ticket();
-        Ticket.TicketPair match = ticket.match(new int[]{1, 4, 5, 9}, 7);
-        System.out.println("发票的金额总和:" + match.weight);
         StringBuilder builder = new StringBuilder();
-        for (Integer i : match.list) {
+        for (int i : tickets) {
             builder.append(i + ",");
         }
+        System.out.println("Q:发票列表:" + builder + "台账金额:" + w);
+        Ticket.TicketPair match = ticket.match(tickets, w);
+        System.out.println("A:发票的金额总和:" + match.weight);
+        builder = new StringBuilder();
+        for (Integer i : match.list) {
+            builder.append((i + 1) + ",");
+        }
         System.out.println("选择的发票序号:" + builder);
-        Assert.assertEquals(9, match.weight);
+        Assert.assertEquals(expect, match.weight);
     }
 }
