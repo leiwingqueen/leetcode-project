@@ -27,9 +27,11 @@ package com.liyongquan.dp;
 public class NumDecodings {
     /**
      * dp表达式：
-     * 若 s[n-2],s[n-1]组成的字符串小于26
+     * 若 s[n-2],s[n-1]组成的字符串小于26，且 s[n-1]>0
      * f(n)=f(n-1)+f(n-2)
-     * 否则
+     * 若s[n-1]==0
+     * f(n)=f(n-2)
+     * 否则:
      * f(n)=f(n-1)
      * 初始化：
      * f(0)=1
@@ -45,15 +47,32 @@ public class NumDecodings {
             return 0;
         }
         int f0 = 1;
-        int f1 = s.charAt(0) - '0' > 0 ? 0 : 1;
+        int f1 = s.charAt(0) - '0' > 0 ? 1 : 0;
         for (int i = 1; i < s.length(); i++) {
             int n = (s.charAt(i) - '0') + 10 * (s.charAt(i - 1) - '0');
-            if (s.charAt(i) - '0' > 0 && s.charAt(i - 1) - '0' > 0 && n <= 26) {
+            if (s.charAt(i) == '0') {
+                if (s.charAt(i - 1) - '0' == 1 || s.charAt(i - 1) - '0' == 2) {
+                    int tmp = f0;
+                    f0 = f1;
+                    f1 = tmp;
+                } else {
+                    //不可达的场景
+                    return 0;
+                }
+            } else if (s.charAt(i - 1) != '0' && n <= 26 && n > 0) {
                 int tmp = f0 + f1;
                 f0 = f1;
                 f1 = tmp;
+            } else {
+                f0 = f1;
             }
         }
         return f1;
+    }
+
+    public static void main(String[] args) {
+        NumDecodings nd = new NumDecodings();
+        int i = nd.numDecodings("12");
+        System.out.println(i);
     }
 }
