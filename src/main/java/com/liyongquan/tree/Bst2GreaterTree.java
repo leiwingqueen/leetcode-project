@@ -68,4 +68,34 @@ public class Bst2GreaterTree {
         }
         return sum;
     }
+
+    /**
+     * 反序-中序遍历
+     *
+     * @param root
+     * @return
+     */
+    int sum = 0;
+
+    public TreeNode convertBST2(TreeNode root) {
+        if (root != null) {
+            convertBST2(root.right);
+            sum += root.val;
+            root.val = sum;
+            convertBST2(root.left);
+        }
+        return root;
+    }
+
+    public TreeNode convertBST3(TreeNode root) {
+        dfs(root, 0);
+        return root;
+    }
+
+    private int dfs2(TreeNode root, int parentVal) {
+        if (root == null)
+            return parentVal;
+        root.val += dfs2(root.right, parentVal);
+        return dfs2(root.left, root.val);
+    }
 }
