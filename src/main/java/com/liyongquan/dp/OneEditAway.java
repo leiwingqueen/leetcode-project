@@ -1,8 +1,5 @@
 package com.liyongquan.dp;
 
-import java.awt.*;
-import java.util.Map;
-import java.util.Queue;
 
 /**
  * 字符串有三种编辑操作:插入一个字符、删除一个字符或者替换一个字符。 给定两个字符串，编写一个函数判定它们是否只需要一次(或者零次)编辑。
@@ -83,5 +80,32 @@ public class OneEditAway {
             return false;
         }
         return s1.substring(i).compareTo(s2.substring(j)) == 0;
+    }
+
+
+    /**
+     * 双指针解法，比较难想，还有一个问题是如何证明双指针是正确的？
+     *
+     * @param first
+     * @param second
+     * @return
+     */
+    public boolean oneEditAway2(String first, String second) {
+        if (Math.abs(first.length() - second.length()) > 1) {
+            return false;
+        }
+        int i = 0;
+        while (i < first.length() && i < second.length() && first.charAt(i) == second.charAt(i)) {
+            i++;
+        }
+        if (i == first.length() && i == second.length()) {
+            return true;
+        }
+        int j = first.length() - 1, k = second.length() - 1;
+        while (i >= 0 && k >= 0 && first.charAt(j) == second.charAt(k)) {
+            j--;
+            k--;
+        }
+        return j - i < 1 && k - i < 1;
     }
 }
