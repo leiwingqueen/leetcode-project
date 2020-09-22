@@ -45,4 +45,21 @@ public class SwapPairs {
         }
         return tmp.next;
     }
+
+    /**
+     * 递归解法，看起来更清晰一点
+     *
+     * @param head
+     * @return
+     */
+    public ListNode swapPairs2(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode first = head;
+        ListNode second = head.next;
+        first.next = swapPairs2(second.next);
+        second.next = first;
+        return second;
+    }
 }
