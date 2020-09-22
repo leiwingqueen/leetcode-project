@@ -102,7 +102,7 @@ public class OneEditAway {
             return true;
         }
         int j = first.length() - 1, k = second.length() - 1;
-        while (i >= 0 && k >= 0 && first.charAt(j) == second.charAt(k)) {
+        while (j >= 0 && k >= 0 && first.charAt(j) == second.charAt(k)) {
             j--;
             k--;
         }
