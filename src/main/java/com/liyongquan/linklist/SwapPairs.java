@@ -37,10 +37,10 @@ public class SwapPairs {
             p2 = p1.next;
             p3 = p2.next;
             //交换
-            ListNode p4 = p3.next;
-            p1.next = p3;
+            p2.next = p3.next;
             p3.next = p2;
-            p2.next = p4;
+            p1.next = p3;
+            //移动到下一个点
             p1 = p2;
         }
         return tmp.next;
