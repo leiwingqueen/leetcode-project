@@ -42,7 +42,7 @@ package com.liyongquan.twopointer;
  */
 public class RemoveDuplicates {
     /**
-     * 遍历一次需要O(n)的复杂度，删除也是O(n)的复杂度
+     * 遍历一次需要O(n)的复杂度，删除也是O(n)的复杂度，整体的时间复杂度O(n^2)
      *
      * @param nums
      * @return
@@ -72,5 +72,42 @@ public class RemoveDuplicates {
             }
         }
         return tail + 1;
+    }
+
+    /**
+     * 快慢指针的解法，其实是不容易想到的
+     * slow是下一次要覆盖的元素，fast是扫描指针
+     * 时间复杂度O(n)
+     *
+     * @param nums
+     * @return
+     */
+    public int removeDuplicates2(int[] nums) {
+        if (nums.length <= 2) {
+            return nums.length;
+        }
+        int fast = 1, slow = 1, count = 1;
+        while (fast < nums.length) {
+            if (nums[fast] == nums[fast - 1]) {
+                count++;
+            } else {
+                count = 1;
+            }
+            if (count <= 2) {
+                nums[slow] = nums[fast];
+                slow++;
+            }
+            fast++;
+        }
+        return slow;
+    }
+
+    public static void main(String[] args) {
+        RemoveDuplicates rd = new RemoveDuplicates();
+        int[] array = {1, 1, 1, 2, 2, 3, 3, 3};
+        int i = rd.removeDuplicates2(array);
+        for (int j = 0; j < i; j++) {
+            System.out.println(array[j]);
+        }
     }
 }
