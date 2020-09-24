@@ -73,4 +73,54 @@ public class FindMode {
         right.forEach((k, v) -> left.put(k, left.getOrDefault(k, 0) + v));
         return left;
     }
+
+    /**
+     * bst有个特性，中序遍历的数组必然为非递减序列
+     *
+     * @param root
+     * @return
+     */
+    public int[] findMode2(TreeNode root) {
+        if (root == null) {
+            return new int[]{};
+        }
+        List<Integer> list = dfs(root);
+        int max = 1, count = 1;
+        List<Integer> ans = new LinkedList<>();
+        ans.add(list.get(0));
+        for (int i = 1; i < list.size(); i++) {
+            if (list.get(i - 1) == list.get(i)) {
+                count++;
+            } else {
+                count = 1;
+            }
+            if (count == max) {
+                ans.add(list.get(i));
+            }
+            if (count > max) {
+                max = count;
+                ans.clear();
+            }
+        }
+        int[] r=new int[ans.size()];
+        for (int i = 0; i < ans.size(); i++) {
+            r[i]=ans.get(i);
+        }
+        return r;
+    }
+
+    private List<Integer> dfs(TreeNode node) {
+        if (node == null) {
+            return Collections.emptyList();
+        }
+        List<Integer> list = new LinkedList<>();
+        if (node.left != null) {
+            list.addAll(dfs(node.left));
+        }
+        list.add(node.val);
+        if (node.right != null) {
+            list.addAll(dfs(node.right));
+        }
+        return list;
+    }
 }
