@@ -1,6 +1,8 @@
 package com.liyongquan.tree;
 
 import javax.lang.model.element.VariableElement;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 根据一棵树的中序遍历与后序遍历构造二叉树。
@@ -25,6 +27,8 @@ import javax.lang.model.element.VariableElement;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class RebuildTree2 {
+    private Map<Integer, Integer> inorderMap;
+
     /**
      * 典型的递归解法。
      * 后序遍历的最后一个节点为根节点。通过这个根节点我们可以找到中序遍历分别左子树和右子树，从而可以定位得到左子树和右子树分别的中序遍历和后续遍历。
@@ -34,6 +38,10 @@ public class RebuildTree2 {
      * @return
      */
     public TreeNode buildTree(int[] inorder, int[] postorder) {
+        inorderMap = new HashMap<>(inorder.length);
+        for (int i = 0; i < inorder.length; i++) {
+            inorderMap.put(inorder[i], i);
+        }
         return dfs(inorder, postorder, new int[]{0, inorder.length - 1}, new int[]{0, postorder.length - 1});
     }
 
@@ -46,11 +54,12 @@ public class RebuildTree2 {
             return new TreeNode(inorder[p1[0]]);
         }
         TreeNode root = new TreeNode(postorder[p2[1]]);
-        //找到中序遍历的根节点的位置
-        int i = p1[0];
+        //找到中序遍历的根节点的位置(这里会是性能瓶颈，我们可以使用一个map来做记忆)
+        /*int i = p1[0];
         while (i <= p1[1] && inorder[i] != postorder[p2[1]]) {
             i++;
-        }
+        }*/
+        int i = inorderMap.get(postorder[p2[1]]);
         //中序遍历的左子树的位置 p1[0]~i-1,右子树的位置 i+1,p1[1]
         //后续遍历的左子树的位置 p2[0],p2[0]+i-p1[0]-1,右子树的位置 p2[0]+i-p1[0],p2[1]
         TreeNode left = dfs(inorder, postorder, new int[]{p1[0], i - 1}, new int[]{p2[0], p2[0] + i - p1[0] - 1});
