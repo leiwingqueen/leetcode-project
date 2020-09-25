@@ -25,6 +25,7 @@ package com.liyongquan.array;
 public class FlipedString {
     /**
      * 傻瓜解法
+     * 时间复杂度O(n^2)
      *
      * @param s1
      * @param s2
@@ -34,12 +35,32 @@ public class FlipedString {
         if (s1.length() != s2.length()) {
             return false;
         }
+        if (s1.length() == 0) {
+            return true;
+        }
         for (int i = 0; i < s1.length(); i++) {
             if (eq(s1, s2, i)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * 解法2，合并字符串
+     *
+     * @param s1
+     * @param s2
+     * @return
+     */
+    public boolean isFlipedString2(String s1, String s2) {
+        if (s1.length() != s2.length()) {
+            return false;
+        }
+        if (s1.length() == 0) {
+            return true;
+        }
+        return (s2 + s2).contains(s1);
     }
 
     private boolean eq(String s1, String s2, int start) {
