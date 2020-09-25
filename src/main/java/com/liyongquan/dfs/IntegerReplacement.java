@@ -81,7 +81,8 @@ public class IntegerReplacement {
         while (n != 1) {
             if ((n & 1) == 0) {
                 count++;
-            } else if ((n & 2) > 0) {
+            } else if ((n & 2) == 0 || n == 3) {
+                //3是一个特殊场景
                 n++;
                 count += 2;
             } else {
