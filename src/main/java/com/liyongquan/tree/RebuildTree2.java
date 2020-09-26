@@ -1,6 +1,5 @@
 package com.liyongquan.tree;
 
-import javax.lang.model.element.VariableElement;
 import java.util.HashMap;
 import java.util.Map;
 
