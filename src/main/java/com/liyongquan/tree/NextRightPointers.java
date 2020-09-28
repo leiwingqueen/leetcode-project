@@ -147,6 +147,84 @@ public class NextRightPointers {
         return root;
     }
 
+    /**
+     * 利用链表的特征，进行扫描，进一步把空间复杂度降为O(1)
+     *
+     * @param root
+     * @return
+     */
+    public Node connect4(Node root) {
+        if (root == null) {
+            return null;
+        }
+        Node preHead = root;
+        while (preHead != null) {
+            Node p1 = preHead;
+            Node curHead = null, p2 = null;
+            while (p1 != null) {
+                if (p1.left != null) {
+                    if (curHead == null) {
+                        curHead = p1.left;
+                        p2 = curHead;
+                    } else {
+                        p2.next = p1.left;
+                        p2 = p2.next;
+                    }
+                }
+                if (p1.right != null) {
+                    if (curHead == null) {
+                        curHead = p1.right;
+                        p2 = curHead;
+                    } else {
+                        p2.next = p1.right;
+                        p2 = p2.next;
+                    }
+                }
+                p1 = p1.next;
+            }
+            preHead = curHead;
+        }
+        return root;
+    }
+
+    /**
+     * 在4的基础上优化下代码可读性
+     *
+     * @param root
+     * @return
+     */
+    public Node connect5(Node root) {
+        if (root == null) {
+            return null;
+        }
+        Node preHead = root;
+        while (preHead != null) {
+            Node curHead = null, p2 = null;
+            for (Node p1 = preHead; p1 != null; p1 = p1.next) {
+                if (p1.left != null) {
+                    if (curHead == null) {
+                        curHead = p1.left;
+                        p2 = curHead;
+                    } else {
+                        p2.next = p1.left;
+                        p2 = p2.next;
+                    }
+                }
+                if (p1.right != null) {
+                    if (curHead == null) {
+                        curHead = p1.right;
+                        p2 = curHead;
+                    } else {
+                        p2.next = p1.right;
+                        p2 = p2.next;
+                    }
+                }
+            }
+            preHead = curHead;
+        }
+        return root;
+    }
+
     class Node {
         public int val;
         public Node left;
