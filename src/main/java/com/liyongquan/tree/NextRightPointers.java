@@ -83,7 +83,7 @@ public class NextRightPointers {
     }
 
     /**
-     * 这里适合用广度优先搜索
+     * 这里适合用广度优先搜索。时间复杂度O(n)，空间复杂度O(n)
      *
      * @param root
      * @return
@@ -110,6 +110,38 @@ public class NextRightPointers {
             }
             if (pre.right != null) {
                 queue.add(new Pair<>(pre.right, depth + 1));
+            }
+        }
+        return root;
+    }
+
+    /**
+     * 广度优先搜索优化。减少一个depth的变量
+     *
+     * @param root
+     * @return
+     */
+    public Node connect3(Node root) {
+        if (root == null) {
+            return null;
+        }
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            Node pre = null;
+            for (int i = 0; i < size; i++) {
+                Node node = queue.poll();
+                if (pre != null) {
+                    pre.next = node;
+                }
+                if (node.left != null) {
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    queue.add(node.right);
+                }
+                pre = node;
             }
         }
         return root;
