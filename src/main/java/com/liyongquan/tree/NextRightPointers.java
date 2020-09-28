@@ -1,8 +1,11 @@
 package com.liyongquan.tree;
 
+import javafx.util.Pair;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * 给定一个二叉树
@@ -29,6 +32,14 @@ import java.util.List;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class NextRightPointers {
+    /**
+     * 递归解法。
+     * 假设节点的数量为n，时间复杂度O(n^2)。
+     * 连接过程需要对所有节点扫描一遍，计算某一个节点下的所有的最左节点/最右节点需要O(n)的复杂度
+     *
+     * @param root
+     * @return
+     */
     public Node connect(Node root) {
         if (root == null) {
             return null;
@@ -69,6 +80,39 @@ public class NextRightPointers {
             }
         }
         return result;
+    }
+
+    /**
+     * 这里适合用广度优先搜索
+     *
+     * @param root
+     * @return
+     */
+    public Node connect2(Node root) {
+        if (root == null) {
+            return null;
+        }
+        Queue<Pair<Node, Integer>> queue = new LinkedList<>();
+        queue.add(new Pair<>(root, 0));
+        Node pre = null;
+        int depth = 0;
+        while (!queue.isEmpty()) {
+            Pair<Node, Integer> poll = queue.poll();
+            if (pre != null && depth == poll.getValue()) {
+                pre.next = poll.getKey();
+            }
+            if (depth != poll.getValue()) {
+                depth = poll.getValue();
+            }
+            pre = poll.getKey();
+            if (pre.left != null) {
+                queue.add(new Pair<>(pre.left, depth + 1));
+            }
+            if (pre.right != null) {
+                queue.add(new Pair<>(pre.right, depth + 1));
+            }
+        }
+        return root;
     }
 
     class Node {
