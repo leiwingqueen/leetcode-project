@@ -49,4 +49,67 @@ public class RotateArray {
             nums[0] = tmp;
         }
     }
+
+
+    /**
+     * 时间复杂度O(n+k),空间复杂度O(k)
+     *
+     * @param nums
+     * @param k
+     */
+    public void rotate2(int[] nums, int k) {
+        int length = nums.length;
+        if (length <= 1) {
+            return;
+        }
+        k %= length;
+        if (k == 0) {
+            return;
+        }
+        int[] tmp = new int[k];
+        for (int i = length - k; i < length; i++) {
+            tmp[i - length + k] = nums[i];
+        }
+        for (int i = length - k - 1; i >= 0; i--) {
+            nums[i + k] = nums[i];
+        }
+        for (int i = 0; i < k; i++) {
+            nums[i] = tmp[i];
+        }
+    }
+
+    /**
+     * 环状替换
+     *
+     * @param nums
+     * @param k
+     */
+    public void rotate3(int[] nums, int k) {
+        int length = nums.length;
+        if (length <= 1) {
+            return;
+        }
+        k %= length;
+        if (k == 0) {
+            return;
+        }
+        int start = 0;
+        int pre = nums[start];
+        for (int i = 0; i < length; i++) {
+            int next = (start + k) % length;
+            int tmp = nums[next];
+            nums[next] = pre;
+            pre = tmp;
+            start = next;
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {-1, -100, 3, 99};
+        RotateArray ra = new RotateArray();
+        ra.rotate3(nums, 2);
+        for (int i = 0; i < nums.length; i++) {
+            System.out.println(nums[i]);
+        }
+    }
 }
