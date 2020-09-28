@@ -1,5 +1,7 @@
 package com.liyongquan.array;
 
+import java.util.Stack;
+
 /**
  * 给定一个含有 M x N 个元素的矩阵（M 行，N 列），请以对角线遍历的顺序返回这个矩阵中的所有元素，对角线遍历如下图所示。
  * <p>
@@ -28,7 +30,7 @@ public class FindDiagonalOrder {
     };
 
     /**
-     * 傻瓜解法
+     * 模拟移动
      *
      * @param matrix
      * @return
@@ -71,6 +73,52 @@ public class FindDiagonalOrder {
         return result;
     }
 
+    /**
+     * 奇数列逆向打印
+     *
+     * @param matrix
+     * @return
+     */
+    public int[] findDiagonalOrder2(int[][] matrix) {
+        if (matrix.length <= 0) {
+            return new int[0];
+        }
+        int row = matrix.length, col = matrix[0].length;
+        int[] result = new int[row * col];
+        int x = 0, y = 0;
+        int index = 0;
+        for (int i = 0; i < row + col - 1; i++) {
+            //System.out.println("x:" + x + ",y:" + y);
+            int x1 = x, y1 = y;
+            //奇数
+            if ((i & 1) == 0) {
+                Stack<Integer> stack = new Stack<>();
+                while (x1 < row && y1 >= 0) {
+                    stack.push(matrix[x1][y1]);
+                    x1++;
+                    y1--;
+                }
+                while (!stack.isEmpty()) {
+                    //System.out.println("添加元素" + stack.peek());
+                    result[index++] = stack.pop();
+                }
+            } else {
+                while (x1 < row && y1 >= 0) {
+                    // System.out.println("添加元素" + matrix[x1][y1]);
+                    result[index++] = matrix[x1][y1];
+                    x1++;
+                    y1--;
+                }
+            }
+            if (y < col - 1) {
+                y++;
+            } else {
+                x++;
+            }
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
         FindDiagonalOrder fd = new FindDiagonalOrder();
         int[][] matrix = {
@@ -78,7 +126,7 @@ public class FindDiagonalOrder {
                 {4, 5, 6},
                 {7, 8, 9}
         };
-        int[] diagonalOrder = fd.findDiagonalOrder(matrix);
+        int[] diagonalOrder = fd.findDiagonalOrder2(matrix);
         for (int i = 0; i < diagonalOrder.length; i++) {
             System.out.println(diagonalOrder[i]);
         }
