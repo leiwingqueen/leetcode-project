@@ -58,6 +58,10 @@ public class Rotate {
                 m[j][row - i - 1] = matrix[i][j];
             }
         }
-        matrix = m;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < row; j++) {
+                matrix[i][j] = m[i][j];
+            }
+        }
     }
 }
