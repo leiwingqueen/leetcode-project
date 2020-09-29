@@ -64,4 +64,24 @@ public class Rotate {
             }
         }
     }
+
+    /**
+     * 每个像素应该是0~255，1个字节应该能满足需求，地位存原来的字符，高位存改编后的数字
+     *
+     * @param matrix
+     */
+    public void rotate2(int[][] matrix) {
+        int row = matrix.length;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < row; j++) {
+                int num = (matrix[i][j] & 255) << 8;
+                matrix[j][row - i - 1] |= num;
+            }
+        }
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < row; j++) {
+                matrix[i][j] >>= 8;
+            }
+        }
+    }
 }
