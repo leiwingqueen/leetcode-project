@@ -60,6 +60,10 @@ public class Hanota {
         if (num <= 0) {
             return;
         }
+        if (num == 1) {
+            c.add(a.get(a.size() - 1));
+            return;
+        }
         move(num - 1, a, c, b);
         c.add(a.get(a.size() - num));
         move(num - 1, b, a, c);
