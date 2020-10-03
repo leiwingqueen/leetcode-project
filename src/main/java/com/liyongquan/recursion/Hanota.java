@@ -1,8 +1,6 @@
 package com.liyongquan.recursion;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -61,11 +59,12 @@ public class Hanota {
             return;
         }
         if (num == 1) {
-            c.add(a.get(a.size() - 1));
+            c.add(a.remove(a.size() - 1));
             return;
         }
         move(num - 1, a, c, b);
-        c.add(a.get(a.size() - num));
+        Integer remove = a.remove(a.size() - 1);
+        c.add(remove);
         move(num - 1, b, a, c);
     }
 
