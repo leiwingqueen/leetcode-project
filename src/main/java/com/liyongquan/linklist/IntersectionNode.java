@@ -83,6 +83,7 @@ public class IntersectionNode {
     /**
      * 双指针解法
      * https://leetcode-cn.com/problems/intersection-of-two-linked-lists-lcci/solution/dai-ma-jie-shi-shuang-zhi-zhen-suan-fa-wei-shi-yao/
+     * 时间复杂度O(n)，空间复杂度O(1)
      *
      * @param headA
      * @param headB
