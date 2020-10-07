@@ -1,6 +1,5 @@
 package com.liyongquan.sort;
 
-import com.liyongquan.array.Sort;
 
 import java.util.Arrays;
 
@@ -67,24 +66,22 @@ public class SortColors {
     }
 
     /**
-     * 双指针？
+     * 双指针
+     * 其实边界情况不是很好处理
      *
      * @param nums
      */
     public void sortColors3(int[] nums) {
         int left = 0, right = nums.length - 1, i = 0;
-        while (i < nums.length) {
+        while (i <= right) {
             if (nums[i] == 0) {
-                int tmp = nums[left];
-                nums[left] = nums[i];
-                nums[i] = tmp;
-                left++;
-                i++;
+                //swap
+                nums[i++] = nums[left];
+                nums[left++] = 0;
             } else if (nums[i] == 2) {
-                int tmp = nums[right];
-                nums[right] = nums[i];
-                nums[i] = tmp;
-                right--;
+                //swap
+                nums[i] = nums[right];
+                nums[right--] = 2;
             } else {
                 i++;
             }
