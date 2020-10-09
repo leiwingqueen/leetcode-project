@@ -25,7 +25,7 @@ import java.util.*;
  */
 public class RouteBetweenNodes {
     /**
-     * bfs
+     * bfs，时间复杂度O(n)，n为节点数量
      *
      * @param n
      * @param graph
@@ -62,6 +62,52 @@ public class RouteBetweenNodes {
                 }
                 visit[to] = 1;
                 queue.add(to);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * dfs解法
+     *
+     * @param n
+     * @param graph
+     * @param start
+     * @param target
+     * @return
+     */
+    public boolean findWhetherExistsPath2(int n, int[][] graph, int start, int target) {
+        if (n <= 0) {
+            return false;
+        }
+        if (start == target) {
+            return true;
+        }
+        Map<Integer, Set<Integer>> graphMap = new HashMap<>(graph.length);
+        for (int[] g : graph) {
+            Set<Integer> set = graphMap.getOrDefault(g[0], new HashSet<>());
+            set.add(g[1]);
+            graphMap.put(g[0], set);
+        }
+        int[] visit = new int[n];
+        return dfs(graphMap, start, target, visit);
+    }
+
+    private boolean dfs(Map<Integer, Set<Integer>> graphMap, int start, int target, int[] visit) {
+        if (start == target) {
+            return true;
+        }
+        visit[start] = 1;
+        Set<Integer> neighbors = graphMap.getOrDefault(start, new HashSet<>());
+        for (Integer neighbor : neighbors) {
+            if (neighbor == target) {
+                return true;
+            }
+            if (visit[neighbor] == 1) {
+                continue;
+            }
+            if (dfs(graphMap, neighbor, target, visit)) {
+                return true;
             }
         }
         return false;
