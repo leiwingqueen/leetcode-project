@@ -37,6 +37,9 @@ public class StackOfPlates {
     }
 
     public void push(int val) {
+        if (cap == 0) {
+            return;
+        }
         Deque<Integer> stack = stackList.peekLast();
         if (stack.size() == cap) {
             Deque<Integer> newStack = new LinkedList<>();
