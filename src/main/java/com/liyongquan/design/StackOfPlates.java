@@ -68,6 +68,7 @@ public class StackOfPlates {
         if (index >= stackList.size()) {
             return -1;
         }
+        //由于使用linklist,get操作的效率是O(n)
         Deque<Integer> stack = stackList.get(index);
         if (stack.isEmpty()) {
             return -1;
