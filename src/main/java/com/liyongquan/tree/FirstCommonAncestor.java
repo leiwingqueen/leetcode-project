@@ -1,9 +1,6 @@
 package com.liyongquan.tree;
 
-import com.liyongquan.linklist.ListNode;
-
-import java.util.Collections;
-import java.util.List;
+import java.util.LinkedList;
 
 /**
  * 设计并实现一个算法，找出二叉树中某两个节点的第一个共同祖先。不得将其他的节点存储在另外的数据结构中。注意：这不一定是二叉搜索树。
@@ -90,5 +87,44 @@ public class FirstCommonAncestor {
             }
         }
         return false;
+    }
+
+    /**
+     * 回溯法，找到节点p,q的所有的祖先列表(自己也是自己的祖先)，然后找到两个列表的最后一个相同的节点就是最近的祖先。
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor2(TreeNode root, TreeNode p, TreeNode q) {
+        LinkedList<TreeNode> r1 = new LinkedList<>(), r2 = new LinkedList<>();
+        findAncestor(root, p, r1);
+        findAncestor(root, p, r2);
+        TreeNode result = null;
+        for (int i = 0; i < Math.min(r1.size(), r2.size()); i++) {
+            if (r1.get(i) == r2.get(i)) {
+                result = r1.get(i);
+            } else {
+                break;
+            }
+        }
+        return result;
+    }
+
+    private boolean findAncestor(TreeNode root, TreeNode p, LinkedList<TreeNode> result) {
+        if (root == null) {
+            return false;
+        }
+        if (root == p) {
+            result.add(p);
+            return true;
+        }
+        result.offerLast(root);
+        if (!findAncestor(root.left, p, result) && !findAncestor(root.right, p, result)) {
+            result.pollLast();
+            return false;
+        }
+        return true;
     }
 }
