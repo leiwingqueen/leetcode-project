@@ -91,6 +91,8 @@ public class FirstCommonAncestor {
 
     /**
      * 回溯法，找到节点p,q的所有的祖先列表(自己也是自己的祖先)，然后找到两个列表的最后一个相同的节点就是最近的祖先。
+     * <p>
+     * 时间复杂度O(n)，空间复杂度O(n) Accept
      *
      * @param root
      * @param p
@@ -100,7 +102,16 @@ public class FirstCommonAncestor {
     public TreeNode lowestCommonAncestor2(TreeNode root, TreeNode p, TreeNode q) {
         LinkedList<TreeNode> r1 = new LinkedList<>(), r2 = new LinkedList<>();
         findAncestor(root, p, r1);
-        findAncestor(root, p, r2);
+        findAncestor(root, q, r2);
+        /*StringBuilder sb = new StringBuilder();
+        for (TreeNode node : r1) {
+            sb.append(node.val + ",");
+        }
+        sb.append("\n");
+        for (TreeNode node : r2) {
+            sb.append(node.val+",");
+        }
+        System.out.println(sb.toString());*/
         TreeNode result = null;
         for (int i = 0; i < Math.min(r1.size(), r2.size()); i++) {
             if (r1.get(i) == r2.get(i)) {
@@ -121,10 +132,13 @@ public class FirstCommonAncestor {
             return true;
         }
         result.offerLast(root);
-        if (!findAncestor(root.left, p, result) && !findAncestor(root.right, p, result)) {
-            result.pollLast();
-            return false;
+        if (findAncestor(root.left, p, result)) {
+            return true;
         }
-        return true;
+        if (findAncestor(root.right, p, result)) {
+            return true;
+        }
+        result.pollLast();
+        return false;
     }
 }
