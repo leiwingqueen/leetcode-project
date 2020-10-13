@@ -35,7 +35,7 @@ public class CheckSubTree {
      * @param t2
      * @return
      */
-    public boolean checkSubTree(TreeNode t1, TreeNode t2) {
+    public boolean checkSubTree2(TreeNode t1, TreeNode t2) {
         if (t2 == null) {
             return true;
         }
@@ -74,4 +74,29 @@ public class CheckSubTree {
         }
         return check(t1.left, t2.left) && check(t1.right, t2.right);
     }
+
+
+    /**
+     * 稍改为使用递归，理论是时间复杂度是一样的，但是递归比非递归要快好多。。
+     *
+     * @param t1
+     * @param t2
+     * @return
+     */
+    public boolean checkSubTree(TreeNode t1, TreeNode t2) {
+        if (t2 == null) {
+            return true;
+        }
+        if (t1 == null) {
+            return false;
+        }
+        if (t1.val == t2.val && check(t1, t2)) {
+            return true;
+        } else {
+            return checkSubTree(t1.left, t2) || checkSubTree(t1.right, t2);
+        }
+    }
+
+    //TODO:总感觉性能还能再优化，因为每次都要重新判断两颗子树是否相同，没法利用上一次的搜索结果。
+    //TODO:前缀树？
 }
