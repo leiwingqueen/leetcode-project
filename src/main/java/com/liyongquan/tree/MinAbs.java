@@ -1,6 +1,8 @@
 package com.liyongquan.tree;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -70,54 +72,85 @@ public class MinAbs {
         if (root == null) {
             return -1;
         }
-        int min = -1;
+        //叶子节点
+        if (root.left == null && root.right == null) {
+            return -1;
+        }
+        int result = -1;
+        //假设其中一个节点为根节点，我们需要找到左子树最大的节点和右子树最小的节点
         if (root.left != null) {
-            int left = getMinimumDifference(root.left);
-            if (left >= 0 && (min < 0 || left < min)) {
-                min = left;
+            TreeNode l = root.left;
+            while (l.right != null) {
+                l = l.right;
             }
-            int i = maxDfs(root.left);
-            if (min < 0 || root.val - i < min) {
-                min = root.val - i;
+            result = root.val - l.val;
+            //剪枝
+            if (result <= 1) {
+                return result;
             }
         }
-
         if (root.right != null) {
-            int right = getMinimumDifference(root.right);
-            if (right >= 0 && (min < 0 || right < min)) {
-                min = right;
+            TreeNode r = root.right;
+            while (r.left != null) {
+                r = r.left;
             }
-            int j = minDfs(root.right);
-            if (j>0 && (min < 0 || j - root.val < min)) {
-                min = j - root.val;
+            result = result == -1 ? (r.val - root.val) : Math.min(r.val - root.val, result);
+            //剪枝
+            if (result <= 1) {
+                return result;
             }
         }
-        return min;
+        //递归左右子树
+        int left = getMinimumDifference(root.left);
+        if (left >= 0 && left <= 1) {
+            return left;
+        }
+        if (left != -1) {
+            result = Math.min(result, left);
+        }
+        int right = getMinimumDifference(root.right);
+        if (right >= 0 && right <= 1) {
+            return right;
+        }
+        if (right != -1) {
+            result = Math.min(result, right);
+        }
+        return result;
     }
 
-    private int minDfs(TreeNode node) {
-        if (node == null) {
+    /**
+     * 二叉搜索树还有一个特性，中序遍历得到的数组是自增的
+     *
+     * @param root
+     * @return
+     */
+    public int getMinimumDifference3(TreeNode root) {
+        if (root == null) {
             return -1;
         }
-        int i = minDfs(node.left);
-        if (i >= 0) {
-            return i;
+        List<Integer> list = new LinkedList<>();
+        dfs2(root, list);
+        int result = -1;
+        Iterator<Integer> iterator = list.iterator();
+        Integer pre = iterator.next();
+        while (iterator.hasNext()) {
+            Integer item = iterator.next();
+            if (result == -1) {
+                result = item - pre;
+            } else {
+                result = Math.min(result, item - pre);
+            }
+            pre = item;
         }
-        return node.val;
+        return result;
     }
 
-    private int maxDfs(TreeNode node) {
-        if (node == null) {
-            return -1;
+    private void dfs2(TreeNode root, List<Integer> list) {
+        if (root == null) {
+            return;
         }
-        int i = minDfs(node.right);
-        if (i >= 0) {
-            return i;
-        }
-        return node.val;
-    }
-
-    public static void main(String[] args) {
-
+        dfs2(root.left, list);
+        list.add(root.val);
+        dfs2(root.right, list);
     }
 }
