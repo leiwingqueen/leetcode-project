@@ -84,6 +84,8 @@ public class ClosedNumber {
     }
 
     /**
+     * 其实这个解法比较难想。。。
+     * <p>
      * 比 num 大的数：从右往左，找到第一个 01 位置，然后把 01 转为 10，右侧剩下的 1 移到右侧的低位，右侧剩下的位清0。
      * 比 num 小的数：从右往左，找到第一个 10 位置，然后把 10 转为 01，右侧剩下的 1 移到右侧的高位，右侧剩下的位置0。
      * <p>
@@ -95,16 +97,64 @@ public class ClosedNumber {
      * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
      */
     public int[] findClosedNumbers2(int num) {
-        return new int[]{};
+        int pos = 0, big = num, oneCount = 0;
+        //最高为31位，但是31位为1的场景不能满足(>num的最小值不存在)
+        for (; pos < 30; pos++) {
+            //第一个01的位置
+            if ((big & (1 << pos)) != 0) {
+                if ((big & (1 << (pos + 1))) == 0) {
+                    big += (1 << pos);
+                    break;
+                } else {
+                    //当前位清0
+                    big -= (1 << pos);
+                    oneCount++;
+                }
+            }
+        }
+        //找不到01
+        if (pos == 30) {
+            big = -1;
+        } else {
+            //右侧的所有1右移
+            for (int i = 0; i < oneCount; i++) {
+                big += (1 << i);
+            }
+        }
+        //small处理
+        pos = 0;
+        oneCount = 0;
+        int small = num;
+        for (; pos < 30; pos++) {
+            //第一个10的位置
+            if ((small & (1 << pos)) == 0 && (small & (1 << (pos + 1))) != 0) {
+                small -= (1 << pos);
+                break;
+            } else if ((small & (1 << pos)) != 0) {
+                oneCount++;
+                small -= (1 << pos);
+            }
+        }
+        if (pos == 30) {
+            small = -1;
+        } else {
+            //右侧的所有1左移
+            pos--;
+            for (int i = 0; i < oneCount; i++) {
+                small += (1 << pos);
+                pos--;
+            }
+        }
+        return new int[]{big, small};
     }
 
     public static void main(String[] args) {
         ClosedNumber cn = new ClosedNumber();
-        int[] closedNumbers = cn.findClosedNumbers(2);
+        int[] closedNumbers = cn.findClosedNumbers2(2);
         for (int closedNumber : closedNumbers) {
             System.out.println(closedNumber);
         }
-        int[] closedNumbers1 = cn.findClosedNumbers(1);
+        int[] closedNumbers1 = cn.findClosedNumbers2(1);
         for (int i : closedNumbers1) {
             System.out.println(i);
         }
