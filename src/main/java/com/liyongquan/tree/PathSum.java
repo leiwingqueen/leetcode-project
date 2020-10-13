@@ -121,7 +121,7 @@ public class PathSum {
         curSum += node.val;
         int result = 0;
         //截止到当前节点的前缀和
-        result += preSumMap.getOrDefault(target - curSum, 0);
+        result += preSumMap.getOrDefault(curSum - target, 0);
         preSumMap.put(curSum, preSumMap.getOrDefault(curSum, 0) + 1);
         //左子树
         if (node.left != null) {
