@@ -47,4 +47,40 @@ public class DrawLine {
         }
         return result;
     }
+
+
+    /**
+     * 按整数一个个设置
+     *
+     * @param length
+     * @param w
+     * @param x1
+     * @param x2
+     * @param y
+     * @return
+     */
+    public int[] drawLine2(int length, int w, int x1, int x2, int y) {
+        int[] result = new int[length];
+        //收尾数字位置
+        int start = (y * w + x1) / 32;
+        int end = (y * w + x2) / 32;
+        //在同一数字上的场景
+        if (start == end) {
+            //退化成一位一位设置
+            for (int i = x1; i <= x2; i++) {
+                //对应的整数的位(y*w+x)%32
+                result[start] |= (1 << (31 - i));
+            }
+            return result;
+        }
+        //中间数字全部设置为-1，也就是0b1111**1
+        for (int i = start; i <= end; i++) {
+            result[i] = -1;
+        }
+        //第一个数字，低位全部设置为1
+        result[start] = result[start] >>> (x1 % 32);
+        //最后一个数字，高位全部设置为1
+        result[end] = result[end] << (31 - (x2 % 32));
+        return result;
+    }
 }
