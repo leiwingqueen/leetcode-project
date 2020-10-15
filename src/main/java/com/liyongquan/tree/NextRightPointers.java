@@ -83,7 +83,7 @@ public class NextRightPointers {
     }
 
     /**
-     * 这里适合用广度优先搜索。时间复杂度O(n)，空间复杂度O(n)
+     * 这里适合用广度优先搜索。时间复杂度O(n)，空间复杂度O(1)
      *
      * @param root
      * @return
