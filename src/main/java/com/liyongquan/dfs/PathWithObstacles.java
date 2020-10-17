@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class PathWithObstacles {
     /**
-     * 回溯法(超时)
+     * 回溯法
      *
      * <p>
      * 题目要求只要返回一条可行的路径即可
@@ -48,11 +48,14 @@ public class PathWithObstacles {
         int row = obstacleGrid.length, col = obstacleGrid[0].length;
         List<List<Integer>> path = new ArrayList<>(row + col - 1);
         path.add(Arrays.asList(0, 0));
-        return dfs(obstacleGrid, 0, 0, row - 1, col - 1, path);
+        //需要增加这个访问记录，避免计算重复的解，不然会超时
+        //剪枝的重点
+        int[][] visit = new int[row][col];
+        return dfs(obstacleGrid, 0, 0, row - 1, col - 1, path, visit);
     }
 
-    private List<List<Integer>> dfs(int[][] grid, int x, int y, int tx, int ty, List<List<Integer>> path) {
-        if (grid[x][y] == 1) {
+    private List<List<Integer>> dfs(int[][] grid, int x, int y, int tx, int ty, List<List<Integer>> path, int[][] visit) {
+        if (x > tx || y > ty || visit[x][y] == 1 || grid[x][y] == 1) {
             return Collections.EMPTY_LIST;
         }
         if (x == tx && y == ty) {
@@ -63,13 +66,11 @@ public class PathWithObstacles {
             }
             return result;
         }
-        if (x > tx || y > ty) {
-            return Collections.EMPTY_LIST;
-        }
+        visit[x][y] = 1;
         //往下
         if (x < tx && grid[x + 1][y] == 0) {
             path.add(Arrays.asList(x + 1, y));
-            List<List<Integer>> down = dfs(grid, x + 1, y, tx, ty, path);
+            List<List<Integer>> down = dfs(grid, x + 1, y, tx, ty, path, visit);
             //回溯
             path.remove(path.size() - 1);
             if (down.size() > 0) {
@@ -79,7 +80,7 @@ public class PathWithObstacles {
         //往右
         if (y < ty && grid[x][y + 1] == 0) {
             path.add(Arrays.asList(x, y + 1));
-            List<List<Integer>> right = dfs(grid, x, y + 1, tx, ty, path);
+            List<List<Integer>> right = dfs(grid, x, y + 1, tx, ty, path, visit);
             //回溯
             path.remove(path.size() - 1);
             if (right.size() > 0) {
@@ -87,5 +88,69 @@ public class PathWithObstacles {
             }
         }
         return Collections.EMPTY_LIST;
+    }
+
+    /**
+     * dp解法
+     * 假设f(i,j)为[0,0]是否能到达[i,j]。
+     * 则有f(i,j)=f(i-1,j)||f(i,j-1)
+     * <p>
+     * 得到一个m*n的矩阵后，直接从(0,0)一路选择到终点即可(选择f(i,j)=true)，性能是O(m+n)
+     * <p>
+     * 问题：为什么f(i,j)不直接存储路径，这样就不需要再做一次遍历？
+     * 答：空间损耗会比较多，相当于每个节点都要存储一份完整的路径，另外路径的拷贝也有时间损耗。
+     * <p>
+     * 时间复杂度O(m*n)，空间复杂度O(m*n)
+     *
+     * @param obstacleGrid
+     * @return
+     */
+    public List<List<Integer>> pathWithObstacles2(int[][] obstacleGrid) {
+        if (obstacleGrid.length == 0) {
+            return Collections.EMPTY_LIST;
+        }
+        int row = obstacleGrid.length, col = obstacleGrid[0].length;
+        boolean[][] dp = new boolean[row][col];
+        //初始化
+        dp[0][0] = obstacleGrid[0][0] == 0;
+        for (int i = 1; i < row; i++) {
+            if (obstacleGrid[i][0] == 1) {
+                dp[i][0] = false;
+            } else {
+                dp[i][0] = dp[i - 1][0];
+            }
+        }
+        for (int i = 1; i < col; i++) {
+            if (obstacleGrid[0][i] == 1) {
+                dp[0][i] = false;
+            } else {
+                dp[0][i] = dp[0][i - 1];
+            }
+        }
+        //dp迭代
+        for (int i = 1; i < row; i++) {
+            for (int j = 1; j < col; j++) {
+                if (obstacleGrid[i][j] == 1) {
+                    dp[i][j] = false;
+                } else {
+                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+                }
+            }
+        }
+        if (!dp[row - 1][col - 1]) {
+            return Collections.EMPTY_LIST;
+        }
+        //遍历一次，找到路径
+        List<List<Integer>> result = new ArrayList<>(row + col - 1);
+        int x = 0, y = 0;
+        for (int i = 0; i < row + col - 1; i++) {
+            result.add(Arrays.asList(x, y));
+            if (x < row - 1 && dp[x + 1][y]) {
+                x++;
+            } else {
+                y++;
+            }
+        }
+        return result;
     }
 }
