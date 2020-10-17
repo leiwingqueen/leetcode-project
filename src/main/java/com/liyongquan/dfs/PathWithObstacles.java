@@ -140,17 +140,17 @@ public class PathWithObstacles {
         if (!dp[row - 1][col - 1]) {
             return Collections.EMPTY_LIST;
         }
-        //遍历一次，找到路径
-        List<List<Integer>> result = new ArrayList<>(row + col - 1);
-        int x = 0, y = 0;
-        for (int i = 0; i < row + col - 1; i++) {
-            result.add(Arrays.asList(x, y));
-            if (x < row - 1 && dp[x + 1][y]) {
-                x++;
+        //遍历一次，找到路径，需要反向查找
+        List[] result = new List[row + col - 1];
+        int x = row-1, y = col-1;
+        for (int i = row + col - 2; i >= 0; i--) {
+            result[i] = Arrays.asList(x, y);
+            if (x > 0 && dp[x - 1][y]) {
+                x--;
             } else {
-                y++;
+                y--;
             }
         }
-        return result;
+        return Arrays.asList(result);
     }
 }

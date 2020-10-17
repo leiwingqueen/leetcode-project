@@ -19,4 +19,14 @@ public class PathWithObstaclesTest {
         });
         Assert.assertEquals(5, result.size());
     }
+
+    @Test
+    public void test2() {
+        List<List<Integer>> lists = pw.pathWithObstacles2(new int[][]{
+                {0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 1},
+                {0, 0, 0, 1, 0},
+                {0, 0, 0, 0, 0}
+        });
+    }
 }
