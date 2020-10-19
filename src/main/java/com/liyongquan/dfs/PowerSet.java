@@ -1,9 +1,7 @@
 package com.liyongquan.dfs;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import javax.xml.transform.Result;
+import java.util.*;
 
 /**
  * 幂集。编写一种方法，返回某集合的所有子集。集合中不包含重复的元素。
@@ -56,6 +54,28 @@ public class PowerSet {
             }
             tmp.add(nums[size - 1]);
             result.add(tmp);
+        }
+        return result;
+    }
+
+    /**
+     * 时间复杂度
+     * @param nums
+     * @return
+     */
+    //https://leetcode-cn.com/problems/power-set-lcci/solution/mian-shi-ti-0804-mi-ji-by-bvsxg7tlzy/
+    //非递归解法，本质上跟递归解法是一致的
+    public List<List<Integer>> subsets2(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>(1 << nums.length);
+        result.add(Collections.emptyList());
+        for (int num : nums) {
+            int size = result.size();
+            for (int i = 0; i < size; i++) {
+                List<Integer> list = new LinkedList<>();
+                list.addAll(result.get(i));
+                list.add(num);
+                result.add(list);
+            }
         }
         return result;
     }
