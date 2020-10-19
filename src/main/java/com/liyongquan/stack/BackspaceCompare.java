@@ -89,4 +89,73 @@ public class BackspaceCompare {
         }
         return true;
     }
+
+    /**
+     * 双指针，解法还是很妙的
+     * <p>
+     * 一个字符是否会被删掉，只取决于该字符后面的退格符，而与该字符前面的退格符无关。因此当我们逆序地遍历字符串，就可以立即确定当前字符是否会被删掉。
+     * <p>
+     * 具体地，我们定义 \textit{skip}skip 表示当前待删除的字符的数量。每次我们遍历到一个字符：
+     * <p>
+     * 若该字符为退格符，则我们需要多删除一个普通字符，我们让 \textit{skip}skip 加 11；
+     * <p>
+     * 若该字符为普通字符：
+     * <p>
+     * 若 \textit{skip}skip 为 00，则说明当前字符不需要删去；
+     * <p>
+     * 若 \textit{skip}skip 不为 00，则说明当前字符需要删去，我们让 \textit{skip}skip 减 11。
+     * <p>
+     * 作者：LeetCode-Solution
+     * 链接：https://leetcode-cn.com/problems/backspace-string-compare/solution/bi-jiao-han-tui-ge-de-zi-fu-chuan-by-leetcode-solu/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     * <p>
+     * 时间复杂度O(max{S,T}),空间复杂度O(1)
+     *
+     * @param S
+     * @param T
+     * @return
+     */
+    public boolean backspaceCompare2(String S, String T) {
+        int p1 = S.length() - 1, p2 = T.length() - 1;
+        int skip1 = 0, skip2 = 0;
+        while (p1 >= 0 || p2 >= 0) {
+            //找到第一个有效的字符
+            while (p1 >= 0) {
+                if (S.charAt(p1) == '#') {
+                    skip1++;
+                    p1--;
+                } else if (skip1 > 0) {
+                    skip1--;
+                    p1--;
+                } else {
+                    break;
+                }
+            }
+            while (p2 >= 0) {
+                if (T.charAt(p2) == '#') {
+                    skip2++;
+                    p2--;
+                } else if (skip2 > 0) {
+                    skip2--;
+                    p2--;
+                } else {
+                    break;
+                }
+            }
+            //对比
+            if (p1 >= 0 && p2 >= 0) {
+                if (S.charAt(p1) != T.charAt(p2)) {
+                    return false;
+                }
+            } else if (p1 < 0 && p2 < 0) {
+                return true;
+            } else {
+                return false;
+            }
+            p1--;
+            p2--;
+        }
+        return true;
+    }
 }
