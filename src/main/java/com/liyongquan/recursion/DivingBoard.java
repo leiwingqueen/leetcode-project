@@ -1,9 +1,7 @@
 package com.liyongquan.recursion;
 
-import sun.rmi.runtime.Log;
-
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * 你正在使用一堆木板建造跳水板。有两种类型的木板，其中长度较短的木板长度为shorter，长度较长的木板长度为longer。你必须正好使用k块木板。编写一个方法，生成跳水板所有可能的长度。
@@ -30,7 +28,9 @@ import java.util.Set;
  */
 public class DivingBoard {
     /**
-     * 递归解法
+     * 递归解法(超时)
+     * <p>
+     * 这个思路还是全排列，时间复杂度O(n!)
      *
      * @param shorter
      * @param longer
@@ -51,7 +51,7 @@ public class DivingBoard {
     }
 
     private Set<Integer> dfs(int shorter, int longer, int k) {
-        Set<Integer> result = new HashSet<>();
+        Set<Integer> result = new TreeSet<>();
         if (k == 1) {
             result.add(shorter);
             result.add(longer);
@@ -61,6 +61,40 @@ public class DivingBoard {
         for (Integer item : r) {
             result.add(item + shorter);
             result.add(item + longer);
+        }
+        return result;
+    }
+
+    /**
+     * 改为组合的思路
+     * 1.shorter==longer的场景下只有一种场景k*longer
+     * 2.shorter<longer的场景，一共有k+1种场景。
+     * <p>
+     * 假设k个跳板种有i个shorter，那么k-i个跳板为longer。由于shorter<longer，那么i-1的shorter跳板必然大于i个跳板
+     * <p>
+     * (i-1)*shorter+(k-i+1)*longer-(i*shorter+(k-i)*longer)=longer-shorter>0
+     * <p>
+     * 并且我们可以发现，下一个结果会比上一个结果多longer-shorter，我们直接构造一个递增的序列
+     * <p>
+     * 时间复杂度O(n),空间复杂度O(1)
+     *
+     * @param shorter
+     * @param longer
+     * @param k
+     * @return
+     */
+    public int[] divingBoard2(int shorter, int longer, int k) {
+        if (k == 0) {
+            return new int[]{};
+        }
+        if (shorter == longer) {
+            return new int[]{shorter * k};
+        }
+        int[] result = new int[k + 1];
+        int inc = longer - shorter;
+        result[0] = shorter * k;
+        for (int i = 1; i <= k; i++) {
+            result[i] = result[i - 1] + inc;
         }
         return result;
     }
