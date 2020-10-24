@@ -1,7 +1,5 @@
 package com.liyongquan.math;
 
-import jdk.nashorn.internal.ir.IfNode;
-
 /**
  * 设计一个算法，算出 n 阶乘有多少个尾随零。
  * <p>
