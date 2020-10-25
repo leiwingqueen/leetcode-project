@@ -2,6 +2,8 @@ package com.liyongquan.dp;
 
 import com.liyongquan.dfs.Kuohao;
 
+import java.util.Arrays;
+
 /**
  * 你将会获得一系列视频片段，这些片段来自于一项持续时长为 T 秒的体育赛事。这些片段可能有所重叠，也可能长度不一。
  * <p>
@@ -117,5 +119,37 @@ public class VideoStitching {
             r += dp[i - 1][clips[i][1]][k];
         }
         dp[i][j][k] = dp[i - 1][j][k] == -1 ? r : Math.min(dp[i - 1][j][k], r);
+    }
+
+
+    /**
+     * 官方解法
+     *
+     * @param clips
+     * @param T
+     * @return
+     */
+    public int videoStitching2(int[][] clips, int T) {
+        if (T == 0) {
+            return 0;
+        }
+        //初始化
+        int[] dp = new int[T + 1];
+        Arrays.fill(dp, -1);
+        dp[0] = 0;
+        for (int i = 1; i <= T; i++) {
+            for (int j = 0; j < clips.length; j++) {
+                //clips[j]一个剪辑能够覆盖
+                if (clips[j][0] == 0 && clips[j][1] >= i) {
+                    dp[i] = 1;
+                    break;
+                }
+                //能够覆盖i的尾部
+                if (clips[j][0] < i && clips[j][1] >= i && dp[clips[j][0]] != -1) {
+                    dp[i] = dp[i] == -1 ? dp[clips[j][0]] + 1 : Math.min(dp[i], dp[clips[j][0]] + 1);
+                }
+            }
+        }
+        return dp[T];
     }
 }
