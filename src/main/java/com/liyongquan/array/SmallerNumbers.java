@@ -92,6 +92,35 @@ public class SmallerNumbers {
         return result;
     }
 
+    /**
+     * 计数器的方式
+     * <p>
+     * 由于整数的范围是[0,100]，可以直接用bitmap的方式来做一个计数器
+     * <p>
+     * 时间复杂度O(2*n+100)，空间复杂度O(100)
+     *
+     * @param nums
+     * @return
+     */
+    public int[] smallerNumbersThanCurrent3(int[] nums) {
+        int[] bitmap = new int[101];
+        //计数器
+        for (int i = 0; i < nums.length; i++) {
+            bitmap[nums[i]]++;
+        }
+        //计算每个<=nums[i]的数量(前缀和)
+        for (int i = 1; i < bitmap.length; i++) {
+            bitmap[i] += bitmap[i - 1];
+        }
+        //要计算<num的总数，相当于要找bitmap[num-1]的数量
+        int[] result = new int[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            result[i] = nums[i] == 0 ? 0 : bitmap[nums[i] - 1];
+        }
+        return result;
+    }
+
+
     public static void main(String[] args) {
         int[] list = {8, 1, 2, 2, 3};
         SmallerNumbers sn = new SmallerNumbers();
