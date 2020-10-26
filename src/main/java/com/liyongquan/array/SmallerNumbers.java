@@ -1,6 +1,8 @@
 package com.liyongquan.array;
 
-import java.util.*;
+import javafx.util.Pair;
+
+import java.util.Arrays;
 
 /**
  * 给你一个数组 nums，对于其中每个元素 nums[i]，请你统计数组中比它小的所有数字的数目。
@@ -63,21 +65,39 @@ public class SmallerNumbers {
 
     /**
      * 先排序
+     * <p>
+     * 时间复杂度O(nlogn)，空间复杂度O(1)
      *
      * @param nums
      * @return
      */
     public int[] smallerNumbersThanCurrent2(int[] nums) {
         //记录对应数字的位置
-        Map<Integer, List<Integer>> map = new HashMap<>(nums.length);
+        Pair<Integer, Integer>[] list = new Pair[nums.length];
         for (int i = 0; i < nums.length; i++) {
-            List<Integer> pos = map.getOrDefault(nums[i], new LinkedList<>());
-            pos.add(i);
+            list[i] = new Pair<>(nums[i], i);
         }
         //排序
-        Arrays.sort(nums);
-        //TODO
-        return null;
+        Arrays.sort(list, (o1, o2) -> o1.getKey() - o2.getKey());
+        int pre = -1;
+        int[] result = new int[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            if (pre == -1 || list[i - 1].getKey() != list[i].getKey()) {
+                result[list[i].getValue()] = i;
+                pre = i;
+            } else {
+                result[list[i].getValue()] = pre;
+            }
+        }
+        return result;
     }
 
+    public static void main(String[] args) {
+        int[] list = {8, 1, 2, 2, 3};
+        SmallerNumbers sn = new SmallerNumbers();
+        int[] ints = sn.smallerNumbersThanCurrent2(list);
+        for (int anInt : ints) {
+            System.out.println(anInt + ",");
+        }
+    }
 }
