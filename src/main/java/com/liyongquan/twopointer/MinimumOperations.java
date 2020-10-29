@@ -48,21 +48,14 @@ public class MinimumOperations {
         l++;
         r--;
         //找到左右边界第一个非r的元素
-        while (l < r) {
-            if (leaves.charAt(l) == 'r') {
-                l++;
-            }
-            if (leaves.charAt(r) == 'r') {
-                r--;
-            }
+        while (l < r && leaves.charAt(l) == 'r') {
+            l++;
         }
-        //刚好中间只有一个y
-        if (l == r && leaves.charAt(l) == 'y' && leaves.charAt(r) == 'y') {
-            return count;
+        if (l == r) {
+            return leaves.charAt(l) == 'y' ? count : count + 1;
         }
-        //一个y都没有，至少要改变一次
-        if (l > r) {
-            return count + 1;
+        while (l < r && leaves.charAt(r) == 'r') {
+            r--;
         }
         //统计l,r之间的r的数量
         for (int i = l + 1; i < r; i++) {
