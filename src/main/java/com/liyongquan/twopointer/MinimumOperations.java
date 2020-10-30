@@ -32,6 +32,8 @@ package com.liyongquan.twopointer;
 public class MinimumOperations {
     /**
      * 题目的数组长度为百万级别的，这意味着我们只能用线性/nlogn的复杂度来解决，首先想到的是双指针解法
+     * <p>
+     * 不通过
      *
      * @param leaves
      * @return
@@ -64,5 +66,47 @@ public class MinimumOperations {
             }
         }
         return count;
+    }
+
+
+    /**
+     * dp解法
+     * 分3种模式。
+     * 1.r*
+     * 2.r*y*
+     * 3.r*y*r*
+     * <p>
+     * 我们要求的是第三种模式,dp表达式：
+     * f1(n)=f1(n-1)+A[n]=='r'?0:1
+     * f2(n)=min{f1(n-1),f2(n-1)}+A[n]=='y'?0:1
+     * f3(n)=min{f3(n-1),f2(n-1)}+A[n]=='r'?0:1
+     * <p>
+     * 时间复杂度O(n)，空间复杂度O(3*n)
+     *
+     * @param leaves
+     * @return
+     */
+    public int minimumOperations2(String leaves) {
+        int[][] dp = new int[leaves.length() + 1][3];
+        //初始化
+        for (int i = 1; i <= 3; i++) {
+            dp[i][0] = dp[i - 1][0] + (leaves.charAt(i - 1) == 'r' ? 0 : 1);
+        }
+        dp[2][1] = leaves.charAt(0) == 'r' ? 0 : 1 + (leaves.charAt(1) == 'y' ? 0 : 1);
+        dp[3][1] = Math.min(dp[2][0], dp[2][1]) + (leaves.charAt(2) == 'y' ? 0 : 1);
+
+        String mod = "ryr";
+        for (int i = 0; i < 3; i++) {
+            if (leaves.charAt(i) != mod.charAt(i)) {
+                dp[3][2]++;
+            }
+        }
+        //dp迭代
+        for (int i = 4; i <= leaves.length(); i++) {
+            dp[i][0] = dp[i - 1][0] + (leaves.charAt(i - 1) == 'r' ? 0 : 1);
+            dp[i][1] = Math.min(dp[i - 1][0], dp[i - 1][1]) + (leaves.charAt(i - 1) == 'y' ? 0 : 1);
+            dp[i][2] = Math.min(dp[i - 1][2], dp[i - 1][1]) + (leaves.charAt(i - 1) == 'r' ? 0 : 1);
+        }
+        return dp[leaves.length()][2];
     }
 }
