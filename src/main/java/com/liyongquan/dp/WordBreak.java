@@ -38,6 +38,9 @@ public class WordBreak {
      * f(i)为前i个字符能否被拆分的解
      * <p>
      * f(i)=f(j)&&check(j,i),0<=j<i
+     * <p>
+     * 时间复杂度O(n^2)
+     * 空间复杂度O(n)
      *
      * @param s
      * @param wordDict
