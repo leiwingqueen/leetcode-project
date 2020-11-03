@@ -104,6 +104,9 @@ public class AddTwoNumber2 {
             }
             s3.offerFirst(sum);
         }
+        if (up == 1) {
+            s3.offerFirst(1);
+        }
         ListNode tmp = new ListNode(0);
         ListNode pre = tmp;
         while (s3.size() > 0) {
