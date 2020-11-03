@@ -16,6 +16,9 @@ public class WordBreak2Test {
          * s = "catsanddog"
          * wordDict = ["cat", "cats", "and", "sand", "dog"]
          */
-        List<String> r = wb.wordBreak("catsanddog", Arrays.asList("cat", "cats", "and", "sand", "dog"));
+        List<String> r = wb.wordBreak2("catsanddog", Arrays.asList("cat", "cats", "and", "sand", "dog"));
+        for (String s : r) {
+            System.out.println(s);
+        }
     }
 }

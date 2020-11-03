@@ -47,7 +47,7 @@ import java.util.*;
 public class WordBreak2 {
     /**
      * f(i)=f(j)&&check(j,i),0<=j<i
-     *
+     * <p>
      * 超出内存限制
      *
      * @param s
@@ -77,6 +77,54 @@ public class WordBreak2 {
             dp[i] = r;
         }
         return dp[s.length()];
+    }
+
+    /**
+     * 超出最大内存，我们尝试下只保存最后一个单词的下标如何
+     *
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public List<String> wordBreak2(String s, List<String> wordDict) {
+        Set<String> set = new HashSet<>(wordDict);
+        //初始化
+        List<Integer>[] dp = new List[s.length() + 1];
+        dp[0] = Collections.emptyList();
+        //dp迭代
+        for (int i = 1; i <= s.length(); i++) {
+            List<Integer> r = new LinkedList<>();
+            for (int j = 0, wordDictSize = wordDict.size(); j < wordDictSize; j++) {
+                String word = wordDict.get(j);
+                if (i >= word.length()) {
+                    int index = lastIndex(s.substring(0, i), word);
+                    if (index == 0 || (index > 0 && dp[index].size() > 0)) {
+                        r.add(j);
+                    }
+                }
+            }
+            dp[i] = r;
+        }
+        //组装结果
+        return getResult(dp, s.length(), wordDict);
+    }
+
+    private List<String> getResult(List<Integer>[] dp, int n, List<String> wordDict) {
+        if (dp[n].size() == 0) {
+            return Collections.emptyList();
+        }
+        List<String> result = new LinkedList<>();
+        for (Integer idx : dp[n]) {
+            List<String> pre = getResult(dp, n - wordDict.get(idx).length(), wordDict);
+            if (pre.size() == 0) {
+                result.add(wordDict.get(idx));
+            }else {
+                for (String s : pre) {
+                    result.add(s + " " + wordDict.get(idx));
+                }
+            }
+        }
+        return result;
     }
 
     private int lastIndex(String str, String word) {
