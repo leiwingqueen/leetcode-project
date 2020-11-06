@@ -55,7 +55,6 @@ public class SearchRotateArray {
                 }
             }
         }
-        System.out.println("边界位置:" + left);
         //本身已经排好序的场景
         if (left == 0 && arr[0] < arr[1]) {
             return binarySearch(arr, target, 0, arr.length - 1);
@@ -85,6 +84,72 @@ public class SearchRotateArray {
                 left = middle + 1;
             } else {
                 right = middle - 1;
+            }
+        }
+        return arr[left] == target ? left : -1;
+    }
+
+    /**
+     * 大佬们的思路
+     *                                     nums[left] <= target
+     *                               ┌─  && target <= nums[mid]   ──>  right = mid
+     *                               │   （目标在左边的升序区间中）         （右边界移动到mid）
+     *   ┌─  nums[left] < nums[mid] ─┼
+     *   │     （左边区间升序）         │
+     *   │                           └─    否则目标在右半边          ──>  left = mid + 1
+     *   │                                                             （左边界移动到mid+1）
+     *   │
+     *   │                                 nums[left] <= target
+     *   │                           ┌─  || target <= nums[mid]   ──>  right = mid
+     *   │                           │    （目标在左半边）                （右边界移动到mid）
+     *  ─┼─  nums[left] > nums[mid] ─┼
+     *   │     （左边不是升序）         │
+     *   │                           └─    否则目标在右半边          ──>  left = mid + 1
+     *   │                                                              （左边界移动到mid+1）
+     *   │
+     *   │
+     *   │                           ┌─   nums[left] != target    ──>  left++
+     *   │                           │     （左值不等于目标               （需要逐一清理重复值）
+     *   └─ nums[left] == nums[mid] ─┼         说明还没找到）
+     *       （可能是已经找到了目标      │
+     *         也可能是遇到了重复值）    └─   nums[left] == target    ──>  right = left
+     *                                     （左值等于目标                 （将右边界移动到left，循环结束）
+     *                                       已经找到最左边的目标值）
+     *
+     * 作者：armeria-program
+     * 链接：https://leetcode-cn.com/problems/search-rotate-array-lcci/solution/er-fen-fa-by-armeria-program/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     */
+    public int search2(int[] arr, int target) {
+        if (arr.length == 1) {
+            return target == arr[0] ? 0 : -1;
+        }
+        int left = 0, right = arr.length - 1;
+        while (left < right) {
+            int middle = (left + right) / 2;
+            //分界点在右半区域，左半区域为自增
+            if (arr[middle] > arr[left]) {
+                //结果在左半区域
+                if (target >= arr[left] && target <= arr[middle]) {
+                    right = middle;
+                } else {
+                    left = middle + 1;
+                }
+            } else if (arr[middle] < arr[left]) {
+                //分界点在左半区域，右半区域为自增
+                if (target >= arr[middle] && target <= arr[right]) {
+                    left = middle;
+                } else {
+                    right = middle - 1;
+                }
+            } else {
+                //相等的情况只能退化成线性扫描
+                if (target == arr[left]) {
+                    return left;
+                } else {
+                    left++;
+                }
             }
         }
         return arr[left] == target ? left : -1;
