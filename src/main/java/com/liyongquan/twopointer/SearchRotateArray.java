@@ -41,21 +41,21 @@ public class SearchRotateArray {
         while (left < right) {
             int middle = (left + right) / 2;
             if (arr[middle] > arr[left]) {
-                //区间在右半部
+                //分界点在右半区间
                 left = middle;
             } else if (arr[middle] < arr[left]) {
                 //区间在左半部
                 right = middle - 1;
             } else {
                 //相等的场景无法区分。例如[1,2,1,1,1]和[1,1,1,2,1]。无法确定2是在左半部分还是右半部分。
-                //最左边的元素为目标，直接认为找到结果，否则只能去掉一个结果集继续查找(这里相当于退化成顺序扫描)
-                if (arr[left] == target) {
-                    right = left;
-                } else {
+                if (arr[left] <= arr[left + 1]) {
                     left++;
+                } else {
+                    right = left;
                 }
             }
         }
+        System.out.println("边界位置:" + left);
         //本身已经排好序的场景
         if (left == 0 && arr[0] < arr[1]) {
             return binarySearch(arr, target, 0, arr.length - 1);
@@ -69,10 +69,18 @@ public class SearchRotateArray {
     }
 
     private int binarySearch(int[] arr, int target, int left, int right) {
+        if (left > right) {
+            return -1;
+        }
         while (left < right) {
             int middle = (left + right) / 2;
             if (arr[middle] == target) {
-                return middle;
+                if (arr[left] == target) {
+                    return left;
+                } else {
+                    //退化成顺序扫描
+                    left++;
+                }
             } else if (arr[middle] < target) {
                 left = middle + 1;
             } else {
