@@ -138,10 +138,10 @@ public class SearchRotateArray {
                 }
             } else if (arr[middle] < arr[left]) {
                 //分界点在左半区域，右半区域为自增
-                if (target >= arr[middle] && target <= arr[right]) {
-                    left = middle;
+                if (target >= arr[left] || target <= arr[middle]) {
+                    right = middle;
                 } else {
-                    right = middle - 1;
+                    left = middle + 1;
                 }
             } else {
                 //相等的情况只能退化成线性扫描

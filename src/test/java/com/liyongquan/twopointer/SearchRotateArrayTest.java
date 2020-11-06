@@ -35,4 +35,15 @@ public class SearchRotateArrayTest {
         System.out.println(search);
         assertEquals(1, search);
     }
+
+    /**
+     * [5,5,5,1,2,3,4,5]
+     * 5
+     */
+    @Test
+    public void search4() {
+        int search = sr.search2(new int[]{5, 5, 5, 1, 2, 3, 4, 5}, 5);
+        System.out.println(search);
+        assertEquals(0, search);
+    }
 }
