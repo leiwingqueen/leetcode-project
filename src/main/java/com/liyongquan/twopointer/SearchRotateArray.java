@@ -40,16 +40,23 @@ public class SearchRotateArray {
         int left = 0, right = arr.length - 1;
         while (left < right) {
             int middle = (left + right) / 2;
-            if (arr[middle] < arr[right]) {
-                right = middle - 1;
-            } else if (right - left == 1) {
-                //只有两个元素
-                right = middle;
-            } else {
+            if (arr[middle] > arr[left]) {
+                //区间在右半部
                 left = middle;
+            } else if (arr[middle] < arr[left]) {
+                //区间在左半部
+                right = middle - 1;
+            } else {
+                //相等的场景无法区分。例如[1,2,1,1,1]和[1,1,1,2,1]。无法确定2是在左半部分还是右半部分。
+                //最左边的元素为目标，直接认为找到结果，否则只能去掉一个结果集继续查找(这里相当于退化成顺序扫描)
+                if (arr[left] == target) {
+                    right = left;
+                } else {
+                    left++;
+                }
             }
         }
-        //本身已经拍好序的场景
+        //本身已经排好序的场景
         if (left == 0 && arr[0] < arr[1]) {
             return binarySearch(arr, target, 0, arr.length - 1);
         }
