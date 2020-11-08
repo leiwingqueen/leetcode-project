@@ -1,7 +1,11 @@
 package com.liyongquan.tree;
 
-import com.liyongquan.array.Rotate;
+import com.liyongquan.util.tree.BinaryTreeUtil;
 import javafx.util.Pair;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 给你一棵二叉搜索树，请你返回一棵 平衡后 的二叉搜索树，新生成的树应该与原来的树有着相同的节点值。
@@ -31,6 +35,12 @@ import javafx.util.Pair;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class BalanceBST {
+    /**
+     * 不通过，这种旋转的方法真的不是那么简单
+     *
+     * @param root
+     * @return
+     */
     public TreeNode balanceBST(TreeNode root) {
         return balance(root).getKey();
     }
@@ -77,6 +87,49 @@ public class BalanceBST {
                 tmp.right = root;
             }
         }
+        System.out.println(String.format("旋转前的根节点:%s,旋转后的根节点:%s", root.val, nr.val));
+        BinaryTreeUtil.print(nr);
         return new Pair<>(nr, Math.max(l.getValue(), r.getValue()));
+    }
+
+    /**
+     * 先通过中序遍历转成有序的数组。
+     * 选择(l+r)/2的节点作为根节点。然后递归地重新构造左右子树
+     * <p>
+     * 索然无味
+     *
+     * @param root
+     * @return
+     */
+    public TreeNode balanceBST2(TreeNode root) {
+        List<Integer> inorder = inorder(root);
+        return build(inorder, 0, inorder.size() - 1);
+    }
+
+    private TreeNode build(List<Integer> arr, int l, int r) {
+        if (l == r) {
+            return new TreeNode(arr.get(l));
+        }
+        if (l > r) {
+            return null;
+        }
+        int middle = (l + r) >> 1;
+        TreeNode root = new TreeNode(arr.get(middle));
+        TreeNode left = build(arr, l, middle - 1);
+        TreeNode right = build(arr, middle + 1, r);
+        root.left = left;
+        root.right = right;
+        return root;
+    }
+
+    private List<Integer> inorder(TreeNode root) {
+        if (root == null) {
+            return Collections.emptyList();
+        }
+        List<Integer> list = new ArrayList<>();
+        list.addAll(inorder(root.left));
+        list.add(root.val);
+        list.addAll(inorder(root.right));
+        return list;
     }
 }

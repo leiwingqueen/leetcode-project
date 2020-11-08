@@ -2,10 +2,7 @@ package com.liyongquan.util.tree;
 
 import com.liyongquan.tree.TreeNode;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class BinaryTreeUtil {
     /**
@@ -46,7 +43,7 @@ public class BinaryTreeUtil {
         if (root == null) {
             return Collections.emptyList();
         }
-        List<Integer> result = new LinkedList<>();
+        List<Integer> result = new ArrayList<>();
         Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(root);
         result.add(root.val);
@@ -66,6 +63,14 @@ public class BinaryTreeUtil {
                 } else {
                     result.add(null);
                 }
+            }
+        }
+        //去掉尾部连续的null，简化输出
+        for (int i = result.size() - 1; i >= 0; i--) {
+            if (result.get(i) == null) {
+                result.remove(i);
+            } else {
+                break;
             }
         }
         return result;
