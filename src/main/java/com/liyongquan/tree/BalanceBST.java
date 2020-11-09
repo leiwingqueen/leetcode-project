@@ -102,7 +102,8 @@ public class BalanceBST {
      * @return
      */
     public TreeNode balanceBST2(TreeNode root) {
-        List<Integer> inorder = inorder(root);
+        List<Integer> inorder = new ArrayList<>();
+        inorder(root, inorder);
         return build(inorder, 0, inorder.size() - 1);
     }
 
@@ -122,14 +123,12 @@ public class BalanceBST {
         return root;
     }
 
-    private List<Integer> inorder(TreeNode root) {
+    private void inorder(TreeNode root, List<Integer> list) {
         if (root == null) {
-            return Collections.emptyList();
+            return;
         }
-        List<Integer> list = new ArrayList<>();
-        list.addAll(inorder(root.left));
+        inorder(root.left, list);
         list.add(root.val);
-        list.addAll(inorder(root.right));
-        return list;
+        inorder(root.right, list);
     }
 }
