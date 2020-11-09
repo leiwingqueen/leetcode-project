@@ -4,8 +4,8 @@ import com.liyongquan.util.tree.BinaryTreeUtil;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 给你一棵二叉搜索树，请你返回一棵 平衡后 的二叉搜索树，新生成的树应该与原来的树有着相同的节点值。
@@ -130,5 +130,54 @@ public class BalanceBST {
         inorder(root.left, list);
         list.add(root.val);
         inorder(root.right, list);
+    }
+
+    //**********************旋转的方法****************************
+    /**
+     *
+     * 作者：burning-summer
+     *     链接：https://leetcode-cn.com/problems/balance-a-binary-search-tree/solution/shou-si-avlshu-wo-bu-guan-wo-jiu-shi-yao-xuan-zhua/
+     *     来源：力扣（LeetCode）
+     *     著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     */
+
+    /**
+     * node节点左旋
+     *
+     * @param node       node
+     * @param nodeHeight node高度缓存
+     * @return 旋转后的当前节点
+     */
+    public TreeNode rotateLeft(TreeNode node, Map<TreeNode, Integer> nodeHeight) {
+        // ---旋转进行指针调整
+        TreeNode right = node.right;
+        node.right = right.left;
+        right.left = node;
+        // ---高度更新
+        // 先更新node节点的高度，这个时候node是right节点的左孩子
+        int newNodeHeight = getCurNodeNewHeight(node, nodeHeight);
+        // 更新node节点高度
+        nodeHeight.put(node, newNodeHeight);
+        // newNodeHeight是现在right节点左子树高度。
+        // 原理一样，取现在right左右子树最大高度+1
+        int newRightHeight = Math.max(newNodeHeight, nodeHeight.getOrDefault(right.right, 0)) + 1;
+        // 更新原right节点高度
+        nodeHeight.put(right, newRightHeight);
+        return right;
+    }
+
+    //获取当前节点的新高度
+    private int getCurNodeNewHeight(TreeNode node, Map<TreeNode, Integer> nodeHeight) {
+        // node节点的高度，为现在node左右子树最大高度+1
+        return Math.max(nodeHeight.getOrDefault(node.left, 0), nodeHeight.getOrDefault(node.right, 0)) + 1;
+    }
+
+    public static void initHeight(TreeNode node, int parentHeight, Map<TreeNode, Integer> nodeHeight) {
+        if (node == null) {
+            return;
+        }
+        nodeHeight.put(node, parentHeight + 1);
+        initHeight(node.left, parentHeight + 1, nodeHeight);
+        initHeight(node.right, parentHeight + 1, nodeHeight);
     }
 }
