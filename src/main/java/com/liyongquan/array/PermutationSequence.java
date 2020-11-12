@@ -99,22 +99,31 @@ public class PermutationSequence {
     public String getPermutation2(int n, int k) {
         //先计算n!的所有解
         int[] p = new int[n + 1];
-        p[0] = 0;
+        p[0] = 1;
         p[1] = 1;
         for (int i = 2; i <= n; i++) {
             p[i] = p[i - 1] * i;
         }
-        int i = 1;
-        while (k < p[i] && i <= n) {
-            i++;
+        char[] path = new char[n];
+        rec(n, k, path, new int[n], 0, p);
+        return new String(path);
+    }
+
+    private void rec(int n, int k, char[] path, int[] used, int depth, int[] p) {
+        if (depth == n) {
+            return;
         }
-        //k==i!，倒序输出解
-        if (k == p[i]) {
-            StringBuilder sb = new StringBuilder(n);
-            for (int j = n; j >= 1; j--) {
-                sb.append((char) ('0' + j));
+        //取第几个数字
+        int index = depth == n - 1 ? 0 : k / p[n - depth - 1];
+        int i = 0;
+        while (i < used.length && i < index) {
+            if (used[i] == 0) {
+                i++;
             }
-            return sb.toString();
         }
+        path[depth] = (char) ('1' + i);
+        used[i] = 1;
+        k %= p[n - depth - 1];
+        rec(n, k, path, used, depth + 1, p);
     }
 }

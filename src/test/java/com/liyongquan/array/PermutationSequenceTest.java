@@ -14,4 +14,10 @@ public class PermutationSequenceTest {
         String s = ps.getPermutation(3, 2);
         System.out.println(s);
     }
+
+    @Test
+    public void getPermutation2() {
+        String s = ps.getPermutation2(3, 2);
+        System.out.println(s);
+    }
 }
