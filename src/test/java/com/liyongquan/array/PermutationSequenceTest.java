@@ -1,5 +1,6 @@
 package com.liyongquan.array;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
@@ -17,7 +18,9 @@ public class PermutationSequenceTest {
 
     @Test
     public void getPermutation2() {
-        String s = ps.getPermutation2(3, 2);
-        System.out.println(s);
+        String s = ps.getPermutation2(3, 3);
+        Assert.assertEquals("213", s);
+        s = ps.getPermutation2(3, 6);
+        Assert.assertEquals("321", s);
     }
 }

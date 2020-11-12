@@ -92,6 +92,8 @@ public class PermutationSequence {
      * 然后继续对低位进行同样处理，但是k要减去高位已经排除掉的解
      * k=k-m*(i-1)!
      *
+     * 时间复杂度O(n)
+     *
      * @param n
      * @param k
      * @return
@@ -114,16 +116,19 @@ public class PermutationSequence {
             return;
         }
         //取第几个数字
-        int index = depth == n - 1 ? 0 : k / p[n - depth - 1];
-        int i = 0;
-        while (i < used.length && i < index) {
+        int index = (k - 1) / p[n - depth - 1];
+        int c = 0, i = 0;
+        for (; i < used.length; i++) {
             if (used[i] == 0) {
-                i++;
+                if (c == index) {
+                    break;
+                }
+                c++;
             }
         }
         path[depth] = (char) ('1' + i);
         used[i] = 1;
-        k %= p[n - depth - 1];
+        k -= index * p[n - depth - 1];
         rec(n, k, path, used, depth + 1, p);
     }
 }
