@@ -11,7 +11,7 @@ public class OddEvenListTest {
     public void oddEvenList() {
         ListNode head = new ListNode(1);
         ListNode pre = head;
-        for (int i = 2; i <= 4; i++) {
+        for (int i = 2; i <= 7; i++) {
             pre.next = new ListNode(i);
             pre = pre.next;
         }
