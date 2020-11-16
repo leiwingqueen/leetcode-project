@@ -1,7 +1,6 @@
 package com.liyongquan.hash;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
 /**
  * 不使用任何内建的哈希表库设计一个哈希映射
