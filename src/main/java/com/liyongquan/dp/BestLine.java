@@ -1,6 +1,6 @@
 package com.liyongquan.dp;
 
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * 给定一个二维平面及平面上的 N 个点列表Points，其中第i个点的坐标为Points[i]=[Xi,Yi]。请找出一条直线，其通过的点的数目最多。
@@ -24,6 +24,8 @@ import java.util.Arrays;
 public class BestLine {
     /**
      * 先尝试暴力解法
+     * <p>
+     * 不通过，排序会导致下标的序号乱序
      *
      * @param points
      * @return
@@ -41,7 +43,7 @@ public class BestLine {
         int max = 0;
         int[] result = {0, 1};
         for (int i = 0; i < points.length - 1; i++) {
-            for (int j = i + 1; j < points.length; j++) {
+            for (int j = i + 2; j < points.length; j++) {
                 //统计中间还经过多少点
                 int deltax = points[j][0] - points[i][0];
                 int deltay = points[j][1] - points[j][1];
@@ -52,6 +54,7 @@ public class BestLine {
                     }
                 }
                 if (count > max) {
+                    System.out.println("[" + i + "," + j + "]:" + count);
                     max = count;
                     result[0] = i;
                     result[1] = j;
@@ -59,5 +62,54 @@ public class BestLine {
             }
         }
         return result;
+    }
+
+    /**
+     * 我们考虑如何表示一条直线。
+     * y=ax+b。
+     * 确定a,b我们就可以定义一条直线。
+     * <p>
+     * 那么我们如果确定一条直接经过多少个点？
+     * <p>
+     * 最简单的做法是穷举n*(n-1)种情况，使用a,b作为key。value为经过的点。穷举完成就得到最终结果了。
+     *
+     * @param points
+     * @return
+     */
+    public int[] bestLine2(int[][] points) {
+        Map<String, Set<Integer>> map = new HashMap<>();
+        Map<String, int[]> pos = new HashMap<>();
+        int max = 0;
+        int[] result = new int[2];
+        for (int i = 0; i < points.length - 1; i++) {
+            for (int j = i + 1; j < points.length; j++) {
+                double[] line = getLine(points[i], points[j]);
+                String key = line[0] + "," + line[1];
+                Set<Integer> set = map.getOrDefault(key, new HashSet<>());
+                set.add(i);
+                set.add(j);
+                map.put(key, set);
+                if (!pos.containsKey(key)) {
+                    pos.put(key, new int[]{i, j});
+                }
+                if (set.size() > max) {
+                    max = set.size();
+                    result[0] = pos.get(key)[0];
+                    result[1] = pos.get(key)[1];
+                }
+            }
+        }
+        return result;
+    }
+
+    private double[] getLine(int[] p1, int[] p2) {
+        double a, b;
+        if (p1[0] == p2[0]) {
+            a = 0;
+        } else {
+            a = (double) ((p2[1] - p1[1])) / (p2[0] - p2[0]);
+        }
+        b = p1[1] - a * p1[0];
+        return new double[]{a, b};
     }
 }
