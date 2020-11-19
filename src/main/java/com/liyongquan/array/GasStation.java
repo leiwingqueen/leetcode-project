@@ -78,4 +78,30 @@ public class GasStation {
         }
         return true;
     }
+
+    /**
+     * https://leetcode-cn.com/problems/gas-station/solution/jia-you-zhan-by-leetcode-solution/
+     * 数学分析法。实际上也是个剪枝的过程，但是真的学不会。。
+     */
+    public int canCompleteCircuit2(int[] gas, int[] cost) {
+        int start = 0;
+        int len = gas.length;
+        while (start < len) {
+            int fn = gas[start];
+            int i = 0;
+            for (; i < len; i++) {
+                if (fn < cost[(start + i) % len]) {
+                    break;
+                }
+                fn = fn - cost[(start + i) % len] + gas[(start + i + 1) % len];
+            }
+            //可以环绕一圈
+            if (i == len) {
+                return start;
+            }
+            //不行的话从上一次失败的位置往后移动查找
+            start += (i + 1);
+        }
+        return -1;
+    }
 }
