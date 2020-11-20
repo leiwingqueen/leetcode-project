@@ -78,4 +78,38 @@ public class InsertionSortList {
         //递归下一层
         return recursive(sentinel.next, unsorted);
     }
+
+    /**
+     * 作者：LeetCode-Solution
+     *     链接：https://leetcode-cn.com/problems/insertion-sort-list/solution/dui-lian-biao-jin-xing-cha-ru-pai-xu-by-leetcode-s/
+     *     来源：力扣（LeetCode）
+     *     著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     *     这个写法简洁好多
+     * @param head
+     * @return
+     */
+    public ListNode insertionSortList2(ListNode head) {
+        if (head == null) {
+            return head;
+        }
+        ListNode dummyHead = new ListNode(0);
+        dummyHead.next = head;
+        ListNode lastSorted = head, curr = head.next;
+        while (curr != null) {
+            if (lastSorted.val <= curr.val) {
+                lastSorted = lastSorted.next;
+            } else {
+                ListNode prev = dummyHead;
+                while (prev.next.val <= curr.val) {
+                    prev = prev.next;
+                }
+                lastSorted.next = curr.next;
+                curr.next = prev.next;
+                prev.next = curr;
+            }
+            curr = lastSorted.next;
+        }
+        return dummyHead.next;
+    }
 }
