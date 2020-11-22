@@ -40,10 +40,32 @@ public class GroupAnagrams {
                     sb.append((char) (i + 'a') + String.valueOf(bitmap[i]));
                 }
             }
-            System.out.println(bitmap.hashCode());
+            //System.out.println(bitmap.hashCode());
             List<String> list = map.getOrDefault(sb.toString(), new LinkedList<>());
             list.add(str);
             map.put(sb.toString(), list);
+        }
+        List<List<String>> result = new LinkedList<>();
+        result.addAll(map.values());
+        return result;
+    }
+
+    /**
+     * 使用排序
+     * <p>
+     * 时间复杂度O(k*nlogn)，k个字符串，每个字符串的字符长度为n
+     *
+     * @param strs
+     * @return
+     */
+    public List<List<String>> groupAnagrams2(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        for (String str : strs) {
+            char[] s = str.toCharArray();
+            Arrays.sort(s);
+            List<String> list = map.getOrDefault(new String(s), new LinkedList<>());
+            list.add(str);
+            map.put(new String(s), list);
         }
         List<List<String>> result = new LinkedList<>();
         result.addAll(map.values());
