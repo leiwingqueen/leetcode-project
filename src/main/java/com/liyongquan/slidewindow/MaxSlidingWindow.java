@@ -111,6 +111,12 @@ public class MaxSlidingWindow {
      * <p>
      * 考虑到每个元素最多会在双端队列中弹出一次，实际上的时间效率是O(n)
      *
+     * 实时上这么操作的话双端队列需要保证是降序的
+     *
+     * https://leetcode-cn.com/problems/sliding-window-maximum/solution/shuang-xiang-dui-lie-jie-jue-hua-dong-chuang-kou-2/
+     *
+     * 这个解析还是可以的
+     *
      * @param nums
      * @param k
      * @return
@@ -121,8 +127,8 @@ public class MaxSlidingWindow {
         int[] r = new int[len];
         //初始化
         for (int i = 0; i < k; i++) {
-            deque.addLast(i);
             clean(nums, deque, i);
+            deque.addLast(i);
         }
         r[0] = nums[deque.peekFirst()];
         //滑动窗口移动
@@ -131,16 +137,17 @@ public class MaxSlidingWindow {
             if (deque.peekFirst() == i - 1) {
                 deque.pollFirst();
             }
-            deque.addLast(i + k - 1);
             clean(nums, deque, i + k - 1);
+            deque.addLast(i + k - 1);
             r[i] = nums[deque.peekFirst()];
         }
         return r;
     }
 
+    //双端队列是降序
     private void clean(int[] nums, Deque<Integer> deque, int idx) {
-        while (deque.size() > 0 && nums[deque.peekFirst()] < nums[idx]) {
-            deque.pollFirst();
+        while (deque.size() > 0 && nums[deque.peekLast()] < nums[idx]) {
+            deque.pollLast();
         }
     }
 }
