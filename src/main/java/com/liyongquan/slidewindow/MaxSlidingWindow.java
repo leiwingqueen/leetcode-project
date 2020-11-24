@@ -1,6 +1,9 @@
 package com.liyongquan.slidewindow;
 
-import java.util.Comparator;
+import com.sun.xml.internal.bind.v2.model.core.ID;
+
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -74,6 +77,8 @@ public class MaxSlidingWindow {
 
     /**
      * 试试优先级队列？(堆排序)
+     * <p>
+     * 同样超时。。。>_<哭
      *
      * @param nums
      * @param k
@@ -97,5 +102,45 @@ public class MaxSlidingWindow {
             idx++;
         }
         return r;
+    }
+
+    /**
+     * 使用双端队列窗口的元素的下标，这里有一个优化点，每次插入一个新元素，则我们可以认为<新元素的值永远不可能是最大值。
+     * <p>
+     * 因为新元素在新的时间窗口呆的剩余时间必然>前面的元素，而前面的元素又是<新元素。
+     * <p>
+     * 考虑到每个元素最多会在双端队列中弹出一次，实际上的时间效率是O(n)
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] maxSlidingWindow3(int[] nums, int k) {
+        Deque<Integer> deque = new LinkedList<>();
+        int len = nums.length - k + 1;
+        int[] r = new int[len];
+        //初始化
+        for (int i = 0; i < k; i++) {
+            deque.addLast(i);
+            clean(nums, deque, i);
+        }
+        r[0] = nums[deque.peekFirst()];
+        //滑动窗口移动
+        for (int i = 1; i < len; i++) {
+            //窗口移动
+            if (deque.peekFirst() == i - 1) {
+                deque.pollFirst();
+            }
+            deque.addLast(i + k - 1);
+            clean(nums, deque, i + k - 1);
+            r[i] = nums[deque.peekFirst()];
+        }
+        return r;
+    }
+
+    private void clean(int[] nums, Deque<Integer> deque, int idx) {
+        while (deque.size() > 0 && nums[deque.peekFirst()] < nums[idx]) {
+            deque.pollFirst();
+        }
     }
 }
