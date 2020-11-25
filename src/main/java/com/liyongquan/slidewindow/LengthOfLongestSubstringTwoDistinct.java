@@ -1,5 +1,6 @@
 package com.liyongquan.slidewindow;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,6 +61,50 @@ public class LengthOfLongestSubstringTwoDistinct {
                 }
                 l++;
             }
+            System.out.println("左边界移动:" + l);
+            //更新max
+            len = r - l + 1;
+            if (len > max) {
+                max = len;
+            }
+            r++;
+        }
+        return max;
+    }
+
+    /**
+     * 优化，这样左移的效率比较低。假如我们只存储每个字符的最右的坐标，这样移动的效率会更高
+     *
+     * 诡异的是，在leetcode的测试数据集中这个效率还不如上面的解法
+     *
+     * @param s
+     * @return
+     */
+    public int lengthOfLongestSubstringTwoDistinct2(String s) {
+        int l = 0, r = 0, max = 0;
+        Map<Character, Integer> map = new HashMap<>(3);
+        while (l <= r && r < s.length()) {
+            //尝试不断右移，找到右边的最大边界
+            while (r < s.length() && map.size() <= 2) {
+                map.put(s.charAt(r), r);
+                if (map.size() > 2) {
+                    break;
+                }
+                r++;
+            }
+            System.out.println("右边界移动:" + r);
+            //到达右边界，目前值即为最大值
+            int len = r - l;
+            if (len > max) {
+                max = len;
+            }
+            if (r == s.length()) {
+                return max;
+            }
+            //左边界移动
+            Integer delIdx = Collections.min(map.values());
+            map.remove(s.charAt(delIdx));
+            l = delIdx + 1;
             System.out.println("左边界移动:" + l);
             //更新max
             len = r - l + 1;
