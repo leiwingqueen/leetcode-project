@@ -36,55 +36,61 @@ public class MinWindow {
     /**
      * 滑动窗口算法
      *
+     * 一定要注意java装箱类型的比较。-128~127之间的整形直接用==比较是OK的，这是因为有IntegerCache的存在，在这个范围内的整形会缓存起来。
+     * 但是超出这个范围的integer是不能这样比较的。
+     *
+     * java泛型的恶心，拆箱和装箱的恶心啊
+     *
      * @param s
      * @param t
      * @return
      */
     public String minWindow(String s, String t) {
         //统计t的字符
-        Map<Character, Integer> tmap = new HashMap<>(t.length());
+        Map<Character, Integer> need = new HashMap<>(t.length());
         for (int i = 0; i < t.length(); i++) {
             char c = t.charAt(i);
-            tmap.put(c, tmap.getOrDefault(c, 0) + 1);
+            need.put(c, need.getOrDefault(c, 0) + 1);
         }
         int l = 0, r = 0, min = Integer.MAX_VALUE;
         String window = "";
-        Map<Character, Integer> map = new HashMap<>(tmap.size());
+        Map<Character, Integer> map = new HashMap<>(need.size());
         //满足条件的字符数量
         int fullCount = 0;
         while (l <= r && r < s.length()) {
             //右边界移动
-            while (fullCount < tmap.size() && r < s.length()) {
+            while (fullCount < need.size() && r < s.length()) {
                 char c = s.charAt(r);
                 Integer count = map.getOrDefault(c, 0);
-                if (tmap.containsKey(c)) {
+                if (need.containsKey(c)) {
                     //刚好满足条件
-                    if (count == tmap.get(c) - 1) {
+                    if (count + 1 == need.get(c).intValue()) {
+                        //System.out.println("char:" + c + ",count:" + (count + 1));
                         fullCount++;
                     }
                     map.put(c, count + 1);
                 }
                 r++;
             }
-            System.out.println("右边界:" + r);
+            //System.out.println("右边界:" + r);
             //没有可达解，可以直接返回
-            if (fullCount < tmap.size()) {
+            if (fullCount < need.size()) {
                 return window;
             }
             //左边界移动
-            while (fullCount >= tmap.size() && l <= r) {
+            while (fullCount >= need.size()) {
                 char c = s.charAt(l);
-                if (tmap.containsKey(c)) {
+                if (need.containsKey(c)) {
                     Integer count = map.getOrDefault(c, 0);
                     //不满足条件
-                    if (count == tmap.get(c)) {
+                    if (count.intValue() == need.get(c).intValue()) {
                         fullCount--;
                     }
                     map.put(c, count - 1);
                 }
                 l++;
             }
-            System.out.println("左边界:" + l);
+            //System.out.println("左边界:" + l);
             //更新结果
             int len = r - l + 1;
             if (len < min) {
