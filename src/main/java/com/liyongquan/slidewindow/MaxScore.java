@@ -81,4 +81,6 @@ public class MaxScore {
         }
         return s - min;
     }
+
+    //TODO:还有一种前缀和的解法，有时间可以也思考一下
 }
