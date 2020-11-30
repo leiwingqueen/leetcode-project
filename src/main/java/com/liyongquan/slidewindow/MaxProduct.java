@@ -58,7 +58,7 @@ public class MaxProduct {
         //dp迭代
         for (int i = 1; i < nums.length; i++) {
             int f00 = Math.max(f0[0] * nums[i], Math.max(nums[i], f0[1] * nums[i]));
-            int f01 = Math.max(f0[0] * nums[i], Math.min(nums[i], f0[1] * nums[i]));
+            int f01 = Math.min(f0[0] * nums[i], Math.min(nums[i], f0[1] * nums[i]));
             //必须选一个，所以当i=1的时候这里需要做特殊处理
             int f10 = i == 1 ? nums[0] : Math.max(f0[0], f1[0]);
             int f11 = i == 1 ? nums[0] : Math.min(f0[1], f1[1]);
