@@ -1,7 +1,5 @@
 package com.liyongquan.slidewindow;
 
-import com.liyongquan.stack.Calculate;
-
 /**
  * 你的好友是一位健身爱好者。前段日子，他给自己制定了一份健身计划。现在想请你帮他评估一下这份计划是否合理。
  * <p>
