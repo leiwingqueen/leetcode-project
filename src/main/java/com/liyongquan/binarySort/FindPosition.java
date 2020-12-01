@@ -28,23 +28,6 @@ public class FindPosition {
         }
         int right = search(nums, target, false);
         return new int[]{left, right};
-//        int left, right;
-//        left = right = left;
-//        while (true) {
-//            boolean end = true;
-//            if (left - 1 >= 0 && nums[left - 1] == target) {
-//                left--;
-//                end = false;
-//            }
-//            if (right + 1 < nums.length && nums[right + 1] == target) {
-//                right++;
-//                end = false;
-//            }
-//            if (end) {
-//                break;
-//            }
-//        }
-//        return new int[]{left, right};
     }
 
     private int search(int[] nums, int target, boolean l) {
@@ -68,5 +51,57 @@ public class FindPosition {
             }
         }
         return nums[left] == target ? left : -1;
+    }
+
+    /**
+     * 两次二分查找，时间复杂度O(logn)，空间复杂度O(1)
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int[] searchRange2(int[] nums, int target) {
+        if (nums.length == 0) {
+            return new int[]{-1, -1};
+        }
+        //先找到左边界
+        int l = 0, r = nums.length - 1;
+        while (l < r) {
+            int middle = l + (r - l) / 2;
+            if (nums[middle] == target) {
+                //看能不能左移一步
+                if (middle == l || nums[middle - 1] != target) {
+                    l = middle;
+                    break;
+                }
+                r = middle - 1;
+            } else if (nums[middle] > target) {
+                r = middle - 1;
+            } else {
+                l = middle + 1;
+            }
+        }
+        if (nums[l] != target) {
+            return new int[]{-1, -1};
+        }
+        //再尝试找右边界
+        int left = l;
+        r = nums.length - 1;
+        while (l < r) {
+            int middle = l + (r - l) / 2;
+            if (nums[middle] == target) {
+                //看能不能再右移一步
+                if (middle == r || nums[middle + 1] != target) {
+                    r = middle;
+                    break;
+                }
+                l = middle + 1;
+            } else if (nums[middle] > target) {
+                r = middle - 1;
+            } else {
+                l = middle + 1;
+            }
+        }
+        return new int[]{left, r};
     }
 }
