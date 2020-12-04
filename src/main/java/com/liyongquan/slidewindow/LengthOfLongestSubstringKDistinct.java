@@ -1,6 +1,7 @@
 package com.liyongquan.slidewindow;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -25,6 +26,8 @@ import java.util.Map;
 public class LengthOfLongestSubstringKDistinct {
     /**
      * 套滑动窗口模板
+     * <p>
+     * 时间复杂度O(n)，空间复杂度O(k)
      *
      * @param s
      * @param k
@@ -50,6 +53,39 @@ public class LengthOfLongestSubstringKDistinct {
                     map.put(c, map.get(c) - 1);
                 }
                 l++;
+            }
+        }
+        return max;
+    }
+
+    /**
+     * 这里利用LRU来提高效率。map直接存的是这个字符的最右的位置，这样有重复字符的时候可以快速跳过
+     *
+     * @param s
+     * @param k
+     * @return
+     */
+    public int lengthOfLongestSubstringKDistinct2(String s, int k) {
+        //value是最右的位置
+        Map<Character, Integer> map = new LinkedHashMap<>();
+        int l = 0, r = 0, max = 0;
+        while (r < s.length()) {
+            //窗口右移动
+            char c1 = s.charAt(r);
+            if (map.containsKey(c1)) {
+                //lru算法，需要把这个字符移动到最后。所以要先做删除操作
+                map.remove(c1);
+            }
+            map.put(c1, r);
+            r++;
+            //更新结果
+            if (map.size() <= k) {
+                max = Math.max(max, r - l);
+            } else {
+                //窗口平移(可以直接跳过多个点，加速收敛)
+                Map.Entry<Character, Integer> next = map.entrySet().iterator().next();
+                l = next.getValue() + 1;
+                map.remove(next.getKey());
             }
         }
         return max;
