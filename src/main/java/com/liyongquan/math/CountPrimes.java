@@ -1,5 +1,7 @@
 package com.liyongquan.math;
 
+import java.util.Arrays;
+
 /**
  * 统计所有小于非负整数 n 的质数的数量。
  * <p>
@@ -31,6 +33,7 @@ package com.liyongquan.math;
 public class CountPrimes {
     /**
      * 暴力解法，会超时
+     *
      * @param n
      * @return
      */
@@ -54,5 +57,30 @@ public class CountPrimes {
             }
         }
         return true;
+    }
+
+    /**
+     * 埃氏筛，这是一种古老的算法了，还是佩服老前辈
+     * <p>
+     * 时间复杂度是O(nloglogn)
+     */
+    public int countPrimes2(int n) {
+        int count = 0;
+        int[] prime = new int[n];
+        Arrays.fill(prime, 1);
+        double sqrt = Math.sqrt(n);
+        for (int i = 2; i < n; i++) {
+            if (prime[i] == 1) {
+                count++;
+                //这里乘法可能会导致溢出，我们需要做个简单处理
+                if (i < sqrt) {
+                    //把i的所有倍数都标记
+                    for (int j = i * i; j < n; j += i) {
+                        prime[j] = 0;
+                    }
+                }
+            }
+        }
+        return count;
     }
 }

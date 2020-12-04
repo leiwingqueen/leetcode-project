@@ -14,4 +14,10 @@ public class CountPrimesTest {
         System.out.println(i);
         Assert.assertEquals(4, i);
     }
+
+    @Test
+    public void countPrimes2() {
+        int i = cp.countPrimes2(10);
+        Assert.assertEquals(4, i);
+    }
 }
