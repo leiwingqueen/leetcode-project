@@ -1,6 +1,5 @@
 package com.liyongquan.slidewindow;
 
-import javax.naming.BinaryRefAddr;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -35,6 +34,21 @@ import java.util.Set;
 public class ShortestSeq {
     /**
      * 这写法有点绕，还有一个问题是如何证明这样移动是正确的？
+     * <p>
+     * 规则1-右边界扩张：
+     * 我们先假设当前的左边界是m,我们先找到第一个满足条件的右边界是n。
+     * 则有f(m,n)=true,f(m,n-1)=false
+     * <p>
+     * 规则2-左边界收缩：
+     * 这时候我们移动左边界，我们找到最后一个满足条件的左边界是i。
+     * 则有f(i,n)=true,f(i+1,n)=false
+     * ==> f(k,n)=true(其中k<=i)
+     * <p>
+     * 我们可以推导出左边界在[m,i]范围的最小的区间是[i,n]
+     * <p>
+     * 假设左边界是m，那么根据规则1有f(m,n)=true,f(m,n-1)=false，则最小区间是[m,n]，其中[m,n]一定小于[i,n]
+     * <p>
+     * 所以接下来我们只需要移动左边界到i+1，继续重复上面的过程。因为每个指针只会往一个方向移动，不会倒退，因此时间复杂度是O(n)
      *
      * @param big
      * @param small
