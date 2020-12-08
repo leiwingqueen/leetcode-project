@@ -1,6 +1,6 @@
 package com.liyongquan.backtrack;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * 给定一个数字字符串 S，比如 S = "123456579"，我们可以将它分成斐波那契式的序列 [123, 456, 579]。
@@ -52,6 +52,97 @@ import java.util.List;
  */
 public class SplitIntoFibonacci {
     public List<Integer> splitIntoFibonacci(String S) {
-        return null;
+        return backtrack(new LinkedList<>(), S, 0);
+    }
+
+    public List<Integer> backtrack(Deque<Integer> path, String s, int idx) {
+        //System.out.println("==================== path size:" + path.size() + ",idx:" + idx);
+        if (idx >= s.length()) {
+            return new ArrayList<>(path);
+        }
+        //直接可以确定下一个数字
+        if (path.size() >= 2) {
+            Integer p1 = path.pollLast();
+            Integer p2 = path.pollLast();
+            int next = p1 + p2;
+            //继续放回队列中
+            path.add(p2);
+            path.add(p1);
+            int[] nums = transfer(next);
+            //扫描是否匹配
+            if (s.length() - idx < nums.length) {
+                return Collections.emptyList();
+            }
+            for (int i = 0; i < nums.length; i++) {
+                if (nums[i] != s.charAt(idx + i) - '0') {
+                    return Collections.emptyList();
+                }
+            }
+            path.add(next);
+            System.out.println("加入数字:" + next + ",next idx:" + (idx + nums.length));
+            List<Integer> backtrack = backtrack(path, s, idx + nums.length);
+            if (backtrack.size() > 0) {
+                return backtrack;
+            }
+            //还原现场
+            path.pollLast();
+        } else {
+            //特殊处理下一个数字为0，只能选0
+            if (s.charAt(idx) == '0') {
+                path.add(0);
+                //System.out.println("加入数字:" + 0);
+                return backtrack(path, s, idx + 1);
+            }
+            //适当剪枝，第三个元素的总长度需要比第一个元素和第二个元素的最大长度要长
+            Integer p1 = path.size() == 0 ? 0 : path.peekLast();
+            int[] nums = transfer(p1);
+            int num = 0;
+            for (int i = idx; i < s.length(); i++) {
+                //第3个数字的最小长度
+                int len = Math.max(i - idx + 1, nums.length);
+                System.out.println("len:" + len + ",i:" + i + ",idx:" + idx);
+                //第三个数字的长度不满足最小长度，直接退出
+                if (s.length() - i - 1 < len) {
+                    break;
+                }
+                num = num * 10 + (s.charAt(i) - '0');
+                path.add(num);
+                System.out.println("加入数字:" + num + ",next idx:" + (i + 1) + ",path size:" + path.size());
+                List<Integer> backtrack = backtrack(path, s, i + 1);
+                if (backtrack.size() > 0) {
+                    return backtrack;
+                }
+                //回溯
+                Integer poll = path.pollLast();
+                System.out.println("弹出数字:" + poll + ",path size:" + path.size());
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * 数字转化成数组
+     *
+     * @param num
+     * @return
+     */
+    private int[] transfer(int num) {
+        if (num == 0) {
+            return new int[]{0};
+        }
+        //栈
+        Deque<Integer> deque = new LinkedList<>();
+        while (num != 0) {
+            int mod = num % 10;
+            deque.offerFirst(mod);
+            num /= 10;
+        }
+        int[] res = new int[deque.size()];
+        int idx = 0;
+        while (deque.size() > 0) {
+            Integer n = deque.pollFirst();
+            res[idx++] = n;
+        }
+        return res;
     }
 }
