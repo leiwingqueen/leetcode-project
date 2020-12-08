@@ -6,6 +6,9 @@ public class Node {
     Node next;
     Node pre;
 
+    public Node() {
+    }
+
     public Node(int key, int value) {
         this.key = key;
         this.value = value;
