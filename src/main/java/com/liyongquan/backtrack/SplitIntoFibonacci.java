@@ -56,7 +56,7 @@ public class SplitIntoFibonacci {
     }
 
     public List<Integer> backtrack(Deque<Integer> path, String s, int idx) {
-        //System.out.println("==================== path size:" + path.size() + ",idx:" + idx);
+        System.out.println("==================== path size:" + path.size() + ",idx:" + idx);
         if (idx >= s.length()) {
             return new ArrayList<>(path);
         }
@@ -64,11 +64,15 @@ public class SplitIntoFibonacci {
         if (path.size() >= 2) {
             Integer p1 = path.pollLast();
             Integer p2 = path.pollLast();
-            int next = p1 + p2;
+            long next = p1 + p2;
+            //溢出处理
+            if (next > Integer.MAX_VALUE) {
+                return Collections.emptyList();
+            }
             //继续放回队列中
             path.add(p2);
             path.add(p1);
-            int[] nums = transfer(next);
+            int[] nums = transfer((int) next);
             //扫描是否匹配
             if (s.length() - idx < nums.length) {
                 return Collections.emptyList();
@@ -78,25 +82,25 @@ public class SplitIntoFibonacci {
                     return Collections.emptyList();
                 }
             }
-            path.add(next);
+            path.add((int) next);
             System.out.println("加入数字:" + next + ",next idx:" + (idx + nums.length));
             List<Integer> backtrack = backtrack(path, s, idx + nums.length);
-            if (backtrack.size() > 0) {
-                return backtrack;
-            }
             //还原现场
             path.pollLast();
+            return backtrack;
         } else {
             //特殊处理下一个数字为0，只能选0
             if (s.charAt(idx) == '0') {
                 path.add(0);
                 //System.out.println("加入数字:" + 0);
-                return backtrack(path, s, idx + 1);
+                List<Integer> backtrack = backtrack(path, s, idx + 1);
+                path.pollLast();
+                return backtrack;
             }
             //适当剪枝，第三个元素的总长度需要比第一个元素和第二个元素的最大长度要长
             Integer p1 = path.size() == 0 ? 0 : path.peekLast();
             int[] nums = transfer(p1);
-            int num = 0;
+            long num = 0;
             for (int i = idx; i < s.length(); i++) {
                 //第3个数字的最小长度
                 int len = Math.max(i - idx + 1, nums.length);
@@ -106,15 +110,19 @@ public class SplitIntoFibonacci {
                     break;
                 }
                 num = num * 10 + (s.charAt(i) - '0');
-                path.add(num);
+                //数据溢出处理
+                if (num > Integer.MAX_VALUE) {
+                    break;
+                }
+                path.add((int) num);
                 System.out.println("加入数字:" + num + ",next idx:" + (i + 1) + ",path size:" + path.size());
                 List<Integer> backtrack = backtrack(path, s, i + 1);
-                if (backtrack.size() > 0) {
-                    return backtrack;
-                }
                 //回溯
                 Integer poll = path.pollLast();
                 System.out.println("弹出数字:" + poll + ",path size:" + path.size());
+                if (backtrack.size() > 0) {
+                    return backtrack;
+                }
             }
         }
         return Collections.emptyList();
