@@ -105,4 +105,59 @@ public class ShortestSeq {
         }
         return res > big.length ? new int[]{} : idx;
     }
+
+    /**
+     * 代码简化
+     *
+     * @param big
+     * @param small
+     * @return
+     */
+    public int[] shortestSeq2(int[] big, int[] small) {
+        //初始化small的set
+        Set<Integer> set = new HashSet<>(small.length);
+        for (int s : small) {
+            set.add(s);
+        }
+        int l = 0, r = 0;
+        //满足条件的数量
+        int count = 0;
+        int res = big.length + 1;
+        int[] idx = new int[2];
+        Map<Integer, Integer> map = new HashMap<>();
+        while (r < big.length) {
+            //右边界移动
+            if (count < set.size()) {
+                int num = big[r];
+                if (set.contains(num)) {
+                    Integer c = map.getOrDefault(num, 0);
+                    map.put(num, c + 1);
+                    if (c == 0) {
+                        count++;
+                    }
+                }
+                r++;
+            }
+            //左边界移动
+            while (l < r && count >= set.size()) {
+                int num = big[l];
+                if (set.contains(num)) {
+                    Integer c = map.get(num);
+                    map.put(num, c - 1);
+                    if (c == 1) {
+                        count--;
+                    }
+                }
+                //更新结果
+                int len = r - l;
+                if (len < res) {
+                    res = len;
+                    idx[0] = l;
+                    idx[1] = r - 1;
+                }
+                l++;
+            }
+        }
+        return res > big.length ? new int[]{} : idx;
+    }
 }
