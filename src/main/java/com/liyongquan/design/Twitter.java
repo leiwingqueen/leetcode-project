@@ -1,5 +1,7 @@
 package com.liyongquan.design;
 
+import com.liyongquan.linklist.ListNode;
+
 import java.util.*;
 
 /**
@@ -41,88 +43,140 @@ import java.util.*;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class Twitter {
+    public static final int MAX_SIZE = 10;
+
+    static class ListNode<T> {
+        public T val;
+        public ListNode next;
+
+        public ListNode() {
+        }
+
+        public ListNode(T x) {
+            val = x;
+        }
+    }
+
+    static class User {
+        //uid
+        int userId;
+        //关注人
+        Set<Integer> followee;
+        //自己实现链表的话才能后续比较灵活地做归并排序
+        ListNode<Message> head;
+
+        public User(int userId) {
+            this.userId = userId;
+            this.followee = new HashSet<>();
+        }
+
+        public void postTweet(int tweetId, int time) {
+            ListNode node = new ListNode(new Message(tweetId, time));
+            if (head != null) {
+                node.next = head;
+            }
+            head = node;
+        }
+
+        public void follow(int followeeId) {
+            if (followeeId == userId) {
+                return;
+            }
+            followee.add(followeeId);
+        }
+
+        public void unfollow(int followeeId) {
+            if (followeeId == userId) {
+                return;
+            }
+            followee.remove(followeeId);
+        }
+    }
+
     /**
-     * 最简单的思路就是用hashmap保存一个用户的推特列表
-     * <p>
-     * 用户关注的关联关系也用hashmap来保存
+     * 推特信息
      */
+    static class Message {
+        int tweetId;
+        //时间，先采用自增解决
+        int time;
 
-    //双端队列保留最近10条推特
-    private Map<Integer, Deque<Integer>> tweet;
+        public Message(int tweetId, int time) {
+            this.tweetId = tweetId;
+            this.time = time;
+        }
+    }
 
-    //关注关系
-    private Map<Integer, Set<Integer>> follow;
+    //存储用户信息
+    private Map<Integer, User> userMap;
 
-    private int maxSize;
+    private int time = 0;
 
     /**
      * Initialize your data structure here.
      */
     public Twitter() {
-        tweet = new HashMap<>();
-        follow = new HashMap<>();
-        maxSize = 10;
+        userMap = new HashMap<>();
     }
 
     /**
      * Compose a new tweet.
      */
     public void postTweet(int userId, int tweetId) {
-        Deque<Integer> deque = tweet.containsKey(userId) ? tweet.get(userId) : new LinkedList<>();
-        deque.add(tweetId);
-        tweet.put(userId, deque);
-        if (deque.size() > maxSize) {
-            deque.pollFirst();
+        if (!userMap.containsKey(userId)) {
+            userMap.put(userId, new User(userId));
         }
+        User user = userMap.get(userId);
+        user.postTweet(tweetId, ++time);
     }
 
     /**
      * Retrieve the 10 most recent tweet ids in the user's news feed. Each item in the news feed must be posted by users who the user followed or by the user herself. Tweets must be ordered from most recent to least recent.
      */
     public List<Integer> getNewsFeed(int userId) {
-        Set<Integer> set = follow.containsKey(userId) ? follow.get(userId) : new HashSet<>();
-        //归并排序
-        List<Iterator<Integer>> list = new LinkedList<>();
-        for (Integer item : set) {
-            if (tweet.containsKey(item)) {
-                list.add(tweet.get(item).descendingIterator());
+        if (!userMap.containsKey(userId)) {
+            return Collections.emptyList();
+        }
+        User user = userMap.get(userId);
+        //合并K个链表的算法，堆排+归并，构造一个大顶堆
+        PriorityQueue<ListNode> queue = new PriorityQueue<>(user.followee.size() + 1, (o1, o2) -> ((Message) o2.val).time - ((Message) o1.val).time);
+        //需要倒序输出，这里选择用desc
+        if (user.head != null) {
+            queue.add(user.head);
+        }
+        for (Integer followeeId : user.followee) {
+            if (userMap.containsKey(followeeId) && userMap.get(followeeId).head != null) {
+                queue.add(userMap.get(followeeId).head);
             }
         }
-        //加上自己
-        if (tweet.containsKey(userId)) {
-            list.add(tweet.get(userId).descendingIterator());
-        }
-        List<Integer> res = new ArrayList<>(maxSize);
-        while (res.size() < maxSize) {
-            Iterator<Integer> it;
-            int max = -1;
-            for (Iterator<Integer> iterator : list) {
-                if (!iterator.hasNext()) {
-                    continue;
-                }
-                //TODO
+        List<Integer> res = new LinkedList<>();
+        while (res.size() < MAX_SIZE && queue.size() > 0) {
+            ListNode poll = queue.poll();
+            res.add(((Message) poll.val).tweetId);
+            if (poll.next != null) {
+                queue.add(poll.next);
             }
         }
-        return null;
+        return res;
     }
 
     /**
      * Follower follows a followee. If the operation is invalid, it should be a no-op.
      */
     public void follow(int followerId, int followeeId) {
-        Set<Integer> set = follow.containsKey(followeeId) ? follow.get(followerId) : new HashSet<>();
-        set.add(followeeId);
-        follow.put(followerId, set);
+        if (!userMap.containsKey(followerId)) {
+            userMap.put(followerId, new User(followerId));
+        }
+        userMap.get(followerId).follow(followeeId);
     }
 
     /**
      * Follower unfollows a followee. If the operation is invalid, it should be a no-op.
      */
     public void unfollow(int followerId, int followeeId) {
-        if (!follow.containsKey(followerId)) {
-            return;
+        if (!userMap.containsKey(followerId)) {
+            userMap.put(followerId, new User(followerId));
         }
-        Set<Integer> set = follow.get(followerId);
-        set.remove(followeeId);
+        userMap.get(followerId).unfollow(followeeId);
     }
 }
