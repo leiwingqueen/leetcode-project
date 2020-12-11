@@ -1,7 +1,5 @@
 package com.liyongquan.design;
 
-import com.liyongquan.linklist.ListNode;
-
 import java.util.*;
 
 /**
