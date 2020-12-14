@@ -1,7 +1,6 @@
 package com.liyongquan.heap;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.PriorityQueue;
 
 /**
@@ -57,4 +56,72 @@ public class FindKthLargest {
         }
         return res;
     }
+
+    /**
+     * 自己实现堆排
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int findKthLargest3(int[] nums, int k) {
+        //大根堆
+        buildHeap(nums);
+        for (int i = nums.length - 1; i >= nums.length - k; i--) {
+            swap(nums, 0, i);
+            heapify(nums, 0, i);
+        }
+        return nums[nums.length - k];
+    }
+
+    /**
+     * 构建大根堆
+     *
+     * @param nums
+     */
+    private void buildHeap(int[] nums) {
+        //从第一个非根节点开始
+        for (int i = nums.length / 2; i >= 0; i--) {
+            heapify(nums, i, nums.length);
+        }
+    }
+
+    /**
+     * 调整
+     *
+     * @param nums
+     * @param idx
+     * @param len
+     */
+    private void heapify(int[] nums, int idx, int len) {
+        if (idx >= len) {
+            return;
+        }
+        //左右子树
+        int l = 2 * idx + 1, r = 2 * idx + 2, max = idx;
+        //找到最大值
+        if (l < len && nums[l] > nums[max]) {
+            max = l;
+        }
+        if (r < len && nums[r] > nums[max]) {
+            max = r;
+        }
+        //不需要调整
+        if (max == idx) {
+            return;
+        }
+        //继续调整对应的子树,这里也可以改成使用迭代，只是递归会更好理解
+        swap(nums, idx, max);
+        heapify(nums, max, len);
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+    }
+
+    //TODO:快排还有优化的空间，可以直接打到log(n)的性能
+
+
 }
