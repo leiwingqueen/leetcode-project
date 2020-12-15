@@ -49,8 +49,9 @@ import java.util.*;
 public class FrequencySort {
     /**
      * 朴素解法
-     *
+     * <p>
      * 时间复杂度O(nlogn)
+     *
      * @param s
      * @return
      */
@@ -70,6 +71,37 @@ public class FrequencySort {
         //输出
         StringBuilder sb = new StringBuilder(s.length());
         for (Pair<Character, Integer> pair : list) {
+            for (int i = 0; i < pair.getValue(); i++) {
+                sb.append(pair.getKey());
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 堆排
+     *
+     * @param s
+     * @return
+     */
+    public String frequencySort2(String s) {
+        if (s.length() == 0) {
+            return s;
+        }
+        //统计出现次数
+        Map<Character, Integer> map = new HashMap<>();
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            map.put(ch, map.getOrDefault(ch, 0) + 1);
+        }
+        PriorityQueue<Pair<Character, Integer>> pq = new PriorityQueue<>(map.size(), (p1, p2) -> p2.getValue() - p1.getValue());
+        for (Map.Entry<Character, Integer> entry : map.entrySet()) {
+            pq.add(new Pair<>(entry.getKey(), entry.getValue()));
+        }
+        //输出
+        StringBuilder sb = new StringBuilder(s.length());
+        while (pq.size() > 0) {
+            Pair<Character, Integer> pair = pq.poll();
             for (int i = 0; i < pair.getValue(); i++) {
                 sb.append(pair.getKey());
             }
