@@ -75,9 +75,9 @@ public class TrappingTainWater {
      * 上面复杂度最高的地方在于都需要重新计算左右两边的最大值，能否继续利用上一次的计算结果？
      * <p>
      * 对于左边的最大值，由于我们的位点是一直往右移动的，这意味着左边界的最大值只会增加，不会减少。但是对于右边界，其实是一个递减的过程，我们需要用一个大顶堆来维护当前的最大值。
-     *
+     * <p>
      * 时间复杂度O(nlogn)，空间复杂度O(n)
-     *
+     * <p>
      * 性能击败17%
      *
      * @param height
@@ -108,6 +108,35 @@ public class TrappingTainWater {
             if (height[i] > lmax) {
                 lmax = height[i];
             }
+        }
+        return water;
+    }
+
+    /**
+     * 还有一个O(n)的解法，我们提前算好左右边界的值即可。
+     *
+     * @param height
+     * @return
+     */
+    public int trap3(int[] height) {
+        if (height.length == 0) {
+            return 0;
+        }
+        //计算右边界
+        int[] rmax = new int[height.length];
+        int max = 0;
+        for (int i = height.length - 1; i >= 0; i--) {
+            rmax[i] = max;
+            max = Math.max(max, height[i]);
+        }
+        //扫描并计算
+        int lmax = 0, water = 0;
+        for (int i = 0; i < height.length; i++) {
+            int min = Math.min(lmax, rmax[i]);
+            if (min > height[i]) {
+                water += min - height[i];
+            }
+            lmax = Math.max(height[i], lmax);
         }
         return water;
     }
