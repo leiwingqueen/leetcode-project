@@ -44,15 +44,13 @@ public class TrapRainWater2 {
             {-1, 0},
             {1, 0},
             {0, -1},
-            {0, 1},
-            {-1, -1},
-            {-1, 1},
-            {1, -1},
-            {1, 1}
+            {0, 1}
     };
 
     /**
      * 暴力解法，这个跟上一题唯一的区别是由二维变成三维。我们可以用bfs找到边界的最高点
+     *
+     * 难，这个不能通过
      *
      * @param heightMap
      * @return
@@ -66,6 +64,7 @@ public class TrapRainWater2 {
         for (int i = 1; i < row - 1; i++) {
             for (int j = 1; j < col; j++) {
                 int height = bfs(heightMap, row, col, i, j);
+                System.out.println(String.format("x:%s,y:%s,h:%s", row, col, height));
                 if (height > heightMap[i][j]) {
                     water += height - heightMap[i][j];
                 }
@@ -81,6 +80,7 @@ public class TrapRainWater2 {
         queue.add(new int[]{i, j});
         visit[i][j] = 1;
         int max = 0;
+        int depth = 0;
         while (queue.size() > 0) {
             int len = queue.size();
             //计算同一层的最小值
@@ -101,6 +101,7 @@ public class TrapRainWater2 {
                     queue.add(new int[]{x, y});
                     visit[x][y] = 1;
                 }
+                System.out.println(String.format("第%s层的高度为%s", ++depth, min));
             }
             max = Math.max(min, max);
         }
