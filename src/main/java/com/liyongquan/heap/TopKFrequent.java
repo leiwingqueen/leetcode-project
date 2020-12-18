@@ -34,6 +34,8 @@ import java.util.PriorityQueue;
 public class TopKFrequent {
     /**
      * 先统计，然后再做排序
+     * <p>
+     * 时间复杂度O(nlogn)
      *
      * @param nums
      * @param k
@@ -53,6 +55,39 @@ public class TopKFrequent {
         //输出
         int[] res = new int[k];
         for (int i = 0; i < k; i++) {
+            res[i] = pq.poll()[0];
+        }
+        return res;
+    }
+
+    /**
+     * 优化。
+     * <p>
+     * 时间复杂度O(nlogk)，空间复杂度O(n)
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] topKFrequent2(int[] nums, int k) {
+        //统计
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        //构建小顶堆
+        PriorityQueue<int[]> pq = new PriorityQueue<>(k, (o1, o2) -> o1[1] - o2[1]);
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            if (pq.size() < k) {
+                pq.add(new int[]{entry.getKey(), entry.getValue()});
+            } else if (entry.getValue() > pq.peek()[1]) {
+                pq.poll();
+                pq.add(new int[]{entry.getKey(), entry.getValue()});
+            }
+        }
+        //输出
+        int[] res = new int[k];
+        for (int i = k - 1; i >= 0; i--) {
             res[i] = pq.poll()[0];
         }
         return res;
