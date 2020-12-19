@@ -84,4 +84,41 @@ public class Rotate {
             }
         }
     }
+
+    /**
+     * 用翻转代替旋转
+     * <p>
+     * 先水平翻转，然后再对角线翻转
+     * <p>
+     * 水平翻转等价于m[i][j]<->m[row-i-1][j]
+     * 对角线翻转等价于m[i][j]<->m[j][j]
+     * <p>
+     * 最终就会等价于m[i][j]<->m[j][row-i-1]
+     *
+     * @param matrix
+     */
+    public void rotate3(int[][] matrix) {
+        int row = matrix.length;
+        if (row <= 1) {
+            return;
+        }
+        //水平翻转
+        for (int i = 0; i < row / 2; i++) {
+            for (int j = 0; j < row; j++) {
+                swap(matrix, i, j, row - i - 1, j);
+            }
+        }
+        //对角线翻转
+        for (int i = 1; i < row; i++) {
+            for (int j = 0; j < i; j++) {
+                swap(matrix, i, j, j, i);
+            }
+        }
+    }
+
+    private void swap(int[][] matrix, int x1, int y1, int x2, int y2) {
+        int tmp = matrix[x1][y1];
+        matrix[x1][y1] = matrix[x2][y2];
+        matrix[x2][y2] = tmp;
+    }
 }
