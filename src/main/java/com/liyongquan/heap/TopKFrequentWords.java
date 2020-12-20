@@ -15,7 +15,7 @@ public class TopKFrequentWords {
             if (i != 0) {
                 return i;
             }
-            return o1.compareTo(o2);
+            return o2.compareTo(o1);
         });
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             if (pq.size() < k) {
