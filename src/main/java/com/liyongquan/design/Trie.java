@@ -108,6 +108,11 @@ public class Trie {
         return node != null;
     }
 
+    /**
+     * 时间复杂度O(len)
+     * @param word
+     * @return
+     */
     private TrieNode scan(String word) {
         TrieNode cur = root;
         for (int i = 0; i < word.length(); i++) {
