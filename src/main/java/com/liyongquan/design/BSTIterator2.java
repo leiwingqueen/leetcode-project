@@ -2,6 +2,7 @@ package com.liyongquan.design;
 
 import com.liyongquan.tree.TreeNode;
 
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,34 +39,48 @@ import java.util.List;
  * 链接：https://leetcode-cn.com/problems/binary-search-tree-iterator
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
-public class BSTIterator {
-    private Iterator<Integer> iterator;
+public class BSTIterator2 {
+    private Deque<TreeNode> stack;
 
     /**
-     * 先尝试最笨的方法，先中序遍历把结果存储起来
+     * 本质上还是中序遍历，但是用的是自己实现的栈来代替递归
+     * <p>
+     * 空间复杂度O(h)
+     * 时间复杂度O(h)
      *
      * @param root
      */
-    public BSTIterator(TreeNode root) {
-        List<Integer> list = new LinkedList<>();
-        inOrder(root, list);
-        this.iterator = list.iterator();
+    public BSTIterator2(TreeNode root) {
+        this.stack = new LinkedList<>();
+        pushLeftMost(root);
     }
 
+    /**
+     * 时间复杂度O(h)
+     * 空间复杂度O(h)
+     *
+     * @return
+     */
     public int next() {
-        return iterator.next();
+        if (!hasNext()) {
+            throw new RuntimeException("get next error");
+        }
+        TreeNode poll = stack.pollFirst();
+        //非叶子节点
+        if (poll.right != null) {
+            pushLeftMost(poll.right);
+        }
+        return poll.val;
     }
 
     public boolean hasNext() {
-        return iterator.hasNext();
+        return !stack.isEmpty();
     }
 
-    private void inOrder(TreeNode root, List<Integer> list) {
-        if (root == null) {
-            return;
+    private void pushLeftMost(TreeNode node) {
+        while (node != null) {
+            stack.offerFirst(node);
+            node = node.left;
         }
-        inOrder(root.left, list);
-        list.add(root.val);
-        inOrder(root.right, list);
     }
 }
