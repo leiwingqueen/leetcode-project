@@ -75,4 +75,65 @@ public class LongestWord {
         }
         return true;
     }
+
+    /**
+     * 构造一颗前缀树，然后通过dfs/bfs的方式得到最大的字符串。
+     *
+     * @param words
+     * @return
+     */
+    public String longestWord2(String[] words) {
+        TrieNode root = new TrieNode('-', false);
+        //构造前缀树
+        for (String word : words) {
+            TrieNode cur = root;
+            for (int i = 0; i < word.length(); i++) {
+                boolean end = i == word.length() - 1;
+                char c = word.charAt(i);
+                int idx = c - 'a';
+                if (cur.child[idx] == null) {
+                    cur.child[idx] = new TrieNode(c, end);
+                } else if (end) {
+                    cur.child[idx].end = true;
+                }
+                cur = cur.child[idx];
+            }
+        }
+        //dfs扫描最大字符串
+        return dfs(root, new StringBuilder());
+    }
+
+    private String dfs(TrieNode root, StringBuilder prefix) {
+        if (root == null) {
+            return prefix.toString();
+        }
+        String max = "";
+        for (TrieNode trieNode : root.child) {
+            if (trieNode != null && trieNode.end) {
+                prefix.append(trieNode.ch);
+                //System.out.println(String.format("append prefix:%s,append:%s", prefix, trieNode.ch));
+                String subStr = dfs(trieNode, prefix);
+                //这里不需要考虑字典序的问题，因为我们顺序扫描子节点的时候就已经意味着按照字典序排列了
+                if (subStr.length() > max.length()) {
+                    max = subStr;
+                }
+                //需要重新做一次空间拷贝，可能是性能瓶颈
+                prefix.deleteCharAt(prefix.length() - 1);
+                //System.out.println(String.format("delete prefix:%s", prefix));
+            }
+        }
+        //System.out.println("prefix:" + prefix + ",max:" + max);
+        return max.length() == 0 ? prefix.toString() : max;
+    }
+
+    private static class TrieNode {
+        char ch;
+        boolean end;
+        private TrieNode[] child = new TrieNode[26];
+
+        public TrieNode(char ch, boolean end) {
+            this.ch = ch;
+            this.end = end;
+        }
+    }
 }
