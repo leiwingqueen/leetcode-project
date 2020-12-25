@@ -1,7 +1,5 @@
 package com.liyongquan.trie;
 
-import com.liyongquan.design.Trie;
-
 /**
  * 给定一个非空数组，数组中元素为 a0, a1, a2, … , an-1，其中 0 ≤ ai < 231 。
  * <p>
