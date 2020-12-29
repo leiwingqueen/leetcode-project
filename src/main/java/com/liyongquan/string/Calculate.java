@@ -32,8 +32,6 @@ import java.util.List;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class Calculate {
-    public static final char[] OP = {'+', '-', '*', '/'};
-
     /**
      * 栈中只保留需要相加的数字。
      * 遇到数字入栈，如果是+-运算符不做任何处理。如果是*除则出栈并计算出结果再入栈
