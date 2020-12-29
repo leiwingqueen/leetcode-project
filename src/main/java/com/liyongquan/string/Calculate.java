@@ -1,6 +1,7 @@
 package com.liyongquan.string;
 
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,38 +35,51 @@ public class Calculate {
     public static final char[] OP = {'+', '-', '*', '/'};
 
     /**
-     * 双栈解决运算符的优先级问题
+     * 栈中只保留需要相加的数字。
+     * 遇到数字入栈，如果是+-运算符不做任何处理。如果是*除则出栈并计算出结果再入栈
+     * <p>
+     * 最后栈中只会保留+-的运算符
      *
      * @param s
      * @return
      */
     public int calculate(String s) {
-        Deque<Number> num = new LinkedList<>();
-        Deque<Operator> op = new LinkedList<>();
+        Deque<Number> s1 = new LinkedList<>();
+        Deque<Operator> s2 = new LinkedList<>();
+
         List<Token> tokens = lex(s);
-        for (Token token : tokens) {
+        Iterator<Token> iterator = tokens.iterator();
+        while (iterator.hasNext()) {
+            Token token = iterator.next();
             if (token instanceof Number) {
-                num.offerFirst((Number) token);
+                s1.offerFirst((Number) token);
             } else {
-                op.offerFirst((Operator) token);
-            }
-        }
-        //出栈
-        while (!op.isEmpty()) {
-            Operator operator = op.pollFirst();
-            if (operator.op == '*' || operator.op == '/') {
-                Number n1 = num.pollFirst();
-                Number n2 = num.pollFirst();
-                if (operator.op == '*') {
-                    num.offerFirst(new Number(n1.num * n2.num));
+                Operator op = (Operator) token;
+                if (op.op == '+' || op.op == '-') {
+                    s2.offerFirst(op);
                 } else {
-                    num.offerFirst(new Number(n2.num / n1.num));
+                    Number next = (Number) iterator.next();
+                    Number pre = s1.pollFirst();
+                    if (op.op == '*') {
+                        s1.offerFirst(new Number(next.num * pre.num));
+                    } else {
+                        s1.offerFirst(new Number(pre.num / next.num));
+                    }
                 }
-            } else {
-                Operator preOp = op.peekFirst();
-                
             }
         }
+        //最后把栈内的元素相加/相减,需要使用双端队列的特性，顺序弹出
+        while (!s2.isEmpty()) {
+            Number n1 = s1.pollLast();
+            Number n2 = s1.pollLast();
+            Operator op = s2.pollLast();
+            if (op.op == '+') {
+                s1.offerLast(new Number(n1.num + n2.num));
+            } else {
+                s1.offerLast(new Number(n1.num - n2.num));
+            }
+        }
+        return s1.peekLast().num;
     }
 
     /**
@@ -93,6 +107,9 @@ public class Calculate {
                     tokens.add(new Operator(c));
                 }
             }
+        }
+        if (num != null) {
+            tokens.add(new Number(num));
         }
         return tokens;
     }
