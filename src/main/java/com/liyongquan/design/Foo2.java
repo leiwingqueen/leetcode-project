@@ -1,7 +1,5 @@
 package com.liyongquan.design;
 
-import jdk.management.resource.internal.inst.SocketOutputStreamRMHooks;
-
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
