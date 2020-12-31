@@ -42,7 +42,7 @@ import java.util.List;
 public class GenerateTrees {
     /**
      * 递归解法是一开始最容易想到的算法。回溯解法
-     *
+     * <p>
      * 时间复杂度。指数级别
      *
      * @param n
@@ -56,47 +56,37 @@ public class GenerateTrees {
             return Arrays.asList(new TreeNode(1));
         }
         List<TreeNode> res = new LinkedList<>();
-        int[] used = new int[n];
         for (int i = 0; i < n; i++) {
-            used[i] = 1;
-            res.addAll(backtrace(new TreeNode(i + 1), used, n));
-            used[i] = 0;
+            List<TreeNode> backtrace = backtrace(new TreeNode(i + 1), 0, n - 1);
+            res.addAll(backtrace);
         }
         return res;
     }
 
-    private List<TreeNode> backtrace(TreeNode parent, int[] used, int n) {
+    private List<TreeNode> backtrace(TreeNode parent, int start, int end) {
         List<TreeNode> res = new LinkedList<>();
         //左右子树需要分别处理
-        List<TreeNode> left = null, right = null;
-        for (int i = 0; i < parent.val - 1; i++) {
-            if (used[i] == 0) {
-                parent.left = new TreeNode(i + 1);
-                used[i] = 1;
-                left = backtrace(parent.left, used, n);
-                used[i] = 0;
-                parent.left = null;
-            }
+        List<TreeNode> left = new LinkedList<>(), right = new LinkedList<>();
+        for (int i = start; i < parent.val - 1; i++) {
+            parent.left = new TreeNode(i + 1);
+            left.addAll(backtrace(parent.left, start, parent.val - 2));
+            parent.left = null;
         }
-        for (int i = parent.val; i < n; i++) {
-            if (used[i] == 0) {
-                parent.right = new TreeNode(i + 1);
-                used[i] = 1;
-                right = backtrace(parent.right, used, n);
-                used[i] = 0;
-                parent.right = null;
-            }
+        for (int i = parent.val; i <= end; i++) {
+            parent.right = new TreeNode(i + 1);
+            right.addAll(backtrace(parent.right, parent.val, end));
+            parent.right = null;
         }
         //剩下就是排列组合的问题，这里必须做深度拷贝
-        if (left == null && right == null) {
+        if (left.isEmpty() && right.isEmpty()) {
             res.add(new TreeNode(parent.val));
-        } else if (left == null) {
+        } else if (left.isEmpty()) {
             for (TreeNode treeNode : right) {
                 TreeNode nr = new TreeNode(parent.val);
                 nr.right = treeNode;
                 res.add(nr);
             }
-        } else if (right == null) {
+        } else if (right.isEmpty()) {
             for (TreeNode treeNode : left) {
                 TreeNode nr = new TreeNode(parent.val);
                 nr.left = treeNode;
@@ -114,4 +104,6 @@ public class GenerateTrees {
         }
         return res;
     }
+
+    //TODO:dp解法
 }
