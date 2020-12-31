@@ -43,62 +43,75 @@ public class GenerateTrees {
     /**
      * 递归解法是一开始最容易想到的算法。回溯解法
      *
+     * 时间复杂度。指数级别
+     *
      * @param n
      * @return
      */
     public List<TreeNode> generateTrees(int n) {
-
-    }
-
-    private List<TreeNode> backtrace(TreeNode root, TreeNode parent, int[] use, int n) {
         if (n == 0) {
             return Collections.emptyList();
         }
         if (n == 1) {
-            Arrays.asList(new TreeNode(1));
+            return Arrays.asList(new TreeNode(1));
         }
         List<TreeNode> res = new LinkedList<>();
-        //初始化根节点
-        if (root == null) {
-            for (int i = 0; i < n; i++) {
-                TreeNode node = new TreeNode(i + 1);
-                use[i] = 1;
-                List<TreeNode> subRes = backtrace(node, node, use, n);
-                res.addAll(subRes);
-                //回溯
-                use[i] = 0;
-            }
-        } else {
-            //左右子树需要分别处理
-            List<TreeNode> left = Collections.emptyList(), right = Collections.emptyList();
-            for (int i = 0; i < parent.val - 1; i++) {
-                parent.left = new TreeNode(i + 1);
-                use[i] = 1;
-                left = backtrace(root, parent.left, use, n);
-                use[i] = 0;
-                parent.left = null;
-            }
-            for (int i = parent.val; i < n; i++) {
-                parent.right = new TreeNode(i + 1);
-                use[i] = 1;
-                right = backtrace(root, parent.right, use, n);
-                use[i] = 0;
-                parent.right = null;
-            }
-            //这里必须做深度拷贝
-
+        int[] used = new int[n];
+        for (int i = 0; i < n; i++) {
+            used[i] = 1;
+            res.addAll(backtrace(new TreeNode(i + 1), used, n));
+            used[i] = 0;
         }
+        return res;
     }
 
-    private TreeNode copy(TreeNode node) {
-        if (node == null) {
-            return null;
+    private List<TreeNode> backtrace(TreeNode parent, int[] used, int n) {
+        List<TreeNode> res = new LinkedList<>();
+        //左右子树需要分别处理
+        List<TreeNode> left = null, right = null;
+        for (int i = 0; i < parent.val - 1; i++) {
+            if (used[i] == 0) {
+                parent.left = new TreeNode(i + 1);
+                used[i] = 1;
+                left = backtrace(parent.left, used, n);
+                used[i] = 0;
+                parent.left = null;
+            }
         }
-        TreeNode node1 = new TreeNode(node.val);
-        TreeNode left = copy(node.left);
-        TreeNode right = copy(node.right);
-        node1.left = left;
-        node1.right = right;
-        return node1;
+        for (int i = parent.val; i < n; i++) {
+            if (used[i] == 0) {
+                parent.right = new TreeNode(i + 1);
+                used[i] = 1;
+                right = backtrace(parent.right, used, n);
+                used[i] = 0;
+                parent.right = null;
+            }
+        }
+        //剩下就是排列组合的问题，这里必须做深度拷贝
+        if (left == null && right == null) {
+            res.add(new TreeNode(parent.val));
+        } else if (left == null) {
+            for (TreeNode treeNode : right) {
+                TreeNode nr = new TreeNode(parent.val);
+                nr.right = treeNode;
+                res.add(nr);
+            }
+        } else if (right == null) {
+            for (TreeNode treeNode : left) {
+                TreeNode nr = new TreeNode(parent.val);
+                nr.left = treeNode;
+                res.add(nr);
+            }
+        } else {
+            for (TreeNode l : left) {
+                for (TreeNode r : right) {
+                    TreeNode nr = new TreeNode(parent.val);
+                    nr.left = l;
+                    nr.right = r;
+                    res.add(nr);
+                }
+            }
+        }
+        return res;
     }
 }
