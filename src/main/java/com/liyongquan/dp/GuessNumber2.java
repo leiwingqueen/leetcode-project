@@ -117,7 +117,9 @@ public class GuessNumber2 {
      * <p>
      * f(s,e)=min{f(s,i-1),f(i+1,e)+i} (s<=i<=e)
      * <p>
-     * dp解法
+     * <p>
+     * 时间复杂度O(n^3)
+     * 空间复杂度O(n^2)
      *
      * @param n
      * @return
@@ -128,16 +130,17 @@ public class GuessNumber2 {
         }
         //初始化(为了兼容边界情况，空间上多使用两行)
         int[][] dp = new int[n + 2][n + 2];
-        //dp表达式
-        for (int end = 2; end <= n; end++) {
-            for (int start = 1; start < end; start++) {
+        //dp表达式，斜线处理
+        for (int diff = 1; diff <= n - 1; diff++) {
+            for (int start = 1; start <= n && start + diff <= n; start++) {
+                int end = start + diff;
                 //计算最小值
                 int min = Integer.MAX_VALUE;
                 for (int i = (start + end) / 2; i <= end; i++) {
                     int tmp = Math.max(dp[start][i - 1], dp[i + 1][end]) + i;
                     min = Math.min(tmp, min);
                 }
-                log.info("dp[{}][{}]={}", start, end, min);
+                //log.info("dp[{}][{}]={}", start, end, min);
                 dp[start][end] = min;
             }
         }
