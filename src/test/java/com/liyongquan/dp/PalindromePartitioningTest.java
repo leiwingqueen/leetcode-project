@@ -13,7 +13,7 @@ public class PalindromePartitioningTest {
     @Test
     public void partition() {
         PalindromePartitioning pp = new PalindromePartitioning();
-        List<List<String>> list = pp.partition("aab");
+        List<List<String>> list = pp.partition2("aab");
         for (List<String> str : list) {
             String reduce = str.stream().reduce("", (a, b) -> a + "," + b);
             log.info(reduce);
