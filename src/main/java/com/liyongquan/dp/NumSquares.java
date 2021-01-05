@@ -46,8 +46,10 @@ public class NumSquares {
 
     /**
      * dfs会超时，对于一颗可达接的树而言，最优解就是叶子节点的最小的高度。我们可以考虑使用bfs来进行遍历
-     *
+     * <p>
      * 哈哈，还是超时，只是相当于适当剪枝。没有去重复解
+     * <p>
+     * 时间复杂度还是指数级别的
      *
      * @param n
      * @return
@@ -71,6 +73,63 @@ public class NumSquares {
             depth++;
         }
         return depth;
+    }
+
+    /**
+     * 使用dp
+     * dp表达式
+     * <p>
+     * f(n)=min{f(n-1),f(n-4),f(n-9)...}+1
+     * <p>
+     * 时间复杂度O(n*sqrt(n))
+     * 空间复杂度O(n)
+     *
+     * @param n
+     * @return
+     */
+    public int numSquares3(int n) {
+        if (n == 0) {
+            return 0;
+        }
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        for (int i = 1; i <= n; i++) {
+            int min = Integer.MAX_VALUE;
+            for (int j = 1; j <= Math.sqrt(i); j++) {
+                min = Math.min(min, dp[i - j * j] + 1);
+            }
+            dp[i] = min;
+        }
+        return dp[n];
+    }
+
+    /**
+     * 上面dp的基础上还能再优化一点，对于平方数我们预先生成，这样就不需要每次计算一遍乘积
+     *
+     * @param n
+     * @return
+     */
+    public int numSquares4(int n) {
+        if (n == 0) {
+            return 0;
+        }
+        //预生成乘积
+        int len = (int) Math.sqrt(n) + 1;
+        int[] square = new int[len];
+        for (int i = 1; i < len; i++) {
+            square[i] = i * i;
+        }
+        //dp迭代
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        for (int i = 1; i <= n; i++) {
+            int min = Integer.MAX_VALUE;
+            for (int j = 1; j <= Math.sqrt(i); j++) {
+                min = Math.min(min, dp[i - square[j]] + 1);
+            }
+            dp[i] = min;
+        }
+        return dp[n];
     }
 
 }
