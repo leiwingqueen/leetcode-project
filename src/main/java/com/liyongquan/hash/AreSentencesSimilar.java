@@ -46,8 +46,10 @@ public class AreSentencesSimilar {
         for (List<String> pair : similarPairs) {
             Set<String> set1 = m1.getOrDefault(pair.get(0), new HashSet<>());
             set1.add(pair.get(1));
+            m1.put(pair.get(0), set1);
             Set<String> set2 = m2.getOrDefault(pair.get(1), new HashSet<>());
             set2.add(pair.get(0));
+            m2.put(pair.get(1), set2);
         }
         for (int i = 0; i < sentence1.length; i++) {
             String s1 = sentence1[i];

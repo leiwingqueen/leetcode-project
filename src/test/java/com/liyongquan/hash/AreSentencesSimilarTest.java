@@ -1,17 +1,32 @@
 package com.liyongquan.hash;
 
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
+@Slf4j
 public class AreSentencesSimilarTest {
+    private AreSentencesSimilar as = new AreSentencesSimilar();
 
     /**
-     * ["an","extraordinary","meal"]
-     * ["one","good","dinner"]
-     * [["great","good"],["extraordinary","good"],["well","good"],["wonderful","good"],["excellent","good"],["fine","good"],["nice","good"],["any","one"],["some","one"],["unique","one"],["the","one"],["an","one"],["single","one"],["a","one"],["truck","car"],["wagon","car"],["automobile","car"],["auto","car"],["vehicle","car"],["entertain","have"],["drink","have"],["eat","have"],["take","have"],["fruits","meal"],["brunch","meal"],["breakfast","meal"],["food","meal"],["dinner","meal"],["super","meal"],["lunch","meal"],["possess","own"],["keep","own"],["have","own"],["extremely","very"],["actually","very"],["really","very"],["super","very"]]
+     * ["great","acting","skills"]
+     * ["fine","drama","talent"]
+     * [["great","fine"],["drama","acting"],["skills","talent"]]
      */
     @Test
     public void areSentencesSimilar() {
+        List<List<String>> list = new LinkedList<>();
+        list.add(Arrays.asList("great", "fine"));
+        list.add(Arrays.asList("drama", "acting"));
+        list.add(Arrays.asList("skills", "talent"));
+        boolean b = as.areSentencesSimilar(new String[]{"great", "acting", "skills"}, new String[]{"fine", "drama", "talent"}, list);
+        log.info("res:{}", b);
+        Assert.assertEquals(true, b);
     }
 }
