@@ -15,6 +15,11 @@ public class TicketTest {
     }
 
     @Test
+    public void matchZero() {
+        baseTest(new int[]{0, 1}, 1, 1);
+    }
+
+    @Test
     public void match_over() {
         baseTest(new int[]{1, 4, 5, 9}, 7, 9);
         baseTest(new int[]{1, 4, 5, 9, 34, 5, 4}, 16, 17);

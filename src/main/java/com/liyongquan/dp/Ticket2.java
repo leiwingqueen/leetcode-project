@@ -1,12 +1,58 @@
 package com.liyongquan.dp;
 
 
+import javafx.util.Pair;
+
 import java.util.*;
 
 /**
  * 发票匹配问题
+ * <p>
+ * 先贪心，然后再dp
  */
-public class Ticket {
+public class Ticket2 {
+    /**
+     * 贪心+dp
+     *
+     * @param s 发票金额
+     * @param t 台账金额
+     */
+    public MatchResult match(int[] s, int[] t) {
+        //能够刚好匹配的直接匹配出账
+        //k--金额，v--对应的下标列表
+        Map<Integer, Set<Integer>> map = new HashMap<>(s.length);
+        //发票的总额
+        for (int i = 0; i < s.length; i++) {
+            if (map.containsKey(s[i])) {
+                map.get(s[i]).add(i);
+            } else {
+                Set<Integer> set = new HashSet<>();
+                set.add(i);
+                map.put(s[i], set);
+            }
+        }
+        List<Pair<Integer, Integer>> greedPairList = new LinkedList<>();
+        //后续需要dp的台账金额
+        int tSum = 0;
+        for (int i = 0; i < t.length; i++) {
+            int price = t[i];
+            //能够刚好匹配直接优先匹配
+            if (map.containsKey(price) && map.get(price).size() > 0) {
+                Set<Integer> set = map.get(price);
+                Integer idx = set.iterator().next();
+                greedPairList.add(new Pair<>(i, idx));
+                set.remove(idx);
+                //匹配成功后把台账金额置为0，并把发票总额减少，方便后续dp求最优解
+                s[idx] = 0;
+            } else {
+                tSum += price;
+            }
+        }
+        //剩下的作为一个大背包做dp
+        TicketPair ticketPair = match(s, tSum);
+        return new Ticket2.MatchResult(greedPairList, ticketPair);
+    }
+
     /**
      * 匹配发票，并且保证得到的发票总额最小。如果不存在结果，返回-1
      * <p>
@@ -79,6 +125,18 @@ public class Ticket {
                 list.add(i);
             }
             return new TicketPair(this.weight, list);
+        }
+    }
+
+    public static class MatchResult {
+        //贪心算法匹配的解(k--台账下标，v--发票的下标)
+        List<Pair<Integer, Integer>> greedPairList;
+        //dp对剩余台账返回的最优解
+        TicketPair ticketPair;
+
+        public MatchResult(List<Pair<Integer, Integer>> greedPairList, TicketPair ticketPair) {
+            this.greedPairList = greedPairList;
+            this.ticketPair = ticketPair;
         }
     }
 }
