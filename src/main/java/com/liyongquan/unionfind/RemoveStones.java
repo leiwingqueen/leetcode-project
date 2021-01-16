@@ -1,7 +1,5 @@
 package com.liyongquan.unionfind;
 
-import java.util.Currency;
-
 /**
  * n 块石头放置在二维平面中的一些整数坐标点上。每个坐标点上最多只能有一块石头。
  * <p>
