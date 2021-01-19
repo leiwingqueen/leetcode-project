@@ -97,11 +97,17 @@ public class NumIslands {
         }
 
         public int find(int x) {
-            if (parent[x] == x) {
+            /*if (parent[x] == x) {
                 return x;
             } else {
                 return find(parent[x]);
+            }*/
+            while (parent[x] != x) {
+                //路径压缩
+                parent[x] = parent[parent[x]];
+                x = parent[x];
             }
+            return parent[x];
         }
 
         public void union(int x, int y) {
