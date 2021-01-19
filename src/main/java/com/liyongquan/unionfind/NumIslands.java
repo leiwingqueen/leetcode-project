@@ -1,5 +1,7 @@
 package com.liyongquan.unionfind;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 给你一个由 '1'（陆地）和 '0'（水）组成的的二维网格，请你计算网格中岛屿的数量。
  * <p>
@@ -40,6 +42,7 @@ package com.liyongquan.unionfind;
  * 链接：https://leetcode-cn.com/problems/number-of-islands
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
+@Slf4j
 public class NumIslands {
     private static final int[][] DIR = new int[][]{
             {1, 0},
@@ -58,12 +61,14 @@ public class NumIslands {
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
                 if (grid[i][j] == '1') {
+                    //直接设置为0，避免重复合并
                     grid[i][j] = 0;
                     //遍历四周围，如果是陆地则进行合并
                     for (int[] dir : DIR) {
                         int x = i + dir[0], y = j + dir[1];
                         if (x >= 0 && x < row && y >= 0 && y < col && grid[x][y] == '1') {
-                            uf.union(x, y);
+                            //log.info("合并节点:[{},{}],[{},{}]", i, j, x, y);
+                            uf.union(i * col + j, x * col + y);
                         }
                     }
                 }
@@ -83,8 +88,10 @@ public class NumIslands {
             //初始化，每个节点的父节点就是自己
             for (int i = 0; i < row; i++) {
                 for (int j = 0; j < col; j++) {
-                    parent[i * row + j] = i * row + j;
-                    count++;
+                    if (grid[i][j] == '1') {
+                        parent[i * col + j] = i * col + j;
+                        count++;
+                    }
                 }
             }
         }
