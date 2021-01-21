@@ -39,7 +39,9 @@ public class RightSideView {
             int size = queue.size();
             for (int i = 0; i < size; i++) {
                 TreeNode node = queue.poll();
-                res.add(node.val);
+                if (i==0) {
+                    res.add(node.val);
+                }
                 //先写入右子树，再写入左子树
                 if (node.right != null) {
                     queue.add(node.right);
