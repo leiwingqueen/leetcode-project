@@ -103,7 +103,7 @@ public class MaxStack {
     }
 
     /**
-     * 时间复杂度O(log(n))?
+     * 时间复杂度O(n)?
      *
      * @return
      */
