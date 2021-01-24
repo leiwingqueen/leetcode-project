@@ -2,7 +2,6 @@ package com.liyongquan.stack;
 
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.Stack;
 
 /**
  * 设计一个最大栈数据结构，既支持栈操作，又支持查找栈中最大元素。
