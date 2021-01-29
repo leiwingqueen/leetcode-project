@@ -2,10 +2,7 @@ package com.liyongquan.dfs;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 1631. 最小体力消耗路径
@@ -164,8 +161,55 @@ public class MinimumEffortPath {
         return l;
     }
 
+
+    //**********************************并查集算法2，优化***************************
+
+    /**
+     * 先排序，然后逐步添加
+     *
+     * @param heights
+     * @return
+     */
+    public int minimumEffortPath3(int[][] heights) {
+        int row = heights.length, col = heights[0].length;
+        //构造无向图(为了减少重复边的数量，我们只需要考虑右下两个方向即可)
+        List<Edge> edges = new LinkedList<>();
+        int threshold = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                //右
+                if (j + 1 < col) {
+                    int weight = Math.abs(heights[i][j] - heights[i][j + 1]);
+                    edges.add(new Edge(toIdx(i, j, col), toIdx(i, j + 1, col), weight));
+                    threshold = Math.max(weight, threshold);
+                }
+                //下
+                if (i + 1 < row) {
+                    int weight = Math.abs(heights[i][j] - heights[i + 1][j]);
+                    edges.add(new Edge(toIdx(i, j, col), toIdx(i + 1, j, col), weight));
+                    threshold = Math.max(weight, threshold);
+                }
+            }
+        }
+        Collections.sort(edges, Comparator.comparingInt(o -> o.weight));
+        //一直添加边，直到左上和右下变成联通
+        int res = 0;
+        UnionFind uf = new UnionFind(row * col);
+        for (Edge edge : edges) {
+            uf.union(edge.x, edge.y);
+            int root1 = uf.find(0);
+            int root2 = uf.find(row * col - 1);
+            res = Math.max(res, edge.weight);
+            if (root1 == root2) {
+                return res;
+            }
+        }
+        return res;
+    }
+
     /**
      * 二维数组转一维
+     *
      * @param x
      * @param y
      * @param col
@@ -225,4 +269,6 @@ public class MinimumEffortPath {
             return count;
         }
     }
+
+    //TODO:Dijkstra算法
 }
