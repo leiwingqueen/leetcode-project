@@ -3,6 +3,8 @@ package com.liyongquan.dfs;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -107,5 +109,120 @@ public class MinimumEffortPath {
             }
         }
         return min;
+    }
+
+    //**********************************并查集算法***************************
+
+    /**
+     * Consider the grid as a graph, where adjacent cells have an edge with cost of the difference between the cells.
+     * <p>
+     * If you are given threshold k, check if it is possible to go from (0, 0) to (n-1, m-1) using only edges of ≤ k cost.
+     * <p>
+     * 按照提示做二分查找。庆幸的是1 <= heights[i][j] <= 106，log(106)=6.72792，大概7次就能得到结果
+     * <p>
+     * 假设边的数量为n，max(height)=h那么扫描一次大概需要O(nlog(n))的时间效率。总的时间复杂度大概为O(nlog(n)log(h))
+     */
+    public int minimumEffortPath2(int[][] heights) {
+        int row = heights.length, col = heights[0].length;
+        //构造无向图(为了减少重复边的数量，我们只需要考虑右下两个方向即可)
+        List<Edge> edges = new LinkedList<>();
+        int threshold = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                //右
+                if (j + 1 < col) {
+                    int weight = Math.abs(heights[i][j] - heights[i][j + 1]);
+                    edges.add(new Edge(toIdx(i, j, col), toIdx(i, j + 1, col), weight));
+                    threshold = Math.max(weight, threshold);
+                }
+                //下
+                if (i + 1 < row) {
+                    int weight = Math.abs(heights[i][j] - heights[i + 1][j]);
+                    edges.add(new Edge(toIdx(i, j, col), toIdx(i + 1, j, col), weight));
+                    threshold = Math.max(weight, threshold);
+                }
+            }
+        }
+        //二分查找+并查集
+        int l = 0, r = threshold;
+        while (l < r) {
+            UnionFind uf = new UnionFind(row * col);
+            int middle = (l + r) / 2;
+            for (Edge edge : edges) {
+                if (edge.weight <= middle) {
+                    uf.union(edge.x, edge.y);
+                }
+            }
+            int root1 = uf.find(0);
+            int root2 = uf.find(row * col - 1);
+            if (root1 == root2) {
+                r = middle;
+            } else {
+                l = middle + 1;
+            }
+        }
+        return l;
+    }
+
+    /**
+     * 二维数组转一维
+     * @param x
+     * @param y
+     * @param col
+     * @return
+     */
+    private static int toIdx(int x, int y, int col) {
+        return x * col + y;
+    }
+
+    private static class Edge {
+        int x;
+        int y;
+        int weight;
+
+        public Edge(int x, int y, int weight) {
+            this.x = x;
+            this.y = y;
+            this.weight = weight;
+        }
+    }
+
+    /**
+     * 并查集模板
+     */
+    private static class UnionFind {
+        private int[] parent;
+        private int count;
+
+        public UnionFind(int size) {
+            this.parent = new int[size];
+            //初始化，每个节点的父节点就是自己
+            for (int i = 0; i < size; i++) {
+                parent[i] = i;
+                count++;
+            }
+        }
+
+        public int find(int x) {
+            while (parent[x] != x) {
+                //路径压缩
+                parent[x] = parent[parent[x]];
+                x = parent[x];
+            }
+            return parent[x];
+        }
+
+        public void union(int x, int y) {
+            int rootX = find(x);
+            int rootY = find(y);
+            if (rootX != rootY) {
+                parent[rootX] = rootY;
+                count--;
+            }
+        }
+
+        public int getCount() {
+            return count;
+        }
     }
 }
