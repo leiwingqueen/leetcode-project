@@ -57,6 +57,8 @@ public class PseudoCriticalEdges {
      * 证明：
      * 假设权值为k的边(定义为集合M)均连接了不同的子集，边e属于子集M，假设e是非关键边，则意味着不选e也能生成一个MST。
      * 但是不选e意味着在>k的边上需要多选一条边，那么最终的结果必然会比原来的结果大
+     * <p>
+     * 不通过，这个逻辑是有漏洞的。。。
      *
      * @param n
      * @param edges
@@ -97,6 +99,78 @@ public class PseudoCriticalEdges {
                 pseudo.addAll(idxList);
             }
             l = r;
+        }
+        //整合并返回结果
+        List<List<Integer>> mergeRes = new ArrayList<>(2);
+        mergeRes.add(critical);
+        mergeRes.add(pseudo);
+        return mergeRes;
+    }
+
+    /**
+     * 根据题目定义的去判断
+     *
+     * @param n
+     * @param edges
+     * @return
+     */
+    public List<List<Integer>> findCriticalAndPseudoCriticalEdges2(int n, int[][] edges) {
+        int len = edges.length;
+        List<Edge> edgeList = new ArrayList<>(len);
+        for (int i = 0; i < len; i++) {
+            edgeList.add(new Edge(i, edges[i][0], edges[i][1], edges[i][2]));
+        }
+        //计算MST的权值
+        Collections.sort(edgeList, Comparator.comparingInt(o -> o.weight));
+        int value = 0;
+        UnionFind uf = new UnionFind(n);
+        for (Edge edge : edgeList) {
+            if (uf.count == 1) {
+                break;
+            }
+            if (uf.union(edge.from, edge.to)) {
+                value += edge.weight;
+            }
+        }
+        List<Integer> critical = new ArrayList<>(), pseudo = new ArrayList<>();
+        for (Edge edge : edgeList) {
+            //关键边判断
+            uf = new UnionFind(n);
+            int v = 0;
+            for (Edge edge1 : edgeList) {
+                if (uf.count == 1) {
+                    break;
+                }
+                if (edge.idx == edge1.idx) {
+                    continue;
+                }
+                if (uf.union(edge1.from, edge1.to)) {
+                    v += edge1.weight;
+                }
+            }
+            if (uf.count > 1 || v > value) {
+                critical.add(edge.idx);
+                continue;
+            }
+            //非关键边判断
+            v = 0;
+            uf = new UnionFind(n);
+            uf.union(edge.from, edge.to);
+            v += edge.weight;
+            for (Edge edge1 : edgeList) {
+                if (uf.count == 1) {
+                    break;
+                }
+                if (edge.idx == edge1.idx) {
+                    continue;
+                }
+                if (uf.union(edge1.from, edge1.to)) {
+                    v += edge1.weight;
+                }
+            }
+            if (v == value) {
+                pseudo.add(edge.idx);
+            }
         }
         //整合并返回结果
         List<List<Integer>> mergeRes = new ArrayList<>(2);
