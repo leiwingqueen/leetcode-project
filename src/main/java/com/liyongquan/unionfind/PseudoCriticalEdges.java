@@ -74,6 +74,9 @@ public class PseudoCriticalEdges {
         UnionFind uf = new UnionFind(n);
         int l = 0, r = 0;
         while (l < len) {
+            if (uf.count == 1) {
+                break;
+            }
             //找到相同权值边的右边界
             while (r < len && edgeList.get(l).weight == edgeList.get(r).weight) {
                 r++;
