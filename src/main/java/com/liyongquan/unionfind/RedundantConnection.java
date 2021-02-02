@@ -42,6 +42,60 @@ package com.liyongquan.unionfind;
  */
 public class RedundantConnection {
     public int[] findRedundantConnection(int[][] edges) {
+        int len = edges.length;
+        UnionFind uf = new UnionFind(len);
+        for (int[] edge : edges) {
+            if (uf.count == 1) {
+                return edge;
+            }
+            boolean union = uf.union(edge[0] - 1, edge[1] - 1);
+            if (!union) {
+                return edge;
+            }
+        }
+        //实际不会走到这个逻辑
         return new int[]{};
+    }
+
+    /**
+     * 并查集模板
+     */
+    private static class UnionFind {
+        private int[] parent;
+        private int count;
+
+        public UnionFind(int size) {
+            this.parent = new int[size];
+            //初始化，每个节点的父节点就是自己
+            for (int i = 0; i < size; i++) {
+                parent[i] = i;
+                count++;
+            }
+        }
+
+        public int find(int x) {
+            while (parent[x] != x) {
+                //路径压缩
+                parent[x] = parent[parent[x]];
+                x = parent[x];
+            }
+            return parent[x];
+        }
+
+        public boolean union(int x, int y) {
+            int rootX = find(x);
+            int rootY = find(y);
+            if (rootX != rootY) {
+                parent[rootX] = rootY;
+                count--;
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        public int getCount() {
+            return count;
+        }
     }
 }
