@@ -44,6 +44,8 @@ public class RedundantDirectedConnection {
     /**
      * 树：一个节点只有一个父节点。在构成树的时候我们需要有公共父节点的边放到最后
      *
+     * 不通过，还需要修改
+     *
      * @param edges
      * @return
      */
@@ -51,7 +53,9 @@ public class RedundantDirectedConnection {
         int len = edges.length;
         UnionFind uf = new UnionFind(len);
         Map<Integer, EdgeList> map = new HashMap<>();
-        for (int[] edge : edges) {
+        //多个结果，优先输出靠后的边，因为尝试倒序遍历
+        for (int i = len - 1; i >= 0; i--) {
+            int[] edge = edges[i];
             if (map.containsKey(edge[1])) {
                 map.get(edge[1]).add(edge);
             } else {
@@ -59,6 +63,9 @@ public class RedundantDirectedConnection {
             }
         }
         List<EdgeList> list = new ArrayList<>(map.size());
+        for (EdgeList value : map.values()) {
+            list.add(value);
+        }
         //把终点有重复的边放在最后添加
         Collections.sort(list, Comparator.comparingInt(o -> o.edges.size()));
         for (EdgeList edge : list) {
