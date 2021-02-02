@@ -20,4 +20,12 @@ public class CharacterReplacementTest {
         int r = cr.characterReplacement("AABABBA", 1);
         System.out.println(r);
     }
+
+    @Test
+    public void characterReplacement2() {
+        int r = cr.characterReplacement2("ABBB", 2);
+        System.out.println(r);
+        Assert.assertEquals(4, r);
+    }
+
 }

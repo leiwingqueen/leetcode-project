@@ -51,7 +51,7 @@ public class CharacterReplacement {
             int pos = s.charAt(r) - 'A';
             bitmap[pos]++;
             r++;
-            //更新窗口内的相同字符
+            //更新窗口内的相同字符(这里不是很理解)
             hisMax = Math.max(bitmap[pos], hisMax);
             if (r - l > hisMax + k) {
                 //窗口平移
@@ -61,5 +61,47 @@ public class CharacterReplacement {
         }
         //返回窗口大小
         return r - l;
+    }
+
+
+
+    /**
+     * 更新一种暴力解法
+     *
+     * 不通过。考虑ABBB的场景
+     *
+     * @param s
+     * @param k
+     * @return
+     */
+    public int characterReplacement2(String s, int k) {
+        int l = 0, r = 0;
+        //小优化，每次的l都会从第一次不同的点开始移动
+        int firstDiff = -1;
+        int res = 0;
+        while (l < s.length()) {
+            //看最远能移动到哪里
+            int tmp = k;
+            while (r < s.length() && (tmp > 0 || s.charAt(r) == s.charAt(l))) {
+                if (s.charAt(r) != s.charAt(l)) {
+                    tmp--;
+                    if (firstDiff == -1) {
+                        firstDiff = r;
+                    }
+                }
+                r++;
+            }
+            //更新结果
+            res = Math.max(res, r - l);
+            //更新l节点
+            if (firstDiff >= 0) {
+                l = firstDiff;
+                firstDiff = -1;
+            } else {
+                l = r;
+            }
+            r = l;
+        }
+        return res;
     }
 }
