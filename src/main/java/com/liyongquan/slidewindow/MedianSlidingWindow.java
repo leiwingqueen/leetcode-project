@@ -78,6 +78,7 @@ public class MedianSlidingWindow {
             }
             res[l] = middle;
             //更新窗口的数据
+            //性能最低的地方，插入和删除都是O(k)的复杂度，但至少不需要全部做一次重排序
             if (l < nums.length - k) {
                 //增加窗口右边的值
                 Iterator<Integer> it = window.iterator();
