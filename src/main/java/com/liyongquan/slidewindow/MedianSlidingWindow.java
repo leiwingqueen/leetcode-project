@@ -1,5 +1,7 @@
 package com.liyongquan.slidewindow;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -45,6 +47,7 @@ import java.util.List;
  * 链接：https://leetcode-cn.com/problems/sliding-window-median
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
+@Slf4j
 public class MedianSlidingWindow {
     /**
      * 先尝试维护一个k窗口的排序好的数组，每次移动窗口相当于要做一次insert和delete，我们尝试用linklist来进行
@@ -59,7 +62,7 @@ public class MedianSlidingWindow {
         //初始化第一个个窗口
         List<Integer> window = new LinkedList<>();
         for (int i = 0; i < k; i++) {
-            window.add(nums[k]);
+            window.add(nums[i]);
         }
         //排序
         Collections.sort(window);
@@ -69,9 +72,9 @@ public class MedianSlidingWindow {
             //获取中位数
             double middle = 0D;
             if (k % 2 == 1) {
-                middle = window.get(l + k / 2);
+                middle = window.get(k / 2);
             } else {
-                middle = ((double) (window.get(l + k / 2 - 1) + window.get(l + k / 2 + 1))) / 2;
+                middle = ((double) ((long) window.get(k / 2 - 1) + (long) window.get(k / 2))) / 2;
             }
             res[l] = middle;
             //更新窗口的数据
@@ -82,6 +85,7 @@ public class MedianSlidingWindow {
                 while (it.hasNext() && it.next() < nums[l + k]) {
                     idx++;
                 }
+                //log.info("insert idx:{}", idx);
                 window.add(idx, nums[l + k]);
                 //删除窗口左边的数字
                 it = window.iterator();
@@ -89,6 +93,7 @@ public class MedianSlidingWindow {
                 while (it.hasNext() && it.next() != nums[l]) {
                     idx++;
                 }
+                //log.info("remove idx:{}", idx);
                 window.remove(idx);
             }
             l++;
