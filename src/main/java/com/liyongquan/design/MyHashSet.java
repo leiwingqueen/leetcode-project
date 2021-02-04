@@ -53,7 +53,7 @@ import java.util.List;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class MyHashSet {
-    public static final int DEFAULT_CAPACITY = 100;
+    public static final int DEFAULT_CAPACITY = 1000;
     /**
      * Initialize your data structure here.
      */
@@ -103,7 +103,7 @@ public class MyHashSet {
         for (int i = 0; i < data[idx].size(); i++) {
             Integer d = data[idx].get(i);
             if (d.intValue() == key) {
-                return new int[]{idx, d};
+                return new int[]{idx, i};
             }
         }
         return new int[]{idx, -1};
