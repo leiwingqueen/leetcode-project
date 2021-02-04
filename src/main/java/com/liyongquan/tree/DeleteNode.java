@@ -2,6 +2,11 @@ package com.liyongquan.tree;
 
 import lombok.val;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * 450. 删除二叉搜索树中的节点
  * <p>
@@ -50,6 +55,8 @@ import lombok.val;
 public class DeleteNode {
     /**
      * 递归解法
+     * <p>
+     * 不通过，还是有场景覆盖不了
      *
      * @param root
      * @param key
@@ -83,5 +90,91 @@ public class DeleteNode {
             root.right = right;
         }
         return root;
+    }
+
+    /**
+     * 最蠢的做法，直接把树转换成排序数组(中序遍历)。
+     * <p>
+     * 通过二分查找找到删除的点。然后再构建左右子树
+     *
+     * @param root
+     * @param key
+     * @return
+     */
+    public TreeNode deleteNode2(TreeNode root, int key) {
+        if (root == null) {
+            return null;
+        }
+        List<Integer> list = dfs(root);
+        //找到删除的节点
+        int idx = binarySearch(list, key);
+        if (idx == -1) {
+            return root;
+        }
+        //只剩一个节点的场景
+        if (list.size() == 1) {
+            return null;
+        }
+        //构建树,找到第一个有效的节点
+        if (idx > 0) {
+            int rootIdx = idx - 1;
+            TreeNode left = buildTree(list, 0, rootIdx - 1);
+            TreeNode right = buildTree(list, idx + 1, list.size() - 1);
+            TreeNode nr = new TreeNode(list.get(rootIdx));
+            nr.left = left;
+            nr.right = right;
+            return nr;
+        } else {
+            int rootIdx = idx + 1;
+            TreeNode left = buildTree(list, 0, idx - 1);
+            TreeNode right = buildTree(list, rootIdx + 1, list.size() - 1);
+            TreeNode nr = new TreeNode(list.get(rootIdx));
+            nr.left = left;
+            nr.right = right;
+            return nr;
+        }
+    }
+
+    private int binarySearch(List<Integer> list, int key) {
+        //找到删除的节点
+        int l = 0, r = list.size() - 1;
+        while (l < r) {
+            int middle = (l + r) / 2;
+            Integer value = list.get(middle);
+            if (value == key) {
+                return middle;
+            } else if (value < key) {
+                l = middle + 1;
+            } else {
+                r = middle - 1;
+            }
+        }
+        return list.get(l) == key ? l : -1;
+    }
+
+    private TreeNode buildTree(List<Integer> list, int start, int end) {
+        if (start > end || start < 0 || end >= list.size()) {
+            return null;
+        }
+        if (start == end) {
+            return new TreeNode(list.get(start));
+        }
+        int middle = (start + end) / 2;
+        TreeNode root = new TreeNode(list.get(middle));
+        TreeNode left = buildTree(list, start, middle - 1);
+        TreeNode right = buildTree(list, middle + 1, end);
+        root.left = left;
+        root.right = right;
+        return root;
+    }
+
+    private List<Integer> dfs(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<Integer> left = dfs(root.left);
+        left.add(root.val);
+        left.addAll(dfs(root.right));
+        return left;
     }
 }
