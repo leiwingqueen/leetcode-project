@@ -146,4 +146,7 @@ public class LFUCache {
             this.cnt = cnt;
         }
     }
+
+    //TODO:AVL树的解法
+
 }
