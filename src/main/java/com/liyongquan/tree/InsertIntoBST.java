@@ -1,5 +1,7 @@
 package com.liyongquan.tree;
 
+import com.liyongquan.dp.Robber;
+
 /**
  * 给定二叉搜索树（BST）的根节点和要插入树中的值，将值插入二叉搜索树。 返回插入后二叉搜索树的根节点。 输入数据 保证 ，新值和原始二叉搜索树中的任意节点值都不同。
  * <p>
@@ -58,6 +60,38 @@ public class InsertIntoBST {
         } else {
             TreeNode subTree = insertIntoBST(root.right, val);
             root.right = subTree;
+        }
+        return root;
+    }
+
+    /**
+     * 迭代解法
+     *
+     * @param root
+     * @param val
+     * @return
+     */
+    public TreeNode insertIntoBST2(TreeNode root, int val) {
+        if (root == null) {
+            return new TreeNode(val);
+        }
+        TreeNode node = root;
+        while (true) {
+            if (val < node.val) {
+                if (node.left == null) {
+                    node.left = new TreeNode(val);
+                    break;
+                } else {
+                    node = node.left;
+                }
+            } else {
+                if (node.right == null) {
+                    node.right = new TreeNode(val);
+                    break;
+                } else {
+                    node = node.right;
+                }
+            }
         }
         return root;
     }
