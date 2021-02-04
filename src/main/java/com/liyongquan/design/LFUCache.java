@@ -71,12 +71,12 @@ public class LFUCache {
     //数据存储
     private Map<Integer, CounterValue> map;
     private int capacity;
-    private int id;
+    private int timestamp;
 
     public LFUCache(int capacity) {
         this.map = new HashMap<>(capacity + 1);
         this.capacity = capacity;
-        id = 0;
+        timestamp = 0;
     }
 
     /**
@@ -90,7 +90,9 @@ public class LFUCache {
             return -1;
         }
         CounterValue cv = map.get(key);
+        timestamp++;
         cv.cnt += 1;
+        cv.time = timestamp;
         return cv.value;
     }
 
@@ -107,14 +109,15 @@ public class LFUCache {
         //过期检测
         expire(key);
         CounterValue cv;
+        timestamp++;
         if (this.map.containsKey(key)) {
             cv = map.get(key);
         } else {
-            cv = new CounterValue(id, value, 0);
-            id++;
+            cv = new CounterValue(timestamp, value, 0);
         }
         cv.value = value;
         cv.cnt += 1;
+        cv.time = timestamp;
         map.put(key, cv);
     }
 
@@ -122,7 +125,9 @@ public class LFUCache {
         if (this.capacity == 0 || this.map.size() < this.capacity || this.map.containsKey(key)) {
             return;
         }
-        PriorityQueue<Map.Entry<Integer, CounterValue>> pq = new PriorityQueue<>(map.size(), (o1, o2) -> o1.getValue().cnt != o2.getValue().cnt ? o1.getValue().cnt - o2.getValue().cnt : o1.getValue().id - o2.getValue().id);
+        PriorityQueue<Map.Entry<Integer, CounterValue>> pq = new PriorityQueue<>(map.size(),
+                (o1, o2) -> o1.getValue().cnt != o2.getValue().cnt ?
+                        o1.getValue().cnt - o2.getValue().cnt : o1.getValue().time - o2.getValue().time);
         for (Map.Entry<Integer, CounterValue> entry : map.entrySet()) {
             pq.add(entry);
         }
@@ -131,12 +136,12 @@ public class LFUCache {
     }
 
     private static class CounterValue {
-        int id;
+        int time;
         int value;
         int cnt;
 
-        public CounterValue(int id, int value, int cnt) {
-            this.id = id;
+        public CounterValue(int time, int value, int cnt) {
+            this.time = time;
             this.value = value;
             this.cnt = cnt;
         }
