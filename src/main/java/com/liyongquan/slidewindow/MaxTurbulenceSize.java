@@ -44,6 +44,20 @@ import lombok.extern.slf4j.Slf4j;
 public class MaxTurbulenceSize {
     /**
      * 滑动窗口算法
+     * <p>
+     * 场景有点多
+     * <p>
+     * if l==r,r++
+     * else{
+     * if arr[r-1]==arr[r],l=r
+     * else if r==l+1,更新lt,r++
+     * else{
+     * 跟lt比较满足条件,更新lt,r++
+     * else{
+     * l=r-1;
+     * }
+     * }
+     * }
      *
      * @param arr
      * @return
@@ -53,23 +67,23 @@ public class MaxTurbulenceSize {
             return arr.length;
         }
         //最后两个数是否大于比较
-        boolean lt = arr[0] > arr[1];
-        int l = 0, r = 1;
+        boolean lt = false;
+        int l = 0, r = 0;
         int res = 1;
         while (r < arr.length) {
-            //窗口右移
-            if (l == r - 1 && arr[r - 1] != arr[r] || (lt && arr[r - 1] < arr[r]) || (!lt && arr[r - 1] > arr[r])) {
-                log.info("窗口右移...l:{},r:{}", l, r + 1);
-                lt = arr[r - 1] > arr[r];
-                //更新结果
+            if (l == r) {
                 r++;
-                res = Math.max(r - l, res);
             } else {
-                log.info("窗口左移...l:{},r:{}", r, r + 1);
-                //左边界移动
-                lt = arr[r - 1] > arr[r];
-                l = r - 1;
-                r++;
+                if (arr[r - 1] == arr[r]) {
+                    l = r;
+                } else if (r == l + 1 || (lt && arr[r - 1] < arr[r]) || (!lt && arr[r - 1] > arr[r])) {
+                    //更新lt
+                    lt = arr[r - 1] > arr[r];
+                    r++;
+                    res = Math.max(r - l, res);
+                } else {
+                    l = r - 1;
+                }
             }
         }
         return res;
