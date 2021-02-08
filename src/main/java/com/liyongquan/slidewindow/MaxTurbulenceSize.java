@@ -44,6 +44,8 @@ import lombok.extern.slf4j.Slf4j;
 public class MaxTurbulenceSize {
     /**
      * 滑动窗口算法
+     *
+     *
      * <p>
      * 场景有点多
      * <p>
@@ -88,4 +90,6 @@ public class MaxTurbulenceSize {
         }
         return res;
     }
+
+    //TODO:dp解法
 }
