@@ -59,9 +59,46 @@ public class PascalsTriangle2 {
         return pre;
     }
 
+    /**
+     * 先不做任何优化
+     *
+     * @param rowIndex
+     * @return
+     */
+    public List<Integer> getRow2(int rowIndex) {
+        List<List<Integer>> res = new ArrayList<>(rowIndex + 1);
+        res.add(Arrays.asList(1));
+        for (int i = 1; i <= rowIndex; i++) {
+            List<Integer> list = new ArrayList<>(rowIndex + 1);
+            list.add(1);
+            List<Integer> pre = res.get(i - 1);
+            for (int j = 1; j < i; j++) {
+                list.add(pre.get(j - 1) + pre.get(j));
+            }
+            list.add(1);
+            res.add(list);
+        }
+        return res.get(rowIndex);
+    }
+
+    public List<Integer> getRow3(int rowIndex) {
+        List<Integer> pre;
+        pre = Arrays.asList(1);
+        for (int i = 1; i <= rowIndex; i++) {
+            List<Integer> list = new ArrayList<>(rowIndex + 1);
+            list.add(1);
+            for (int j = 1; j < i; j++) {
+                list.add(pre.get(j - 1) + pre.get(j));
+            }
+            list.add(1);
+            pre = list;
+        }
+        return pre;
+    }
+
     public static void main(String[] args) {
         PascalsTriangle2 pt = new PascalsTriangle2();
-        List<Integer> row = pt.getRow(3);
+        List<Integer> row = pt.getRow2(3);
         for (int i = 0; i < row.size(); i++) {
             System.out.println(row.get(i));
         }

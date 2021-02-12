@@ -69,7 +69,6 @@ public class CourseSchedule2 {
             }
         }
         //bfs过程
-        int visit = 0;
         int idx = 0;
         int[] res = new int[numCourses];
         while (!queue.isEmpty()) {
