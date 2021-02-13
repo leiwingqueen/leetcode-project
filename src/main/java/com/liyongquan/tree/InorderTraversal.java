@@ -1,8 +1,6 @@
 package com.liyongquan.tree;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 二叉树的中序遍历
@@ -62,6 +60,35 @@ public class InorderTraversal {
         List<Integer> res = inorderTraversal(root.left);
         res.add(root.val);
         res.addAll(inorderTraversal(root.right));
+        return res;
+    }
+
+    /**
+     * 非递归解法
+     * <p>
+     * 用栈来模拟递归，我们使用一个栈来保存历史的父节点，使用一个变量root来表示当前的节点
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> inorderTraversal2(TreeNode root) {
+        if (root == null) {
+            return Collections.emptyList();
+        }
+        Deque<TreeNode> stack = new LinkedList<>();
+        List<Integer> res = new LinkedList<>();
+        while (root != null || !stack.isEmpty()) {
+            if (root != null) {
+                stack.offerFirst(root);
+                root = root.left;
+            } else {
+                TreeNode node = stack.pollFirst();
+                res.add(node.val);
+                if (node.right != null) {
+                    root = node.right;
+                }
+            }
+        }
         return res;
     }
 }

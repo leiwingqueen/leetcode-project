@@ -24,12 +24,12 @@ public class BinaryTreeUtil {
             //下一层的节点是上一层的两倍
             for (int i = 0; i < size; i++) {
                 TreeNode parent = queue.poll();
-                if (arr[idx] != null) {
+                if (idx < arr.length && arr[idx] != null) {
                     parent.left = new TreeNode(arr[idx]);
                     queue.offer(parent.left);
                 }
                 idx++;
-                if (arr[idx] != null) {
+                if (idx < arr.length && arr[idx] != null) {
                     parent.right = new TreeNode(arr[idx]);
                     queue.offer(parent.right);
                 }
