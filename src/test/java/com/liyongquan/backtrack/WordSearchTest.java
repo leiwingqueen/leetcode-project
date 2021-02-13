@@ -16,7 +16,10 @@ public class WordSearchTest {
      */
     @Test
     public void exist() {
-        char[][] board = {{'A', 'B', 'C', 'E'}, {'S', 'F', 'C', 'S'}, {'A', 'D', 'E', 'E'}};
+        char[][] board = {
+                {'A', 'B', 'C', 'E'},
+                {'S', 'F', 'C', 'S'},
+                {'A', 'D', 'E', 'E'}};
         boolean res = ws.exist(board, "ABCCED");
         log.info("{}", res);
         Assert.assertEquals(true, res);

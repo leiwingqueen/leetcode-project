@@ -55,11 +55,9 @@ public class WordSearch {
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
                 if (word.charAt(0) == board[i][j]) {
-                    board[i][j] = ' ';
                     if (backtrace(board, word, 0, i, j, row, col)) {
                         return true;
                     }
-                    board[i][j] = word.charAt(0);
                 }
             }
         }
@@ -67,11 +65,11 @@ public class WordSearch {
     }
 
     private boolean backtrace(char[][] board, String word, int wordIdx, int x, int y, int row, int col) {
-        if (x < 0 || x >= row || y <= 0 || y >= col) {
-            return false;
-        }
         if (wordIdx >= word.length()) {
             return true;
+        }
+        if (x < 0 || x >= row || y < 0 || y >= col) {
+            return false;
         }
         if (board[x][y] != word.charAt(wordIdx)) {
             return false;
