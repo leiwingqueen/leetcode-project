@@ -33,6 +33,28 @@ public class MaxConsecutiveOnes {
         return current > max ? current : max;
     }
 
+    /**
+     * 双指针的写法
+     *
+     * @param nums
+     * @return
+     */
+    public int findMaxConsecutiveOnes2(int[] nums) {
+        int res = 0;
+        int l = 0, r = 0;
+        while (r < nums.length) {
+            if (nums[r] == 1) {
+                r++;
+                res = Math.max(r - l, res);
+            } else {
+                r++;
+                l = r;
+            }
+        }
+        return res;
+    }
+
+
     public static void main(String[] args) {
         MaxConsecutiveOnes ones = new MaxConsecutiveOnes();
         int maxConsecutiveOnes = ones.findMaxConsecutiveOnes(new int[]{1, 1, 1, 1, 1, 1});
