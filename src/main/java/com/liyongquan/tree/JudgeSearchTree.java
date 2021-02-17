@@ -3,6 +3,7 @@ package com.liyongquan.tree;
 import com.liyongquan.dp.Rope;
 
 import java.time.temporal.ValueRange;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -128,6 +129,39 @@ public class JudgeSearchTree {
         res.add(root.val);
         res.addAll(inorder(root.right));
         return res;
+    }
+
+    /**
+     * 中序遍历非递归写法
+     *
+     * @param root
+     * @return
+     */
+    public boolean isValidBST4(TreeNode root) {
+        List<Integer> res = new LinkedList<>();
+        Deque<TreeNode> stack = new LinkedList<>();
+        TreeNode cur = root;
+        while (cur != null || !stack.isEmpty()) {
+            if (cur != null) {
+                stack.offerFirst(cur);
+                cur = cur.left;
+            } else {
+                TreeNode top = stack.pollFirst();
+                res.add(top.val);
+                if (top.right != null) {
+                    cur = top.right;
+                }
+            }
+        }
+        //再做一次遍历
+        long pre = Long.MIN_VALUE;
+        for (Integer item : res) {
+            if (item.longValue() <= pre) {
+                return false;
+            }
+            pre = item.longValue();
+        }
+        return true;
     }
 
 
