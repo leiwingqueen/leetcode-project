@@ -34,7 +34,7 @@ public class JudgeSearchTree {
     }
 
     private MaxMinResult dfs(TreeNode node) {
-        if (node==null) {
+        if (node == null) {
             return new MaxMinResult(true);
         }
         int max, min;
@@ -44,16 +44,16 @@ public class JudgeSearchTree {
             if (!left.valid || left.max >= node.val) {
                 return new MaxMinResult(false);
             }
-            min=left.min;
+            min = left.min;
         }
-        if (node.right!=null) {
+        if (node.right != null) {
             MaxMinResult right = dfs(node.right);
             if (!right.valid || right.min <= node.val) {
                 return new MaxMinResult(false);
             }
-            max=right.max;
+            max = right.max;
         }
-        return new MaxMinResult(true,max,min);
+        return new MaxMinResult(true, max, min);
     }
 
     private static class MaxMinResult {
@@ -70,5 +70,31 @@ public class JudgeSearchTree {
         public MaxMinResult(boolean valid) {
             this.valid = valid;
         }
+    }
+
+    /**
+     * 递归写法2
+     *
+     * @param root
+     * @return
+     */
+    public boolean isValidBST2(TreeNode root) {
+        return isValid(root, Long.MIN_VALUE, Long.MAX_VALUE);
+    }
+
+    /**
+     * @param root
+     * @param lower 下界
+     * @param upper 上界
+     * @return
+     */
+    private boolean isValid(TreeNode root, long lower, long upper) {
+        if (root == null) {
+            return true;
+        }
+        if (root.val < lower || root.val > upper) {
+            return false;
+        }
+        return isValid(root.left, lower, root.val - 1) && isValid(root.right, root.val + 1, upper);
     }
 }
