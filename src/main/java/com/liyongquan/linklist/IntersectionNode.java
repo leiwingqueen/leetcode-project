@@ -117,6 +117,35 @@ public class IntersectionNode {
         return p1;
     }
 
+    /**
+     * 双指针解法，重新写一下
+     * <p>
+     * 用不想交不需要额外判断，因为两个指针最终一定会同时为null
+     *
+     * @param headA
+     * @param headB
+     * @return
+     */
+    public ListNode getIntersectionNode3(ListNode headA, ListNode headB) {
+        if (headA == null || headB == null) {
+            return null;
+        }
+        ListNode p1 = headA, p2 = headB;
+        while (p1 != p2) {
+            if (p1 == null) {
+                p1 = headB;
+            } else {
+                p1 = p1.next;
+            }
+            if (p2 == null) {
+                p2 = headA;
+            } else {
+                p2 = p2.next;
+            }
+        }
+        return p1;
+    }
+
     public static void main(String[] args) {
         /**
          * [4,1,8,4,5]
