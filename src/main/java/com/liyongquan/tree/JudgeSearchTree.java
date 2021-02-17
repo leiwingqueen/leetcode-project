@@ -95,6 +95,6 @@ public class JudgeSearchTree {
         if (root.val < lower || root.val > upper) {
             return false;
         }
-        return isValid(root.left, lower, root.val - 1) && isValid(root.right, root.val + 1, upper);
+        return isValid(root.left, lower, (long) root.val - 1) && isValid(root.right, (long) root.val + 1, upper);
     }
 }
