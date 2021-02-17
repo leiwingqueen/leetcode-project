@@ -3,6 +3,8 @@ package com.liyongquan.tree;
 import com.liyongquan.dp.Rope;
 
 import java.time.temporal.ValueRange;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 实现一个函数，检查一棵二叉树是否为二叉搜索树。
@@ -97,4 +99,36 @@ public class JudgeSearchTree {
         }
         return isValid(root.left, lower, (long) root.val - 1) && isValid(root.right, (long) root.val + 1, upper);
     }
+
+    /**
+     * 中序遍历-递归解法
+     * <p>
+     * 中序遍历得到的一定是升序
+     *
+     * @param root
+     * @return
+     */
+    public boolean isValidBST3(TreeNode root) {
+        List<Integer> list = inorder(root);
+        long pre = Long.MIN_VALUE;
+        for (Integer item : list) {
+            if (item.longValue() <= pre) {
+                return false;
+            }
+            pre = item.longValue();
+        }
+        return true;
+    }
+
+    private List<Integer> inorder(TreeNode root) {
+        if (root == null) {
+            return new LinkedList<>();
+        }
+        List<Integer> res = inorder(root.left);
+        res.add(root.val);
+        res.addAll(inorder(root.right));
+        return res;
+    }
+
+
 }
