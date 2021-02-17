@@ -164,5 +164,33 @@ public class JudgeSearchTree {
         return true;
     }
 
+    /**
+     * 最后在上面基础上再做一点小优化
+     *
+     * @param root
+     * @return
+     */
+    public boolean isValidBST5(TreeNode root) {
+        long pre = Long.MIN_VALUE;
+        Deque<TreeNode> stack = new LinkedList<>();
+        TreeNode cur = root;
+        while (cur != null || !stack.isEmpty()) {
+            if (cur != null) {
+                stack.offerFirst(cur);
+                cur = cur.left;
+            } else {
+                TreeNode top = stack.pollFirst();
+                if (top.val <= pre) {
+                    return false;
+                }
+                pre = top.val;
+                if (top.right != null) {
+                    cur = top.right;
+                }
+            }
+        }
+        return true;
+    }
+
 
 }
