@@ -85,4 +85,36 @@ public class SearchMatrix {
         }
         return false;
     }
+
+    /**
+     * 一行一行遍历
+     * <p>
+     * 时间复杂度：mlog(n)
+     *
+     * 额，这种写法比上面的写法还快
+     *
+     * @param matrix
+     * @param target
+     * @return
+     */
+    public boolean searchMatrix2(int[][] matrix, int target) {
+        int row = matrix.length, col = matrix[0].length;
+        for (int i = 0; i < row; i++) {
+            int l = 0, r = col - 1;
+            while (l < r) {
+                int middle = (l + r) / 2;
+                if (matrix[i][middle] == target) {
+                    return true;
+                } else if (matrix[i][middle] > target) {
+                    r = middle - 1;
+                } else {
+                    l = middle + 1;
+                }
+            }
+            if (matrix[i][l] == target) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
