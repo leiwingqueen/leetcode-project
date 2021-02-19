@@ -62,4 +62,36 @@ public class CountSubstrings {
         }
         return true;
     }
+
+    /**
+     * 我们考虑如何降低回文串的判断效率
+     * <p>
+     * 假设f(i,j)为当前字符是否回文串，i<=j
+     * <p>
+     * f(i,j)=f(i+1,j-1)&&s[i]==s[j]
+     * <p>
+     * 那么我们可以使用dp来降低回文串的计算效率
+     * <p>
+     * 需要注意的是由于dp迭代是基于左下方的点决定的，因此我们需要从下往上迭代
+     *
+     * @param s
+     * @return
+     */
+    public int countSubstrings2(String s) {
+        int len = s.length();
+        if (len == 0) {
+            return 0;
+        }
+        boolean[][] dp = new boolean[len][len];
+        int res = 0;
+        for (int i = len - 1; i >= 0; i--) {
+            for (int j = i; j < len; j++) {
+                if (s.charAt(i) == s.charAt(j) && (i + 1 > j - 1 || dp[i + 1][j - 1])) {
+                    dp[i][j] = true;
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
 }
