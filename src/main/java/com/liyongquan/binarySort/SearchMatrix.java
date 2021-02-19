@@ -90,8 +90,8 @@ public class SearchMatrix {
      * 一行一行遍历
      * <p>
      * 时间复杂度：mlog(n)
-     *
-     * 额，这种写法比上面的写法还快
+     * <p>
+     * 额，这种写法比上面的写法还快?为什么
      *
      * @param matrix
      * @param target
@@ -117,4 +117,32 @@ public class SearchMatrix {
         }
         return false;
     }
+
+    /**
+     * 从右上角开始遍历
+     * <p>
+     * 类似滑动窗口，每次移动能消除一行/一列
+     * <p>
+     * 时间复杂度O(m+n)
+     *
+     * @param matrix
+     * @param target
+     * @return
+     */
+    public boolean searchMatrix3(int[][] matrix, int target) {
+        int row = matrix.length, col = matrix[0].length;
+        int i = 0, j = col - 1;
+        while (i <= row - 1 && j >= 0) {
+            if (matrix[i][j] == target) {
+                return true;
+            } else if (matrix[i][j] < target) {
+                i++;
+            } else {
+                j--;
+            }
+        }
+        return false;
+    }
+
+    //还有一种变种的二分解法
 }
