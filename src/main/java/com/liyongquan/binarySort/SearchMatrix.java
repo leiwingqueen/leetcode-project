@@ -50,7 +50,7 @@ public class SearchMatrix {
             //对角线的位置为(i,i),对应行的范围为(i,0)~(i,i)，对应列的范围为(0,i)~(i,i)
             //对行进行二分查找
             if (i < row) {
-                int l = 0, r = i;
+                int l = 0, r = Math.min(i, col - 1);
                 while (l < r) {
                     int middle = (l + r) / 2;
                     if (matrix[i][middle] == target) {
@@ -67,7 +67,7 @@ public class SearchMatrix {
             }
             //对纵列进行二分查找
             if (i < col) {
-                int l = 0, r = i;
+                int l = 0, r = Math.min(i, row - 1);
                 while (l < r) {
                     int middle = (l + r) / 2;
                     if (matrix[middle][i] == target) {
