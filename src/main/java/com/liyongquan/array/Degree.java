@@ -61,4 +61,44 @@ public class Degree {
         }
         return min;
     }
+
+    public static final int MAX_LEN = 50_000;
+
+    /**
+     * 滑动窗口解法。
+     * <p>
+     * 先统计数组的度，然后使用滑动窗口计算满足度的最小子串
+     *
+     * 时间复杂度O(n)
+     *
+     * @param nums
+     * @return
+     */
+    public int findShortestSubArray2(int[] nums) {
+        int len = nums.length;
+        if (len == 0) {
+            return 0;
+        }
+        //计算数组的度
+        int[] cnt = new int[MAX_LEN];
+        int degree = 0;
+        for (int num : nums) {
+            cnt[num]++;
+            degree = Math.max(degree, cnt[num]);
+        }
+        //滑动窗口开始
+        int l = 0, r = 0;
+        int[] window = new int[MAX_LEN];
+        int res = len;
+        while (r < len) {
+            window[nums[r]]++;
+            r++;
+            while (window[nums[r - 1]] == degree) {
+                res = Math.min(res, r - l);
+                window[nums[l]]--;
+                l++;
+            }
+        }
+        return res;
+    }
 }
