@@ -1,5 +1,7 @@
 package com.liyongquan.slidewindow;
 
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.TreeMap;
 
 /**
@@ -46,6 +48,8 @@ public class LongestSubarray {
      * 首先我们想到的应该是需要一个排序的数据结构。
      * 堆的结构不合适，因为我们需要删除非堆顶节点。
      * 这里考虑使用TreeMap，底层是红黑树，删除和查找效率都是O(log(n))
+     * <p>
+     * 时间复杂度O(nlog(n))
      *
      * @param nums
      * @param limit
@@ -68,6 +72,44 @@ public class LongestSubarray {
                     map.remove(nums[l]);
                 } else {
                     map.put(nums[l], cnt - 1);
+                }
+                l++;
+            }
+            res = Math.max(res, r - l);
+        }
+        return res;
+    }
+
+    /**
+     * 使用两个单调队列来维护最大值和最小值，时间复杂度降为O(n)
+     *
+     * @param nums
+     * @param limit
+     * @return
+     */
+    public int longestSubarray2(int[] nums, int limit) {
+        int len = nums.length;
+        Deque<Integer> maxQue = new LinkedList<>(), minQue = new LinkedList<>();
+        int l = 0, r = 0;
+        int res = 0;
+        while (r < len) {
+            //窗口右移
+            while (!maxQue.isEmpty() && maxQue.peekLast() < nums[r]) {
+                maxQue.pollLast();
+            }
+            while (!minQue.isEmpty() && minQue.peekLast() > nums[r]) {
+                minQue.pollLast();
+            }
+            maxQue.offerLast(nums[r]);
+            minQue.offerLast(nums[r]);
+            r++;
+            while (Math.abs(maxQue.peekFirst() - minQue.peekFirst()) > limit) {
+                //窗口左移
+                if (maxQue.peekFirst() == nums[l]) {
+                    maxQue.pollFirst();
+                }
+                if (minQue.peekFirst() == nums[l]) {
+                    minQue.pollFirst();
                 }
                 l++;
             }
