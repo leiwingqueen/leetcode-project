@@ -65,7 +65,7 @@ public class RemoveNode {
         dummy.next = head;
         ListNode p1, p2;
         p1 = p2 = dummy;
-        for (int i = 0; i < n+1; i++) {
+        for (int i = 0; i < n + 1; i++) {
             p2 = p2.next;
         }
         while (p2 != null) {
