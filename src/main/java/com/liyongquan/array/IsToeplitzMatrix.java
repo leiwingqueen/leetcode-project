@@ -50,6 +50,8 @@ public class IsToeplitzMatrix {
      * 同一个斜线上意味着坐标(x1,y1),(x2,y2)，有如下公式x1-y1=x2-y2
      * <p>
      * 对于m行n列的二维数组，相减的范围为[-n+1,m-1]。
+     * <p>
+     * 这个写得复杂度了。。
      *
      * @param matrix
      * @return
@@ -79,6 +81,66 @@ public class IsToeplitzMatrix {
             }
             cur[0]++;
             cur[1]++;
+        }
+        return true;
+    }
+
+    /**
+     * 解法2，我们只需要检查每个元素是否和左上方的元素相等即可。由于第一行和第一列的元素不存在左上方的元素，因此行列的索引我们都从1开始即可
+     *
+     * @param matrix
+     * @return
+     */
+    public boolean isToeplitzMatrix2(int[][] matrix) {
+        int row = matrix.length, col = matrix[0].length;
+        for (int i = 1; i < row; i++) {
+            for (int j = 1; j < col; j++) {
+                if (matrix[i][j] != matrix[i - 1][j - 1]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+    public static final int GRID_LEN = 3;
+
+    /**
+     * 如果矩阵太大，以至于一次只能将不完整的一行加载到内存中，该怎么办？
+     * <p>
+     * 划分子矩阵，并且保证每个矩阵有一行/一列重叠
+     *
+     * @param matrix
+     * @return
+     */
+    public boolean isToeplitzMatrix3(int[][] matrix) {
+        int row = matrix.length, col = matrix[0].length;
+        for (int i = 0; i < row; i += GRID_LEN - 1) {
+            for (int j = 0; j < col; j += GRID_LEN - 1) {
+                //左上角[i,j],右下角[i+GRID_LEN-1,j+GRID_LEN-1]
+                int[] rightDown = {i + GRID_LEN - 1, j + GRID_LEN - 1};
+                if (rightDown[0] >= row) {
+                    rightDown[0] = row - 1;
+                }
+                if (rightDown[1] >= col) {
+                    rightDown[1] = col - 1;
+                }
+                if (!helper(matrix, new int[]{i, j}, rightDown)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean helper(int[][] matrix, int[] leftTop, int[] rightDown) {
+        for (int i = leftTop[0] + 1; i <= rightDown[0]; i++) {
+            for (int j = leftTop[1] + 1; j <= rightDown[1]; j++) {
+                if (matrix[i][j] != matrix[i - 1][j - 1]) {
+                    return false;
+                }
+            }
         }
         return true;
     }
