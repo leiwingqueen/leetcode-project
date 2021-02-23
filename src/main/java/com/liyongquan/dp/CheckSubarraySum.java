@@ -81,8 +81,9 @@ public class CheckSubarraySum {
      */
     public boolean checkSubarraySum2(int[] nums, int k) {
         int len = nums.length;
-        //key-前缀和，value--最早出现的位置(用来排除只有一个数的场景)
+        //key-前缀和，value--第一次出现的右边界(不包括)
         Map<Integer, Integer> map = new HashMap<>(len);
+        map.put(0, 0);
         int prefixSum = 0;
         for (int i = 1; i <= len; i++) {
             prefixSum += nums[i - 1];
@@ -96,7 +97,7 @@ public class CheckSubarraySum {
                     return true;
                 }
             } else {
-                map.put(prefixSum, i - 1);
+                map.put(prefixSum, i);
             }
         }
         return false;
