@@ -1,5 +1,8 @@
 package com.liyongquan.dp;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 560. 和为K的子数组
  * <p>
@@ -116,6 +119,34 @@ public class SubarraySum {
                     res++;
                 }
             }
+        }
+        return res;
+    }
+
+    /**
+     * 前缀和优化
+     * <p>
+     * f(i,j)=f(j)-f(i)
+     * <p>
+     * f(i,j)=k=f(j)-f(i)，其中i<j。那么我们使用一个map存储起来是否能够把时间复杂度简化成O(n)
+     * <p>
+     * f(j)-k=f(i)
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int subarraySum4(int[] nums, int k) {
+        int len = nums.length;
+        //计算前缀和
+        Map<Integer, Integer> map = new HashMap<>(len);
+        map.put(0, 1);
+        int prefixSum = 0;
+        int res = 0;
+        for (int i = 0; i < len; i++) {
+            prefixSum += nums[i - 1];
+            res += map.getOrDefault(prefixSum - k, 0);
+            map.put(prefixSum, map.getOrDefault(prefixSum, 0) + 1);
         }
         return res;
     }
