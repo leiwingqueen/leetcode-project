@@ -29,8 +29,8 @@ public class SubarraySum {
      * <p>
      * 时间复杂度O(n^2)
      * 空间复杂度O(n^2)
-     *
-     * 不通过，由于数组的长度是万级别的，因为n^2的数量级是不能满足要求的
+     * <p>
+     * 不通过，由于数组的长度是万级别的，因为O(n^2)的时间复杂度是不能满足要求的
      *
      * @param nums
      * @param k
@@ -52,6 +52,67 @@ public class SubarraySum {
             for (int j = i + 1; j < len; j++) {
                 dp[i][j] = dp[i + 1][j] + nums[i];
                 if (dp[i][j] == k) {
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 上面的解法做下优化，由于dp只是依赖上一行的结果，因此我们可以只保留一行的数据
+     * <p>
+     * 哈，这么改又超出时间限制了
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int subarraySum2(int[] nums, int k) {
+        int len = nums.length;
+        int[] dp0 = new int[len], dp1 = new int[len];
+        int res = 0;
+        //遍历所有场景
+        for (int i = len - 1; i >= 0; i--) {
+            for (int j = i; j < len; j++) {
+                if (i == j) {
+                    dp1[j] = nums[i];
+                } else {
+                    dp1[j] = dp0[j] + nums[i];
+                }
+                if (dp1[j] == k) {
+                    res++;
+                }
+                //更新dp1到dp0
+                for (int l = 0; l < len; l++) {
+                    dp0[l] = dp1[l];
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 前缀和的解法
+     * f(i,j)表示[i,j)的区间
+     * f(i,j)=f(0,j)-f(0,i)
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int subarraySum3(int[] nums, int k) {
+        int len = nums.length;
+        //计算前缀和
+        int[] prefixSum = new int[len + 1];
+        for (int i = 1; i <= len; i++) {
+            prefixSum[i] = prefixSum[i - 1] + nums[i - 1];
+        }
+        int res = 0;
+        for (int i = 0; i < len; i++) {
+            for (int j = i + 1; j <= len; j++) {
+                int sum = prefixSum[j] - prefixSum[i];
+                if (sum == k) {
                     res++;
                 }
             }
