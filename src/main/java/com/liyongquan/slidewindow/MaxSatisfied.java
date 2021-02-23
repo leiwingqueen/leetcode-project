@@ -66,4 +66,44 @@ public class MaxSatisfied {
         }
         return max;
     }
+
+    /**
+     * 双指针写法
+     *
+     * 这种写法看起来要更简单一些
+     *
+     * @param customers
+     * @param grumpy
+     * @param X
+     * @return
+     */
+    public int maxSatisfied2(int[] customers, int[] grumpy, int X) {
+        //统计总数
+        int len = customers.length;
+        int sum = 0;
+        for (int i = 0; i < len; i++) {
+            if (grumpy[i] == 0) {
+                sum += customers[i];
+            }
+        }
+        //双指针，滑窗
+        int l = 0, r = 0;
+        //窗口内的不满意的顾客
+        int cnt = 0, max = 0;
+        while (r < len) {
+            //窗口右移
+            if (grumpy[r] == 1) {
+                cnt += customers[r];
+            }
+            r++;
+            if (r - l > X) {
+                if (grumpy[l] == 1) {
+                    cnt -= customers[l];
+                }
+                l++;
+            }
+            max = Math.max(max, cnt);
+        }
+        return sum + max;
+    }
 }
