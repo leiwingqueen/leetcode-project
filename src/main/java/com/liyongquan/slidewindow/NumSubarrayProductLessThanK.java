@@ -1,5 +1,7 @@
 package com.liyongquan.slidewindow;
 
+import java.nio.channels.NotYetBoundException;
+
 /**
  * 给定一个正整数数组 nums。
  * <p>
@@ -61,5 +63,60 @@ public class NumSubarrayProductLessThanK {
             }
         }
         return count;
+    }
+
+    /**
+     * 先来个暴力一顿狂撸
+     * <p>
+     * 不通过，数据溢出
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int numSubarrayProductLessThanK2(int[] nums, int k) {
+        int len = nums.length;
+        //前缀乘？
+        long[] prefixSum = new long[len + 1];
+        prefixSum[0] = 1;
+        for (int i = 1; i <= len; i++) {
+            prefixSum[i] = prefixSum[i - 1] * nums[i - 1];
+        }
+        //穷举所有子串
+        int res = 0;
+        for (int i = 0; i < len; i++) {
+            for (int j = i + 1; j <= len; j++) {
+                long mul = prefixSum[j] / prefixSum[i];
+                if (mul < k) {
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 双指针解法2
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int numSubarrayProductLessThanK3(int[] nums, int k) {
+        int len = nums.length;
+        int l = 0, r = 0;
+        int window = 1;
+        int res = 0;
+        while (r < len) {
+            window *= nums[r];
+            r++;
+            while (l < r && window >= k) {
+                window /= nums[l];
+                l++;
+            }
+            //[l,r)是满足<k的，我们假设固定右边界，可能的组合为r-l
+            res += r - l;
+        }
+        return res;
     }
 }
