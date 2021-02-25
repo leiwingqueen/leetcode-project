@@ -38,12 +38,48 @@ package com.liyongquan.slidewindow;
  */
 public class FindUnsortedSubarray {
     /**
-     * 相当于找到一个最短的子串
+     * 先来个暴力解法
      *
      * @param nums
      * @return
      */
     public int findUnsortedSubarray(int[] nums) {
-        return 0;
+        int len = nums.length;
+        if (len == 1) {
+            return 0;
+        }
+        //先找到升序的左边界和右边界
+        int l = 1, r = len - 2;
+        while (l < len && nums[l] >= nums[l - 1]) {
+            l++;
+        }
+        if (l >= len) {
+            return 0;
+        }
+        while (r >= 0 && nums[r] <= nums[r + 1]) {
+            r--;
+        }
+        if (r < 0) {
+            return 0;
+        }
+        if (l > r) {
+            return len;
+        }
+        int res = len + 1;
+        //正确的边界范围只会比[l,r]要大，左边界需要穷举[0,l],右边界需要穷举[r,len-1]，找到满足条件的解
+        for (int i = 0; i <= l; i++) {
+            for (int j = r; j < len; j++) {
+                //求[i,j]的max和min
+                int max = -106, min = 106;
+                for (int k = i; k <= j; k++) {
+                    max = Math.max(max, nums[k]);
+                    min = Math.min(min, nums[k]);
+                }
+                if ((i == 0 || min >= nums[i - 1]) && (j == len - 1 || max <= nums[j + 1])) {
+                    res = Math.min(res, j - i + 1);
+                }
+            }
+        }
+        return res;
     }
 }
