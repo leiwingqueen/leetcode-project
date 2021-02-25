@@ -1,5 +1,8 @@
 package com.liyongquan.slidewindow;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 /**
  * 581. 最短无序连续子数组
  * <p>
@@ -39,6 +42,11 @@ package com.liyongquan.slidewindow;
 public class FindUnsortedSubarray {
     /**
      * 先来个暴力解法
+     * <p>
+     * 时间复杂度O(n^3)
+     * 空间复杂度O(1)
+     * <p>
+     * 超时
      *
      * @param nums
      * @return
@@ -59,11 +67,8 @@ public class FindUnsortedSubarray {
         while (r >= 0 && nums[r] <= nums[r + 1]) {
             r--;
         }
-        if (r < 0) {
-            return 0;
-        }
         if (l > r) {
-            return len;
+            r = l;
         }
         int res = len + 1;
         //正确的边界范围只会比[l,r]要大，左边界需要穷举[0,l],右边界需要穷举[r,len-1]，找到满足条件的解
@@ -77,6 +82,77 @@ public class FindUnsortedSubarray {
                 }
                 if ((i == 0 || min >= nums[i - 1]) && (j == len - 1 || max <= nums[j + 1])) {
                     res = Math.min(res, j - i + 1);
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 在暴力的基础上做一些小优化
+     * <p>
+     * 如何在窗口更新的时候快速更新最大值和最小值(使用两个双端队列来维护)
+     * <p>
+     * 我们先把左边界定义在0的位置,右边界定义在降序的最后一个节点。这样就能保证两个指针是同向移动的(方便使用双端队列来维护最大值和最小值)
+     * <p>
+     * 这样可以把时间复杂度降为O(n)
+     * <p>
+     * 证明？
+     *
+     * @param nums
+     * @return
+     */
+    public int findUnsortedSubarray2(int[] nums) {
+        int len = nums.length;
+        if (len == 1) {
+            return 0;
+        }
+        //找到开始的右端点(注意这里是开区间)
+        int r = len - 2;
+        while (r >= 0 && nums[r] <= nums[r + 1]) {
+            r--;
+        }
+        if (r < 0) {
+            return 0;
+        }
+        int l = 0;
+        //双端队列初始化
+        Deque<Integer> minQueue = new LinkedList<>(), maxQueue = new LinkedList<>();
+        for (int i = 0; i < r; i++) {
+            while (!minQueue.isEmpty() && nums[i] < minQueue.peekLast()) {
+                minQueue.pollLast();
+            }
+            minQueue.offerLast(nums[i]);
+            while (!maxQueue.isEmpty() && nums[i] > maxQueue.peekLast()) {
+                maxQueue.pollLast();
+            }
+            maxQueue.offerLast(nums[i]);
+        }
+        //两个指针同向移动(套模板)
+        int res = len;
+        while (r < len) {
+            //右指针移动
+            //更新双端队列
+            while (!minQueue.isEmpty() && nums[r] < minQueue.peekLast()) {
+                minQueue.pollLast();
+            }
+            minQueue.offerLast(nums[r]);
+            while (!maxQueue.isEmpty() && nums[r] > maxQueue.peekLast()) {
+                maxQueue.pollLast();
+            }
+            maxQueue.offerLast(nums[r]);
+            r++;
+            if (r == len || maxQueue.peekFirst() <= nums[r]) {
+                while (l < r && (l == 0 || minQueue.peekFirst() >= nums[l - 1])) {
+                    res = Math.min(res, r - l);
+                    //更新双端队列
+                    if (minQueue.peekFirst() == nums[l]) {
+                        minQueue.pollFirst();
+                    }
+                    if (maxQueue.peekFirst() == nums[l]) {
+                        maxQueue.pollFirst();
+                    }
+                    l++;
                 }
             }
         }
