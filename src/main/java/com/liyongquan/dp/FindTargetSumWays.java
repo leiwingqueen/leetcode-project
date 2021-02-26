@@ -89,4 +89,35 @@ public class FindTargetSumWays {
         }
         return dp[len - 1][S + MAX_SUM];
     }
+
+    /**
+     * 简化写法
+     *
+     * @param nums
+     * @param S
+     * @return
+     */
+    public int findTargetSumWays2(int[] nums, int S) {
+        int len = nums.length;
+        int col = 2 * MAX_SUM + 1;
+        if (S > MAX_SUM || S < -MAX_SUM) {
+            return 0;
+        }
+        int[][] dp = new int[len][col];
+        //初始化
+        dp[0][nums[0] + MAX_SUM] = 1;
+        dp[0][MAX_SUM - nums[0]] = 1;
+        //dp迭代
+        for (int i = 1; i < len; i++) {
+            for (int j = 0; j < col; j++) {
+                if (j - nums[i] >= 0) {
+                    dp[i][j] += dp[i - 1][j - nums[i]];
+                }
+                if (j + nums[i] < col) {
+                    dp[i][j] += dp[i - 1][j + nums[i]];
+                }
+            }
+        }
+        return dp[len - 1][S + MAX_SUM];
+    }
 }
