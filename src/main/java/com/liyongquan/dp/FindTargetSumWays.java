@@ -1,5 +1,7 @@
 package com.liyongquan.dp;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 494. 目标和
  * <p>
@@ -34,6 +36,7 @@ package com.liyongquan.dp;
  * 链接：https://leetcode-cn.com/problems/target-sum
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
+@Slf4j
 public class FindTargetSumWays {
     public static final int MAX_SUM = 1000;
 
@@ -67,8 +70,11 @@ public class FindTargetSumWays {
         }
         int[][] dp = new int[len][col];
         //初始化
-        for (int i = 0; i < col; i++) {
-            dp[0][i] = Math.abs(i - MAX_SUM) == nums[0] ? 1 : 0;
+        if (nums[0] == 0) {
+            dp[0][MAX_SUM] = 2;
+        } else {
+            dp[0][nums[0] + MAX_SUM] = 1;
+            dp[0][MAX_SUM - nums[0]] = 1;
         }
         //dp迭代
         for (int i = 1; i < len; i++) {
