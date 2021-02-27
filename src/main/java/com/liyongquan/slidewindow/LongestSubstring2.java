@@ -117,6 +117,60 @@ public class LongestSubstring2 {
     }
 
     /**
+     * 分治法。
+     * <p>
+     * 这个其实真的有点难想
+     *
+     * @param s
+     * @param k
+     * @return
+     */
+    public int longestSubstring4(String s, int k) {
+        return dfs(s, 0, s.length() - 1, k);
+    }
+
+    private int dfs(String s, int l, int r, int k) {
+        //统计[l,r]范围的字符出现频率
+        int[] freq = new int[26];
+        for (int i = l; i <= r; i++) {
+            freq[s.charAt(i) - 'a']++;
+        }
+        //找到一个不满足k条件的字符
+        int idx = -1;
+        for (int i = 0; i < freq.length; i++) {
+            if (freq[i] > 0 && freq[i] < k) {
+                idx = i;
+                break;
+            }
+        }
+        if (idx < 0) {
+            return r - l + 1;
+        }
+        //按字符idx+'a'来进行分割
+        char split = (char) (idx + 'a');
+        int start = l;
+        int res = 0;
+        while (start <= r) {
+            //找到第一个符合的左边界
+            while (start <= r && s.charAt(start) == split) {
+                start++;
+            }
+            if (start >= r) {
+                break;
+            }
+            //找到右边界
+            int end = start;
+            while (end <= r && s.charAt(end) != split) {
+                end++;
+            }
+            int subRes = dfs(s, start, end - 1, k);
+            res = Math.max(res, subRes);
+            start = end;
+        }
+        return res;
+    }
+
+    /**
      * 滑动窗口算法
      * <p>
      * 使用一个数组对窗口的每个字符的出现数量进行统计。
