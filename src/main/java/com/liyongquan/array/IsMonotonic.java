@@ -70,4 +70,24 @@ public class IsMonotonic {
         }
         return true;
     }
+
+    /**
+     * 升序和降序分别判断
+     *
+     * @param A
+     * @return
+     */
+    public boolean isMonotonic2(int[] A) {
+        boolean inc = true, desc = true;
+        int len = A.length;
+        for (int i = 1; i < len; i++) {
+            //升序判断
+            if (A[i] < A[i - 1]) {
+                inc = false;
+            } else if (A[i] > A[i - 1]) {
+                desc = false;
+            }
+        }
+        return inc || desc;
+    }
 }
