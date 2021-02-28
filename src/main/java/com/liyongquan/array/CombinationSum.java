@@ -1,5 +1,7 @@
 package com.liyongquan.array;
 
+import sun.java2d.pipe.AAShapePipe;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,28 +48,29 @@ import java.util.List;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class CombinationSum {
-    /**
-     * 回溯解法
-     *
-     * @param candidates
-     * @param target
-     * @return
-     */
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        int len = candidates.length;
         List<List<Integer>> res = new LinkedList<>();
-        backtrace(candidates, 0, 0, new int[candidates.length], target, res);
+        int[] cnt = new int[len];
+        for (int i = 0; i < len; i++) {
+            cnt[i] = target / candidates[i];
+        }
+        backtrace(candidates, cnt, 0, 0, new int[len], target, res);
         return res;
     }
 
-    private void backtrace(int[] candidates, int idx, int sum, int[] path, int target, List<List<Integer>> res) {
+    private void backtrace(int[] candidates, int[] cnt, int idx, int sum,
+                           int[] path, int target, List<List<Integer>> res) {
         int len = candidates.length;
         //到达结果尾部
         if (idx >= len) {
             if (sum == target) {
                 List<Integer> list = new ArrayList<>(len);
                 for (int i = 0; i < len; i++) {
-                    if (path[i] == 1) {
-                        list.add(candidates[i]);
+                    if (path[i] > 0) {
+                        for (int j = 0; j < path[i]; j++) {
+                            list.add(candidates[i]);
+                        }
                     }
                 }
                 res.add(list);
@@ -78,11 +81,12 @@ public class CombinationSum {
         if (sum > target) {
             return;
         }
-        //选择 or 不选择
-        backtrace(candidates, idx + 1, sum, path, target, res);
-        path[idx] = 1;
-        backtrace(candidates, idx + 1, sum + candidates[idx], path, target, res);
-        //回溯
-        path[idx] = 0;
+        //选择多个 or 不选择
+        for (int i = 0; i < cnt[idx]; i++) {
+            path[idx] = i;
+            backtrace(candidates, cnt, idx + 1, sum + i * candidates[idx], path, target, res);
+            //回溯
+            path[idx] = 0;
+        }
     }
 }
