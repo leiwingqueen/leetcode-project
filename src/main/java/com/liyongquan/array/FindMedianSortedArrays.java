@@ -99,4 +99,36 @@ public class FindMedianSortedArrays {
         }
 
     }
+
+    /**
+     * 上面题解的基础上做代码优化
+     *
+     * @param nums1
+     * @param nums2
+     * @return
+     */
+    public double findMedianSortedArrays2(int[] nums1, int[] nums2) {
+        int len1 = nums1.length, len2 = nums2.length;
+        if (len1 == 0 && len2 == 0) {
+            return 0;
+        }
+        int idx1 = 0, idx2 = 0, idx = 0;
+        int end = (len1 + len2) / 2;
+        //偶数
+        int pre = 0, cur = 0;
+        while (idx <= end) {
+            pre = cur;
+            if (idx2 == len2 || (idx1 < len1 && nums1[idx1] <= nums2[idx2])) {
+                cur = nums1[idx1];
+                idx1++;
+            } else {
+                cur = nums2[idx2];
+                idx2++;
+            }
+            idx++;
+        }
+        return (len1 + len2) % 2 == 0 ? (pre + cur) / 2.0 : cur;
+    }
+
+    //TODO:log(m+n)的解法？
 }
