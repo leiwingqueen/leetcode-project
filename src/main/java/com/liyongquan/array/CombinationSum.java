@@ -51,6 +51,7 @@ public class CombinationSum {
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
         int len = candidates.length;
         List<List<Integer>> res = new LinkedList<>();
+        //定义每个数字出现的可能性，不再是0,1的问题，而是[0,n]的问题
         int[] cnt = new int[len];
         for (int i = 0; i < len; i++) {
             cnt[i] = target / candidates[i];
@@ -82,7 +83,7 @@ public class CombinationSum {
             return;
         }
         //选择多个 or 不选择
-        for (int i = 0; i < cnt[idx]; i++) {
+        for (int i = 0; i <= cnt[idx]; i++) {
             path[idx] = i;
             backtrace(candidates, cnt, idx + 1, sum + i * candidates[idx], path, target, res);
             //回溯
