@@ -85,6 +85,10 @@ public class CombinationSum {
         //选择多个 or 不选择
         for (int i = 0; i <= cnt[idx]; i++) {
             path[idx] = i;
+            //适当剪枝,如果sum>target就可以退出了
+            if (sum + i * candidates[idx] > target) {
+                break;
+            }
             backtrace(candidates, cnt, idx + 1, sum + i * candidates[idx], path, target, res);
             //回溯
             path[idx] = 0;
