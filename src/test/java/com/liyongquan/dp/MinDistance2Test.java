@@ -16,7 +16,29 @@ public class MinDistance2Test {
      */
     @Test
     public void minDistance() {
-        int res = md.minDistance("horse", "ros");
+        int res = md.minDistance2("horse", "ros");
+        log.info("{}", res);
+        Assert.assertEquals(3, res);
+    }
+
+    /**
+     * "intention"
+     * "execution"
+     */
+    @Test
+    public void test2() {
+        int res = md.minDistance2("intention", "execution");
+        log.info("{}", res);
+        Assert.assertEquals(5, res);
+    }
+
+    /**
+     * "park"
+     * "spake"
+     */
+    @Test
+    public void test3() {
+        int res = md.minDistance2("park", "spake");
         log.info("{}", res);
         Assert.assertEquals(3, res);
     }
