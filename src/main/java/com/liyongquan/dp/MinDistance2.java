@@ -34,7 +34,42 @@ package com.liyongquan.dp;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class MinDistance2 {
+    /**
+     * 先尝试回溯解法
+     * <p>
+     * 一个字符一共有4个选项
+     * 1.什么都不动
+     * 2.插入
+     * 3.修改
+     * 4.删除
+     * <p>
+     * 先尝试回溯
+     *
+     * @param word1
+     * @param word2
+     * @return
+     */
     public int minDistance(String word1, String word2) {
-        return 0;
+        return backtrace(word1, word2, 0, 0, 0);
+    }
+
+    private int backtrace(String word1, String word2, int idx1, int idx2, int cnt) {
+        //边界场景，只能全部增加或者删除
+        if (idx1 == word1.length()) {
+            return word2.length() + cnt;
+        }
+        if (idx2 == word2.length()) {
+            return word1.length() + cnt;
+        }
+        //不操作
+        int min = Integer.MAX_VALUE;
+        if (word1.charAt(idx1) == word2.charAt(idx2)) {
+            min = backtrace(word1, word2, idx1 + 1, idx2 + 1, cnt);
+        }
+        //增/删/改的场景
+        min = Math.min(backtrace(word1, word2, idx1, idx2 + 1, cnt + 1), min);
+        min = Math.min(backtrace(word1, word2, idx1 + 1, idx2, cnt + 1), min);
+        min = Math.min(backtrace(word1, word2, idx1 + 1, idx2 + 1, cnt + 1), min);
+        return cnt + min;
     }
 }
