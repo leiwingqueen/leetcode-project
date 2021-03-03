@@ -53,7 +53,7 @@ public class CountBits {
     /**
      * 奇偶判断+dp
      * 奇数：
-     * f(n)=f(n)+1
+     * f(n)=f(n-1)+1
      * 偶数：
      * f(n)=f(n/2)
      *
@@ -64,11 +64,11 @@ public class CountBits {
         int[] r = new int[num + 1];
         for (int i = 1; i <= num; i++) {
             //等价于取模
-            if ((i&1)==1) {
-                r[i]=r[i-1]+1;
-            }else{
+            if ((i & 1) == 1) {
+                r[i] = r[i - 1] + 1;
+            } else {
                 //右移等价于/2
-                r[i]=r[i>>1];
+                r[i] = r[i >> 1];
             }
         }
         return r;
