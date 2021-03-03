@@ -65,17 +65,17 @@ public class PenguinTrap {
             if (matrix[x][y] == 1) {
                 //更新边
                 if (DIR.LEFT_TOP == dir) {
-                    if (x == 0 || blocks[x - 1][y].up) {
+                    if (x == 0 || matrix[x - 1][y] == 1 && blocks[x - 1][y].up) {
                         blocks[x][y].up = true;
                     }
-                    if (y == 0 || blocks[x][y - 1].left) {
+                    if (y == 0 || matrix[x][y - 1] == 1 && blocks[x][y - 1].left) {
                         blocks[x][y].left = true;
                     }
                 } else {
-                    if (x == row - 1 || blocks[x + 1][y].down) {
+                    if (x == row - 1 || matrix[x + 1][y] == 1 && blocks[x + 1][y].down) {
                         blocks[x][y].down = true;
                     }
-                    if (y == col - 1 || blocks[x][y + 1].right) {
+                    if (y == col - 1 || matrix[x][y + 1] == 1 && blocks[x][y + 1].right) {
                         blocks[x][y].right = true;
                     }
                 }
