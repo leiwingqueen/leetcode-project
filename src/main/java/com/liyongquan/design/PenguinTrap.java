@@ -28,6 +28,11 @@ public class PenguinTrap {
         //分别从左上角和右下角做bfs
         int row = matrix.length, col = matrix[0].length;
         Block[][] blocks = new Block[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                blocks[i][j] = new Block();
+            }
+        }
         bfs(matrix, row, col, new int[]{0, 0}, blocks, DIR.LEFT_TOP);
         bfs(matrix, row, col, new int[]{row - 1, col - 1}, blocks, DIR.RIGHT_DOWN);
         //计算每个节点是否能保留
@@ -94,12 +99,12 @@ public class PenguinTrap {
                 }
             } else {
                 int lx = x, ly = y - 1;
-                if (lx < col && visit[lx][ly] == 0) {
+                if (ly >= 0 && visit[lx][ly] == 0) {
                     visit[lx][ly] = 1;
                     queue.add(new int[]{lx, ly});
                 }
                 int ux = x - 1, uy = y;
-                if (ux < row && visit[ux][uy] == 0) {
+                if (ux >= 0 && visit[ux][uy] == 0) {
                     visit[ux][uy] = 1;
                     queue.add(new int[]{ux, uy});
                 }
