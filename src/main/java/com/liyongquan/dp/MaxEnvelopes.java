@@ -1,5 +1,7 @@
 package com.liyongquan.dp;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Arrays;
 
 /**
@@ -23,6 +25,7 @@ import java.util.Arrays;
  * 链接：https://leetcode-cn.com/problems/russian-doll-envelopes
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
+@Slf4j
 public class MaxEnvelopes {
     /**
      * 贪心算法？
@@ -52,7 +55,7 @@ public class MaxEnvelopes {
     /**
      * 最终简化成选和不选的问题
      * 先尝试用回溯方法解
-     *
+     * <p>
      * 超时
      *
      * @param envelopes
@@ -79,5 +82,42 @@ public class MaxEnvelopes {
         //不选
         res = Math.max(res, backtrace(envelopes, idx + 1, max));
         return res;
+    }
+
+    /**
+     * dp解法
+     * <p>
+     * 假设f(n)是前n个信封的最大套娃的数量
+     * f(0)=0,f(1)=1
+     * <p>
+     * 我们有f(n)=max{f(n-1),f(i)}。其中i<n，且A[i-1][0] < A[n-1][0] && A[i-1][1] < A[n-1][1],i是所有满足这个条件中最大的数
+     * <p>
+     * 我们可以定义个函数m(n)=i,则有 m(n+1)>=m(n) ，这意味着我们在计算m(n)的时候不需要重复扫描所有的结果，我们可以通过一遍扫描解决
+     *
+     * @param envelopes
+     * @return
+     */
+    public int maxEnvelopes3(int[][] envelopes) {
+        int len = envelopes.length;
+        if (len <= 1) {
+            return len;
+        }
+        Arrays.sort(envelopes, (o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
+        //dp初始化
+        int[] dp = new int[len + 1];
+        dp[0] = 0;
+        dp[1] = 1;
+        int max = 1;
+        for (int i = 2; i <= len; i++) {
+            int tmp = 1;
+            for (int j = 1; j < i; j++) {
+                if (envelopes[j - 1][0] < envelopes[i - 1][0] && envelopes[j - 1][1] < envelopes[i - 1][1]) {
+                    tmp = Math.max(tmp, dp[j] + 1);
+                }
+            }
+            dp[i] = tmp;
+            max = Math.max(max, dp[i]);
+        }
+        return max;
     }
 }
