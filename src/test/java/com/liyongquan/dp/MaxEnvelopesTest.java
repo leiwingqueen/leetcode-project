@@ -4,10 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.lang.model.element.VariableElement;
-
-import static org.junit.Assert.*;
-
 @Slf4j
 public class MaxEnvelopesTest {
     private MaxEnvelopes me = new MaxEnvelopes();

@@ -87,12 +87,14 @@ public class MaxEnvelopes {
     /**
      * dp解法
      * <p>
-     * 假设f(n)是前n个信封的最大套娃的数量
-     * f(0)=0,f(1)=1
+     * 假设f(n)是前n+1个数中，且选中第n+1个的最大套娃数
+     * 则我们需要的结果为max{f(i)},0<=i<=n
      * <p>
-     * 我们有f(n)=max{f(n-1),f(i)}。其中i<n，且A[i-1][0] < A[n-1][0] && A[i-1][1] < A[n-1][1],i是所有满足这个条件中最大的数
-     * <p>
-     * 我们可以定义个函数m(n)=i,则有 m(n+1)>=m(n) ，这意味着我们在计算m(n)的时候不需要重复扫描所有的结果，我们可以通过一遍扫描解决
+     * 思考：
+     * 为什么需要f(n)需要保证第n+1个信封必须选中?
+     * 这是因为A[n]能放得下A[n-1]，不代表一定能放下A[n-2](A[n-1][0]>A[n-2][0],但是 A[n-1][1] < A[n-2][1])。
+     *
+     * f(n)=max{f(i)+1},i<n，且A[i][0] < A[n][0] && A[i][1]<A[n][1]
      *
      * @param envelopes
      * @return
@@ -104,20 +106,19 @@ public class MaxEnvelopes {
         }
         Arrays.sort(envelopes, (o1, o2) -> o1[0] != o2[0] ? o1[0] - o2[0] : o1[1] - o2[1]);
         //dp初始化
-        int[] dp = new int[len + 1];
-        dp[0] = 0;
-        dp[1] = 1;
-        int max = 1;
-        for (int i = 2; i <= len; i++) {
-            int tmp = 1;
-            for (int j = 1; j < i; j++) {
-                if (envelopes[j - 1][0] < envelopes[i - 1][0] && envelopes[j - 1][1] < envelopes[i - 1][1]) {
-                    tmp = Math.max(tmp, dp[j] + 1);
+        int[] dp = new int[len];
+        dp[0] = 1;
+        int res = 1;
+        for (int i = 1; i < len; i++) {
+            int max = 1;
+            for (int j = 0; j < i; j++) {
+                if (envelopes[j][0] < envelopes[i][0] && envelopes[j][1] < envelopes[i][1]) {
+                    max = Math.max(max, dp[j] + 1);
                 }
             }
-            dp[i] = tmp;
-            max = Math.max(max, dp[i]);
+            dp[i] = max;
+            res = Math.max(res, dp[i]);
         }
-        return max;
+        return res;
     }
 }
