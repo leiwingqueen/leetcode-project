@@ -68,6 +68,14 @@ public class LongestConsecutive {
 
     /**
      * dp解法
+     * <p>
+     * 我们定义f(n)是前n个数字中的连续最长子序列，且nums[n-1]也选中
+     * 则有：
+     * f(n)=f(i)+1,其中i<n且nums[i-1]=nums[n-1]-1
+     *
+     * 最终结果为：max{f(i)},0<=i<n
+     *
+     * 时间复杂度O(nlog(n))
      *
      * @param nums
      * @return
@@ -92,7 +100,6 @@ public class LongestConsecutive {
             } else {
                 dp[i] = dp[j] + 1;
             }
-            log.info("dp[{}]={}", i, dp[i]);
             res = Math.max(dp[i], res);
         }
         return res;
