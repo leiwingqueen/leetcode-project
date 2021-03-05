@@ -1,5 +1,9 @@
 package com.liyongquan.array;
 
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.Arrays;
+
 /**
  * 128. 最长连续序列
  * <p>
@@ -31,30 +35,67 @@ package com.liyongquan.array;
  * 链接：https://leetcode-cn.com/problems/longest-consecutive-sequence
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
+@Slf4j
 public class LongestConsecutive {
     /**
-     * 先来个回溯的解法
+     * 排序，然后用滑动窗口
      * <p>
-     * 目测会超时
+     * 时间复杂度O(nlog(n))
+     * <p>
+     * 不通过，还是有场景没覆盖
      *
      * @param nums
      * @return
      */
     public int longestConsecutive(int[] nums) {
-        if (nums.length == 0) {
-            return 0;
+        int len = nums.length;
+        if (len <= 1) {
+            return len;
         }
-        return backtrack(nums, new int[nums.length], 0, Integer.MIN_VALUE, Integer.MAX_VALUE).length;
+        Arrays.sort(nums);
+        int l = 0, r = 0;
+        int res = 0;
+        while (r < len) {
+            r++;
+            if (nums[l] + r - l - 1 != nums[r - 1]) {
+                l = r - 1;
+            } else {
+                res = Math.max(res, r - l);
+            }
+        }
+        return res;
     }
 
-    private int[] backtrack(int[] nums, int[] path, int idx, int min, int max) {
+    /**
+     * dp解法
+     *
+     * @param nums
+     * @return
+     */
+    public int longestConsecutive2(int[] nums) {
         int len = nums.length;
-        if (idx == len) {
-            return new int[]{};
+        if (len <= 1) {
+            return len;
         }
-        //TODO:确实有点难
-        int num = nums[idx];
-        return new int[]{};
+        Arrays.sort(nums);
+        int[] dp = new int[len];
+        int res = 0;
+        dp[0] = 1;
+        for (int i = 1; i < len; i++) {
+            //找到第一个和i不等的坐标
+            int j = i - 1;
+            while (j >= 0 && nums[j] == nums[i]) {
+                j--;
+            }
+            if (j < 0 || nums[j] != nums[i] - 1) {
+                dp[i] = 1;
+            } else {
+                dp[i] = dp[j] + 1;
+            }
+            log.info("dp[{}]={}", i, dp[i]);
+            res = Math.max(dp[i], res);
+        }
+        return res;
     }
 
 }
