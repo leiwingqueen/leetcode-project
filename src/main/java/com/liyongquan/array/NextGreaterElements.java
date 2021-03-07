@@ -1,5 +1,8 @@
 package com.liyongquan.array;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 /**
  * 503. 下一个更大元素 II
  * <p>
@@ -21,10 +24,11 @@ package com.liyongquan.array;
 public class NextGreaterElements {
     /**
      * 先暴力解法
-     *
+     * <p>
      * 时间复杂度O(n^2)
-     *
+     * <p>
      * 性能击败5%
+     *
      * @param nums
      * @return
      */
@@ -44,6 +48,38 @@ public class NextGreaterElements {
                     break;
                 }
             }
+        }
+        return res;
+    }
+
+    /**
+     * 构造一个单调栈(非严格递减)
+     *
+     * 不通过
+     *
+     * @param nums
+     * @return
+     */
+    public int[] nextGreaterElements2(int[] nums) {
+        int len = nums.length;
+        if (len == 0) {
+            return new int[]{};
+        }
+        //构造单调栈(由于需要循环，我们需要构造2n的长度)
+        Deque<Integer> deque = new LinkedList<>();
+        for (int i = 0; i < 2 * len; i++) {
+            int idx = i % len;
+            while (!deque.isEmpty() && deque.peekLast() < nums[idx]) {
+                deque.pop();
+            }
+            deque.offerLast(nums[idx]);
+        }
+        int[] res = new int[len];
+        for (int i = 0; i < len; i++) {
+            if (!deque.isEmpty() && nums[i] == deque.peekFirst()) {
+                deque.pollFirst();
+            }
+            res[i] = deque.isEmpty() ? -1 : deque.peekFirst();
         }
         return res;
     }
