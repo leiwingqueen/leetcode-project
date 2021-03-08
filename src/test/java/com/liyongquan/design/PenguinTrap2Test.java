@@ -8,55 +8,57 @@ import java.awt.image.BufferedImage;
 import static org.junit.Assert.*;
 
 public class PenguinTrap2Test {
+    private PenguinTrap2 pt = new PenguinTrap2();
 
     @Test
-    public void next() throws InterruptedException {
+    public void testNext() {
         int[][] matrix = {
-                {1, 1, 0, 1, 1},
-                {1, 1, 1, 1, 1},
-                {1, 1, 1, 1, 1},
-                {1, 1, 0, 1, 1},
+                {-1, -1, -1, 0, 0, 0, 0},
+                {-1, -1, 0, 0, 0, 0, 0},
+                {-1, 0, 0, 0, 0, 0, 0},
+                {1, 1, 1, 1, 1, 1, 1},
+                {0, 0, 0, 0, 0, 0, -1},
+                {0, 0, 0, 0, 0, -1, -1},
+                {0, 0, 0, 0, -1, -1, -1},
         };
-        char[][] graph = drawGrid(matrix);
-        for (int i = 0; i < graph.length; i++) {
-            System.out.println(graph[i]);
-        }
+        test(matrix);
     }
 
-    public static final int GRID_WIDTH = 4;
-    public static final int GRID_HEIGHT = 4;
+    @Test
+    public void testNext2() {
+        int[][] matrix = {
+                {-1, -1, -1, 1, 0, 0, 0},
+                {-1, -1, 0, 1, 0, 0, 0},
+                {-1, 0, 0, 1, 0, 0, 0},
+                {0, 0, 0, 1, 1, 1, 1},
+                {0, 0, 1, 0, 0, 0, -1},
+                {0, 1, 0, 0, 0, -1, -1},
+                {1, 0, 0, 0, -1, -1, -1},
+        };
+        test(matrix);
+    }
 
-    private char[][] drawGrid(int[][] matrix) {
-        //初始化
+    private void test(int[][] matrix) {
+        System.out.println("================更新前==============");
+        print(matrix);
+        int[][] next = pt.next(matrix);
+        System.out.println("================更新后==============");
+        print(next);
+    }
+
+    private void print(int[][] matrix) {
         int row = matrix.length, col = matrix[0].length;
-        int gRow = 2 * row + 2;
-        int gCol = 4 * col + (row - 1) * 2;
-        char[][] graph = new char[gRow][gCol];
-        for (int i = 0; i < gRow; i++) {
-            for (int j = 0; j < gCol; j++) {
-                graph[i][j] = ' ';
-            }
-        }
         for (int i = 0; i < row; i++) {
-            char filter = i % 2 == 0 ? '*' : 'O';
-            drawLine(matrix[i], graph, new int[]{i * 2, i * 2}, filter);
-        }
-        return graph;
-    }
-
-    private void drawLine(int[] matrix, char[][] graph, int[] slice, char filter) {
-        int len = matrix.length;
-        for (int i = 0; i < len; i++) {
-            if (matrix[i]==1) {
-                graph[slice[0]][slice[1] + i * GRID_WIDTH + 1] = filter;
-                for (int j = 1; j <= 2; j++) {
-                    graph[slice[0] + j][slice[1] + i * GRID_WIDTH] = filter;
-                    graph[slice[0] + j][slice[1] + i * GRID_WIDTH + 1] = filter;
-                    graph[slice[0] + j][slice[1] + i * GRID_WIDTH + 2] = filter;
+            StringBuilder sb = new StringBuilder();
+            for (int j = 0; j < col; j++) {
+                if (matrix[i][j] == -1) {
+                    sb.append("* ");
+                } else {
+                    sb.append(matrix[i][j] + " ");
                 }
-                graph[slice[0] + 3][slice[1] + i * GRID_WIDTH + 1] = filter;
             }
+            System.out.println(sb.toString());
         }
+        System.out.println();
     }
-
 }
