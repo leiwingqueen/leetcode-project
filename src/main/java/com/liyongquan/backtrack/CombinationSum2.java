@@ -1,9 +1,6 @@
 package com.liyongquan.backtrack;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 给定一个数组 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合。
@@ -50,33 +47,48 @@ public class CombinationSum2 {
         if (len == 0) {
             return Collections.emptyList();
         }
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int candidate : candidates) {
+            map.put(candidate, map.getOrDefault(candidate, 0) + 1);
+        }
+        int[][] freq = new int[map.size()][2];
+        int idx = 0;
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            freq[idx][0] = entry.getKey();
+            freq[idx][1] = entry.getValue();
+            idx++;
+        }
         List<List<Integer>> res = new LinkedList<>();
-        backtrace(candidates, new int[len], 0, 0, target, res);
+        backtrace(freq, new int[freq.length], 0, 0, target, res);
         return res;
     }
 
-    private void backtrace(int[] candidates, int[] path, int idx, int sum, int target, List<List<Integer>> res) {
+    private void backtrace(int[][] freq, int[] path, int idx, int sum, int target, List<List<Integer>> res) {
         //边界情况+提前剪枝
-        int len = candidates.length;
+        int len = freq.length;
         if (idx == len || sum >= target) {
             if (sum == target) {
-                addRes(candidates, path, res);
+                addRes(freq, path, res);
             }
             return;
         }
-        //不选择
-        backtrace(candidates, path, idx + 1, sum, target, res);
-        path[idx] = 1;
-        backtrace(candidates, path, idx + 1, sum + candidates[idx], target, res);
+        int cnt = 0;
+        while (sum <= target && cnt <= freq[idx][1]) {
+            path[idx] = cnt;
+            backtrace(freq, path, idx + 1, sum, target, res);
+            sum += freq[idx][0];
+            cnt++;
+        }
+        //回溯
         path[idx] = 0;
     }
 
-    private void addRes(int[] candidates, int[] path, List<List<Integer>> res) {
-        int len = candidates.length;
+    private void addRes(int[][] freq, int[] path, List<List<Integer>> res) {
+        int len = freq.length;
         List<Integer> com = new ArrayList<>(len);
         for (int i = 0; i < len; i++) {
-            if (path[i] == 1) {
-                com.add(candidates[i]);
+            for (int j = 0; j < path[i]; j++) {
+                com.add(freq[i][0]);
             }
         }
         res.add(com);
