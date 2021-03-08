@@ -1,5 +1,6 @@
 package com.liyongquan.array;
 
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -54,8 +55,8 @@ public class NextGreaterElements {
 
     /**
      * 构造一个单调栈(非严格递减)
-     *
-     * 不通过
+     * <p>
+     * 这个有点难
      *
      * @param nums
      * @return
@@ -65,21 +66,16 @@ public class NextGreaterElements {
         if (len == 0) {
             return new int[]{};
         }
+        int[] res = new int[len];
+        Arrays.fill(res, -1);
         //构造单调栈(由于需要循环，我们需要构造2n的长度)
         Deque<Integer> deque = new LinkedList<>();
-        for (int i = 0; i < 2 * len; i++) {
+        for (int i = 0; i < 2 * len - 1; i++) {
             int idx = i % len;
-            while (!deque.isEmpty() && deque.peekLast() < nums[idx]) {
-                deque.pop();
+            while (!deque.isEmpty() && nums[deque.peekLast()] < nums[idx]) {
+                res[deque.pollLast()] = nums[idx];
             }
-            deque.offerLast(nums[idx]);
-        }
-        int[] res = new int[len];
-        for (int i = 0; i < len; i++) {
-            if (!deque.isEmpty() && nums[i] == deque.peekFirst()) {
-                deque.pollFirst();
-            }
-            res[i] = deque.isEmpty() ? -1 : deque.peekFirst();
+            deque.offerLast(idx);
         }
         return res;
     }

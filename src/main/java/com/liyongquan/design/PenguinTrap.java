@@ -18,6 +18,8 @@ public class PenguinTrap {
     /**
      * bfs解决，从矩阵的边缘开始计算挨着墙壁的边
      *
+     * O(m*n)
+     *
      * @param matrix
      * @return 更新后的砖块
      */
