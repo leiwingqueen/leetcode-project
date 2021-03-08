@@ -13,7 +13,10 @@ import java.util.Arrays;
  */
 public class PenguinTrap2 {
     /**
-     * bfs解决，从矩阵的边缘开始计算挨着墙壁的边
+     * 1.从边缘开始分别针对6个方向做更新
+     * 2.对于已经稳定的砖块，继续更新6个方向的砖块的边
+     * <p>
+     * 时间复杂度O(n^2)
      *
      * @param matrix
      * @return 更新后的砖块
@@ -110,6 +113,12 @@ public class PenguinTrap2 {
                 q++;
             }
         }
+        //针对已经稳定的砖块做bfs，继续更新边
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                bfs(blocks, new int[]{i, j}, row, col);
+            }
+        }
         //生成结果
         int[][] res = new int[row][col];
         for (int i = 0; i < row; i++) {
@@ -124,6 +133,34 @@ public class PenguinTrap2 {
             }
         }
         return res;
+    }
+
+    //周围的6个格子
+    public static final int[][] DIR = {
+            {1, 0},
+            {1, -1},
+            {0, -1},
+            {-1, 0},
+            {-1, 1},
+            {0, 1},
+    };
+
+
+    private void bfs(Block[][] blocks, int[] start, int row, int col) {
+        if (blocks[start[0]][start[1]].type != BlockType.BLOCK || !blocks[start[0]][start[1]].exist()) {
+            return;
+        }
+        //遍历6个方向更新
+        //左上和右下
+        for (int i = 0; i < DIR.length; i++) {
+            int[] dir = DIR[i];
+            int x = start[0], y = start[1];
+            while (x >= 0 && x < row && y >= 0 && y < col && blocks[x][y].type == BlockType.BLOCK) {
+                blocks[x][y].edge[i] = true;
+                x += dir[0];
+                y += dir[1];
+            }
+        }
     }
 
     private enum BlockType {
