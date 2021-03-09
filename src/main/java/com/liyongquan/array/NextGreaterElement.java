@@ -1,7 +1,6 @@
 package com.liyongquan.array;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 496. 下一个更大元素 I
@@ -68,6 +67,41 @@ public class NextGreaterElement {
                 idx++;
             }
             res[i] = idx == nums2.length ? -1 : nums2[idx];
+        }
+        return res;
+    }
+
+    /**
+     * 单调栈
+     * <p>
+     * 时间复杂度O(len1+len2)
+     *
+     * @param nums1
+     * @param nums2
+     * @return
+     */
+    public int[] nextGreaterElement2(int[] nums1, int[] nums2) {
+        //存放对应的位置
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums2.length; i++) {
+            map.put(nums2[i], i);
+        }
+        //构造单调栈(每个数字最多被poll一次，所以时间复杂度是O(len2))
+        int len1 = nums1.length, len2 = nums2.length;
+        Deque<Integer> deque = new LinkedList<>();
+        int[] next = new int[len2];
+        Arrays.fill(next, -1);
+        for (int i = 0; i < len2; i++) {
+            while (!deque.isEmpty() && nums2[deque.peekLast()] < nums2[i]) {
+                next[deque.pollLast()] = nums2[i];
+            }
+            deque.offerLast(i);
+        }
+        //构造输出结果
+        int[] res = new int[len1];
+        for (int i = 0; i < len1; i++) {
+            Integer idx = map.get(nums1[i]);
+            res[i] = next[idx];
         }
         return res;
     }
