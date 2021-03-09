@@ -38,6 +38,34 @@ public class PenguinTrap2Test {
         test(matrix);
     }
 
+    @Test
+    public void testNext3() {
+        int[][] matrix = {
+                {-1, -1, -1, 1, 1, 1, 0},
+                {-1, -1, 1, 1, 1, 0, 0},
+                {-1, 1, 1, 1, 0, 0, 0},
+                {1, 1, 1, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, -1},
+                {0, 0, 0, 0, 0, -1, -1},
+                {0, 0, 0, 0, -1, -1, -1},
+        };
+        test(matrix);
+    }
+
+    @Test
+    public void testNext4() {
+        int[][] matrix = {
+                {-1, -1, -1, 1, 1, 1, 0},
+                {-1, -1, 1, 1, 1, 0, 0},
+                {-1, 1, 1, 1, 0, 0, 0},
+                {1, 1, 1, 0, 0, 0, 0},
+                {1, 1, 1, 0, 0, 0, -1},
+                {1, 1, 1, 0, 0, -1, -1},
+                {1, 1, 1, 0, -1, -1, -1},
+        };
+        test(matrix);
+    }
+
     private void test(int[][] matrix) {
         System.out.println("================更新前==============");
         print(matrix);
