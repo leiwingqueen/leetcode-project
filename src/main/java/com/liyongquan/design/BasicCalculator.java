@@ -119,7 +119,7 @@ public class BasicCalculator {
                 if (numStart) {
                     tokens.add(new Num(num));
                     numStart = false;
-                    num=0;
+                    num = 0;
                 }
                 if (ch == '(' || ch == ')') {
                     tokens.add(new Bracket(ch));
@@ -134,6 +134,52 @@ public class BasicCalculator {
             tokens.add(new Num(num));
         }
         return tokens;
+    }
+
+
+    /**
+     * 解法2
+     * 增加一个栈来维护当前的符号位
+     *
+     * @param s
+     * @return
+     */
+    public int calculate2(String s) {
+        Deque<Boolean> positive = new LinkedList<>();
+        positive.offerLast(true);
+        int idx = 0;
+        int len = s.length();
+        int res = 0;
+        boolean prePositive = true;
+        while (idx < len) {
+            char ch = s.charAt(idx);
+            //数字处理
+            if (ch >= '0' && ch <= '9') {
+                int num = 0;
+                while (idx < len && s.charAt(idx) >= '0' && s.charAt(idx) <= '9') {
+                    num = num * 10 + s.charAt(idx) - '0';
+                    idx++;
+                }
+                if (positive.peekLast() && !prePositive || !positive.peekLast() && prePositive) {
+                    num = -num;
+                }
+                res += num;
+            } else {
+                if (ch == '+') {
+                    prePositive = positive.peekLast();
+                } else if (ch == '-') {
+                    prePositive = !positive.peekLast();
+                } else if (ch == '(') {
+                    positive.offerLast(prePositive);
+                    prePositive = true;
+                } else if (ch == ')') {
+                    positive.pollLast();
+                    prePositive = true;
+                }
+                idx++;
+            }
+        }
+        return res;
     }
 }
 

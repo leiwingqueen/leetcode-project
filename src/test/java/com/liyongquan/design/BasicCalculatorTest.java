@@ -16,4 +16,14 @@ public class BasicCalculatorTest {
         log.info("{}", res);
         Assert.assertEquals(2, res);
     }
+
+    /**
+     * "- (3 + (4 + 5))"
+     */
+    @Test
+    public void calculate2() {
+        int res = bc.calculate2("- (3 + (4 + 5))");
+        log.info("{}", res);
+        Assert.assertEquals(-12, res);
+    }
 }
