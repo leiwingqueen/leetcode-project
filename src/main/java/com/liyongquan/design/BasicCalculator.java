@@ -166,11 +166,11 @@ public class BasicCalculator {
                 res += num;
             } else {
                 if (ch == '+') {
-                    prePositive = positive.peekLast();
+                    prePositive = true;
                 } else if (ch == '-') {
-                    prePositive = !positive.peekLast();
+                    prePositive = false;
                 } else if (ch == '(') {
-                    positive.offerLast(prePositive);
+                    positive.offerLast(prePositive ? positive.peekLast() : !positive.peekLast());
                     prePositive = true;
                 } else if (ch == ')') {
                     positive.pollLast();
