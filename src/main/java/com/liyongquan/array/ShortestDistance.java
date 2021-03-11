@@ -1,8 +1,5 @@
 package com.liyongquan.array;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 243. 最短单词距离
  * <p>

@@ -114,6 +114,51 @@ public class Calculate {
         }
     }
 
+    /**
+     * 写法2
+     *
+     * @param s
+     * @return
+     */
+    public int calculate2(String s) {
+        int len = s.length();
+        //存放数字和操作符的栈
+        Stack<Integer> numStack = new Stack<>();
+        int idx = 0;
+        char op = '+';
+        while (idx < len) {
+            char ch = s.charAt(idx);
+            int num = 0;
+            if (ch >= '0' && ch <= '9') {
+                while (idx < len && s.charAt(idx) >= '0' && s.charAt(idx) <= '9') {
+                    num = num * 10 + s.charAt(idx++) - '0';
+                }
+                if (op == '+') {
+                    numStack.push(num);
+                } else if (op == '-') {
+                    numStack.push(-num);
+                } else if (op == '*') {
+                    Integer pre = numStack.pop();
+                    numStack.push(pre * num);
+                } else {
+                    Integer pre = numStack.pop();
+                    numStack.push(pre / num);
+                }
+            } else {
+                if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+                    op = ch;
+                }
+                idx++;
+            }
+        }
+        //输出结果
+        int res = 0;
+        for (Integer num : numStack) {
+            res += num;
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         Calculate calculate = new Calculate();
         int r = calculate.calculate(" 3+5 / 2 ");
