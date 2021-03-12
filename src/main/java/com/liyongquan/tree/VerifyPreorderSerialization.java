@@ -68,4 +68,5 @@ public class VerifyPreorderSerialization {
         }
         return stack.size() == 1 && stack.peek() == '#';
     }
+
 }
