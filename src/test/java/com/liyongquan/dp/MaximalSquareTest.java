@@ -21,4 +21,20 @@ public class MaximalSquareTest {
         log.info("{}", res);
         Assert.assertEquals(1, res);
     }
+
+    /**
+     * [["1","0","1","0","0"],["1","0","1","1","1"],["1","1","1","1","1"],["1","0","0","1","0"]]
+     */
+    @Test
+    public void maximalSquare2() {
+        char[][] matrix = {
+                {'1', '0', '1', '0', '0'},
+                {'1', '0', '1', '1', '1'},
+                {'1', '1', '1', '1', '1'},
+                {'1', '0', '0', '1', '0'}
+        };
+        int res = ms.maximalSquare2(matrix);
+        log.info("{}", res);
+        Assert.assertEquals(4,res);
+    }
 }

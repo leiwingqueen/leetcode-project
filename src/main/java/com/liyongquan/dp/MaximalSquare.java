@@ -69,4 +69,51 @@ public class MaximalSquare {
         }
         return true;
     }
+
+    /**
+     * dp解法
+     * <p>
+     * f(i,j)表示以(i,j)开始的最大正方形的长度
+     *
+     * 如果M[i][j]==0,f(i,j)=0
+     * 如果M[i][j]==1,
+     * 那么我们可以计算可能达到的最大长度为 width=min(f(i+1,j),f(i,j+1))+1
+     *
+     * 假设M[i+width][j+width]==1，那么最大长度就是width，否则就是width-1
+     *
+     * 时间复杂度O(m*n)
+     * 空间复杂度O(m*n)
+     *
+     *
+     * @param matrix
+     * @return
+     */
+    public int maximalSquare2(char[][] matrix) {
+        int row = matrix.length, col = matrix[0].length;
+        //增加一行和一列，简化边界值的处理
+        int[][] dp = new int[row + 1][col + 1];
+        //初始化
+        for (int i = 0; i <= row; i++) {
+            dp[i][0] = 0;
+        }
+        for (int i = 0; i <= col; i++) {
+            dp[0][i] = 0;
+        }
+        //dp迭代
+        int res = 0;
+        for (int i = row - 1; i >= 0; i--) {
+            for (int j = col - 1; j >= 0; j--) {
+                if (matrix[i][j] == '0') {
+                    continue;
+                }
+                int width = Math.min(dp[i][j + 1], dp[i + 1][j]);
+                dp[i][j] = width;
+                if (matrix[i + width][j + width] == '1') {
+                    dp[i][j] = width + 1;
+                    res = Math.max(res, width + 1);
+                }
+            }
+        }
+        return res * res;
+    }
 }
