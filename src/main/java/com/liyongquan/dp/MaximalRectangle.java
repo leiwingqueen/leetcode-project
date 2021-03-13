@@ -42,11 +42,51 @@ package com.liyongquan.dp;
  */
 public class MaximalRectangle {
     /**
-     * 有点难，暂时没想到解法...
+     * 暴力解法
+     *
      * @param matrix
      * @return
      */
     public int maximalRectangle(char[][] matrix) {
-        return 0;
+        int row = matrix.length;
+        if (row == 0) {
+            return 0;
+        }
+        int col = matrix[0].length;
+        int res = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (matrix[i][j] == '0') {
+                    continue;
+                }
+                for (int area = res + 1; area <= (row - i) * (col - j); area++) {
+                    for (int height = 1; height <= area && i + height - 1 < row; height++) {
+                        if (area % height != 0) {
+                            continue;
+                        }
+                        int width = area / height;
+                        if (j + width - 1 >= col) {
+                            continue;
+                        }
+                        if (isRectangle(matrix, i, j, width, height)) {
+                            res = area;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    private boolean isRectangle(char[][] matrix, int x, int y, int width, int height) {
+        for (int i = x; i < x + height; i++) {
+            for (int j = y; j < y + width; j++) {
+                if (matrix[i][j] == '0') {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
