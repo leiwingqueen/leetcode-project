@@ -2,8 +2,10 @@ package com.liyongquan.array;
 
 import com.liyongquan.sort.HeapSort;
 
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * 1215. 步进数
@@ -33,6 +35,8 @@ import java.util.List;
 public class SteppingNumbers {
     /**
      * 暴力解法
+     * <p>
+     * 超时
      *
      * @param low
      * @param high
@@ -62,5 +66,59 @@ public class SteppingNumbers {
             n /= 10;
         }
         return true;
+    }
+
+    public List<Integer> countSteppingNumbers2(int low, int high) {
+        List<Integer> res = new LinkedList<>();
+        Queue<Integer> queue = new LinkedList<>();
+        //0单独处理
+        if (low <= 0) {
+            res.add(0);
+        }
+        for (int i = 1; i <= 9; i++) {
+            queue.add(i);
+        }
+        while (!queue.isEmpty()) {
+            Integer num = queue.poll();
+            if (num > high) {
+                return res;
+            }
+            if (num >= low) {
+                res.add(num);
+            }
+            //右边增加一个数字
+            int right = num % 10;
+            if (right > 0) {
+                queue.add(num * 10 + right - 1);
+            }
+            if (right < 9) {
+                queue.add(num * 10 + right + 1);
+            }
+        }
+        return res;
+    }
+
+    private void dfs(int num, int low, int high, List<Integer> res) {
+        int i = num % 10;
+        if (i > 0) {
+            int next = num * 10 + i - 1;
+            if (next > high) {
+                return;
+            }
+            if (next >= low && next <= high) {
+                res.add(next);
+                dfs(next, low, high, res);
+            }
+        }
+        if (i < 9) {
+            int next = num * 10 + i + 1;
+            if (next > high) {
+                return;
+            }
+            if (next >= low && next <= high) {
+                res.add(next);
+                dfs(next, low, high, res);
+            }
+        }
     }
 }
