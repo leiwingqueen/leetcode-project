@@ -44,6 +44,8 @@ public class MaximalRectangle {
     /**
      * 暴力解法
      *
+     * 时间复杂度O(n^5)
+     *
      * @param matrix
      * @return
      */
