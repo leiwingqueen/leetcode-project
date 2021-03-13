@@ -1,5 +1,9 @@
 package com.liyongquan.dp;
 
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
+
 /**
  * 84. 柱状图中最大的矩形
  * <p>
@@ -104,5 +108,38 @@ public class LargestRectangleArea {
     }
 
     //TODO:单调栈解法
+
+    /**
+     * 单调栈解法
+     *
+     * @param heights
+     * @return
+     */
+    public int largestRectangleArea4(int[] heights) {
+        int len = heights.length;
+        int res = 0;
+        //找到右侧小于当前位置的第一个节点
+        int[] right = new int[len], left = new int[len];
+        Deque<Integer> deque = new LinkedList<>();
+        Arrays.fill(right, len);
+        Arrays.fill(left, -1);
+        for (int i = 0; i < len; i++) {
+            while (!deque.isEmpty() && heights[deque.peek()] < heights[i]) {
+                right[deque.pollLast()] = i;
+            }
+            deque.offerLast(i);
+        }
+        deque = new LinkedList<>();
+        for (int i = len - 1; i >= 0; i--) {
+            while (!deque.isEmpty() && heights[deque.peek()] < heights[i]) {
+                left[deque.pollLast()] = i;
+            }
+            deque.offerLast(i);
+        }
+        for (int i = 0; i < len; i++) {
+            res = Math.max(res, (right[i] - left[i] - 1) * heights[i]);
+        }
+        return res;
+    }
 
 }
