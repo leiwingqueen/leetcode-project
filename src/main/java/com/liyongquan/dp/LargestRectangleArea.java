@@ -112,6 +112,8 @@ public class LargestRectangleArea {
     /**
      * 单调栈解法
      *
+     * 时间复杂度O(n)
+     *
      * @param heights
      * @return
      */
@@ -124,14 +126,14 @@ public class LargestRectangleArea {
         Arrays.fill(right, len);
         Arrays.fill(left, -1);
         for (int i = 0; i < len; i++) {
-            while (!deque.isEmpty() && heights[deque.peek()] < heights[i]) {
+            while (!deque.isEmpty() && heights[deque.peekLast()] > heights[i]) {
                 right[deque.pollLast()] = i;
             }
             deque.offerLast(i);
         }
         deque = new LinkedList<>();
         for (int i = len - 1; i >= 0; i--) {
-            while (!deque.isEmpty() && heights[deque.peek()] < heights[i]) {
+            while (!deque.isEmpty() && heights[deque.peekLast()] > heights[i]) {
                 left[deque.pollLast()] = i;
             }
             deque.offerLast(i);
