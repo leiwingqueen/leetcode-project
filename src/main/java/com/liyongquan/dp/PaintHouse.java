@@ -30,7 +30,7 @@ public class PaintHouse {
      * f0(n)=min{f1(n-1),f2(n-1)}+cost[n-1][0]
      * f1(n)=min{f0(n-1),f2(n-1)}+cost[n-1][1]
      * f2(n)=min{f0(n-1),f1(n-1)}+cost[n-1][2]
-     *
+     * <p>
      * 时间复杂度O(n)
      * 空间复杂度O(n)
      *
@@ -52,5 +52,28 @@ public class PaintHouse {
             dp2[i] = Math.min(dp0[i - 1], dp1[i - 1]) + costs[i][2];
         }
         return Math.min(dp0[len - 1], Math.min(dp1[len - 1], dp2[len - 1]));
+    }
+
+    /**
+     * 空间复杂度还能进一步减少成O(1)
+     *
+     * @param costs
+     * @return
+     */
+    public int minCost2(int[][] costs) {
+        int len = costs.length;
+        if (len == 0) {
+            return 0;
+        }
+        int dp0 = costs[0][0], dp1 = costs[0][1], dp2 = costs[0][2];
+        for (int i = 1; i < len; i++) {
+            int dp0_ = Math.min(dp1, dp2) + costs[i][0];
+            int dp1_ = Math.min(dp0, dp2) + costs[i][1];
+            int dp2_ = Math.min(dp0, dp1) + costs[i][2];
+            dp0 = dp0_;
+            dp1 = dp1_;
+            dp2 = dp2_;
+        }
+        return Math.min(dp0, Math.min(dp1, dp2));
     }
 }
