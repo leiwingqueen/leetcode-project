@@ -68,6 +68,13 @@ public class SteppingNumbers {
         return true;
     }
 
+    /**
+     * bfs解法
+     *
+     * @param low
+     * @param high
+     * @return
+     */
     public List<Integer> countSteppingNumbers2(int low, int high) {
         List<Integer> res = new LinkedList<>();
         Queue<Integer> queue = new LinkedList<>();
