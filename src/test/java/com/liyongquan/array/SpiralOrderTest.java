@@ -24,4 +24,11 @@ public class SpiralOrderTest {
         }
         log.info("{}", sb.toString());
     }
+
+    @Test
+    public void test2() {
+        List<Integer> res = so.spiralOrder2(new int[][]{
+                {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+        });
+    }
 }

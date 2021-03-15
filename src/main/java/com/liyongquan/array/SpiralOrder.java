@@ -88,7 +88,7 @@ public class SpiralOrder {
     }
 
     /**
-     * 一层层扫描
+     * 解法2：一层层扫描
      *
      * @param matrix
      * @return
@@ -100,25 +100,35 @@ public class SpiralOrder {
         int row = matrix.length, col = matrix[0].length;
         List<Integer> res = new ArrayList<>(row * col);
         int x = 0, y = 0;
-        int middleX = row % 2 == 0 ? row / 2 : row / 2 + 1;
-        int middleY = col % 2 == 0 ? col / 2 : col / 2 + 1;
+        int middleX = row % 2 == 0 ? row / 2 - 1 : row / 2;
+        int middleY = col % 2 == 0 ? col / 2 - 1 : col / 2;
         while (x <= middleX && y <= middleY) {
             int width = col - x * 2, high = row - y * 2;
-            //上边
-            for (int i = y; i < y + width - 1; i++) {
-                res.add(matrix[x][i]);
-            }
-            //右边
-            for (int i = x; i < x + high - 1; i++) {
-                res.add(matrix[i][x + width - 1]);
-            }
-            //下边
-            for (int i = y + width - 1; i > y; i--) {
-                res.add(matrix[x + high - 1][i]);
-            }
-            //左边
-            for (int i = x + high - 1; i > x; i--) {
-                res.add(matrix[i][y]);
+            if (width == 1) {
+                for (int i = x; i < x + high; i++) {
+                    res.add(matrix[i][y]);
+                }
+            } else if (high == 1) {
+                for (int i = y; i < y + width; i++) {
+                    res.add(matrix[x][i]);
+                }
+            } else {
+                //上边
+                for (int i = y; i < y + width - 1; i++) {
+                    res.add(matrix[x][i]);
+                }
+                //右边
+                for (int i = x; i < x + high - 1; i++) {
+                    res.add(matrix[i][x + width - 1]);
+                }
+                //下边
+                for (int i = y + width - 1; i > y; i--) {
+                    res.add(matrix[x + high - 1][i]);
+                }
+                //左边
+                for (int i = x + high - 1; i > x; i--) {
+                    res.add(matrix[i][y]);
+                }
             }
             x++;
             y++;
