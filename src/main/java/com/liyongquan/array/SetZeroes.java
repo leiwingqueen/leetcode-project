@@ -41,6 +41,37 @@ import java.rmi.MarshalException;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class SetZeroes {
+
+    /**
+     * 先尝试使用m*n的额外空间
+     *
+     * @param matrix
+     */
+    public void setZeroes2(int[][] matrix) {
+        if (matrix.length == 0) {
+            return;
+        }
+        int row = matrix.length, col = matrix[0].length;
+        int[][] tmp = new int[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                tmp[i][j] = matrix[i][j];
+            }
+        }
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (tmp[i][j] == 0) {
+                    for (int k = 0; k < col; k++) {
+                        matrix[i][k] = 0;
+                    }
+                    for (int k = 0; k < row; k++) {
+                        matrix[k][j] = 0;
+                    }
+                }
+            }
+        }
+    }
+
     public void setZeroes(int[][] matrix) {
         int m = matrix.length;
         int n = matrix[0].length;
