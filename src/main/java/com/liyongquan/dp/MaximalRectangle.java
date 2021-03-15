@@ -43,7 +43,7 @@ package com.liyongquan.dp;
 public class MaximalRectangle {
     /**
      * 暴力解法
-     *
+     * <p>
      * 时间复杂度O(n^5)
      *
      * @param matrix
@@ -90,5 +90,49 @@ public class MaximalRectangle {
             }
         }
         return true;
+    }
+
+    /**
+     * 暴力解法-优化
+     * <p>
+     * 时间复杂度O(m*m*n)
+     * 空间复杂度O(m*n)
+     *
+     * @param matrix
+     * @return
+     */
+    public int maximalRectangle2(char[][] matrix) {
+        if (matrix.length == 0) {
+            return 0;
+        }
+        int row = matrix.length, col = matrix[0].length;
+        //计算每个节点左侧的连续1
+        int[][] oneCount = new int[row][col];
+        for (int i = 0; i < row; i++) {
+            int cnt = 0;
+            for (int j = 0; j < col; j++) {
+                if (matrix[i][j] == '1') {
+                    cnt++;
+                    oneCount[i][j] = cnt;
+                } else {
+                    cnt = 0;
+                }
+            }
+        }
+        //遍历每个右下方的节点的最大矩形
+        int res = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                int width = col;
+                for (int k = i; k >= 0; k--) {
+                    if (oneCount[k][j] == 0) {
+                        break;
+                    }
+                    width = Math.min(width, oneCount[k][j]);
+                    res = Math.max(res, width * (i - k + 1));
+                }
+            }
+        }
+        return res;
     }
 }
