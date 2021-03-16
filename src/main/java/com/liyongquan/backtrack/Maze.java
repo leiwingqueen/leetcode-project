@@ -1,5 +1,7 @@
 package com.liyongquan.backtrack;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,6 +65,7 @@ import java.util.List;
  * // Related Topics 深度优先搜索 广度优先搜索
  * // 👍 93 👎 0
  */
+@Slf4j
 public class Maze {
     public static final int[][] DIR = {
             {-1, 0},
@@ -97,6 +100,7 @@ public class Maze {
             if (next[0] < 0 || next[0] >= row || next[1] < 0 || next[1] >= col || maze[next[0]][next[1]] == 1) {
                 continue;
             }
+            log.info("当前节点:[{},{}],移动方向:[{},{}]", cur[0], cur[1], dir[0], dir[1]);
             int[] point = {cur[0], cur[1]};
             //用于回溯，标记本次移动标记的点
             List<int[]> back = new LinkedList<>();

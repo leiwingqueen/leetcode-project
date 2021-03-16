@@ -6,7 +6,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class MazeTest {
-    private Maze maze=new Maze();
+    private Maze maze = new Maze();
 
     @Test
     public void hasPath() {
@@ -18,6 +18,24 @@ public class MazeTest {
                 {0, 0, 0, 0, 0}
         };
         boolean res = maze.hasPath(matrix, new int[]{0, 4}, new int[]{4, 4});
-        Assert.assertEquals(true,res);
+        Assert.assertEquals(true, res);
+    }
+
+    /**
+     * [[0,0,1,0,0],[0,0,0,0,0],[0,0,0,1,0],[1,1,0,1,1],[0,0,0,0,0]]
+     * [0,4]
+     * [1,2]
+     */
+    @Test
+    public void testHasPath() {
+        int[][] matrix = {
+                {0, 0, 1, 0, 0},
+                {0, 0, 0, 0, 0},
+                {0, 0, 0, 1, 0},
+                {1, 1, 0, 1, 1},
+                {0, 0, 0, 0, 0}
+        };
+        boolean res = maze.hasPath(matrix, new int[]{0, 4}, new int[]{1, 2});
+        Assert.assertEquals(true, res);
     }
 }
