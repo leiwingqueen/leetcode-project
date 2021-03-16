@@ -54,6 +54,8 @@ public class ReconstructQueue {
     /**
      * 贪心算法
      *
+     * TODO:看题解的算法，不能算是真的解决了
+     *
      * @param people
      * @return
      */
