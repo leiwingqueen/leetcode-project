@@ -76,7 +76,7 @@ public class Maze {
 
     /**
      * 回溯解法
-     *
+     * 超时，为啥呢？
      * @param maze
      * @param start
      * @param destination
@@ -87,38 +87,35 @@ public class Maze {
             return false;
         }
         int row = maze.length, col = maze[0].length;
-        return backTrace(maze, start, destination, row, col);
+        int[][] visit = new int[row][col];
+        visit[start[0]][start[1]] = 1;
+        return backTrace(maze, start, destination, row, col, new int[row][col]);
     }
 
-    private boolean backTrace(int[][] maze, int[] cur, int[] destination, int row, int col) {
+    private boolean backTrace(int[][] maze, int[] cur, int[] destination, int row, int col, int[][] visit) {
         if (cur[0] == destination[0] && cur[1] == destination[1]) {
             return true;
         }
         //遍历4个方向
         for (int[] dir : DIR) {
-            int[] next = {cur[0] + dir[0], cur[1] + dir[1]};
-            if (next[0] < 0 || next[0] >= row || next[1] < 0 || next[1] >= col || maze[next[0]][next[1]] == 1) {
-                continue;
-            }
             log.info("当前节点:[{},{}],移动方向:[{},{}]", cur[0], cur[1], dir[0], dir[1]);
+            //移动到尽头
             int[] point = {cur[0], cur[1]};
-            //用于回溯，标记本次移动标记的点
-            List<int[]> back = new LinkedList<>();
             while (point[0] + dir[0] >= 0 && point[0] + dir[0] < row && point[1] + dir[1] >= 0
                     && point[1] + dir[1] < col && maze[point[0] + dir[0]][point[1] + dir[1]] == 0) {
-                //标记成墙壁
-                maze[point[0]][point[1]] = 1;
-                back.add(new int[]{point[0], point[1]});
                 point[0] += dir[0];
                 point[1] += dir[1];
             }
-            if (backTrace(maze, point, destination, row, col)) {
+            //避免死循环
+            if (visit[point[0]][point[1]] == 1) {
+                continue;
+            }
+            visit[point[0]][point[1]] = 1;
+            if (backTrace(maze, point, destination, row, col, visit)) {
                 return true;
             }
             //回溯
-            for (int[] b : back) {
-                maze[b[0]][b[1]] = 0;
-            }
+            visit[point[0]][point[1]] = 0;
         }
         return false;
     }
