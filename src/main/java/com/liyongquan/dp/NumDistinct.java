@@ -85,10 +85,39 @@ public class NumDistinct {
     }
 
     /**
+     * 回溯解法2
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public int numDistinct3(String s, String t) {
+        return backtrace2(s, t, 0, 0);
+    }
+
+    private int backtrace2(String s, String t, int idx1, int idx2) {
+        if (idx2 == t.length()) {
+            return 1;
+        }
+        if (idx1 == s.length()) {
+            return 0;
+        }
+        //找到第一个满足t[idx2]的字符
+        int res = 0;
+        for (int i = idx1; i < s.length(); i++) {
+            res = backtrace2(s, t, i + 1, idx2);
+            if (s.charAt(i) == t.charAt(idx2)) {
+                res = backtrace2(s, t, i + 1, idx2 + 1);
+            }
+        }
+        return res;
+    }
+
+    /**
      * 回溯写出来了，dp就简单了
-     *
+     * <p>
      * 性能击败5%
-     *
+     * <p>
      * 时间复杂度O(len1^2*len2)
      *
      * @param s
@@ -115,6 +144,74 @@ public class NumDistinct {
                     }
                 }
                 dp[i][j] = cnt;
+            }
+        }
+        return dp[len1][len2];
+    }
+
+    /**
+     * dp解法2
+     * <p>
+     * 选和不选的问题
+     * f(i,j)为s的前i个字符和t的前j个字符的子序列数量
+     * if s[i-1]==t[j-1]
+     * f(i,j)=f(i-1,j-1)+f(i-1,j)
+     * 否则
+     * f(i,j)=f(i-1,j)
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public int numDistinct4(String s, String t) {
+        int len1 = s.length(), len2 = t.length();
+        int[][] dp = new int[len1 + 1][len2 + 1];
+        //初始化
+        for (int i = 1; i <= len2; i++) {
+            dp[0][i] = 0;
+        }
+        for (int i = 0; i <= len1; i++) {
+            dp[i][0] = 1;
+        }
+        //dp迭代
+        for (int i = 1; i <= len1; i++) {
+            for (int j = 1; j <= len2; j++) {
+                dp[i][j] = dp[i - 1][j];
+                if (s.charAt(i - 1) == t.charAt(j - 1)) {
+                    dp[i][j] += dp[i - 1][j - 1];
+                }
+            }
+        }
+        return dp[len1][len2];
+    }
+
+    /**
+     * 在上面基础上再尝试做剪枝
+     * <p>
+     * i<j一定是0
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public int numDistinct5(String s, String t) {
+        int len1 = s.length(), len2 = t.length();
+        if (len1 < len2) {
+            return 0;
+        }
+        int[][] dp = new int[len1 + 1][len2 + 1];
+        //初始化
+        for (int i = 0; i <= len1; i++) {
+            dp[i][0] = 1;
+        }
+        //dp迭代
+        for (int i = 1; i <= len1; i++) {
+            //j<=i，减少遍历的范围
+            for (int j = 1; j <= len2 && j <= i; j++) {
+                dp[i][j] = dp[i - 1][j];
+                if (s.charAt(i - 1) == t.charAt(j - 1)) {
+                    dp[i][j] += dp[i - 1][j - 1];
+                }
             }
         }
         return dp[len1][len2];

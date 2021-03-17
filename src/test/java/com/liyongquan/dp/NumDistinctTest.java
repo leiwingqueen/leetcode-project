@@ -15,7 +15,7 @@ public class NumDistinctTest {
      */
     @Test
     public void numDistinct2() {
-        int res = nd.numDistinct2("rabbbit", "rabbit");
+        int res = nd.numDistinct5("rabbbit", "rabbit");
         log.info("{}", res);
         Assert.assertEquals(3, res);
     }
