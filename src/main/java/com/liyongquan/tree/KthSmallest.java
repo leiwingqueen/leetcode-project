@@ -40,6 +40,7 @@ package com.liyongquan.tree;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 public class KthSmallest {
     /**
@@ -105,5 +106,38 @@ public class KthSmallest {
         cnt++;
         num = root.val;
         dfs(root.right, k);
+    }
+
+    /**
+     * 用栈模拟递归
+     * TODO:待实现
+     *
+     * @param root
+     * @param k
+     * @return
+     */
+    public int kthSmallest3(TreeNode root, int k) {
+        if (root == null) {
+            return -1;
+        }
+        int cnt = 0;
+        Stack<TreeNode> stack = new Stack<>();
+        stack.add(root);
+        while (!stack.isEmpty()) {
+            TreeNode node = stack.peek();
+            //左子树处理
+            if (node.left == null) {
+                stack.pop();
+                cnt++;
+                if (cnt == k) {
+                    return node.val;
+                }
+            } else {
+                stack.push(node.left);
+            }
+            //右子树
+            //TODO:一下子还真不好写出来
+        }
+        return -1;
     }
 }
