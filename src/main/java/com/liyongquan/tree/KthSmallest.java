@@ -45,7 +45,7 @@ public class KthSmallest {
     /**
      * 最粗暴的解法：
      * bst的中序遍历就是升序
-     *
+     * <p>
      * 性能击败5%
      *
      * @param root
@@ -74,5 +74,36 @@ public class KthSmallest {
         inorder(root.left, list);
         list.add(root.val);
         inorder(root.right, list);
+    }
+
+    //当前节点的计数器
+    private int cnt = 0;
+    //最后访问的数字
+    private int num = -1;
+
+    /**
+     * 中序遍历+剪枝
+     * 接近双100了，但是还是继续可以用栈来模拟递归
+     *
+     * @param root
+     * @param k
+     * @return
+     */
+    public int kthSmallest2(TreeNode root, int k) {
+        dfs(root, k);
+        return num;
+    }
+
+    private void dfs(TreeNode root, int k) {
+        if (root == null || cnt >= k) {
+            return;
+        }
+        dfs(root.left, k);
+        if (cnt >= k) {
+            return;
+        }
+        cnt++;
+        num = root.val;
+        dfs(root.right, k);
     }
 }
