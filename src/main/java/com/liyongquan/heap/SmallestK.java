@@ -1,7 +1,8 @@
 package com.liyongquan.heap;
 
-import java.util.Comparator;
 import java.util.PriorityQueue;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 面试题 17.14. 最小K个数
@@ -58,5 +59,69 @@ public class SmallestK {
             res[i] = pq.poll();
         }
         return res;
+    }
+
+
+    /**
+     * 快排的思路
+     *
+     * @param arr
+     * @param k
+     * @return
+     */
+    public int[] smallestK2(int[] arr, int k) {
+        int len = arr.length;
+        if (k == 0) {
+            return new int[]{};
+        }
+        if (len == 0 || arr.length <= k) {
+            return arr;
+        }
+        int l = 0, r = len - 1;
+        while (l < r) {
+            int pivot = partition(arr, l, r);
+            if (pivot == k - 1) {
+                break;
+            } else if (pivot < k - 1) {
+                l = pivot + 1;
+            } else {
+                r = pivot - 1;
+            }
+        }
+        //输出
+        int[] res = new int[k];
+        for (int i = 0; i < k; i++) {
+            res[i] = arr[i];
+        }
+        return res;
+    }
+
+    private int partition(int[] arr, int l, int r) {
+        //随机一个pivot节点
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        int pivot = random.nextInt(l, r + 1);
+        swap(arr, l, pivot);
+        pivot = l;
+        l += 1;
+        while (l < r) {
+            //左右边界分别移动
+            while (l < r && arr[l] < arr[pivot]) {
+                l++;
+            }
+            while (l < r && arr[r] >= arr[pivot]) {
+                r--;
+            }
+            if (l < r) {
+                swap(arr, l, r);
+            }
+        }
+        swap(arr, pivot, l);
+        return l;
+    }
+
+    private void swap(int[] arr, int idx1, int idx2) {
+        int tmp = arr[idx1];
+        arr[idx1] = arr[idx2];
+        arr[idx2] = tmp;
     }
 }
