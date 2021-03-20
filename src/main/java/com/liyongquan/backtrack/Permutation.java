@@ -1,9 +1,9 @@
 package com.liyongquan.backtrack;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import sun.rmi.runtime.Log;
+
+import java.util.*;
 
 /**
  * 剑指 Offer 38. 字符串的排列
@@ -30,6 +30,7 @@ import java.util.Set;
  * 链接：https://leetcode-cn.com/problems/zi-fu-chuan-de-pai-lie-lcof
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
+@Slf4j
 public class Permutation {
     /**
      * 回溯解法
@@ -38,7 +39,7 @@ public class Permutation {
      * @return
      */
     public String[] permutation(String s) {
-        Set<String> res = new HashSet<>();
+        List<String> res = new LinkedList<>();
         backtrace(new char[s.length()], s.toCharArray(), 0, res);
         String[] r = new String[res.size()];
         int idx = 0;
@@ -48,15 +49,23 @@ public class Permutation {
         return r;
     }
 
-    private void backtrace(char[] path, char[] s, int idx, Set<String> res) {
+    private void backtrace(char[] path, char[] s, int idx, List<String> res) {
         if (idx == s.length) {
             res.add(new String(path));
+            return;
         }
         //使用交换的方式来减少多余的扫描
+        Set<Character> set = new HashSet<>();
         for (int i = idx; i < s.length; i++) {
+            //剪枝，保证每个位置的字符只出现一次
+            if (set.contains(s[i])) {
+                continue;
+            }
+            set.add(s[i]);
             path[idx] = s[i];
             swap(s, i, idx);
             backtrace(path, s, idx + 1, res);
+            //回溯
             swap(s, idx, i);
         }
     }
