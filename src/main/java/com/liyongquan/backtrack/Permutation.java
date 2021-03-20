@@ -39,7 +39,7 @@ public class Permutation {
      */
     public String[] permutation(String s) {
         Set<String> res = new HashSet<>();
-        backtrace(new char[s.length()], s, 0, new boolean[s.length()], res);
+        backtrace(new char[s.length()], s.toCharArray(), 0, res);
         String[] r = new String[res.size()];
         int idx = 0;
         for (String re : res) {
@@ -48,17 +48,22 @@ public class Permutation {
         return r;
     }
 
-    private void backtrace(char[] path, String s, int idx, boolean[] visit, Set<String> res) {
-        if (idx == s.length()) {
+    private void backtrace(char[] path, char[] s, int idx, Set<String> res) {
+        if (idx == s.length) {
             res.add(new String(path));
         }
-        for (int i = 0; i < visit.length; i++) {
-            if (!visit[i]) {
-                visit[i] = true;
-                path[idx] = s.charAt(i);
-                backtrace(path, s, idx + 1, visit, res);
-                visit[i] = false;
-            }
+        //使用交换的方式来减少多余的扫描
+        for (int i = idx; i < s.length; i++) {
+            path[idx] = s[i];
+            swap(s, i, idx);
+            backtrace(path, s, idx + 1, res);
+            swap(s, idx, i);
         }
+    }
+
+    private void swap(char[] s, int i, int j) {
+        char tmp = s[i];
+        s[i] = s[j];
+        s[j] = tmp;
     }
 }
