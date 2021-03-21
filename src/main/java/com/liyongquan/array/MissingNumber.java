@@ -43,4 +43,22 @@ public class MissingNumber {
         }
         return sum - s;
     }
+
+    /**
+     * 异或解法
+     *
+     * @param nums
+     * @return
+     */
+    public int missingNumber2(int[] nums) {
+        int len = nums.length;
+        int xor = 0;
+        for (int num : nums) {
+            xor ^= num;
+        }
+        for (int i = 0; i <= len; i++) {
+            xor ^= i;
+        }
+        return xor;
+    }
 }
