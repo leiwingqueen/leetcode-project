@@ -64,6 +64,8 @@ public class VolumeOfHistogram {
     /**
      * 单调栈
      *
+     * 时间复杂度O(n)
+     *
      * @param height
      * @return
      */
