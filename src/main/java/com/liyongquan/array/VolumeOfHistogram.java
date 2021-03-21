@@ -1,6 +1,11 @@
 package com.liyongquan.array;
 
 import lombok.extern.slf4j.Slf4j;
+import sun.nio.cs.ext.MacHebrew;
+
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.concurrent.DelayQueue;
 
 /**
  * 面试题 17.21. 直方图的水量
@@ -52,6 +57,40 @@ public class VolumeOfHistogram {
                 //log.info("idx:{},height:{}", i, min - height[i]);
                 res += min - height[i];
             }
+        }
+        return res;
+    }
+
+    /**
+     * 单调栈
+     *
+     * @param height
+     * @return
+     */
+    public int trap2(int[] height) {
+        int len = height.length;
+        if (len == 0) {
+            return 0;
+        }
+        //计算右侧的单调栈
+        Deque<Integer> deque = new LinkedList<>();
+        for (int i = 0; i < len; i++) {
+            while (!deque.isEmpty() && deque.peekLast() < height[i]) {
+                deque.pollLast();
+            }
+            deque.offerLast(height[i]);
+        }
+        int left = 0, res = 0;
+        for (int i = 0; i < len; i++) {
+            if (!deque.isEmpty() && deque.peekFirst() == height[i]) {
+                deque.pop();
+            }
+            int min = Math.min(left, deque.isEmpty() ? 0 : deque.peekFirst());
+            if (min > height[i]) {
+                //log.info("idx:{},height:{}", i, min - height[i]);
+                res += min - height[i];
+            }
+            left = Math.max(left, height[i]);
         }
         return res;
     }

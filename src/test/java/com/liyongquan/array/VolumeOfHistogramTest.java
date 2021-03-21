@@ -12,7 +12,7 @@ public class VolumeOfHistogramTest {
 
     @Test
     public void trap() {
-        int res = vh.trap(new int[]{0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1});
+        int res = vh.trap2(new int[]{0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1});
         log.info("{}", res);
         Assert.assertEquals(6, res);
     }
