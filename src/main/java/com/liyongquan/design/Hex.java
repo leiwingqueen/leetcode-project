@@ -1,0 +1,35 @@
+package com.liyongquan.design;
+
+public class Hex {
+    public int x;
+    public int y;
+    public int z;
+
+    public Hex() {
+    }
+
+    public Hex(int x, int y, int z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public void move(Hex dir) {
+        this.x += dir.x;
+        this.y += dir.y;
+        this.z += dir.z;
+    }
+
+    @Override
+    public Hex clone() {
+        return new Hex(this.x, this.y, this.z);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 17;
+        hash = hash * 31 + x;
+        hash = hash * 31 + y;
+        return hash;
+    }
+}

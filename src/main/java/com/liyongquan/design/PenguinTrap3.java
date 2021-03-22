@@ -45,8 +45,8 @@ public class PenguinTrap3 {
                     block.edge[i] = true;
                     //稳定的砖块继续放入队列中迭代
                     if (block.exist()) {
-                        visit.add(h);
-                        queue.add(h);
+                        visit.add(h.clone());
+                        queue.add(h.clone());
                     }
                     h.move(dir);
                 }
@@ -78,10 +78,11 @@ enum BlockType {
  * Cube coordinates
  * x+y+z=0
  */
-class Hex {
-    int x;
-    int y;
-    int z;
+//自行在其他文件定义这个类，编写用例需要，这里类需要是public
+/*class Hex {
+    public int x;
+    public int y;
+    public int z;
 
     public Hex() {
     }
@@ -99,10 +100,10 @@ class Hex {
     }
 
     @Override
-    protected Hex clone() {
+    public Hex clone() {
         return new Hex(this.x, this.y, this.z);
     }
-}
+}*/
 
 class Block {
     //对应6条边
