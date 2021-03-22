@@ -26,6 +26,18 @@ public class Hex {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || !(obj instanceof Hex)) {
+            return false;
+        }
+        Hex hex = (Hex) obj;
+        return this.x == hex.x && this.y == hex.y && this.z == hex.z;
+    }
+
+    @Override
     public int hashCode() {
         int hash = 17;
         hash = hash * 31 + x;

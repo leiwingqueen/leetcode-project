@@ -73,38 +73,6 @@ enum BlockType {
     EMPTY,
 }
 
-/**
- * 存储6变形
- * Cube coordinates
- * x+y+z=0
- */
-//自行在其他文件定义这个类，编写用例需要，这里类需要是public
-/*class Hex {
-    public int x;
-    public int y;
-    public int z;
-
-    public Hex() {
-    }
-
-    public Hex(int x, int y, int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-
-    public void move(Hex dir) {
-        this.x += dir.x;
-        this.y += dir.y;
-        this.z += dir.z;
-    }
-
-    @Override
-    public Hex clone() {
-        return new Hex(this.x, this.y, this.z);
-    }
-}*/
-
 class Block {
     //对应6条边
     boolean edge[];

@@ -58,12 +58,10 @@ public class PenguinTrap3Test {
         log.info("{}", map.get(center));
         for (int i = 1; i <= 5; i++) {
             List<Hex> hexes = cubeRing(center, i);
-            StringBuilder sb = new StringBuilder();
-            for (Hex hex : hexes) {
-                sb.append(hex + ",");
-            }
             log.info("**********第{}层***********", i);
-            log.info("{}", sb.toString());
+            for (Hex hex : hexes) {
+                log.info("[x:{},y:{},z:{}]:{}", hex.x, hex.y, hex.z, map.get(hex));
+            }
         }
     }
 
