@@ -1,12 +1,14 @@
 package com.liyongquan.design;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 @Slf4j
 public class PenguinTrap3Test {
@@ -18,31 +20,140 @@ public class PenguinTrap3Test {
             new Hex(-1, 0, +1), new Hex(0, -1, +1),
     };
 
+    public static final int RADIUS = 5;
+
+    /**
+     * 全部填满的场景
+     */
     @Test
-    public void next() {
-        Map<Hex, BlockType> map = build();
-        log.info("**********更新前***********");
-        print(map, 5);
-        Map<Hex, BlockType> next = pt3.next(map);
-        log.info("**********更新后***********");
-        print(next, 5);
+    public void test1() {
+        Function<Hex, BlockType> function = hex -> {
+            //初始化中心点
+            Hex center = new Hex(0, 0, 0);
+            //最边缘是墙壁
+            List<Hex> hexes = cubeRing(center, RADIUS);
+            for (Hex block : hexes) {
+                if (hex.equals(block)) {
+                    return BlockType.WALL;
+                }
+            }
+            return BlockType.BLOCK;
+        };
+        testTpl(function, function, RADIUS);
     }
 
-    private Map<Hex, BlockType> build() {
+    /**
+     * 全部为空
+     */
+    @Test
+    public void test2() {
+        Function<Hex, BlockType> function = hex -> {
+            //初始化中心点
+            Hex center = new Hex(0, 0, 0);
+            //最边缘是墙壁
+            List<Hex> hexes = cubeRing(center, RADIUS);
+            for (Hex block : hexes) {
+                if (hex.equals(block)) {
+                    return BlockType.WALL;
+                }
+            }
+            return BlockType.EMPTY;
+        };
+        testTpl(function, function, RADIUS);
+    }
+
+    /**
+     * 一条直线
+     */
+    @Test
+    public void test3() {
+        Function<Hex, BlockType> function = hex -> {
+            //初始化中心点
+            Hex center = new Hex(0, 0, 0);
+            //最边缘是墙壁
+            List<Hex> hexes = cubeRing(center, RADIUS);
+            for (Hex block : hexes) {
+                if (hex.equals(block)) {
+                    return BlockType.WALL;
+                }
+            }
+            if (hex.y == 0) {
+                return BlockType.BLOCK;
+            }
+            return BlockType.EMPTY;
+        };
+        testTpl(function, function, RADIUS);
+    }
+
+    /**
+     * 一条直线-中心点缺失
+     */
+    @Test
+    public void test4() {
+        Function<Hex, BlockType> input = hex -> {
+            //初始化中心点
+            Hex center = new Hex(0, 0, 0);
+            if (hex.equals(center)) {
+                return BlockType.EMPTY;
+            }
+            //最边缘是墙壁
+            List<Hex> hexes = cubeRing(center, RADIUS);
+            for (Hex block : hexes) {
+                if (hex.equals(block)) {
+                    return BlockType.WALL;
+                }
+            }
+            if (hex.y == 0) {
+                return BlockType.BLOCK;
+            }
+            return BlockType.EMPTY;
+        };
+
+        Function<Hex, BlockType> output = hex -> {
+            //初始化中心点
+            Hex center = new Hex(0, 0, 0);
+            //最边缘是墙壁
+            List<Hex> hexes = cubeRing(center, RADIUS);
+            for (Hex block : hexes) {
+                if (hex.equals(block)) {
+                    return BlockType.WALL;
+                }
+            }
+            return BlockType.EMPTY;
+        };
+        testTpl(input, output, RADIUS);
+    }
+
+    private void testTpl(Function<Hex, BlockType> input, Function<Hex, BlockType> output, int radius) {
+        log.info("-------------------------------------------------分割线------------------------------------");
+        Map<Hex, BlockType> map = build(input, radius);
+        log.info("**********更新前***********");
+        print(map, radius);
+        Map<Hex, BlockType> res = pt3.next(map);
+        log.info("**********更新后***********");
+        print(res, radius);
+        for (Map.Entry<Hex, BlockType> entry : res.entrySet()) {
+            Assert.assertEquals(output.apply(entry.getKey()), entry.getValue());
+        }
+    }
+
+
+    private Map<Hex, BlockType> build(Function<Hex, BlockType> blockMatch, int radius) {
         Map<Hex, BlockType> map = new HashMap<>();
         //初始化中心点
         Hex center = new Hex(0, 0, 0);
-        map.put(center, BlockType.BLOCK);
-        for (int i = 1; i <= 4; i++) {
+        map.put(center, blockMatch.apply(center));
+        for (int i = 1; i <= radius; i++) {
             List<Hex> hexes = cubeRing(center, i);
             for (Hex hex : hexes) {
-                map.put(hex, BlockType.BLOCK);
+                map.put(hex, blockMatch.apply(hex));
             }
         }
-        List<Hex> hexes = cubeRing(center, 5);
+        //最边缘一定是砖块
+        /*List<Hex> hexes = cubeRing(center, radius);
         for (Hex hex : hexes) {
             map.put(hex, BlockType.WALL);
-        }
+        }*/
         return map;
     }
 
