@@ -67,7 +67,7 @@ public class PenguinTrap3 {
 }
 
 enum BlockType {
-    //墙壁、砖块、空
+    //墙壁、冰块、空
     WALL,
     BLOCK,
     EMPTY,
