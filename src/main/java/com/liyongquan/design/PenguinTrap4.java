@@ -3,7 +3,6 @@ package com.liyongquan.design;
 import java.util.*;
 
 /**
- * 之前每次敲击都会重新计算所有冰块，有没有办法只更新掉落的冰块？
  * <p>
  * 我们假设之前的状态是稳定的，那么是否有办法只更新掉落的冰块
  * <p>
