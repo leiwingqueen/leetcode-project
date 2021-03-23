@@ -164,6 +164,45 @@ public class PenguinTrap3Test {
         testTpl(input, input, RADIUS);
     }
 
+    /**
+     * 才字
+     */
+    @Test
+    public void test6() {
+        Function<Hex, BlockType> input = hex -> {
+            //初始化中心点
+            Hex center = new Hex(0, 0, 0);
+            //最边缘是墙壁
+            List<Hex> hexes = cubeRing(center, RADIUS);
+            for (Hex block : hexes) {
+                if (hex.equals(block)) {
+                    return BlockType.WALL;
+                }
+            }
+            Hex[] blocks = {
+                    new Hex(0, 0, 0),
+
+                    new Hex(0, 1, -1),
+                    new Hex(0, 2, -2),
+                    new Hex(0, 3, -3),
+                    new Hex(0, -1, 1),
+                    new Hex(0, -2, 2),
+                    new Hex(0, -3, 3),
+
+                    new Hex(-3, 0, 3),
+                    new Hex(-2, 0, 2),
+                    new Hex(-1, 0, 1),
+            };
+            for (Hex block : blocks) {
+                if (block.equals(hex)) {
+                    return BlockType.BLOCK;
+                }
+            }
+            return BlockType.EMPTY;
+        };
+        testTpl(input, input, RADIUS);
+    }
+
     private void testTpl(Function<Hex, BlockType> input, Function<Hex, BlockType> output, int radius) {
         log.info("-------------------------------------------------分割线------------------------------------");
         Map<Hex, BlockType> map = build(input, radius);
