@@ -20,7 +20,7 @@ public class PenguinTrap3Test {
             new Hex(-1, 0, +1), new Hex(0, -1, +1),
     };
 
-    public static final int RADIUS = 5;
+    public static final int RADIUS = 4;
 
     /**
      * 全部填满的场景
@@ -124,6 +124,46 @@ public class PenguinTrap3Test {
         testTpl(input, output, RADIUS);
     }
 
+    /**
+     * 三角形
+     */
+    @Test
+    public void test5() {
+        Function<Hex, BlockType> input = hex -> {
+            //初始化中心点
+            Hex center = new Hex(0, 0, 0);
+            //最边缘是墙壁
+            List<Hex> hexes = cubeRing(center, RADIUS);
+            for (Hex block : hexes) {
+                if (hex.equals(block)) {
+                    return BlockType.WALL;
+                }
+            }
+            Hex[] blocks = {
+                    new Hex(0, 0, 0),
+
+                    new Hex(-1, 0, 1),
+                    new Hex(-2, 0, 2),
+                    new Hex(-3, 0, 3),
+
+                    new Hex(0, 1, -1),
+                    new Hex(0, 2, -2),
+                    new Hex(0, 3, -3),
+
+                    new Hex(1, -1, 0),
+                    new Hex(2, -2, 0),
+                    new Hex(3, -3, 0),
+            };
+            for (Hex block : blocks) {
+                if (block.equals(hex)) {
+                    return BlockType.BLOCK;
+                }
+            }
+            return BlockType.EMPTY;
+        };
+        testTpl(input, input, RADIUS);
+    }
+
     private void testTpl(Function<Hex, BlockType> input, Function<Hex, BlockType> output, int radius) {
         log.info("-------------------------------------------------分割线------------------------------------");
         Map<Hex, BlockType> map = build(input, radius);
@@ -149,11 +189,6 @@ public class PenguinTrap3Test {
                 map.put(hex, blockMatch.apply(hex));
             }
         }
-        //最边缘一定是砖块
-        /*List<Hex> hexes = cubeRing(center, radius);
-        for (Hex hex : hexes) {
-            map.put(hex, BlockType.WALL);
-        }*/
         return map;
     }
 
@@ -167,7 +202,7 @@ public class PenguinTrap3Test {
         Hex center = new Hex(0, 0, 0);
         log.info("**********第{}层***********", 0);
         log.info("{}", map.get(center));
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= radius; i++) {
             List<Hex> hexes = cubeRing(center, i);
             log.info("**********第{}层***********", i);
             for (Hex hex : hexes) {
