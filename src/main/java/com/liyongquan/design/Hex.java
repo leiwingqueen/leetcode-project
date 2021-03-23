@@ -14,10 +14,11 @@ public class Hex {
         this.z = z;
     }
 
-    public void move(Hex dir) {
+    public Hex move(Hex dir) {
         this.x += dir.x;
         this.y += dir.y;
         this.z += dir.z;
+        return this;
     }
 
     @Override
