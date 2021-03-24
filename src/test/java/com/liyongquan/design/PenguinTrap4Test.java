@@ -8,6 +8,7 @@ import java.util.*;
 @Slf4j
 public class PenguinTrap4Test {
     public static final int RADIUS = 4;
+    public static final int TEST_CNT = 1000;
 
     private PenguinTrap4 pt = new PenguinTrap4();
 
@@ -96,6 +97,108 @@ public class PenguinTrap4Test {
         log.info("平均敲击次数:{}", sum / total);
         for (Map.Entry<Integer, Integer> entry : cntMap.entrySet()) {
             log.info("敲击次数{}:数量{}", entry.getKey(), entry.getValue());
+        }
+    }
+
+    /**
+     * 第一圈(只需要跑一个扇行的数据，因为整体是对称的)
+     */
+    @Test
+    public void sysbench_ring_1() {
+        sysbench_ring(1);
+    }
+
+    @Test
+    public void sysbench_ring_2() {
+        sysbench_ring(2);
+    }
+
+    @Test
+    public void sysbench_ring_3() {
+        sysbench_ring(3);
+    }
+
+    /**
+     * 纵向对比
+     */
+    @Test
+    public void sysbench_4() {
+        List<Hex> list = new ArrayList<>();
+        Hex cube = new Hex(0, 0, 0);
+        for (int j = 0; j < RADIUS; j++) {
+            list.add(cube);
+            cube = cubeAdd(cube, PenguinTrap4.DIR[4]);
+        }
+        batchTest(list);
+    }
+
+    private void sysbench_ring(int radius) {
+        //获得一个扇形区域的冰块即可
+        Hex cube = cubeAdd(new Hex(0, 0, 0), cubeScale(PenguinTrap4.DIR[4], radius));
+        List<Hex> list = new ArrayList<>();
+        for (int j = 0; j < radius; j++) {
+            list.add(cube);
+            cube = cubeAdd(cube, PenguinTrap4.DIR[0]);
+        }
+        batchTest(list);
+    }
+
+    private void batchTest(List<Hex> list) {
+        //统计合并后的结果
+        Map<Integer, List<Integer>> mergeCnt = new HashMap<>();
+        Set<Integer> keySet = new HashSet<>();
+        for (int j = 0; j < list.size(); j++) {
+            Hex pos = list.get(j);
+            int sum = 0;
+            Map<Integer, Integer> cntMap = new HashMap<>();
+            for (int i = 0; i < TEST_CNT; i++) {
+                Map<Hex, BlockType> map = build(RADIUS);
+                int cnt = 0;
+                while (map.get(pos) == BlockType.BLOCK) {
+                    Optional<Hex> opt = pick(map);
+                    while (opt.get().equals(pos)) {
+                        opt = pick(map);
+                    }
+                    pt.knock(map, Arrays.asList(opt.get()));
+                    cnt++;
+                }
+                sum += cnt;
+                //log.info("敲击次数:{}", cnt);
+                cntMap.put(cnt, cntMap.getOrDefault(cnt, 0) + 1);
+                keySet.add(cnt);
+            }
+            log.info("=====================================================================");
+            log.info("平均敲击次数:{},企鹅的位置:[{},{},{}]", sum / TEST_CNT, pos.x, pos.y, pos.z);
+            for (Map.Entry<Integer, Integer> entry : cntMap.entrySet()) {
+                log.info("敲击次数{}:数量{}", entry.getKey(), entry.getValue());
+            }
+            //合并结果
+            for (Integer key : keySet) {
+                if (!mergeCnt.containsKey(key)) {
+                    List<Integer> l = new ArrayList<>();
+                    //前面补0
+                    for (int i = 0; i < j; i++) {
+                        l.add(0);
+                    }
+                    mergeCnt.put(key, l);
+                }
+                List<Integer> l = mergeCnt.get(key);
+                //前面补0
+                if (l.size() < j) {
+                    l.add(0);
+                }
+                Integer value = cntMap.getOrDefault(key, 0);
+                l.add(value);
+                mergeCnt.put(key, l);
+            }
+        }
+        log.info("========================合并结果=============================================");
+        for (Map.Entry<Integer, List<Integer>> entry : mergeCnt.entrySet()) {
+            StringBuilder sb = new StringBuilder();
+            for (Integer value : entry.getValue()) {
+                sb.append(value + ",");
+            }
+            log.info("敲击次数{}:数量{}", entry.getKey(), sb.toString());
         }
     }
 
