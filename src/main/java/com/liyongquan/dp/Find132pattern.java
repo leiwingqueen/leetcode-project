@@ -1,5 +1,7 @@
 package com.liyongquan.dp;
 
+import jdk.nashorn.internal.ir.IfNode;
+
 /**
  * 456. 132 模式
  * <p>
@@ -65,7 +67,12 @@ public class Find132pattern {
 
 
     /**
-     * 适当剪枝？
+     * 我们假设固定j点，那么需要找到i<j的最小值min{nums[i]}
+     * k>j的最大值max{nums[k]},其中k>j,且nums[k]<nums[j]
+     * <p>
+     * 暴力优化2
+     * <p>
+     * 时间复杂度O(n^2)
      *
      * @param nums
      * @return
@@ -75,16 +82,18 @@ public class Find132pattern {
         if (len < 3) {
             return false;
         }
-        for (int k = 2; k < len; k++) {
-            for (int i = 0; i <= k - 2; i++) {
-                if (nums[i] < nums[k]) {
-                    for (int j = i + 1; j <= k - 1; j++) {
-                        if (nums[k] < nums[j]) {
-                            return true;
-                        }
+        //左边的最小值用一个变量维护，减少了重新计算的过程
+        int min = nums[0];
+        for (int j = 1; j < len - 1; j++) {
+            if (min < nums[j]) {
+                //查找右边的第二大的数字
+                for (int k = j + 1; k < len; k++) {
+                    if (nums[k] > min && nums[k] < nums[j]) {
+                        return true;
                     }
                 }
             }
+            min = Math.min(min, nums[j]);
         }
         return false;
     }
