@@ -1,5 +1,6 @@
 package com.liyongquan.design;
 
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
@@ -130,6 +131,16 @@ public class PenguinTrap4Test {
             cube = cubeAdd(cube, PenguinTrap4.DIR[4]);
         }
         batchTest(list);
+    }
+
+    @Test
+    public void jsonTest() {
+        Map<Hex, BlockType> map = new HashMap<>();
+        map.put(new Hex(0, 0, 0), BlockType.WALL);
+        Map<String, Object> m2 = new HashMap<>();
+        m2.put("data", map);
+        String s = JSON.toJSONString(m2);
+        System.out.println(s);
     }
 
     private void sysbench_ring(int radius) {

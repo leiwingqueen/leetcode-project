@@ -106,7 +106,7 @@ public class Find132pattern {
      * @param nums
      * @return
      */
-    public boolean find132pattern2(int[] nums) {
+    public boolean find132pattern3(int[] nums) {
         int len = nums.length;
         if (len < 3) {
             return false;
