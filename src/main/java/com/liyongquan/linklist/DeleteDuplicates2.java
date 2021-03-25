@@ -21,7 +21,7 @@ package com.liyongquan.linklist;
  */
 public class DeleteDuplicates2 {
     /**
-     * 两个指针，分别指向要删除起始位置和结束位置，然后再进行删除操作
+     * 解法1
      *
      * @param head
      * @return
@@ -50,6 +50,71 @@ public class DeleteDuplicates2 {
                 pre = cur;
             }
             cur = pre.next;
+        }
+        return dummy.next;
+    }
+
+    /**
+     * 代码优化
+     *
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicates2(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode cur = dummy;
+        while (cur != null) {
+            //检查cur.next和cur.next.next是否相同
+            if (cur.next != null && cur.next.next != null && cur.next.val == cur.next.next.val) {
+                //删除
+                int num = cur.next.val;
+                cur.next = cur.next.next.next;
+                //检查后面的结点是否有相同的结点，有的话继续删除
+                while (cur.next != null && cur.next.val == num) {
+                    cur.next = cur.next.next;
+                }
+            } else {
+                cur = cur.next;
+            }
+        }
+        return dummy.next;
+    }
+
+    /**
+     * 工程写法，需要断开不必要的指针，避免无法GC，只是这样写看起来会比较繁琐
+     *
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicates3(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode cur = dummy;
+        while (cur != null) {
+            //检查cur.next和cur.next.next是否相同
+            if (cur.next != null && cur.next.next != null && cur.next.val == cur.next.next.val) {
+                //删除
+                int num = cur.next.val;
+                ListNode n1 = cur.next, n2 = cur.next.next;
+                cur.next = n2.next;
+                n1.next = null;
+                n2.next = null;
+                //检查后面的结点是否有相同的结点，有的话继续删除
+                while (cur.next != null && cur.next.val == num) {
+                    ListNode delNode = cur.next;
+                    cur.next = cur.next.next;
+                    delNode.next = null;
+                }
+            } else {
+                cur = cur.next;
+            }
         }
         return dummy.next;
     }
