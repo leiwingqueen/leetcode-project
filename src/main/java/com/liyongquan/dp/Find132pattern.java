@@ -1,6 +1,6 @@
 package com.liyongquan.dp;
 
-import jdk.nashorn.internal.ir.IfNode;
+import java.util.Stack;
 
 /**
  * 456. 132 模式
@@ -94,6 +94,42 @@ public class Find132pattern {
                 }
             }
             min = Math.min(min, nums[j]);
+        }
+        return false;
+    }
+
+    /**
+     * 单调栈解法，这个是真的难想
+     * <p>
+     * 用一个单调递减的栈来获得右边的次小的值,栈底的元素是最大值，栈顶的元素是最小值
+     *
+     * @param nums
+     * @return
+     */
+    public boolean find132pattern2(int[] nums) {
+        int len = nums.length;
+        if (len < 3) {
+            return false;
+        }
+        //提前计算左边的最小值
+        int[] left = new int[len];
+        left[1] = nums[0];
+        for (int i = 2; i < len; i++) {
+            left[i] = Math.min(left[i - 1], nums[i - 1]);
+        }
+        //单调栈
+        Stack<Integer> stack = new Stack<>();
+        stack.push(nums[len - 1]);
+        for (int i = len - 2; i >= 1; i--) {
+            /*if (stack.peek() < nums[i]) {
+                int lastPop = 0;
+                while (!stack.isEmpty() && stack.peek() <= nums[i]) {
+                    lastPop = stack.pop();
+                }
+                left[i]<nums[i]&&nums[i]
+            }*/
+            //TODO:还没想通...
+            stack.push(nums[i]);
         }
         return false;
     }
