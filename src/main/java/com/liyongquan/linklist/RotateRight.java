@@ -1,7 +1,5 @@
 package com.liyongquan.linklist;
 
-import java.util.List;
-
 /**
  * 给定一个链表，旋转链表，将链表每个节点向右移动 k 个位置，其中 k 是非负数。
  * <p>
@@ -53,11 +51,40 @@ public class RotateRight {
         }
         cur = head;
         int c = 0;
-        while (c < size-k-1) {
+        while (c < size - k - 1) {
             cur = cur.next;
             c++;
         }
         tail.next = head;
+        head = cur.next;
+        cur.next = null;
+        return head;
+    }
+
+    /**
+     * 先构成环，然后移动若干位置再掐断
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode rotateRight2(ListNode head, int k) {
+        if (head == null || k == 0) {
+            return head;
+        }
+        int size = 1;
+        ListNode tail = head;
+        while (tail.next != null) {
+            tail = tail.next;
+            size++;
+        }
+        //收尾相连
+        tail.next = head;
+        k %= size;
+        ListNode cur = head;
+        for (int i = 0; i < size - k - 1; i++) {
+            cur = cur.next;
+        }
         head = cur.next;
         cur.next = null;
         return head;
