@@ -1,7 +1,5 @@
 package com.liyongquan.dp;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * //有 n 个气球，编号为0 到 n - 1，每个气球上都标有一个数字，这些数字存在数组 nums 中。
  * //
@@ -120,5 +118,36 @@ public class MaxCoins {
         }
         cache[left][right] = res;
         return res;
+    }
+
+    /**
+     * 在上面的基础上改成dp
+     * <p>
+     * 时间复杂度O(n^3)
+     * 空间复杂度O(n^2)
+     *
+     * @param nums
+     * @return
+     */
+    public int maxCoins3(int[] nums) {
+        int len = nums.length;
+        //补上左右的1，简化计算
+        int[] arr = new int[len + 2];
+        arr[0] = 1;
+        arr[len + 1] = 1;
+        for (int i = 1; i <= len; i++) {
+            arr[i] = nums[i - 1];
+        }
+        int[][] dp = new int[len + 2][len + 2];
+        for (int i = len - 1; i >= 0; i--) {
+            for (int j = i + 2; j < len + 2; j++) {
+                int max = 0;
+                for (int k = i + 1; k < j; k++) {
+                    max = Math.max(max, dp[i][k] + dp[k][j] + arr[k] * arr[i] * arr[j]);
+                }
+                dp[i][j] = max;
+            }
+        }
+        return dp[0][len + 1];
     }
 }
