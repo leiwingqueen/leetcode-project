@@ -54,10 +54,26 @@ public class ReverseBits2 {
     public int reverseBits(int n) {
         int r = 0;
         for (int i = 0; i < 32; i++) {
-            int bit = n & 1;
+            r = (r << 1) | (n & 1);
             n >>>= 1;
-            r = (r << 1) | bit;
         }
         return r;
     }
+
+    /**
+     * 优化1
+     *
+     * @param n
+     * @return
+     */
+    public int reverseBits2(int n) {
+        int r = 0;
+        for (int i = 0; i < 32 && n != 0; i++) {
+            r |= (n & 1) << (31 - i);
+            n >>>= 1;
+        }
+        return r;
+    }
+
+    //TODO:还有一个分治法，jdk的实现方案，这个是真的骚。O(1)的时间复杂度
 }
