@@ -1,5 +1,7 @@
 package com.liyongquan.dp;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * //有 n 个气球，编号为0 到 n - 1，每个气球上都标有一个数字，这些数字存在数组 nums 中。
  * //
@@ -73,5 +75,50 @@ public class MaxCoins {
             pop[i] = 0;
         }
         return max;
+    }
+
+    /**
+     * 记忆+分治
+     *
+     * @param nums
+     * @return
+     */
+    public int maxCoins2(int[] nums) {
+        int len = nums.length;
+        //补上左右的1，简化计算
+        int[] arr = new int[len + 2];
+        arr[0] = 1;
+        arr[len + 1] = 1;
+        for (int i = 1; i <= len; i++) {
+            arr[i] = nums[i - 1];
+        }
+        //增加记忆，简化整个计算
+        int[][] cache = new int[len + 2][len + 2];
+        for (int i = 0; i < len + 2; i++) {
+            for (int j = 0; j < len + 2; j++) {
+                cache[i][j] = -1;
+            }
+        }
+        return solve(arr, 0, len + 1, cache);
+    }
+
+    //戳气球改为加气球
+    private int solve(int[] nums, int left, int right, int[][] cache) {
+        if (left + 1 >= right) {
+            return 0;
+        }
+        if (cache[left][right] >= 0) {
+            return cache[left][right];
+        }
+        int res = 0;
+        for (int i = left + 1; i < right; i++) {
+            int l = solve(nums, left, i, cache);
+            cache[left][i] = l;
+            int r = solve(nums, i, right, cache);
+            cache[i][right] = r;
+            res = Math.max(res, l + r + nums[i] * nums[left] * nums[right]);
+        }
+        cache[left][right] = res;
+        return res;
     }
 }
