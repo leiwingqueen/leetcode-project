@@ -65,9 +65,39 @@ public class Candy {
         return count;
     }
 
+    public int candy2(int[] ratings) {
+        int len = ratings.length;
+        if (len == 0) {
+            return 0;
+        }
+        int[] candy = new int[len];
+        candy[0] = 1;
+        int sum = 1;
+        for (int i = 1; i < len; i++) {
+            if (ratings[i] > ratings[i - 1]) {
+                candy[i] = candy[i - 1] + 1;
+                sum += candy[i];
+            } else if (ratings[i] == ratings[i - 1]) {
+                candy[i] = 1;
+                sum += 1;
+            } else {
+                candy[i] = 1;
+                sum += 1;
+                int j = i - 1;
+                //前面的元素升一层
+                while (j >= 0 && ratings[j] > ratings[j + 1] && candy[j] <= candy[j + 1]) {
+                    candy[j] += 1;
+                    sum += 1;
+                    j--;
+                }
+            }
+        }
+        return sum;
+    }
+
     public static void main(String[] args) {
-        Candy candy=new Candy();
-        int c = candy.candy(new int[]{1,3,2,2,1});
+        Candy candy = new Candy();
+        int c = candy.candy(new int[]{1, 3, 2, 2, 1});
         System.out.println(c);
     }
 }
