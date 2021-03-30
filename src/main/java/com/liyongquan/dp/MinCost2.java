@@ -51,7 +51,7 @@ public class MinCost2 {
             dp[0][i] = costs[0][i];
         }
         //dp迭代
-        for (int i = 0; i < n; i++) {
+        for (int i = 1; i < n; i++) {
             for (int j = 0; j < k; j++) {
                 //计算f(i,j)
                 int min = Integer.MAX_VALUE;
@@ -64,6 +64,10 @@ public class MinCost2 {
                 dp[i][j] = min;
             }
         }
-        return dp[n - 1][k - 1];
+        int res = Integer.MAX_VALUE;
+        for (int i = 0; i < k; i++) {
+            res = Math.min(res, dp[n - 1][i]);
+        }
+        return res;
     }
 }
