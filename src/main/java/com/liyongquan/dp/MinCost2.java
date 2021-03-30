@@ -53,13 +53,59 @@ public class MinCost2 {
         //dp迭代
         for (int i = 1; i < n; i++) {
             for (int j = 0; j < k; j++) {
-                //计算f(i,j)
+                //计算f(i,j)，这里可以做一个优化，相当于分别求dp[i-1][j]的左右侧的最小值
                 int min = Integer.MAX_VALUE;
                 for (int l = 0; l < k; l++) {
                     if (l != j) {
                         min = Math.min(min, dp[i - 1][l]);
                     }
                 }
+                min += costs[i][j];
+                dp[i][j] = min;
+            }
+        }
+        int res = Integer.MAX_VALUE;
+        for (int i = 0; i < k; i++) {
+            res = Math.min(res, dp[n - 1][i]);
+        }
+        return res;
+    }
+
+    /**
+     * 第三层迭代优化
+     * <p>
+     * 时间复杂度O(n*k)
+     * 空间复杂度O(n*k)
+     *
+     * @param costs
+     * @return
+     */
+    public int minCostII2(int[][] costs) {
+        int n = costs.length;
+        if (n == 0) {
+            return 0;
+        }
+        int k = costs[0].length;
+        int[][] dp = new int[n][k];
+        //初始化
+        for (int i = 0; i < k; i++) {
+            dp[0][i] = costs[0][i];
+        }
+        //dp迭代
+        for (int i = 1; i < n; i++) {
+            //预计算左右两边最小值
+            int[] left = new int[k], right = new int[k];
+            left[0] = Integer.MAX_VALUE;
+            right[k - 1] = Integer.MAX_VALUE;
+            for (int j = 1; j < k; j++) {
+                left[j] = Math.min(left[j - 1], dp[i - 1][j - 1]);
+            }
+            for (int j = k - 2; j >= 0; j--) {
+                right[j] = Math.min(right[j + 1], dp[i - 1][j + 1]);
+            }
+            for (int j = 0; j < k; j++) {
+                //计算f(i,j)，这里可以做一个优化，相当于分别求dp[i-1][j]的左右侧的最小值
+                int min = Math.min(left[j], right[j]);
                 min += costs[i][j];
                 dp[i][j] = min;
             }
