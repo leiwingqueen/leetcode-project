@@ -41,9 +41,8 @@ import java.util.Map;
  */
 public class IntegerReplacement {
     /**
-     * 不剪枝，直接用递归解决。
-     * 不通过，数据量天大，直接栈溢出
      *
+     * 勉强通过
      * @param n
      * @return
      */
@@ -54,7 +53,7 @@ public class IntegerReplacement {
         if ((n & 1) == 0) {
             return integerReplacement(n >> 1) + 1;
         }
-        return Math.min(integerReplacement(n - 1), integerReplacement(n + 1)) + 1;
+        return Math.min(integerReplacement(n / 2), integerReplacement(n / 2 + 1)) + 2;
     }
 
     /**
@@ -114,15 +113,45 @@ public class IntegerReplacement {
         return Math.min(c1, c2) + 1;
     }
 
-    public static void main(String[] args) {
-        IntegerReplacement ir = new IntegerReplacement();
-        /*int i = ir.integerReplacement3(8);
-        System.out.println(i);
-        int i1 = ir.integerReplacement3(7);
-        System.out.println(i1);
-        int i3 = ir.integerReplacement3(2147483647);
-        System.out.println(i3);*/
-        int i = ir.integerReplacement3(65535);
-        System.out.println(i);
+    /**
+     * dp解法
+     * <p>
+     * 内存溢出
+     *
+     * @param n
+     * @return
+     */
+    public int integerReplacement4(int n) {
+        int[] dp = new int[n + 1];
+        dp[1] = 0;
+        for (int i = 2; i <= n; i++) {
+            if (i % 2 == 0) {
+                dp[i] = dp[i / 2] + 1;
+            } else {
+                //这里把+1 和 /2两个操作合并了，所以就能用dp
+                dp[i] = Math.min(dp[(i + 1) / 2], dp[(i - 1) / 2]) + 2;
+            }
+        }
+        return dp[n];
     }
+
+    /**
+     * 最低位消除
+     * <p>
+     * 0只需要一次操作
+     * 1-需要2次操作
+     * -1的操作，不影响整体的数字1的个数
+     * +1的操作，可能会增加/减少整体数字1的个数
+     * <p>
+     * 直观感觉，1的个数会影响整体
+     *
+     * @param n
+     * @return
+     */
+    public int integerReplacement5(int n) {
+        //TODO
+        return 0;
+    }
+
+
 }
