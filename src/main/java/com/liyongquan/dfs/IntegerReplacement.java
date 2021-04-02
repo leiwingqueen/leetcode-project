@@ -77,21 +77,21 @@ public class IntegerReplacement {
      * @return
      */
     public int integerReplacement3(int n) {
-        int count = 0;
+        int cnt = 0;
         while (n != 1) {
             if ((n & 1) == 0) {
-                count++;
-            } else if ((n & 2) == 0 || n == 3) {
+                cnt++;
+            } else if ((n & 2) == 0 && n != 3) {
                 //3是一个特殊场景
                 n++;
-                count += 2;
+                cnt += 2;
             } else {
                 n--;
-                count += 2;
+                cnt += 2;
             }
             n >>= 1;
         }
-        return count;
+        return cnt;
     }
 
     private int dfs(int n, Map<Integer, Integer> mem) {
