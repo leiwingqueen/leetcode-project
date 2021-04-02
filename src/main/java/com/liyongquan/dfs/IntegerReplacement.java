@@ -41,8 +41,9 @@ import java.util.Map;
  */
 public class IntegerReplacement {
     /**
-     *
      * 勉强通过
+     * log(n)的时间效率
+     *
      * @param n
      * @return
      */
