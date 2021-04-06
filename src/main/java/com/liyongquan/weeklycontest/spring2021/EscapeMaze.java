@@ -62,6 +62,8 @@ public class EscapeMaze {
      * <p>
      * 超时
      *
+     * 如何剪枝？
+     *
      * @param maze
      * @return
      */
@@ -69,7 +71,8 @@ public class EscapeMaze {
         return backtrace(maze, new LinkedList<>(), 0, new int[]{0, 0}, 1, 1, new int[]{});
     }
 
-    private boolean backtrace(List<List<String>> maze, LinkedList<int[]> path, int idx, int[] cur, int magic1, int magic2, int[] safePoint) {
+    private boolean backtrace(List<List<String>> maze, LinkedList<int[]> path,
+                              int idx, int[] cur, int magic1, int magic2, int[] safePoint) {
         //log.info("位置:[{},{}],idx:{},magic1:{},magic2:{}", cur[0], cur[1], idx, magic1, magic2);
         if (idx >= maze.size()) {
             return false;
