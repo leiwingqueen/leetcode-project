@@ -96,7 +96,7 @@ public class OrchestraLayout {
         //前面每个环的数量 f(i)=(n-i*2-1)*4;
         //数学公式推导得到前i个环的总和为f(i)=4*n*(i+1)-4*(i+1)-i*(i+1)，注意这里有可能溢出，我们需要先取mod
         //int cnt = (4 * num * round - 4 * round - 4 * (round - 1) * round) % 9;
-        long cnt = ((round % 9) * ((4 * num - 4 * round) % 9)) % 9;
+        long cnt = ((round % 9) * ((4 * (long)num - 4 * round) % 9)) % 9;
         //x,y所在的环
         long edge = num - round * 2;
         if (edge == 1) {
