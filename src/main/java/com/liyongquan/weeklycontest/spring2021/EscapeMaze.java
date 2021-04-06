@@ -1,5 +1,8 @@
 package com.liyongquan.weeklycontest.spring2021;
 
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.LinkedList;
 import java.util.List;
 
 //某解密游戏中，有一个 N\*M 的迷宫，迷宫地形会随时间变化而改变，迷宫出口一直位于 `(n-1,m-1)` 位置。迷宫变化规律记录于 `maze` 中，`
@@ -43,8 +46,11 @@ import java.util.List;
 //- `1 <= maze.length <= 100`
 //- `1 <= maze[i].length, maze[i][j].length <= 50`
 //- `maze[i][j]` 仅包含 `"."`、`"#"` 👍 9 👎 0
+
+@Slf4j
 public class EscapeMaze {
     public static final int[][] DIR = {
+            {0, 0},
             {-1, 0},
             {1, 0},
             {0, -1},
@@ -53,44 +59,58 @@ public class EscapeMaze {
 
     /**
      * 回溯解法
+     * <p>
+     * 超时
      *
      * @param maze
      * @return
      */
     public boolean escapeMaze(List<List<String>> maze) {
-        return backtrace(maze, 0, new int[]{0, 0}, 1, 1, new int[]{});
+        return backtrace(maze, new LinkedList<>(), 0, new int[]{0, 0}, 1, 1, new int[]{});
     }
 
-    private boolean backtrace(List<List<String>> maze, int idx, int[] cur, int magic1, int magic2, int[] safePoint) {
-        if (idx == maze.size()) {
+    private boolean backtrace(List<List<String>> maze, LinkedList<int[]> path, int idx, int[] cur, int magic1, int magic2, int[] safePoint) {
+        //log.info("位置:[{},{}],idx:{},magic1:{},magic2:{}", cur[0], cur[1], idx, magic1, magic2);
+        if (idx >= maze.size()) {
             return false;
         }
-        List<String> map = maze.get(idx);
-        int row = map.size(), col = map.get(0).length();
-        if (cur[0] == row - 1 && cur[1] == col - 1) {
-            return true;
-        }
-        if (idx == maze.size() - 1) {
-            return false;
-        }
-        map = maze.get(idx + 1);
-        for (int[] dir : DIR) {
-            int x = cur[0] + dir[0], y = cur[1] + dir[1];
-            if (x >= 0 && x < row && y >= 0 && y < col) {
-                if (map.get(x).charAt(y) == '.' || safePoint.length > 0) {
-                    if (backtrace(maze, idx + 1, new int[]{x, y}, magic1, magic2, safePoint)) {
-                        return true;
-                    }
-                } else if (magic1 > 0) {
-                    if (backtrace(maze, idx + 1, new int[]{x, y}, magic1 - 1, magic2, safePoint)) {
-                        return true;
-                    }
-                } else if (magic2 > 0) {
-                    if (backtrace(maze, idx + 1, new int[]{x, y}, magic1, magic2 - 1, new int[]{x, y})) {
-                        return true;
+        try {
+            path.offerLast(new int[]{cur[0], cur[1]});
+            List<String> map = maze.get(idx);
+            int row = map.size(), col = map.get(0).length();
+            if (cur[0] == row - 1 && cur[1] == col - 1) {
+                //输出结果
+                while (!path.isEmpty()) {
+                    int[] p = path.pollFirst();
+                    log.info("[{},{}]", p[0], p[1]);
+                }
+                return true;
+            }
+            if (idx == maze.size() - 1) {
+                return false;
+            }
+            map = maze.get(idx + 1);
+            for (int[] dir : DIR) {
+                int x = cur[0] + dir[0], y = cur[1] + dir[1];
+                if (x >= 0 && x < row && y >= 0 && y < col) {
+                    if (map.get(x).charAt(y) == '.' || (safePoint.length > 0 && safePoint[0] == x && safePoint[1] == y)) {
+                        if (backtrace(maze, path, idx + 1, new int[]{x, y}, magic1, magic2, safePoint)) {
+                            return true;
+                        }
+                    } else if (magic1 > 0) {
+                        if (backtrace(maze, path, idx + 1, new int[]{x, y}, magic1 - 1, magic2, safePoint)) {
+                            return true;
+                        }
+                    } else if (magic2 > 0) {
+                        if (backtrace(maze, path, idx + 1, new int[]{x, y}, magic1, magic2 - 1, new int[]{x, y})) {
+                            return true;
+                        }
                     }
                 }
             }
+        } finally {
+            //还原现场，这样写就不容易遗漏了
+            path.pollLast();
         }
         return false;
     }
