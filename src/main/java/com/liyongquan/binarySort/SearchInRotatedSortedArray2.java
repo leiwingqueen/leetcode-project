@@ -127,6 +127,15 @@ public class SearchInRotatedSortedArray2 {
         return false;
     }
 
+    /**
+     * 总算通过了，二分其实边界情况很多，不容易通过
+     * <p>
+     * 极端的情况所有数字相等，退化成线性查找
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
     public boolean search2(int[] nums, int target) {
         int len = nums.length;
         int l = 0, r = len - 1;
@@ -144,6 +153,10 @@ public class SearchInRotatedSortedArray2 {
             }
             if (l > r) {
                 return false;
+            }
+            //mid的位置不在[l,r]之间
+            if (mid < l || mid > r) {
+                continue;
             }
             //左右两边至少有一个是满足升序条件的
             if (nums[mid] < target) {

@@ -30,4 +30,11 @@ public class SearchInRotatedSortedArray2Test {
         log.info("{}", res);
         Assert.assertEquals(true, res);
     }
+
+    @Test
+    public void test3() {
+        boolean res = sr.search2(new int[]{2, 2, 2, 3, 1}, 1);
+        log.info("{}", res);
+        Assert.assertEquals(true, res);
+    }
 }
