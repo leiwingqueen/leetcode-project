@@ -46,6 +46,8 @@ package com.liyongquan.binarySort;
 // Related Topics 数组 二分查找
 // 👍 347 👎 0
 
+import com.liyongquan.math.MultiplyStrings;
+
 public class SearchInRotatedSortedArray2 {
     /**
      * 先找到翻转点，然后再二分
@@ -120,6 +122,58 @@ public class SearchInRotatedSortedArray2 {
                 r = middle - 1;
             } else {
                 l = middle + 1;
+            }
+        }
+        return false;
+    }
+
+    public boolean search2(int[] nums, int target) {
+        int len = nums.length;
+        int l = 0, r = len - 1;
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] == target) {
+                return true;
+            }
+            //消除掉左右两边相等的数字
+            while (l <= mid && nums[l] == nums[mid]) {
+                l++;
+            }
+            while (r >= mid && nums[r] == nums[mid]) {
+                r--;
+            }
+            if (l > r) {
+                return false;
+            }
+            //左右两边至少有一个是满足升序条件的
+            if (nums[mid] < target) {
+                //左边满足升序
+                if (nums[mid] > nums[l]) {
+                    l = mid + 1;
+                } else {
+                    //右边满足升序
+                    if (nums[r] == target) {
+                        return true;
+                    } else if (nums[r] > target) {
+                        l = mid + 1;
+                    } else {
+                        r = mid - 1;
+                    }
+                }
+            } else {
+                //左边满足升序
+                if (nums[mid] > nums[l]) {
+                    if (nums[l] == target) {
+                        return true;
+                    } else if (nums[l] < target) {
+                        r = mid - 1;
+                    } else {
+                        l = mid + 1;
+                    }
+                } else {
+                    //右边满足升序
+                    r = mid - 1;
+                }
             }
         }
         return false;

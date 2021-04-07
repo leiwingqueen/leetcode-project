@@ -26,7 +26,7 @@ public class SearchInRotatedSortedArray2Test {
 
     @Test
     public void test2() {
-        boolean res = sr.search(new int[]{1, 3}, 3);
+        boolean res = sr.search(new int[]{1, 3, 5}, 1);
         log.info("{}", res);
         Assert.assertEquals(true, res);
     }
