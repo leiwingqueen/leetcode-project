@@ -85,4 +85,6 @@ public class FindMinimumInRotatedSortedArray {
         }
         return nums[l];
     }
+
+    //TODO:比较最右边端点其实会更简单
 }
