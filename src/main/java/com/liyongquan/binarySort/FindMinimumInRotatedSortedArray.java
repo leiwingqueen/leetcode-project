@@ -86,5 +86,21 @@ public class FindMinimumInRotatedSortedArray {
         return nums[l];
     }
 
-    //TODO:比较最右边端点其实会更简单
+    //比较最右边端点其实会更简单
+    public int findMin2(int[] nums) {
+        int len = nums.length;
+        int l = 0, r = len - 1;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            //左边是严格升序，最小值在右侧
+            if (nums[mid] > nums[r]) {
+                l = mid + 1;
+            } else {
+                //右侧严格升序
+                //这里是由于下一次的mid一定在r的左侧，区间一定会继续缩小，这里不会导致死循环
+                r = mid;
+            }
+        }
+        return nums[l];
+    }
 }
