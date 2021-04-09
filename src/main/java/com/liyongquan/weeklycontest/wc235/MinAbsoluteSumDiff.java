@@ -81,34 +81,22 @@ public class MinAbsoluteSumDiff {
         int len = nums1.length;
         int[][] arr = new int[len][2];
         //查找差值最大的项
-        int max = 0;
         int sum = 0;
-        List<int[]> list = new ArrayList<>();
         for (int i = 0; i < len; i++) {
             arr[i][0] = nums1[i];
             arr[i][1] = nums2[i];
             int diff = Math.abs(arr[i][0] - arr[i][1]);
             sum = (sum + diff) % mod;
-            if (diff > max) {
-                max = diff;
-                list = new ArrayList<>();
-                list.add(arr[i]);
-            } else if (diff == max) {
-                list.add(arr[i]);
-            }
         }
         //排序
         Arrays.sort(arr, Comparator.comparingInt(o -> o[0]));
-        if (list.size() == 0) {
-            return sum;
-        }
-        int min = Integer.MAX_VALUE;
-        for (int[] x : list) {
+        int max = 0;
+        for (int[] x : arr) {
             //二分查找跟x[1]距离最近的项
-            int res = search(arr, x[1]);
-            min = Math.min(res, min);
+            int res = Math.abs(x[0] - x[1]) - search(arr, x[1]);
+            max = Math.max(res, max);
         }
-        return (sum + min - max) % mod;
+        return (sum - max) % mod;
     }
 
     private int search(int[][] arr, int target) {
