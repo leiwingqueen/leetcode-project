@@ -77,6 +77,7 @@ public class MinAbsoluteSumDiff {
      * @return
      */
     public int minAbsoluteSumDiff(int[] nums1, int[] nums2) {
+        int mod = 1000000007;
         int len = nums1.length;
         int[][] arr = new int[len][2];
         //查找差值最大的项
@@ -87,8 +88,9 @@ public class MinAbsoluteSumDiff {
             arr[i][0] = nums1[i];
             arr[i][1] = nums2[i];
             int diff = Math.abs(arr[i][0] - arr[i][1]);
-            sum += diff;
+            sum = (sum + diff) % mod;
             if (diff > max) {
+                max = diff;
                 list = new ArrayList<>();
                 list.add(arr[i]);
             } else if (diff == max) {
@@ -106,7 +108,7 @@ public class MinAbsoluteSumDiff {
             int res = search(arr, x[1]);
             min = Math.min(res, min);
         }
-        return sum + min - max;
+        return (sum + min - max) % mod;
     }
 
     private int search(int[][] arr, int target) {
