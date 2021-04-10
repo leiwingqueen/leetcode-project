@@ -1,5 +1,10 @@
 package com.liyongquan.math;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Set;
+
 /**
  * 编写一个程序，找出第 n 个丑数。
  * <p>
@@ -23,7 +28,7 @@ package com.liyongquan.math;
 public class NthUglyNumber {
     /**
      * 时间复杂度O(nlog(n))
-     *
+     * <p>
      * 超时
      *
      * @param n
@@ -48,8 +53,40 @@ public class NthUglyNumber {
         return i - 1;
     }
 
+    /**
+     * 1
+     * 2,3,5
+     * 2->4,6,10
+     * 3->9,15
+     * 5->25
+     * <p>
+     * 小顶堆
+     *
+     * @param n
+     * @return
+     */
     public int nthUglyNumber2(int n) {
-        //TODO:
-        return 0;
+        //小顶堆排序，并且实现bfs
+        PriorityQueue<Long> pq = new PriorityQueue<>();
+        //set去重
+        Set<Long> set = new HashSet<>();
+        pq.add(1L);
+        set.add(1L);
+        int[] arr = {2, 3, 5};
+        int cnt = 0;
+        long last = 0;
+        while (cnt < n) {
+            last = pq.poll();
+            //生成下一个元素
+            for (int num : arr) {
+                long next = last * num;
+                if (!set.contains(next)) {
+                    pq.add(next);
+                    set.add(next);
+                }
+            }
+            cnt++;
+        }
+        return (int) last;
     }
 }
