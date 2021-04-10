@@ -57,4 +57,17 @@ public class UglyNumber {
         }
         return true;
     }
+
+    public boolean isUgly2(int n) {
+        if (n <= 0) {
+            return false;
+        }
+        int[] arr = {2, 3, 5};
+        for (int num : arr) {
+            while (n % num == 0) {
+                n /= num;
+            }
+        }
+        return n == 1;
+    }
 }
