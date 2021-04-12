@@ -1,5 +1,6 @@
 package com.liyongquan.weeklycontest.wc236;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
@@ -99,27 +100,25 @@ public class MKAverage2 {
         }
         long topK = 0;
         int cnt = 0;
-        for (Integer num : map.keySet()) {
+        Iterator<Integer> it = map.keySet().iterator();
+        while (cnt < k && it.hasNext()) {
+            Integer num = it.next();
             Integer c = map.get(num);
-            while (c > 0) {
+            while (c > 0 && cnt < k) {
                 topK += num;
                 cnt++;
                 c--;
-                if (cnt >= k) {
-                    break;
-                }
             }
         }
         cnt = 0;
-        for (Integer num : map.descendingKeySet()) {
+        it = map.descendingKeySet().iterator();
+        while (cnt < k && it.hasNext()) {
+            Integer num = it.next();
             Integer c = map.get(num);
-            while (c > 0) {
+            while (c > 0 && cnt < k) {
                 topK += num;
                 cnt++;
                 c--;
-                if (cnt >= k) {
-                    break;
-                }
             }
         }
         return (int) ((sum - topK) / (m - 2 * k));
