@@ -20,6 +20,12 @@ import java.util.*;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class LargestNumber {
+    /**
+     * 不通过
+     *
+     * @param nums
+     * @return
+     */
     public String largestNumber(int[] nums) {
         List<String> list = new ArrayList<>(nums.length);
         for (int i = 0; i < nums.length; i++) {
@@ -44,13 +50,28 @@ public class LargestNumber {
         return builder.toString().startsWith("0") ? "0" : builder.toString();
     }
 
+    public String largestNumber2(int[] nums) {
+        List<String> list = new ArrayList<>(nums.length);
+        for (int i = 0; i < nums.length; i++) {
+            list.add(String.valueOf(nums[i]));
+        }
+        Collections.sort(list, (o1, o2) ->
+                (o2 + o1).compareTo(o1 + o2));
+        StringBuilder builder = new StringBuilder();
+        for (String s : list) {
+            builder.append(s);
+        }
+        return builder.toString().startsWith("0") ? "0" : builder.toString();
+    }
+
+
     public static void main(String[] args) {
         LargestNumber number = new LargestNumber();
         String s = number.largestNumber(new int[]{3, 30, 34, 5, 9});
         System.out.println(s);
         String s1 = number.largestNumber(new int[]{824, 938, 1399, 5607, 6973, 5703, 9609, 4398, 8247});
         System.out.println(s1);
-        s = number.largestNumber(new int[]{121,12});
+        s = number.largestNumber(new int[]{121, 12});
         System.out.println(s);
     }
 }

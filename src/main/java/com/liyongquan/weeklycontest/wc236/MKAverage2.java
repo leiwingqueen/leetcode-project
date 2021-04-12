@@ -2,7 +2,6 @@ package com.liyongquan.weeklycontest.wc236;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 import java.util.TreeMap;
 
 /**
