@@ -2,6 +2,7 @@ package com.liyongquan.weeklycontest.wc236;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+import java.util.TreeMap;
 
 /**
  * 5729. 求出 MK 平均值
@@ -56,21 +57,32 @@ import java.util.PriorityQueue;
  * 链接：https://leetcode-cn.com/problems/finding-mk-average
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
-public class MKAverage {
+public class MKAverage2 {
     private int m;
     private int k;
     //保留最近的m个元素即可
     private LinkedList<Integer> queue = new LinkedList<>();
+    private long sum;
+    private TreeMap<Integer, Integer> map = new TreeMap<>();
 
-    public MKAverage(int m, int k) {
+    public MKAverage2(int m, int k) {
         this.m = m;
         this.k = k;
     }
 
     public void addElement(int num) {
         queue.offerLast(num);
+        sum += num;
+        map.put(num, map.getOrDefault(num, 0) + 1);
         if (queue.size() > m) {
-            queue.pollFirst();
+            Integer poll = queue.pollFirst();
+            sum -= poll;
+            Integer cnt = map.get(poll);
+            if (cnt == 1) {
+                map.remove(poll);
+            } else {
+                map.put(poll, cnt - 1);
+            }
         }
     }
 
@@ -85,32 +97,31 @@ public class MKAverage {
         if (queue.size() < m) {
             return -1;
         }
-        //增加两个优先级队列来计算top k个数字
-        PriorityQueue<Integer> small = new PriorityQueue<>();
-        PriorityQueue<Integer> big = new PriorityQueue<>((o1, o2) -> o2 - o1);
-        long sum = 0;
-        for (Integer num : queue) {
-            sum += num;
-            if (small.size() < k || num > small.peek()) {
-                small.add(num);
-            }
-            if (small.size() > k) {
-                small.poll();
-            }
-            if (big.size() < k || num < big.peek()) {
-                big.add(num);
-            }
-            if (big.size() > k) {
-                big.poll();
+        long topK = 0;
+        int cnt = 0;
+        for (Integer num : map.keySet()) {
+            Integer c = map.get(num);
+            while (c > 0) {
+                topK += num;
+                cnt++;
+                c--;
+                if (cnt >= k) {
+                    break;
+                }
             }
         }
-        //减掉top k个数字
-        while (!big.isEmpty()) {
-            sum -= big.poll();
+        cnt = 0;
+        for (Integer num : map.descendingKeySet()) {
+            Integer c = map.get(num);
+            while (c > 0) {
+                topK += num;
+                cnt++;
+                c--;
+                if (cnt >= k) {
+                    break;
+                }
+            }
         }
-        while (!small.isEmpty()) {
-            sum -= small.poll();
-        }
-        return (int) (sum / (m - 2 * k));
+        return (int) ((sum - topK) / (m - 2 * k));
     }
 }
