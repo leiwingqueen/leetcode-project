@@ -219,4 +219,36 @@ public class InorderSuccessor {
         return null;
     }
 
+    /**
+     * 在上面的基础再继续优化一下，由于是BST，在检索p节点的过程我们可以把效率提高到O(log(n))
+     *
+     * @param root
+     * @param p
+     * @return
+     */
+    public TreeNode inorderSuccessor6(TreeNode root, TreeNode p) {
+        Stack<TreeNode> stack = new Stack<>();
+        while (root != null) {
+            if (root.val == p.val) {
+                break;
+            } else if (root.val > p.val) {
+                stack.add(root);
+                root = root.left;
+            } else {
+                //右子树不需要压栈，因为右子树的父节点一定小于当前节点
+                root = root.right;
+            }
+        }
+        //存在右子树选择右子树的左下方第一个节点，否则就是栈顶的节点
+        if (root.right == null) {
+            return stack.isEmpty() ? null : stack.pop();
+        } else {
+            TreeNode node = root.right;
+            while (node.left != null) {
+                node = node.left;
+            }
+            return node;
+        }
+    }
+
 }
