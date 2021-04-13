@@ -1,9 +1,6 @@
 package com.liyongquan.tree;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 给你一棵所有节点为非负值的二叉搜索树，请你计算树中任意两节点的差的绝对值的最小值。
@@ -153,4 +150,45 @@ public class MinAbs {
         list.add(root.val);
         dfs2(root.right, list);
     }
+
+    /**
+     * 中序遍历-非递归写法
+     *
+     * @param root
+     * @return
+     */
+    public int minDiffInBST4(TreeNode root) {
+        Stack<TreeNode> stack = new Stack<>();
+        //上一次的值，设置为差比最大值还大
+        int pre = 211;
+        int min = Integer.MAX_VALUE;
+        while (!stack.isEmpty() || root != null) {
+            if (root == null) {
+                TreeNode parent = stack.pop();
+                //访问父节点
+                min = Math.min(Math.abs(parent.val - pre), min);
+                pre = parent.val;
+                root = parent.right;
+            } else {
+                if (root.left != null) {
+                    stack.add(root);
+                    root = root.left;
+                } else {
+                    //访问node
+                    min = Math.min(Math.abs(root.val - pre), min);
+                    pre = root.val;
+                    //访问右子树
+                    if (root.right != null) {
+                        root = root.right;
+                    } else {
+                        //叶子节点，设置结点为null，下一次循环进来再对父节点进行处理
+                        root = null;
+                    }
+                }
+            }
+        }
+        return min;
+    }
+
+    //TODO:Morris
 }
