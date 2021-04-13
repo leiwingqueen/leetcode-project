@@ -111,6 +111,7 @@ public class ClosestKValues {
             }
         }
         TreeNode smaller = findSmaller(root, stack);
+        return null;
     }
 
     /**
@@ -122,10 +123,10 @@ public class ClosestKValues {
      * @return
      */
     private TreeNode findSmaller(TreeNode node, Stack<TreeNode> stack) {
-        
+        return null;
     }
 
     private TreeNode findLarger(TreeNode node, Stack<TreeNode> stack) {
-
+        return null;
     }
 }
