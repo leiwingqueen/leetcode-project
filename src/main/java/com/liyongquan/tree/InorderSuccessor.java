@@ -1,11 +1,14 @@
 package com.liyongquan.tree;
 
+import com.liyongquan.dp.PalindromePartitioning;
 import com.liyongquan.dp.Robber;
+import com.liyongquan.math.FactorialZeros;
 import javafx.util.Pair;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * 设计一个算法，找出二叉搜索树中指定节点的“下一个”节点（也即中序后继）。
@@ -154,6 +157,7 @@ public class InorderSuccessor {
 
     /**
      * 大于和等于的场景合并,真的是合理的吗？
+     *
      * @param root
      * @param p
      * @return
@@ -170,4 +174,49 @@ public class InorderSuccessor {
             return inorderSuccessor4(root.right, p);
         }
     }
+
+    /**
+     * BST的中序遍历就是升序的数组，则p的中序遍历的下一个节点就是答案
+     * 非递归写法
+     *
+     * @param root
+     * @param p
+     * @return
+     */
+    public TreeNode inorderSuccessor5(TreeNode root, TreeNode p) {
+        Stack<TreeNode> stack = new Stack<>();
+        boolean find = false;
+        while (!stack.isEmpty() || root != null) {
+            if (root == null) {
+                TreeNode parent = stack.pop();
+                //访问节点parent
+                if (find) {
+                    return parent;
+                } else if (parent == p) {
+                    find = true;
+                }
+                root = parent.right;
+            } else {
+                if (root.left != null) {
+                    stack.add(root);
+                    root = root.left;
+                } else {
+                    //访问节点root
+                    if (find) {
+                        return root;
+                    } else if (root == p) {
+                        find = true;
+                    }
+                    if (root.right != null) {
+                        root = root.right;
+                    } else {
+                        //下一次父节点
+                        root = null;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
 }
