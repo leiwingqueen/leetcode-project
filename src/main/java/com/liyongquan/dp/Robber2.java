@@ -59,40 +59,4 @@ public class Robber2 {
         }
         return f1;
     }
-
-    /**
-     * 假设f0(n)为选择了第一个元素，并且选择了第N个元素的最大值
-     * f1(n)为不选择第一个元素，并且选择了第N个元素的最大值
-     * <p>
-     * f0(n)=f0(n-2)+nums[n]
-     * f1(n)=f1(n-2)+nums[n]
-     * 求解：
-     * max{f0(n-1),f1(n)}
-     * <p>
-     * 初始化:
-     * f0(1）=nums[1]
-     * f0(2）=nums[1]
-     * f1(1)=0
-     * f1(2)=nums[2]
-     *
-     * @param nums
-     * @return
-     */
-    public int rob2(int[] nums) {
-        int len = nums.length;
-        if (len <= 1) {
-            return 0;
-        }
-        int f00 = nums[0], f01 = nums[0];
-        int f10 = 0, f11 = nums[1];
-        for (int i = 2; i < len; i++) {
-            int nf0 = f00 + nums[i];
-            f00 = f01;
-            f01 = nf0;
-            int nf1 = f10 + nums[i];
-            f10 = f11;
-            f11 = nf1;
-        }
-        return Math.max(f01, f11);
-    }
 }
