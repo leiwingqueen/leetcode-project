@@ -1,6 +1,5 @@
 package com.liyongquan.slidewindow;
 
-import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -42,7 +41,9 @@ public class ContainsDuplicate3 {
     /**
      * 滑动窗口+有序集合
      * <p>
-     * 时间复杂度O(nlog(n))
+     * treemap维护窗口内的数据，每次移动窗口检查右边界和窗口内元素的最小值
+     * <p>
+     * 时间复杂度O(nlog(k))
      *
      * @param nums
      * @param k
@@ -57,7 +58,7 @@ public class ContainsDuplicate3 {
         int l = 0, r = 0;
         TreeMap<Integer, Integer> treeMap = new TreeMap<>();
         while (r < len) {
-            //查找左边窗口的最小值,时间复杂度O(log(n))
+            //查找左边窗口的最小值,时间复杂度O(log(k))
             Integer ceilingKey = treeMap.ceilingKey(nums[r]);
             Integer floorKey = treeMap.floorKey(nums[r]);
             long min = Long.MAX_VALUE;
