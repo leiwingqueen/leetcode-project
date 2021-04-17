@@ -62,14 +62,12 @@ package com.liyongquan.dp;
 
 public class Scramble {
     /**
-     * f(i,j)表示s1的[i,j]是否s2的[i,j)的扰乱字符
+     * f(i,j,l)表示l是字符串的长度，s1的[i,i+l)的子串是否s2的[j,j+l)的子串
      * <p>
-     * 我们有
-     * f(i,j)=f(i,i)&&f(i+1,j) || f(i,i+1)&&f(i+2,j) ||...||f(i,j-1)&&f(j,j)
+     * f(i,j,l)=f(i,j,k)&&f(i+k,j+k,l-k) || f(i,j+l-k,k)&&f(i+k,j,l-k)，其中1<=k<l
      *
-     * f(i,j,k,l)=f(i,i,k,l)&&f(i+1,j,k+1,l) || f(i,i,l,l)&&f(i+1,j,k+1,l) || f(i,i+1)&&f(i+2,j) ||...||f(i,j-1)&&f(j,j)
-     * <p>
-     * i==j,则f(i,j)=s1[i]==s2[j]
+     *
+     * 时间复杂度O(n^4)
      *
      * @param s1
      * @param s2
@@ -80,19 +78,28 @@ public class Scramble {
         if (len == 1) {
             return s1.charAt(0) == s2.charAt(0);
         }
-        boolean[][] dp = new boolean[len][len];
+        boolean[][][] dp = new boolean[len][len][len + 1];
         //初始化
         for (int i = 0; i < len; i++) {
-            dp[i][i] = s1.charAt(i) == s2.charAt(i);
+            for (int j = 0; j < len; j++) {
+                dp[i][j][1] = s1.charAt(i) == s2.charAt(j);
+            }
         }
-        //迭代
-        for (int i = len - 1; i > 0; i--) {
-            for (int j = i + 1; j < len; j++) {
-                dp[i][j] = false;
-                for (int k = i; k < j; k++) {
-
+        //dp迭代
+        for (int i = len - 1; i >= 0; i--) {
+            for (int j = len - 1; j >= 0; j--) {
+                int maxLen = Math.min(len - i, len - j);
+                for (int l = 2; l <= maxLen; l++) {
+                    dp[i][j][l] = false;
+                    for (int k = 1; k < l; k++) {
+                        if (dp[i][j][k] && dp[i + k][j + k][l - k] || dp[i][j + l - k][k] && dp[i + k][j][l - k]) {
+                            dp[i][j][l] = true;
+                            break;
+                        }
+                    }
                 }
             }
         }
+        return dp[0][0][len];
     }
 }
