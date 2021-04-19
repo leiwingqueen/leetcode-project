@@ -44,4 +44,27 @@ public class RemoveElement {
         }
         return i;
     }
+
+    /**
+     * 这样写好像更好理解一点
+     * l是要填的坑位，r是扫描的位点
+     *
+     * @param nums
+     * @param val
+     * @return
+     */
+    public int removeElement2(int[] nums, int val) {
+        int len = nums.length;
+        if (len == 0) {
+            return 0;
+        }
+        int l = 0, r = 0;
+        while (r < len) {
+            if (nums[r] != val) {
+                nums[l++] = nums[r];
+            }
+            r++;
+        }
+        return l;
+    }
 }

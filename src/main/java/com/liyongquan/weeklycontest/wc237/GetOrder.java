@@ -5,6 +5,12 @@ import javafx.util.Pair;
 import java.util.*;
 
 public class GetOrder {
+    /**
+     * 时间复杂度O(nlog(n))
+     *
+     * @param tasks
+     * @return
+     */
     public int[] getOrder(int[][] tasks) {
         int len = tasks.length;
         Pair<Integer, int[]>[] arr = new Pair[len];
