@@ -46,7 +46,8 @@ public class GetXORSum {
      * &和^也满足分配律
      * <p>
      * (a&b)^(a&c)=a&(b^c)
-     *
+     * <p>
+     * 时间复杂度O(m+n)
      *
      * @param arr1
      * @param arr2
@@ -62,5 +63,24 @@ public class GetXORSum {
             res ^= arr1[i] & xor2;
         }
         return res;
+    }
+
+    /**
+     * 进一步简化
+     *
+     * @param arr1
+     * @param arr2
+     * @return
+     */
+    public int getXORSum2(int[] arr1, int[] arr2) {
+        int xor1 = 0;
+        for (int i = 0; i < arr1.length; i++) {
+            xor1 ^= arr1[i];
+        }
+        int xor2 = 0;
+        for (int i = 0; i < arr2.length; i++) {
+            xor2 ^= arr2[i];
+        }
+        return xor1 & xor2;
     }
 }
