@@ -83,4 +83,45 @@ public class StrStr {
         }
         return -1;
     }
+
+    /**
+     * kmp算法
+     * <p>
+     * 时间复杂度O(m+n)
+     *
+     * @param haystack
+     * @param needle
+     * @return
+     */
+    public int strStr3(String haystack, String needle) {
+        int len = needle.length();
+        if (len == 0) {
+            return 0;
+        }
+        int[][] dp = new int[len][26];
+        //构造状态机
+        dp[0][needle.charAt(0) - 'a'] = 1;
+        int x = 0;
+        for (int i = 1; i < len; i++) {
+            for (int j = 0; j < 26; j++) {
+                //状态推进
+                if (needle.charAt(i) - 'a' == j) {
+                    dp[i][j] = i + 1;
+                } else {
+                    dp[i][j] = dp[x][j];
+                }
+            }
+            //这里是关键
+            x = dp[x][needle.charAt(i) - 'a'];
+        }
+        //下面是利用状态机进行查找
+        int stat = 0;
+        for (int i = 0; i < haystack.length(); i++) {
+            stat = dp[stat][haystack.charAt(i) - 'a'];
+            if (stat == len) {
+                return i - needle.length() + 1;
+            }
+        }
+        return -1;
+    }
 }
