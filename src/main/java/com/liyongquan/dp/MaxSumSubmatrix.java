@@ -40,6 +40,8 @@ package com.liyongquan.dp;
 // 👍 208 👎 0
 
 
+import java.util.TreeSet;
+
 public class MaxSumSubmatrix {
     /**
      * 先尝试暴力解法
@@ -109,6 +111,80 @@ public class MaxSumSubmatrix {
                             max = Math.max(sum, max);
                         }
                     }
+                }
+            }
+        }
+        return max;
+    }
+
+    /**
+     * 二维降成一维
+     *
+     * @param matrix
+     * @param k
+     * @return
+     */
+    public int maxSumSubmatrix3(int[][] matrix, int k) {
+        int row = matrix.length, col = matrix[0].length;
+        //枚举上下边界
+        int max = Integer.MIN_VALUE;
+        for (int i = 0; i < row; i++) {
+            for (int j = i; j < row; j++) {
+                //s[i]表是前i列的汇总的和
+                int[] s = new int[col + 1];
+                TreeSet<Integer> set = new TreeSet<>();
+                set.add(0);
+                for (int l = 1; l <= col; l++) {
+                    s[l] = s[l - 1];
+                    for (int m = i; m <= j; m++) {
+                        s[l] += matrix[m][l - 1];
+                    }
+                    //关键,找到s[l]-k的上边界，即为s[a]>=s[l]-k，且a<l
+                    Integer ceiling = set.ceiling(s[l] - k);
+                    if (ceiling != null) {
+                        max = Math.max(max, s[l] - ceiling);
+                    }
+                    set.add(s[l]);
+                }
+            }
+        }
+        return max;
+    }
+
+    /**
+     * 在上面的基础上再用前缀和优化一版
+     * <p>
+     * 时间复杂度O(m*m*n*log(n))
+     *
+     * @param matrix
+     * @param k
+     * @return
+     */
+    public int maxSumSubmatrix4(int[][] matrix, int k) {
+        int row = matrix.length, col = matrix[0].length;
+        //preSum[i][j]为上边界为0,下边界为i-1的第j列的和
+        int[][] preSum = new int[row + 1][col + 1];
+        for (int i = 1; i <= row; i++) {
+            for (int j = 1; j <= col; j++) {
+                preSum[i][j] = preSum[i - 1][j] + preSum[i][j - 1] - preSum[i - 1][j - 1] + matrix[i - 1][j - 1];
+            }
+        }
+        //枚举上下边界
+        int max = Integer.MIN_VALUE;
+        for (int i = 0; i < row; i++) {
+            for (int j = i; j < row; j++) {
+                //s[i]表是前i列的汇总的和
+                TreeSet<Integer> set = new TreeSet<>();
+                set.add(0);
+                for (int l = 0; l < col; l++) {
+                    //[i,0]~[j,l]
+                    int sl = preSum[j + 1][l + 1] - preSum[i][l + 1];
+                    //关键,找到s[l]-k的上边界，即为s[a]>=s[l]-k，且a<l
+                    Integer ceiling = set.ceiling(sl - k);
+                    if (ceiling != null) {
+                        max = Math.max(max, sl - ceiling);
+                    }
+                    set.add(sl);
                 }
             }
         }
