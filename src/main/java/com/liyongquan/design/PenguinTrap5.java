@@ -55,4 +55,5 @@ public class PenguinTrap5 {
         //TODO:左右两边
         return false;
     }
+
 }
