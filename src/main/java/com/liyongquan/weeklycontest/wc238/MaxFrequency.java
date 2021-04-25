@@ -43,6 +43,8 @@ import java.util.*;
 public class MaxFrequency {
     /**
      * 贪心+暴力暴力貌似就可以了
+     * <p>
+     * 不通过，应该用滑动窗口
      *
      * @param nums
      * @param k
@@ -55,12 +57,40 @@ public class MaxFrequency {
         int i = 1;
         while (i < len) {
             diff += (long) i * (nums[i] - nums[i - 1]);
-            log.info("diff:{},preNum:{},cur:{},cnt:{}", diff, nums[i - 1], nums[i], i);
             if (diff > k) {
                 break;
             }
             i++;
         }
         return i;
+    }
+
+    /**
+     * 滑动窗口+前缀和
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int maxFrequency2(int[] nums, int k) {
+        int len = nums.length;
+        Arrays.sort(nums);
+        int l = 0, r = 1;
+        int diff = 0;
+        int max = 1;
+        while (r < len) {
+            diff += (nums[r] - nums[r - 1]) * (r - l);
+            r++;
+            if (diff <= k) {
+                max = Math.max(max, r - l);
+            } else {
+                //左边窗口移动
+                while (l < r && diff > k) {
+                    diff -= nums[r - 1] - nums[l];
+                    l++;
+                }
+            }
+        }
+        return max;
     }
 }
