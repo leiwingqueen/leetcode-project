@@ -19,16 +19,17 @@ public class LongestBeautifulSubstring {
         while (l < len && word.charAt(l) != 'a') {
             l++;
         }
-        int r = l + 1;
+        int r = l;
         int max = 0;
+        char pre = 'a';
         while (r < len) {
-            r++;
             //log.info("l:{} r:{}", l, r);
-            int distance = map.get(word.charAt(r - 1)) - map.get(word.charAt(r - 2));
+            int distance = map.get(word.charAt(r)) - map.get(pre);
+            pre = word.charAt(r);
             if (distance >= 0 && distance <= 1) {
-                if (word.charAt(r - 1) == 'u') {
+                if (word.charAt(r) == 'u') {
                     //log.info("l:{},r:{},distance:{}", l, r, r - l);
-                    max = Math.max(max, r - l);
+                    max = Math.max(max, r - l + 1);
                 }
             } else {
                 l = r;
@@ -36,9 +37,9 @@ public class LongestBeautifulSubstring {
                 while (l < len && word.charAt(l) != 'a') {
                     l++;
                 }
-                r = l + 1;
-                //log.info("move l:{}", l);
+                pre = 'a';
             }
+            r++;
         }
         return max;
     }
