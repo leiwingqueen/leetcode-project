@@ -1,6 +1,8 @@
 package com.liyongquan.tree;
 
+import lombok.extern.slf4j.Slf4j;
 import sun.nio.cs.ext.MacHebrew;
+import sun.rmi.runtime.Log;
 
 /**
  * 124. 二叉树中的最大路径和
@@ -37,6 +39,7 @@ import sun.nio.cs.ext.MacHebrew;
  * 链接：https://leetcode-cn.com/problems/binary-tree-maximum-path-sum
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
+@Slf4j
 public class MaxPathSum {
     /**
      * 递归解法，最终简化成选和不选的问题
@@ -55,27 +58,22 @@ public class MaxPathSum {
      */
     private int[] dfs(TreeNode root) {
         if (root == null) {
-            return new int[]{0, 0};
+            return new int[]{Integer.MIN_VALUE, Integer.MIN_VALUE};
         }
+        //叶子节点
         if (root.left == null && root.right == null) {
-            //至少需要选一个
-            return new int[]{root.val, root.val};
+            return new int[]{Integer.MIN_VALUE, root.val};
         }
-        int r1 = root.val;
         int[] left = dfs(root.left);
         int[] right = dfs(root.right);
+        log.info("root:{},left:{},right:{}", root.val, left, right);
+        int r0 = Math.max(left[0], Math.max(left[1], Math.max(right[0], right[1])));
+        int r1 = root.val;
         if (left[1] > 0) {
             r1 += left[1];
         }
         if (right[1] > 0) {
             r1 += right[1];
-        }
-        int r0 = Integer.MIN_VALUE;
-        if (root.left != null) {
-            r0 = Math.max(left[0], left[1]);
-        }
-        if (root.right != null) {
-            r0 = Math.max(r0, Math.max(right[0], right[1]));
         }
         return new int[]{r0, r1};
     }
