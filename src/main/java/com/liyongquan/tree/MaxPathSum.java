@@ -1,8 +1,7 @@
 package com.liyongquan.tree;
 
+import com.liyongquan.dfs.IntegerReplacement;
 import lombok.extern.slf4j.Slf4j;
-import sun.nio.cs.ext.MacHebrew;
-import sun.rmi.runtime.Log;
 
 /**
  * 124. 二叉树中的最大路径和
@@ -43,6 +42,8 @@ import sun.rmi.runtime.Log;
 public class MaxPathSum {
     /**
      * 递归解法，最终简化成选和不选的问题
+     * <p>
+     * 不通过
      *
      * @param root
      * @return
@@ -54,7 +55,7 @@ public class MaxPathSum {
 
     /**
      * @param root
-     * @return [不包含root的最大路径和，包含root的最大路径和]
+     * @return [不包含root的最大路径和，左子树的最大路径和，右子树的最大路径和]
      */
     private int[] dfs(TreeNode root) {
         if (root == null) {
@@ -66,7 +67,6 @@ public class MaxPathSum {
         }
         int[] left = dfs(root.left);
         int[] right = dfs(root.right);
-        log.info("root:{},left:{},right:{}", root.val, left, right);
         int r0 = Math.max(left[0], Math.max(left[1], Math.max(right[0], right[1])));
         int r1 = root.val;
         if (left[1] > 0) {
@@ -75,6 +75,24 @@ public class MaxPathSum {
         if (right[1] > 0) {
             r1 += right[1];
         }
+        log.info("root:{},r0:{},r1:{}", root.val, r0, r1);
         return new int[]{r0, r1};
+    }
+
+    private int max = Integer.MIN_VALUE;
+
+    public int maxPathSum2(TreeNode root) {
+        maxGain(root);
+        return max;
+    }
+
+    private int maxGain(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = Math.max(maxGain(root.left), 0);
+        int right = Math.max(maxGain(root.right), 0);
+        max = Math.max(max, left + right + root.val);
+        return Math.max(left, right) + root.val;
     }
 }
