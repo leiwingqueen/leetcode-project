@@ -1,7 +1,6 @@
 package com.liyongquan.dp;
 
 
-import com.liyongquan.tree.MaxPathSum;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -96,12 +95,17 @@ public class CanCross {
 
     /**
      * dp解法
+     * <p>
+     * 性能击败5%，还有优化空间？
+     * <p>
+     * 时间复杂度O(n^2)
      *
      * @param stones
      * @return
      */
     public boolean canCross2(int[] stones) {
         int len = stones.length;
+        //难点在于这里需要做一次转换
         Map<Integer, Integer> map = new HashMap<>(len);
         for (int i = 0; i < len; i++) {
             map.put(stones[i], i);
