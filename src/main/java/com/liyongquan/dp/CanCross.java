@@ -1,6 +1,7 @@
 package com.liyongquan.dp;
 
 
+import com.liyongquan.tree.MaxPathSum;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -91,5 +92,39 @@ public class CanCross {
             }
         }
         return false;
+    }
+
+    /**
+     * dp解法
+     *
+     * @param stones
+     * @return
+     */
+    public boolean canCross2(int[] stones) {
+        int len = stones.length;
+        Map<Integer, Integer> map = new HashMap<>(len);
+        for (int i = 0; i < len; i++) {
+            map.put(stones[i], i);
+        }
+        boolean[][] dp = new boolean[len][len];
+        for (int i = 0; i < len; i++) {
+            dp[len - 1][i] = true;
+        }
+        for (int i = len - 2; i >= 0; i--) {
+            for (int j = 0; j <= i; j++) {
+                int[] steps = {j - 1, j, j + 1};
+                for (int step : steps) {
+                    int next = stones[i] + step;
+                    if (step > 0 && map.containsKey(next)) {
+                        Integer idx = map.get(next);
+                        if (step <= idx && dp[idx][step]) {
+                            dp[i][j] = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return dp[0][0];
     }
 }
