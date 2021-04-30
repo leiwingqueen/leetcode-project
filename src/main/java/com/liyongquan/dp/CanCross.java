@@ -3,7 +3,9 @@ package com.liyongquan.dp;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -48,6 +50,8 @@ public class CanCross {
      * 超时
      * <p>
      * 时间复杂度O(3^n)
+     * <p>
+     * 增加了记忆，勉强能过
      *
      * @param stones
      * @return
@@ -57,11 +61,11 @@ public class CanCross {
         for (int stone : stones) {
             set.add(stone);
         }
-        return backtrace(set, 0, stones[stones.length - 1], 0);
+        Map<String, Boolean> map = new HashMap<>();
+        return backtrace(set, 0, stones[stones.length - 1], 0, map);
     }
 
-    private boolean backtrace(Set<Integer> stones, int cur, int target, int step) {
-        //log.info("cur:{},target:{},step:{}", cur, target, step);
+    private boolean backtrace(Set<Integer> stones, int cur, int target, int step, Map<String, Boolean> map) {
         if (cur == target) {
             return true;
         }
@@ -72,7 +76,15 @@ public class CanCross {
         for (int d : dis) {
             if (d > 0) {
                 if (stones.contains(cur + d)) {
-                    if (backtrace(stones, cur + d, target, d)) {
+                    String key = String.format("%s_%s", cur + d, d);
+                    boolean res = false;
+                    if (map.containsKey(key)) {
+                        map.get(key);
+                    } else {
+                        res = backtrace(stones, cur + d, target, d, map);
+                        map.put(key, res);
+                    }
+                    if (res) {
                         return true;
                     }
                 }
