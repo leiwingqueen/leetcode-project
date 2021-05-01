@@ -30,6 +30,33 @@ public class GetImportance {
         }
         return sum;
     }
+
+    /**
+     * 其实可以写得更简单一些
+     *
+     * @param employees
+     * @param id
+     * @return
+     */
+    public int getImportance2(List<Employee> employees, int id) {
+        int len = employees.size();
+        Map<Integer, Employee> map = new HashMap<>(len);
+        for (Employee employee : employees) {
+            map.put(employee.id, employee);
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(id);
+        int sum = 0;
+        while (!queue.isEmpty()) {
+            int poll = queue.poll();
+            Employee employee = map.get(poll);
+            sum += employee.importance;
+            for (Integer sub : employee.subordinates) {
+                queue.add(sub);
+            }
+        }
+        return sum;
+    }
 }
 
 class Employee {
