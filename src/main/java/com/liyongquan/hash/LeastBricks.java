@@ -1,4 +1,4 @@
-package com.liyongquan.binarySort;
+package com.liyongquan.hash;
 
 import lombok.extern.slf4j.Slf4j;
 
