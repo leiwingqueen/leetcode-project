@@ -42,7 +42,8 @@ public class FindNum {
         }
         //先初始化右边的单调栈(递减栈，栈顶就是最小的元素)
         Deque<Integer> deque = new LinkedList<>();
-        for (int num : nums) {
+        for (int i = 0; i < len; i++) {
+            int num = nums[i];
             while (!deque.isEmpty() && deque.peekFirst() < num) {
                 deque.pollFirst();
             }
@@ -51,16 +52,11 @@ public class FindNum {
         List<Integer> res = new ArrayList<>();
         int leftMin = Integer.MAX_VALUE;
         for (int num : nums) {
-            //更新单调栈
-            int rightMax = Integer.MIN_VALUE;
-            if (!deque.isEmpty()) {
-                if (num == deque.peekLast()) {
-                    deque.pollLast();
-                }
-                if (!deque.isEmpty()) {
-                    rightMax = deque.peekLast();
-                }
+            //更新右边最大值(单调栈)
+            if (!deque.isEmpty() && num == deque.peekLast()) {
+                deque.pollLast();
             }
+            int rightMax = deque.isEmpty() ? Integer.MIN_VALUE : deque.peekLast();
             if (num < leftMin && num > rightMax) {
                 res.add(num);
             }

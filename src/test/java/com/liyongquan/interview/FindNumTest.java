@@ -18,6 +18,7 @@ public class FindNumTest {
         for (Integer re : res) {
             log.info("{}", re);
         }
+        Assert.assertArrayEquals(new Integer[]{9, 8, 7, 2, 1}, res.toArray(new Integer[]{}));
     }
 
     @Test
@@ -26,5 +27,6 @@ public class FindNumTest {
         for (Integer re : res) {
             log.info("{}", re);
         }
+        Assert.assertArrayEquals(new Integer[]{1}, res.toArray(new Integer[]{}));
     }
 }
