@@ -2,9 +2,7 @@ package com.liyongquan.binarySort;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * 你的面前有一堵矩形的、由 n 行砖块组成的砖墙。这些砖块高度相同（也就是一个单位高）但是宽度不同。每一行砖块的宽度之和应该相等。
@@ -40,6 +38,18 @@ import java.util.List;
  */
 @Slf4j
 public class LeastBricks {
+    /**
+     * n=wall.size()
+     * k=wall[i].size();
+     * sum[wall[i]]=m
+     * <p>
+     * 时间复杂度O(m*n*log(k))
+     * <p>
+     * 超时
+     *
+     * @param wall
+     * @return
+     */
     public int leastBricks(List<List<Integer>> wall) {
         //计算前缀和
         List<int[]> preSum = new ArrayList<>(wall.size());
@@ -83,5 +93,30 @@ public class LeastBricks {
             }
         }
         return false;
+    }
+
+    /**
+     * 等价于计算重叠次数最多的砖块边缘的坐标
+     *
+     * @param wall
+     * @return
+     */
+    public int leastBricks2(List<List<Integer>> wall) {
+        Map<Integer, Integer> map = new HashMap<>();
+        //计算前缀和
+        int max = 0;
+        for (List<Integer> list : wall) {
+            int sum = 0;
+            int idx = 0;
+            Iterator<Integer> iterator = list.iterator();
+            while (idx < list.size() - 1) {
+                sum += iterator.next();
+                int cnt = map.getOrDefault(sum, 0) + 1;
+                map.put(sum, cnt);
+                max = Math.max(max, cnt);
+                idx++;
+            }
+        }
+        return wall.size() - max;
     }
 }
