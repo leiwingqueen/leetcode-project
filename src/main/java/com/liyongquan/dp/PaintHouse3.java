@@ -1,5 +1,7 @@
 package com.liyongquan.dp;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 1473. 粉刷房子 III
  * <p>
@@ -54,10 +56,11 @@ package com.liyongquan.dp;
  * 链接：https://leetcode-cn.com/problems/paint-house-iii
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
+@Slf4j
 public class PaintHouse3 {
     /**
      * 回溯解法
-     *
+     * <p>
      * 超时
      *
      * @param houses
@@ -94,6 +97,98 @@ public class PaintHouse3 {
                 if (sub != -1) {
                     min = Math.min(min, sub + cost[idx][i - 1]);
                 }
+            }
+        }
+        return min == Integer.MAX_VALUE ? -1 : min;
+    }
+
+    /**
+     * dp解法，从上面演变过来
+     * <p>
+     * 时间复杂度O(m*n^2*target)
+     *
+     * 好复杂，哭
+     *
+     * @param houses
+     * @param cost
+     * @param m
+     * @param n
+     * @param target
+     * @return
+     */
+    public int minCost2(int[] houses, int[][] cost, int m, int n, int target) {
+        int[][][] dp = new int[m + 1][target + 1][n];
+        //初始化 m=0
+        for (int i = 0; i <= target; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0) {
+                    dp[0][i][j] = 0;
+                } else {
+                    dp[0][i][j] = -1;
+                }
+            }
+        }
+        //初始化 target=0;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 0; j < n; j++) {
+                dp[i][0][j] = -1;
+            }
+        }
+        //dp迭代
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= target; j++) {
+                for (int k = 0; k < n; k++) {
+                    if (i < j) {
+                        //适当剪枝
+                        dp[i][j][k] = -1;
+                    } else if (houses[i - 1] != 0) {
+                        //不需要填色
+                        if (houses[i - 1] != k + 1) {
+                            dp[i][j][k] = -1;
+                        } else {
+                            int min = Integer.MAX_VALUE;
+                            for (int l = 0; l < n; l++) {
+                                //跟上一个颜色相同的场景
+                                if (l == k) {
+                                    if (dp[i - 1][j][l] != -1) {
+                                        min = Math.min(min, dp[i - 1][j][l]);
+                                    }
+                                } else {
+                                    //跟上一个颜色不同的场景
+                                    if (dp[i - 1][j - 1][l] != -1) {
+                                        min = Math.min(min, dp[i - 1][j - 1][l]);
+                                    }
+                                }
+                            }
+                            dp[i][j][k] = min == Integer.MAX_VALUE ? -1 : min;
+                        }
+                    } else {
+                        int min = Integer.MAX_VALUE;
+                        //需要填色
+                        for (int l = 0; l < n; l++) {
+                            //跟上一个颜色相同的场景
+                            if (l == k) {
+                                if (dp[i - 1][j][l] != -1) {
+                                    min = Math.min(min, dp[i - 1][j][l] + cost[i - 1][k]);
+                                }
+                            } else {
+                                //跟上一个颜色不同的场景
+                                if (dp[i - 1][j - 1][l] != -1) {
+                                    min = Math.min(min, dp[i - 1][j - 1][l] + cost[i - 1][k]);
+                                }
+                            }
+                        }
+                        dp[i][j][k] = min == Integer.MAX_VALUE ? -1 : min;
+                    }
+                    //log.info("dp[{}][{}][{}]={}", i, j, k, dp[i][j][k]);
+                }
+            }
+        }
+        //计算最小值
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < n; i++) {
+            if (dp[m][target][i] != -1) {
+                min = Math.min(min, dp[m][target][i]);
             }
         }
         return min == Integer.MAX_VALUE ? -1 : min;
