@@ -60,4 +60,28 @@ public class DeleteAndEarn {
         }
         return Math.max(dp[max][0], dp[max][1]);
     }
+
+    /**
+     * 空间压缩
+     *
+     * @param nums
+     * @return
+     */
+    public int deleteAndEarn2(int[] nums) {
+        int[] cnt = new int[10001];
+        int max = 0;
+        for (int num : nums) {
+            max = Math.max(max, num);
+            cnt[num]++;
+        }
+        int[][] dp = new int[max + 1][2];
+        int dp0 = 0, dp1 = 0;
+        for (int i = 1; i <= max; i++) {
+            int n0 = Math.max(dp0, dp1);
+            int n1 = dp0 + cnt[i] * i;
+            dp0 = n0;
+            dp1 = n1;
+        }
+        return Math.max(dp0, dp1);
+    }
 }
