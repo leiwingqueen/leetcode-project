@@ -58,6 +58,8 @@ public class PaintHouse3 {
     /**
      * 回溯解法
      *
+     * 超时
+     *
      * @param houses
      * @param cost
      * @param m
@@ -71,7 +73,7 @@ public class PaintHouse3 {
 
     private int backtrace(int[] houses, int[][] cost, int m, int n, int target, int pre, int idx) {
         if (idx == m) {
-            return target == 0 ? 0 : Integer.MAX_VALUE;
+            return target == 0 ? 0 : -1;
         }
         if (houses[idx] != 0) {
             if (pre == houses[idx]) {
@@ -83,11 +85,17 @@ public class PaintHouse3 {
         int min = Integer.MAX_VALUE;
         for (int i = 1; i <= n; i++) {
             if (pre == i) {
-                min = Math.min(min, backtrace(houses, cost, m, n, target, i, idx + 1) + cost[idx][i - 1]);
+                int sub = backtrace(houses, cost, m, n, target, i, idx + 1);
+                if (sub != -1) {
+                    min = Math.min(min, sub + cost[idx][i - 1]);
+                }
             } else {
-                min = Math.min(min, backtrace(houses, cost, m, n, target - 1, i, idx + 1) + cost[idx][i - 1]);
+                int sub = backtrace(houses, cost, m, n, target - 1, i, idx + 1);
+                if (sub != -1) {
+                    min = Math.min(min, sub + cost[idx][i - 1]);
+                }
             }
         }
-        return min;
+        return min == Integer.MAX_VALUE ? -1 : min;
     }
 }
