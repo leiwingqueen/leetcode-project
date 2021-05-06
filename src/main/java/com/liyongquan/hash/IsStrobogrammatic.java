@@ -34,6 +34,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class IsStrobogrammatic {
+    /**
+     * 时间复杂度O(n)
+     *
+     * @param num
+     * @return
+     */
     public boolean isStrobogrammatic(String num) {
         Map<Character, Character> revert = new HashMap<>();
         revert.put('1', '1');
