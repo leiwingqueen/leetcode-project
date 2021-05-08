@@ -1,5 +1,10 @@
 package com.liyongquan.dp;
 
+import lombok.extern.slf4j.Slf4j;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * 1723. 完成所有工作的最短时间
  * <p>
@@ -35,11 +40,14 @@ package com.liyongquan.dp;
  * 链接：https://leetcode-cn.com/problems/find-minimum-time-to-finish-all-jobs
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
+@Slf4j
 public class MinimumTimeRequired {
     /**
      * 老规矩，试试回溯
      * <p>
      * 时间复杂度O(k^n)
+     * <p>
+     * 必然超时
      *
      * @param jobs
      * @param k
@@ -61,7 +69,56 @@ public class MinimumTimeRequired {
         for (int i = 0; i < k; i++) {
             cost[i] += jobs[idx];
             min = Math.min(min, backtrace(jobs, cost, idx + 1, len, k));
+            cost[i] -= jobs[idx];
         }
         return min;
+    }
+
+    /**
+     * 剪枝，去掉重复解
+     * <p>
+     * 只是把排列的问题转化成组合的问题，还是会超时
+     *
+     * @param jobs
+     * @param k
+     * @return
+     */
+    public int minimumTimeRequired2(int[] jobs, int k) {
+        return backtrace2(jobs, new int[k], 0, jobs.length, k);
+    }
+
+    private int backtrace2(int[] jobs, int[] cost, int idx, int len, int k) {
+        if (idx == len) {
+            int max = 0;
+            for (int c : cost) {
+                max = Math.max(max, c);
+            }
+            return max;
+        }
+        int min = Integer.MAX_VALUE;
+        Set<String> set = new HashSet<>();
+        for (int i = 0; i < k; i++) {
+            cost[i] += jobs[idx];
+            String s = toStr(cost);
+            if (set.contains(s)) {
+                cost[i] -= jobs[idx];
+                continue;
+            }
+            set.add(s);
+            log.info("s:{},idx:{}", s, idx);
+            min = Math.min(min, backtrace2(jobs, cost, idx + 1, len, k));
+            cost[i] -= jobs[idx];
+        }
+        return min;
+    }
+
+    private String toStr(int[] cost) {
+        int[] arr = Arrays.copyOf(cost, cost.length);
+        Arrays.sort(arr);
+        StringBuilder sb = new StringBuilder();
+        for (int c : arr) {
+            sb.append(c + "#");
+        }
+        return sb.toString();
     }
 }
