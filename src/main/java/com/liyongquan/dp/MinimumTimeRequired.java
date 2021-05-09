@@ -1,6 +1,7 @@
 package com.liyongquan.dp;
 
 import lombok.extern.slf4j.Slf4j;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -105,7 +106,7 @@ public class MinimumTimeRequired {
                 continue;
             }
             set.add(s);
-            log.info("s:{},idx:{}", s, idx);
+            //log.info("s:{},idx:{}", s, idx);
             min = Math.min(min, backtrace2(jobs, cost, idx + 1, len, k));
             cost[i] -= jobs[idx];
         }
@@ -120,5 +121,37 @@ public class MinimumTimeRequired {
             sb.append(c + "#");
         }
         return sb.toString();
+    }
+
+    /**
+     * dp解法
+     *
+     * @param jobs
+     * @param k
+     * @return
+     */
+    public int minimumTimeRequired3(int[] jobs, int k) {
+        int len = jobs.length;
+        int[][] dp = new int[k][len + 1];
+        int sum = 0;
+        for (int i = 1; i <= len; i++) {
+            dp[0][i] = sum;
+            sum += jobs[i - 1];
+        }
+        //后缀和
+        int[] preSum = new int[len + 1];
+        for (int i = len - 1; i >= 0; i--) {
+            preSum[i] = preSum[i + 1] + jobs[i];
+        }
+        for (int i = 1; i < k; i++) {
+            for (int j = 1; j <= len; j++) {
+                dp[i][j] = Integer.MAX_VALUE;
+                for (int l = j - 1; l >= 0; l--) {
+                    int m = Math.max(dp[l][i - 1], preSum[l]);
+                    dp[i][j] = Math.min(dp[i][j], m);
+                }
+            }
+        }
+        return dp[k - 1][len];
     }
 }
