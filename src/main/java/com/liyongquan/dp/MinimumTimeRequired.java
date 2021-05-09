@@ -1,9 +1,7 @@
 package com.liyongquan.dp;
 
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import lombok.extern.slf4j.Slf4j;
 
-import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -45,6 +43,8 @@ import java.util.Set;
  */
 @Slf4j
 public class MinimumTimeRequired {
+    //这道题其实很好，类似CPU的任务调度
+
     /**
      * 老规矩，试试回溯
      * <p>
