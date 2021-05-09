@@ -1,7 +1,5 @@
-package com.liyongquan.greedy;
+package com.liyongquan.binarySort;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -180,5 +178,98 @@ public class MinDays {
             }
         }
         return dayArr[l];
+    }
+
+    /**
+     * 上面基础上继续做优化
+     * <p>
+     * 假设不同的天数为l，时间复杂度O(nlog(l))
+     *
+     * @param bloomDay
+     * @param m
+     * @param k
+     * @return
+     */
+    public int minDays3(int[] bloomDay, int m, int k) {
+        int len = bloomDay.length;
+        if (m * k > len) {
+            return -1;
+        }
+        //盛开的天数
+        TreeSet<Integer> set = new TreeSet<>();
+        for (int b : bloomDay) {
+            set.add(b);
+        }
+        int[] dayArr = new int[set.size()];
+        int j = 0;
+        for (Integer day : set) {
+            dayArr[j++] = day;
+        }
+        //二分查找
+        int l = 0, r = dayArr.length - 1;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            int day = dayArr[mid];
+            //判断能否满足
+            if (canMake(bloomDay, day, m, k)) {
+                r = mid;
+            } else {
+                l = mid + 1;
+            }
+        }
+        return dayArr[l];
+    }
+
+    private boolean canMake(int[] bloomDay, int day, int m, int k) {
+        int cnt = 0, cur = 0;
+        for (int b : bloomDay) {
+            if (b > day) {
+                cur = 0;
+            } else {
+                cur++;
+                if (cur == k) {
+                    cnt++;
+                    cur = 0;
+                    //提前结束
+                    if (cnt >= m) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 试试直接用最大值和最小值作为数据范围，本题的数据范围比较集中，实际上会更快
+     *
+     * @param bloomDay
+     * @param m
+     * @param k
+     * @return
+     */
+    public int minDays4(int[] bloomDay, int m, int k) {
+        int len = bloomDay.length;
+        if (m * k > len) {
+            return -1;
+        }
+        //盛开的天数
+        int low = Integer.MAX_VALUE, high = 0;
+        for (int b : bloomDay) {
+            low = Math.min(low, b);
+            high = Math.max(high, b);
+        }
+        //二分查找
+        int l = low, r = high;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            //判断能否满足
+            if (canMake(bloomDay, mid, m, k)) {
+                r = mid;
+            } else {
+                l = mid + 1;
+            }
+        }
+        return l;
     }
 }
