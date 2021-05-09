@@ -1,7 +1,9 @@
 package com.liyongquan.dp;
 
+import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import lombok.extern.slf4j.Slf4j;
 
+import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -153,5 +155,36 @@ public class MinimumTimeRequired {
             }
         }
         return dp[k - 1][len];
+    }
+
+    private int res = Integer.MAX_VALUE;
+
+    public int minimumTimeRequired4(int[] jobs, int k) {
+        backtrace4(jobs, new int[k], 0, k, 0, 0);
+        return res;
+    }
+
+    private void backtrace4(int[] jobs, int[] cost, int idx, int k, int max, int used) {
+        log.info("idx:{},used:{},max:{},res:{}", idx, used, max, res);
+        //剪枝
+        if (max >= res) {
+            return;
+        }
+        if (idx == jobs.length) {
+            log.info("res:{}", max);
+            res = max;
+            return;
+        }
+        //优先分配给空闲的工人
+        if (used < k) {
+            cost[used] = jobs[idx];
+            backtrace4(jobs, cost, idx + 1, k, Math.max(max, jobs[idx]), used + 1);
+            cost[used] = 0;
+        }
+        for (int i = 0; i < used; i++) {
+            cost[i] += jobs[idx];
+            backtrace4(jobs, cost, idx + 1, k, Math.max(max, cost[i]), used);
+            cost[i] -= jobs[idx];
+        }
     }
 }

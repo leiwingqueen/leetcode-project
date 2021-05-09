@@ -20,4 +20,15 @@ public class MinimumTimeRequiredTest {
         log.info("{}", res);
         Assert.assertEquals(3, res);
     }
+
+    /**
+     * [1,2,4,7,8]
+     * 2
+     */
+    @Test
+    public void minimumTimeRequired4() {
+        mtr = new MinimumTimeRequired();
+        int res = mtr.minimumTimeRequired4(new int[]{1, 2, 4, 7, 8}, 2);
+        log.info("{}", res);
+    }
 }
