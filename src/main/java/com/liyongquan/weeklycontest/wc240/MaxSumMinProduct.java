@@ -59,4 +59,41 @@ public class MaxSumMinProduct {
         }
         return (int) (res % 1000000007);
     }
+
+    public int maxSumMinProduct3(int[] nums) {
+        int len = nums.length;
+        //前缀和
+        long[] preSum = new long[len + 1];
+        for (int i = 0; i < len; i++) {
+            preSum[i + 1] = preSum[i] + nums[i];
+        }
+        //求下一个更小的值的下标(单调栈)
+        int[] right = new int[len], left = new int[len];
+        Deque<Integer> deque = new LinkedList<>();
+        for (int i = len - 1; i >= 0; i--) {
+            while (!deque.isEmpty() && nums[deque.peekFirst()] >= nums[i]) {
+                deque.pollFirst();
+            }
+            right[i] = deque.isEmpty() ? -1 : deque.peekFirst();
+            deque.offerFirst(i);
+        }
+        deque = new LinkedList<>();
+        for (int i = 0; i < len; i++) {
+            while (!deque.isEmpty() && nums[deque.peekFirst()] >= nums[i]) {
+                deque.pollFirst();
+            }
+            left[i] = deque.isEmpty() ? -1 : deque.peekFirst();
+            deque.offerFirst(i);
+        }
+        long res = 0;
+        int idx = 0;
+        while (idx < len) {
+            int r = right[idx] == -1 ? len : right[idx];
+            int l = left[idx] == -1 ? 0 : (left[idx] + 1);
+            long c = (preSum[r] - preSum[l]) * nums[idx];
+            res = Math.max(res, c);
+            idx++;
+        }
+        return (int) (res % 1000000007);
+    }
 }
