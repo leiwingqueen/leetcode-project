@@ -33,6 +33,11 @@ package com.liyongquan.bit;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class DecodeXoredPermutation {
+    /**
+     * 这道题其实还是挺巧妙的，关键在于理解 前N个正整数排列 的这个条件
+     * @param encoded
+     * @return
+     */
     public int[] decode(int[] encoded) {
         int len = encoded.length;
         int s = 0;
