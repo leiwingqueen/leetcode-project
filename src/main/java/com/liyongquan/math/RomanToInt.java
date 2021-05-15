@@ -98,4 +98,25 @@ public class RomanToInt {
         }
         return num;
     }
+
+    public int romanToInt2(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        map.put('I', 1);
+        map.put('V', 5);
+        map.put('X', 10);
+        map.put('L', 50);
+        map.put('C', 100);
+        map.put('D', 500);
+        map.put('M', 1000);
+        int num = 0;
+        for (int i = 0; i < s.length(); i++) {
+            Integer v = map.get(s.charAt(i));
+            if (i < s.length() - 1 && v < map.get(s.charAt(i + 1))) {
+                num -= v;
+            } else {
+                num += v;
+            }
+        }
+        return num;
+    }
 }

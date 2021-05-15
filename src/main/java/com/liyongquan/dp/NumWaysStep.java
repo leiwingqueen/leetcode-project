@@ -85,4 +85,110 @@ public class NumWaysStep {
         }
         return dp[steps - 1][0][0];
     }
+
+    /**
+     * 时间复杂度O(s^3)
+     * 空间复杂度O(s^3)
+     * <p>
+     * 还是超时，实在想不到如何优化了。。
+     *
+     * @param steps
+     * @param arrLen
+     * @return
+     */
+    public int numWays2(int steps, int arrLen) {
+        int mod = 1000000007;
+        //最远的距离肯定不能到steps+1，因此可以用来缩小dp的检索范围
+        int maxDis = Math.min(steps + 1, arrLen);
+        int[][][] dp = new int[steps][maxDis][maxDis];
+        //初始化
+        for (int i = 0; i < maxDis; i++) {
+            for (int j = 0; j < maxDis; j++) {
+                dp[0][i][j] = Math.abs(i - j) <= 1 ? 1 : 0;
+            }
+        }
+        //dp迭代
+        for (int i = 1; i < steps; i++) {
+            for (int j = 0; j < maxDis; j++) {
+                for (int k = 0; k < maxDis; k++) {
+                    long sum = 0;
+                    sum += dp[i - 1][j][k];
+                    if (j < maxDis - 1) {
+                        sum += dp[i - 1][j + 1][k];
+                    }
+                    if (j > 0) {
+                        sum += dp[i - 1][j - 1][k];
+                    }
+                    dp[i][j][k] = (int) (sum % mod);
+                }
+            }
+        }
+        return dp[steps - 1][0][0];
+    }
+
+    /**
+     * 其实有一个变量是多余的，可以直接去掉。。。
+     * <p>
+     * 时间复杂度O(s^2)
+     *
+     * @param steps
+     * @param arrLen
+     * @return
+     */
+    public int numWays3(int steps, int arrLen) {
+        int mod = 1000000007;
+        //最远的距离肯定不能到steps+1，因此可以用来缩小dp的检索范围
+        int maxDis = Math.min(steps + 1, arrLen);
+        int[][] dp = new int[steps][maxDis];
+        //初始化
+        dp[0][1] = 1;
+        dp[0][0] = 1;
+        //dp迭代
+        for (int i = 1; i < steps; i++) {
+            for (int j = 0; j < maxDis; j++) {
+                long sum = 0;
+                sum += dp[i - 1][j];
+                if (j < maxDis - 1) {
+                    sum += dp[i - 1][j + 1];
+                }
+                if (j > 0) {
+                    sum += dp[i - 1][j - 1];
+                }
+                dp[i][j] = (int) (sum % mod);
+            }
+        }
+        return dp[steps - 1][0];
+    }
+
+    /**
+     * 再优化一把，考虑到还要返程，实际的最远距离还要/2
+     *
+     * @param steps
+     * @param arrLen
+     * @return
+     */
+    public int numWays4(int steps, int arrLen) {
+        int mod = 1000000007;
+        //最远的距离肯定不能到steps+1，因此可以用来缩小dp的检索范围
+        int maxDis = Math.min(steps / 2 + 1, arrLen);
+        int[][] dp = new int[steps][maxDis];
+        //初始化
+        dp[0][1] = 1;
+        dp[0][0] = 1;
+        //dp迭代
+        for (int i = 1; i < steps; i++) {
+            for (int j = 0; j < maxDis; j++) {
+                long sum = 0;
+                sum += dp[i - 1][j];
+                if (j < maxDis - 1) {
+                    sum += dp[i - 1][j + 1];
+                }
+                if (j > 0) {
+                    sum += dp[i - 1][j - 1];
+                }
+                dp[i][j] = (int) (sum % mod);
+            }
+        }
+        return dp[steps - 1][0];
+    }
 }
