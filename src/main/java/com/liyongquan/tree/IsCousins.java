@@ -42,6 +42,7 @@ import java.util.LinkedList;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class IsCousins {
+    private int parent = 0;
 
     /**
      * 先使用递归实现
@@ -52,18 +53,36 @@ public class IsCousins {
      * @return
      */
     public boolean isCousins(TreeNode root, int x, int y) {
-        int p1 = 0, p2 = 0;
-        int gp = 0;
-        Deque<TreeNode> deque = new LinkedList<>();
-        deque.add(root);
-        while (!deque.isEmpty()) {
-            TreeNode node = deque.pollFirst();
-            if (node.left != null) {
-                deque.offerFirst(node.left);
-            }
-            if (node.right != null) {
-                deque.offerFirst(node.right);
+        int depth1 = find(root, x, 0);
+        int p1 = parent;
+        parent = 0;
+        int depth2 = find(root, y, 0);
+        return depth1 == depth2 && p1 != parent;
+    }
+
+    private int find(TreeNode root, int x, int depth) {
+        if (root == null) {
+            return -1;
+        }
+        if (root.val == x) {
+            return depth;
+        }
+        if (root.left != null) {
+            parent = root.val;
+            int r = find(root.left, x, depth + 1);
+            if (r >= 0) {
+                return r;
             }
         }
+        if (root.right != null) {
+            parent = root.val;
+            int r = find(root.right, x, depth + 1);
+            if (r >= 0) {
+                return r;
+            }
+        }
+        return -1;
     }
+
+
 }
