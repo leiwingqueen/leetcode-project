@@ -1,7 +1,6 @@
 package com.liyongquan.heap;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 面试题 17.14. 最小K个数
@@ -60,34 +59,16 @@ public class SmallestK {
         return res;
     }
 
-
     /**
      * 快排的思路
+     * 终于让我写出来了
      *
      * @param arr
      * @param k
      * @return
      */
-    public int[] smallestK2(int[] arr, int k) {
-        int len = arr.length;
-        if (k == 0) {
-            return new int[]{};
-        }
-        if (len == 0 || arr.length <= k) {
-            return arr;
-        }
-        int l = 0, r = len - 1;
-        while (l < r) {
-            int pivot = partition(arr, l, r);
-            if (pivot == k - 1) {
-                break;
-            } else if (pivot < k - 1) {
-                l = pivot + 1;
-            } else {
-                r = pivot - 1;
-            }
-        }
-        //输出
+    public int[] smallestK3(int[] arr, int k) {
+        dfs(arr, 0, arr.length - 1, k);
         int[] res = new int[k];
         for (int i = 0; i < k; i++) {
             res[i] = arr[i];
@@ -95,44 +76,19 @@ public class SmallestK {
         return res;
     }
 
-    public int[] smallestK3(int[] arr, int k) {
-        List<Integer> res = dfs(arr, 0, arr.length - 1, k);
-        int[] r = new int[k];
-        int idx = 0;
-        for (Integer num : res) {
-            r[idx++] = num;
+    private void dfs(int[] arr, int l, int r, int k) {
+        if (k == 0 || r - l + 1 < k || r - l + 1 == k) {
+            return;
         }
-        return r;
-    }
-
-    private List<Integer> dfs(int[] arr, int l, int r, int k) {
-        if (k == 0) {
-            return Collections.emptyList();
-        }
-        if (r - l + 1 == k) {
-            List<Integer> res = new ArrayList<>(k);
-            for (int i = l; i <= r; i++) {
-                res.add(arr[i]);
-            }
-            return res;
-        }
-        int pivot = partition(arr, l, r);
-        int len = pivot - l + 1;
+        int p = partition(arr, l, r);
+        int len = p - l + 1;
         if (len == k) {
-            List<Integer> res = new ArrayList<>(len);
-            for (int i = l; i <= pivot; i++) {
-                res.add(arr[i]);
-            }
-            return res;
+            return;
         } else if (len > k) {
-            return dfs(arr, l, pivot - 1, k);
+            //缩小1位
+            dfs(arr, l, p - 1, k);
         } else {
-            List<Integer> res = new ArrayList<>(len);
-            for (int i = l; i <= pivot; i++) {
-                res.add(arr[i]);
-            }
-            res.addAll(dfs(arr, pivot + 1, r, k - len));
-            return res;
+            dfs(arr, p + 1, r, k - len);
         }
     }
 
@@ -141,27 +97,25 @@ public class SmallestK {
         //int pivot = ThreadLocalRandom.current().nextInt(l, r + 1);
         //swap(arr, l, pivot);
         //取第一个节点作为pivot
-        int pivot = l;
-        l += 1;
+        int pivot = arr[l];
         while (l < r) {
             //左右边界分别移动
-            while (l < r && arr[l] < arr[pivot]) {
-                l++;
-            }
-            while (l < r && arr[r] >= arr[pivot]) {
+            while (l < r && arr[r] > pivot) {
                 r--;
             }
             if (l < r) {
-                swap(arr, l, r);
+                arr[l] = arr[r];
+                l++;
+            }
+            while (l < r && arr[l] <= pivot) {
+                l++;
+            }
+            if (l < r) {
+                arr[r] = arr[l];
+                r--;
             }
         }
-        swap(arr, pivot, l);
+        arr[l] = pivot;
         return l;
-    }
-
-    private void swap(int[] arr, int idx1, int idx2) {
-        int tmp = arr[idx1];
-        arr[idx1] = arr[idx2];
-        arr[idx2] = tmp;
     }
 }
