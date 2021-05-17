@@ -1,7 +1,6 @@
 package com.liyongquan.heap;
 
-import java.util.PriorityQueue;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -96,12 +95,53 @@ public class SmallestK {
         return res;
     }
 
+    public int[] smallestK3(int[] arr, int k) {
+        List<Integer> res = dfs(arr, 0, arr.length - 1, k);
+        int[] r = new int[k];
+        int idx = 0;
+        for (Integer num : res) {
+            r[idx++] = num;
+        }
+        return r;
+    }
+
+    private List<Integer> dfs(int[] arr, int l, int r, int k) {
+        if (k == 0) {
+            return Collections.emptyList();
+        }
+        if (r - l + 1 == k) {
+            List<Integer> res = new ArrayList<>(k);
+            for (int i = l; i <= r; i++) {
+                res.add(arr[i]);
+            }
+            return res;
+        }
+        int pivot = partition(arr, l, r);
+        int len = pivot - l + 1;
+        if (len == k) {
+            List<Integer> res = new ArrayList<>(len);
+            for (int i = l; i <= pivot; i++) {
+                res.add(arr[i]);
+            }
+            return res;
+        } else if (len > k) {
+            return dfs(arr, l, pivot - 1, k);
+        } else {
+            List<Integer> res = new ArrayList<>(len);
+            for (int i = l; i <= pivot; i++) {
+                res.add(arr[i]);
+            }
+            res.addAll(dfs(arr, pivot + 1, r, k - len));
+            return res;
+        }
+    }
+
     private int partition(int[] arr, int l, int r) {
         //随机一个pivot节点
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-        int pivot = random.nextInt(l, r + 1);
-        swap(arr, l, pivot);
-        pivot = l;
+        //int pivot = ThreadLocalRandom.current().nextInt(l, r + 1);
+        //swap(arr, l, pivot);
+        //取第一个节点作为pivot
+        int pivot = l;
         l += 1;
         while (l < r) {
             //左右边界分别移动
