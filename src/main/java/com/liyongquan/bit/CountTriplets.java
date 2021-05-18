@@ -141,4 +141,6 @@ public class CountTriplets {
         }
         return cnt;
     }
+
+    //TODO:一次遍历
 }
