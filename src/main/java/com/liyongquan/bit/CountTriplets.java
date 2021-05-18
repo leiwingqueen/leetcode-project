@@ -118,4 +118,27 @@ public class CountTriplets {
         }
         return cnt;
     }
+
+    /**
+     * 两次遍历
+     *
+     * @param arr
+     * @return
+     */
+    public int countTriplets3(int[] arr) {
+        int len = arr.length;
+        int[] pre = new int[len + 1];
+        for (int i = 0; i < len; i++) {
+            pre[i + 1] = pre[i] ^ arr[i];
+        }
+        int cnt = 0;
+        for (int i = 0; i < len; i++) {
+            for (int j = i + 1; j <= len; j++) {
+                if (pre[j] == pre[i]) {
+                    cnt += j - i - 1;
+                }
+            }
+        }
+        return cnt;
+    }
 }
