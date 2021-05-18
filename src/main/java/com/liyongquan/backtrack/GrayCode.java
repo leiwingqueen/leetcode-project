@@ -50,6 +50,12 @@ public class GrayCode {
     private int n;
     private int size;
 
+    /**
+     * 中规中矩的回溯解法
+     *
+     * @param n
+     * @return
+     */
     public List<Integer> grayCode(int n) {
         this.size = (int) Math.pow(2, n);
         this.exist = new int[size];
