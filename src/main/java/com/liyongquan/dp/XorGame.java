@@ -40,7 +40,7 @@ public class XorGame {
      * 回溯算法
      * <p>
      * 时间复杂度O(n!)
-     *
+     * <p>
      * 超时
      *
      * @param nums
@@ -79,5 +79,22 @@ public class XorGame {
         int tmp = nums[i];
         nums[i] = nums[j];
         nums[j] = tmp;
+    }
+
+    /**
+     * 官解，证明极其难想到
+     *
+     * @param nums
+     * @return
+     */
+    public boolean xorGame2(int[] nums) {
+        if (nums.length % 2 == 0) {
+            return true;
+        }
+        int xor = 0;
+        for (int num : nums) {
+            xor ^= num;
+        }
+        return xor == 0;
     }
 }
