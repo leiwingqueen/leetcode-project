@@ -1,5 +1,8 @@
 package com.liyongquan.dp;
 
+import lombok.extern.slf4j.Slf4j;
+import sun.rmi.runtime.Log;
+
 /**
  * 810. 黑板异或游戏
  * <p>
@@ -31,11 +34,14 @@ package com.liyongquan.dp;
  * 链接：https://leetcode-cn.com/problems/chalkboard-xor-game
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
+@Slf4j
 public class XorGame {
     /**
      * 回溯算法
      * <p>
      * 时间复杂度O(n!)
+     *
+     * 超时
      *
      * @param nums
      * @return
@@ -45,10 +51,11 @@ public class XorGame {
         for (int num : nums) {
             xor ^= num;
         }
-        return backtrace(nums, xor, 0, nums.length - 1);
+        return backtrace(nums, xor, 0, nums.length);
     }
 
     private boolean backtrace(int[] nums, int xor, int idx, int len) {
+        log.info("idx:{},xor:{}", idx, xor);
         if (idx == len) {
             return xor == 0;
         }
@@ -58,6 +65,7 @@ public class XorGame {
         for (int i = idx; i < len; i++) {
             swap(nums, idx, i);
             boolean res = backtrace(nums, xor ^ nums[idx], idx + 1, len);
+            log.info("idx:{},num:{},xor:{},res:{}", idx, nums[idx], xor ^ nums[idx], res);
             //回溯
             swap(nums, i, idx);
             if (!res) {
