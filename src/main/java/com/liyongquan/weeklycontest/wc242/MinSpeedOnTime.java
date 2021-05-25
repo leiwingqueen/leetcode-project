@@ -1,10 +1,10 @@
 package com.liyongquan.weeklycontest.wc242;
 
-import sun.security.ssl.HandshakeOutStream;
-
 public class MinSpeedOnTime {
     /**
      * 二分查找
+     *
+     * 不通过
      *
      * @param dist
      * @param hour
