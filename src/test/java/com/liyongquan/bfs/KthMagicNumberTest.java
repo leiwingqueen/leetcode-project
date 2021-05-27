@@ -11,7 +11,7 @@ public class KthMagicNumberTest {
 
     @Test
     public void getKthMagicNumber() {
-        int res = this.kthMagicNumber.getKthMagicNumber(10);
+        int res = this.kthMagicNumber.getKthMagicNumber(251);
         log.info("{}", res);
     }
 }

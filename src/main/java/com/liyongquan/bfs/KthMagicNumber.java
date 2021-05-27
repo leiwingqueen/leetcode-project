@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.TreeSet;
 
 /**
  * 有些数的素因子只有 3，5，7，请设计一个算法找出第 k 个数。注意，不是必须有这些素因子，而是必须不包含其他的素因子。例如，前几个数按顺序应该是 1，3，5，7，9，15，21。
@@ -20,25 +21,35 @@ import java.util.Queue;
  */
 @Slf4j
 public class KthMagicNumber {
+    /**
+     * 错误，下层的节点不一定比这一层要大
+     *
+     * @param k
+     * @return
+     */
     public int getKthMagicNumber(int k) {
         Queue<Integer> queue = new LinkedList<>();
         queue.add(1);
+        int[] nums = {3, 5, 7};
         while (!queue.isEmpty()) {
-            Integer poll = queue.poll();
-            k--;
-            log.info("{}", poll);
-            if (k == 0) {
-                return poll;
+            int size = queue.size();
+            //存下一层的节点(去重)
+            TreeSet<Integer> treeSet = new TreeSet<>();
+            for (int i = 0; i < size; i++) {
+                Integer poll = queue.poll();
+                log.info("{}", poll);
+                k--;
+                if (k == 0) {
+                    return poll;
+                }
+                for (int num : nums) {
+                    treeSet.add(poll * num);
+                }
             }
-            if (poll == 1 || poll % 3 == 0) {
-                queue.add(poll * 3);
-                queue.add(poll * 5);
-                queue.add(poll * 7);
-            } else if (poll % 5 == 0) {
-                queue.add(poll * 5);
-                queue.add(poll * 7);
-            } else {
-                queue.add(poll * 7);
+            log.info("----------");
+            //按序放入队列
+            for (Integer n : treeSet) {
+                queue.add(n);
             }
         }
         return -1;
