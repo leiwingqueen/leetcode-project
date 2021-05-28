@@ -52,6 +52,12 @@ public class TotalHammingDistance {
         return cnt;
     }
 
+    /**
+     * 优化解法
+     *
+     * @param nums
+     * @return
+     */
     public int totalHammingDistance2(int[] nums) {
         int cnt = 0;
         for (int i = 0; i < 32; i++) {
