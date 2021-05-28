@@ -51,4 +51,18 @@ public class TotalHammingDistance {
         }
         return cnt;
     }
+
+    public int totalHammingDistance2(int[] nums) {
+        int cnt = 0;
+        for (int i = 0; i < 32; i++) {
+            int oneCnt = 0;
+            for (int num : nums) {
+                if ((num & (1 << i)) != 0) {
+                    oneCnt++;
+                }
+            }
+            cnt += oneCnt * (nums.length - oneCnt);
+        }
+        return cnt;
+    }
 }
