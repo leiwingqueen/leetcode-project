@@ -2,6 +2,9 @@ package com.liyongquan.dp;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 1074. 元素和为目标值的子矩阵数量
  * <p>
@@ -77,6 +80,40 @@ public class NumSubmatrixSumTarget {
                             cnt++;
                         }
                     }
+                }
+            }
+        }
+        return cnt;
+    }
+
+    /**
+     * 优化方案，减少一个维度的遍历
+     *
+     * @param matrix
+     * @param target
+     * @return
+     */
+    public int numSubmatrixSumTarget2(int[][] matrix, int target) {
+        int row = matrix.length, col = matrix[0].length;
+        //前缀和
+        int[][] prefix = new int[row + 1][col + 1];
+        for (int i = 1; i <= row; i++) {
+            for (int j = 1; j <= col; j++) {
+                prefix[i][j] = matrix[i - 1][j - 1] + prefix[i - 1][j] + prefix[i][j - 1] - prefix[i - 1][j - 1];
+            }
+        }
+        //遍历
+        int cnt = 0;
+        for (int r1 = 0; r1 < row; r1++) {
+            for (int r2 = r1; r2 < row; r2++) {
+                Map<Integer, Integer> map = new HashMap<>();
+                map.put(0, 1);
+                for (int j = 0; j < col; j++) {
+                    //计算[r1,0]~[r2,j]的前缀和
+                    int sum = prefix[r2 + 1][j + 1] - prefix[r1][j + 1];
+                    //log.info("[{},{}]-[{},{}]:{}", i, j, k, l, sum);
+                    cnt += map.getOrDefault(sum - target, 0);
+                    map.put(sum, map.getOrDefault(sum, 0) + 1);
                 }
             }
         }

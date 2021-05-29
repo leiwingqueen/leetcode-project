@@ -15,7 +15,7 @@ public class NumSubmatrixSumTargetTest {
         int[][] matrix = {
                 {0, 1, 0}, {1, 1, 1}, {0, 1, 0}
         };
-        int res = target.numSubmatrixSumTarget(matrix, 0);
+        int res = target.numSubmatrixSumTarget2(matrix, 0);
         log.info("{}", res);
         Assert.assertEquals(4, res);
     }
