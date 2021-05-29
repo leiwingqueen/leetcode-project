@@ -46,6 +46,10 @@ import lombok.extern.slf4j.Slf4j;
 public class NumSubmatrixSumTarget {
     /**
      * 暴力+前缀和
+     * <p>
+     * 居然过了，不可思议
+     * <p>
+     * m行n列的矩阵，时间复杂度是O(m^2*n^2)
      *
      * @param matrix
      * @param target
@@ -67,8 +71,8 @@ public class NumSubmatrixSumTarget {
                 for (int k = i; k < row; k++) {
                     for (int l = j; l < col; l++) {
                         //计算[i,j]~[k,l]的和
-                        int sum = prefix[k + 1][l + 1] - prefix[i][l] - prefix[k][j] + prefix[i][j];
-                        log.info("[{},{}]-[{},{}]:{}", i, j, k, l, sum);
+                        int sum = prefix[k + 1][l + 1] - prefix[i][l + 1] - prefix[k + 1][j] + prefix[i][j];
+                        //log.info("[{},{}]-[{},{}]:{}", i, j, k, l, sum);
                         if (sum == target) {
                             cnt++;
                         }
