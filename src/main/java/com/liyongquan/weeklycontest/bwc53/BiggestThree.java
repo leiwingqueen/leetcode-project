@@ -62,7 +62,7 @@ public class BiggestThree {
      */
     public int[] getBiggestThree(int[][] grid) {
         int row = grid.length, col = grid[0].length;
-        PriorityQueue<Integer> pq = new PriorityQueue<>(3);
+        PriorityQueue<Integer> pq = new PriorityQueue<>(4);
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
                 int len = Math.min(j + 1, col - j);
