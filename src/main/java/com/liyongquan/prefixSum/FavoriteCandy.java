@@ -53,15 +53,20 @@ public class FavoriteCandy {
      */
     public boolean[] canEat(int[] candiesCount, int[][] queries) {
         //前缀和
-        int[] prefixSum = new int[candiesCount.length + 1];
+        long[] prefixSum = new long[candiesCount.length + 1];
         for (int i = 1; i <= candiesCount.length; i++) {
             prefixSum[i] = prefixSum[i - 1] + candiesCount[i - 1];
         }
         boolean[] res = new boolean[queries.length];
         for (int i = 0; i < queries.length; i++) {
             int[] query = queries[i];
-            //前面n-1天吃的糖果数量的范围[query[1],query[1] * query[2]]
-            res[i] = query[1] * query[2] >= prefixSum[query[0]] && query[1] + 1 <= prefixSum[query[0] + 1];
+            int type = query[0];
+            int day = query[1];
+            int cnt = query[2];
+            // 第type种糖果的序号范围[pre[type]+1,pre[type+1]]
+            // 第N天吃的糖果的序号范围[day+1,(day+1)*cnt]
+            // 求这两个是否存在交集
+            res[i] = !(day + 1 > prefixSum[type + 1] || ((long) day + 1) * cnt < prefixSum[type] + 1);
         }
         return res;
     }
