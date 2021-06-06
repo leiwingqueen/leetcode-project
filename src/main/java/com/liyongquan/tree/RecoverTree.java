@@ -1,8 +1,5 @@
 package com.liyongquan.tree;
 
-import com.liyongquan.linklist.ListNode;
-import com.liyongquan.twopointer.ValidPalindrome;
-
 import java.util.ArrayList;
 import java.util.List;
 
