@@ -44,7 +44,7 @@ package com.liyongquan.dp;
 public class LastStoneWeightII {
     /**
      * 回溯解法
-     *
+     * <p>
      * 超时
      *
      * @param stones
@@ -77,5 +77,33 @@ public class LastStoneWeightII {
         int tmp = stones[i];
         stones[i] = stones[j];
         stones[j] = tmp;
+    }
+
+    /**
+     * dp解法
+     *
+     * @param stones
+     * @return
+     */
+    public int lastStoneWeightII2(int[] stones) {
+        int sum = 0;
+        for (int i = 0; i < stones.length; i++) {
+            sum += stones[i];
+        }
+        int maxVal = sum / 2;
+        int[][] dp = new int[stones.length][maxVal + 1];
+        //初始化
+        for (int i = stones[0]; i <= maxVal; i++) {
+            dp[0][i] = stones[0];
+        }
+        for (int i = 1; i < stones.length; i++) {
+            for (int j = 1; j <= maxVal; j++) {
+                dp[i][j] = dp[i - 1][j];
+                if (j - stones[i] >= 0) {
+                    dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - stones[i]] + stones[i]);
+                }
+            }
+        }
+        return sum - 2 * dp[stones.length - 1][maxVal];
     }
 }
