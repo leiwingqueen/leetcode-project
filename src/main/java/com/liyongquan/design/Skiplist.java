@@ -72,26 +72,22 @@ public class Skiplist {
         int lv = LEVEL - 1;
         ListNode cur = list[lv];
         //索引查找
-        while (lv > 0 && cur.next != null) {
+        while (lv > 0) {
+            while (cur.next != null && cur.next.val < target) {
+                cur = cur.next;
+            }
             if (cur.next != null && cur.next.val == target) {
                 return true;
             }
-            if (cur.next != null && cur.next.val < target) {
-                cur = cur.next;
-            } else {
-                cur = cur.down;
-                lv--;
-            }
+            //向下查找
+            cur = cur.down;
+            lv--;
         }
         //线性查找
-        while (cur.next != null && target >= cur.next.val) {
-            if (cur.next.val == target) {
-                return true;
-            } else {
-                cur = cur.next;
-            }
+        while (cur.next != null && cur.next.val < target) {
+            cur = cur.next;
         }
-        return false;
+        return cur.next != null && cur.next.val == target;
     }
 
     public void add(int num) {
@@ -100,25 +96,24 @@ public class Skiplist {
         ListNode cur = list[lv];
         //索引查找
         ListNode pre = null;
-        while (lv > 0 && cur.next != null) {
-            if (cur.next != null && cur.next.val < num) {
+        while (lv > 0) {
+            while (cur.next != null && cur.next.val < num) {
                 cur = cur.next;
-            } else {
-                //增加索引结点
-                if (rand >= lv) {
-                    ListNode next = cur.next;
-                    ListNode node = new ListNode(num);
-                    cur.next = node;
-                    node.next = next;
-                    //链接上上一层的节点
-                    if (pre != null) {
-                        pre.down = node;
-                    }
-                    pre = node;
-                }
-                cur = cur.down;
-                lv--;
             }
+            //增加索引结点
+            if (rand >= lv) {
+                ListNode next = cur.next;
+                ListNode node = new ListNode(num);
+                cur.next = node;
+                node.next = next;
+                //链接上上一层的节点
+                if (pre != null) {
+                    pre.down = node;
+                }
+                pre = node;
+            }
+            cur = cur.down;
+            lv--;
         }
         //线性查找
         while (cur.next != null && cur.next.val < num) {
@@ -137,24 +132,26 @@ public class Skiplist {
     public boolean erase(int num) {
         int lv = LEVEL - 1;
         ListNode cur = list[lv];
-        while (lv > 0 && cur.next != null) {
-            if (cur.next != null && cur.next.val < num) {
+        while (lv > 0) {
+            //向右查找
+            while (cur.next != null && cur.next.val < num) {
                 cur = cur.next;
-            } else {
-                if (cur.next.val == num) {
-                    //删除节点
-                    ListNode next = cur.next.next;
-                    cur.next = next;
-                }
-                cur = cur.down;
             }
+            //向下查找
+            if (cur.next != null && cur.next.val == num) {
+                //删除节点
+                cur.next = cur.next.next;
+            }
+            cur = cur.down;
+            lv--;
         }
         //线性查找
-        while (cur.next != null && num >= cur.next.val) {
-            if (cur.next.val == num) {
-                cur.next = cur.next.next;
-                return true;
-            }
+        while (cur.next != null && cur.next.val < num) {
+            cur = cur.next;
+        }
+        if (cur.next != null && cur.next.val == num) {
+            cur.next = cur.next.next;
+            return true;
         }
         return false;
     }
