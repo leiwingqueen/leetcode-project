@@ -53,7 +53,7 @@ package com.liyongquan.design;
 public class Skiplist {
     //算上原链表
     public static final int LEVEL = 4;
-    //三级索引
+    //N级索引
     private ListNode[] list;
 
     public Skiplist() {
@@ -156,6 +156,11 @@ public class Skiplist {
         return false;
     }
 
+    /**
+     * 索引随机，第一层索引概率0.5,第二层索引概率0.25,每往上一层概率为原来的一半。在概率分布上我们可以认为上一层的节点是下一层节点的一半
+     *
+     * @return
+     */
     private int randomLevel() {
         int level = 0;
         if (Math.random() < 0.5 && level < LEVEL - 1) {
