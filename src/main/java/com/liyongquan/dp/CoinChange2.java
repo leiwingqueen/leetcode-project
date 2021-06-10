@@ -43,15 +43,15 @@ public class CoinChange2 {
      * https://leetcode-cn.com/problems/coin-change-2/solution/ling-qian-dui-huan-iihe-pa-lou-ti-wen-ti-dao-di-yo/
      * <p>
      * 这个问题的难点在于我们要求解的是组合数，并不是排序数。如果构造dp方程把重复的解过滤？
-     *
+     * <p>
      * --原文解释，再深入咀嚼一下
-     *
+     * <p>
      * 但是当你运行之后，却发现这个代码并不正确，得到的结果比预期的大。究其原因，该代码计算的结果是排列数，而不是组合数，也就是代码会把1,2和2,1当做两种情况。但更加根本的原因是我们子问题定义出现了错误。
-     *
+     * <p>
      * 正确的子问题定义应该是，problem(k,i) = problem(k-1, i) + problem(k, i-k)
-     *
+     * <p>
      * 即前k个硬币凑齐金额i的组合数等于前k-1个硬币凑齐金额i的组合数加上在原来i-k的基础上使用硬币的组合数。说的更加直白一点，那就是用前k的硬币凑齐金额i，要分为两种情况开率，一种是没有用前k-1个硬币就凑齐了，一种是前面已经凑到了i-k，现在就差第k个硬币了。
-     *
+     * <p>
      * 作者：xu-zhou-geng
      * 链接：https://leetcode-cn.com/problems/coin-change-2/solution/ling-qian-dui-huan-iihe-pa-lou-ti-wen-ti-dao-di-yo/
      * 来源：力扣（LeetCode）
@@ -62,6 +62,26 @@ public class CoinChange2 {
      * @return
      */
     public int change(int amount, int[] coins) {
-        return 0;
+        if (amount == 0) {
+            return 1;
+        }
+        int len = coins.length;
+        int[][] dp = new int[amount + 1][len];
+        for (int i = 1; i <= amount; i++) {
+            for (int j = 0; j < len; j++) {
+                if (i - coins[j] == 0) {
+                    dp[i][j] = 1;
+                } else if (i - coins[j] > 0) {
+                    for (int k = 0; k <= j; k++) {
+                        dp[i][j] += dp[i - coins[j]][k];
+                    }
+                }
+            }
+        }
+        int sum = 0;
+        for (int i = 0; i < len; i++) {
+            sum += dp[amount][i];
+        }
+        return sum;
     }
 }
