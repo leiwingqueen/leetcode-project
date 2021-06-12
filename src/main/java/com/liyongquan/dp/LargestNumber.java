@@ -1,5 +1,9 @@
 package com.liyongquan.dp;
 
+import com.liyongquan.weeklycontest.bwc53.BiggestThree;
+
+import java.math.BigDecimal;
+
 /**
  * 1449. 数位成本和为目标值的最大数字
  * <p>
@@ -65,23 +69,37 @@ public class LargestNumber {
         if (maxLen <= 0) {
             return "0";
         }
-        int[] pre = new int[target + 1], cur = new int[target + 1];
-        for (int i = 1; i <= 9; i++) {
-            pre[i] = i;
+        //初始化
+        BigDecimal[] pre = new BigDecimal[target + 1], cur = new BigDecimal[target + 1];
+        for (int j = 0; j <= target; j++) {
+            for (int k = 0; k < 9; k++) {
+                if (cost[k] == j) {
+                    if (pre[j] == null || BigDecimal.valueOf(k + 1).compareTo(pre[j]) > 0) {
+                        pre[j] = BigDecimal.valueOf(k + 1);
+                    }
+                    //pre[j] = Math.max(pre[j], k + 1);
+                }
+            }
         }
+        BigDecimal res = null;
         for (int i = 1; i < maxLen; i++) {
             for (int j = 0; j <= target; j++) {
-                int max = 0;
                 for (int k = 0; k < 9; k++) {
-                    if (j - cost[k] >= 0) {
-                        max = Math.max(max, pre[j - cost[k]] * 10 + i + 1);
+                    if (j - cost[k] >= 0 && pre[j - cost[k]] != null) {
+                        BigDecimal r = pre[j - cost[k]].multiply(BigDecimal.TEN).add(BigDecimal.valueOf(k + 1));
+                        if (cur[j] == null || r.compareTo(cur[j]) > 0) {
+                            cur[j] = r;
+                        }
                     }
                 }
-                cur[j] = max;
             }
             pre = cur;
-            cur = new int[target + 1];
+            cur = new BigDecimal[target + 1];
+            //取最大的合法解
+            if (res == null || (pre[target] != null && pre[target].compareTo(res) > 0)) {
+                res = pre[target];
+            }
         }
-        return String.valueOf(pre[target]);
+        return res == null ? "0" : res.toString();
     }
 }
