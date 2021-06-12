@@ -65,6 +65,7 @@ public class LargestNumber {
         for (int c : cost) {
             min = Math.min(min, c);
         }
+        //最大的数字长度，决定解的范围
         int maxLen = target / min;
         if (maxLen <= 0) {
             return "0";
