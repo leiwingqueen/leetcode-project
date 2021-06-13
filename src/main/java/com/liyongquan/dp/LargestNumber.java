@@ -1,7 +1,5 @@
 package com.liyongquan.dp;
 
-import com.liyongquan.weeklycontest.bwc53.BiggestThree;
-
 import java.math.BigDecimal;
 
 /**
