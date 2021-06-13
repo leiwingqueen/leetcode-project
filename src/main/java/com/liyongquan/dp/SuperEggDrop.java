@@ -117,6 +117,7 @@ public class SuperEggDrop {
         }
         for (int i = 1; i < k; i++) {
             for (int j = 1; j <= n; j++) {
+                //dp[i - 1][mid - 1] - dp[i][j - mid] 单调递增
                 int l = 1, r = j;
                 while (l < r) {
                     int mid = l + (r - l) / 2;
