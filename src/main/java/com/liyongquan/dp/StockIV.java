@@ -40,23 +40,17 @@ public class StockIV {
             return 0;
         }
         int len = prices.length;
-        int[][] dp0 = new int[len][k], dp1 = new int[len][k];
-        for (int i = 0; i < k; i++) {
+        int[][] dp0 = new int[len][k + 1], dp1 = new int[len][k + 1];
+        for (int i = 0; i <= k; i++) {
             dp0[0][i] = 0;
             dp1[0][i] = -prices[0];
         }
-        int min = Integer.MAX_VALUE;
-        for (int i = 0; i < len; i++) {
-            min = Math.min(min, prices[i]);
-            dp0[i][0] = 0;
-            dp1[i][0] = -min;
-        }
         for (int i = 1; i < len; i++) {
-            for (int j = 1; j < k; j++) {
+            for (int j = 1; j <= k; j++) {
                 dp0[i][j] = Math.max(dp1[i - 1][j] + prices[i], dp0[i - 1][j]);
                 dp1[i][j] = Math.max(dp1[i - 1][j], dp0[i - 1][j - 1] - prices[i]);
             }
         }
-        return dp0[len - 1][k - 1];
+        return dp0[len - 1][k];
     }
 }
