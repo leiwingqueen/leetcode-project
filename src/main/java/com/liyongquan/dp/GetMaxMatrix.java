@@ -69,10 +69,10 @@ public class GetMaxMatrix {
 
     /**
      * 先考虑检查计算总和的时间复杂度
-     *
+     * <p>
      * 时间复杂度O((m*n)^2)
      * 空间复杂度O(m*n)
-     *
+     * <p>
      * 还是超时
      *
      * @param matrix
@@ -105,5 +105,57 @@ public class GetMaxMatrix {
             }
         }
         return res;
+    }
+
+    /**
+     * 降维解法
+     * <p>
+     * 二维降成一维，然后再用dp
+     *
+     * @param matrix
+     * @return
+     */
+    public int[] getMaxMatrix3(int[][] matrix) {
+        int row = matrix.length, col = matrix[0].length;
+        //前缀和
+        int[][] prefix = new int[row][col + 1];
+        for (int i = 0; i < row; i++) {
+            for (int j = 1; j <= col; j++) {
+                prefix[i][j] = prefix[i][j - 1] + matrix[i][j - 1];
+            }
+        }
+        //二维降成一维
+        int max = Integer.MIN_VALUE;
+        int[] pos = new int[4];
+        for (int l1 = 0; l1 < col; l1++) {
+            for (int l2 = l1 + 1; l2 <= col; l2++) {
+                //固定l1和l2左右边界后，我们可以通过dp求得这个区间的最大和
+                int res = prefix[0][l2] - prefix[0][l1];
+                int[] resPos = {0, 0};
+                int dp = res;
+                int dpStart = 0;
+                for (int i = 1; i < row; i++) {
+                    if (dp + prefix[i][l2] - prefix[i][l1] < prefix[i][l2] - prefix[i][l1]) {
+                        dpStart = i;
+                        dp = prefix[i][l2] - prefix[i][l1];
+                    } else {
+                        dp += prefix[i][l2] - prefix[i][l1];
+                    }
+                    if (dp > res) {
+                        resPos[0] = dpStart;
+                        resPos[1] = i;
+                        res = dp;
+                    }
+                }
+                if (res > max) {
+                    max = res;
+                    pos[0] = resPos[0];
+                    pos[1] = l1;
+                    pos[2] = resPos[1];
+                    pos[3] = l2 - 1;
+                }
+            }
+        }
+        return pos;
     }
 }
