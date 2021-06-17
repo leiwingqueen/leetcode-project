@@ -57,11 +57,12 @@ package com.liyongquan.math;
  */
 public class ValidNumber {
     private int[][] fsm = {
-            {1, 2, 3},
-            {-1, 2, 3},
-            {-1, 2, 3},
-            {-1, 4, -1},
-            {-1, 4, -1},
+            {1, 2, 5, -1},
+            {-1, 2, 5, -1},
+            {-1, 2, 3, -1},
+            {-1, 4, -1, -1},
+            {-1, 4, -1, -1},
+            {-1, 4, -1, -1},
     };
 
     /**
@@ -71,17 +72,26 @@ public class ValidNumber {
      * @return
      */
     public boolean isNumber(String s) {
-        if (s.contains("e") || s.contains("E")) {
+        int eCnt = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == 'e' || s.charAt(i) == 'E') {
+                eCnt++;
+            }
+        }
+        if (eCnt > 1) {
+            return false;
+        }
+        if (eCnt == 1) {
             String[] split = s.split("e|E");
             if (split.length != 2) {
                 return false;
             }
             int s1 = getType(split[0]);
             int s2 = getType(split[1]);
-            return (s1 == 2 || s1 == 4) && s2 == 2;
+            return (s1 == 2 || s1 == 4 || s1 == 3) && s2 == 2;
         } else {
             int state = getType(s);
-            return state == 2 || state == 4;
+            return state == 2 || state == 4 || state == 3;
         }
     }
 
@@ -102,10 +112,13 @@ public class ValidNumber {
     private int op(char ch) {
         if (ch == '+' || ch == '-') {
             return 0;
-        } else if (ch >= '0' || ch <= '9') {
+        } else if (ch >= '0' && ch <= '9') {
             return 1;
-        } else {
+        } else if (ch == '.') {
             return 2;
+        } else {
+            //一定是不合法
+            return 3;
         }
     }
 }

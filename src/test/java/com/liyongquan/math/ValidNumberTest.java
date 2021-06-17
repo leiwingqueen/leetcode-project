@@ -12,8 +12,8 @@ public class ValidNumberTest {
 
     @Test
     public void isNumber() {
-        boolean res = vn.isNumber("e");
+        boolean res = vn.isNumber("7e69e");
         log.info("{}", res);
-        Assert.assertEquals(false, res);
+        Assert.assertEquals(true, res);
     }
 }
