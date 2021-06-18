@@ -77,15 +77,15 @@ public class SmallestGoodBase {
         long num = Long.parseLong(n);
         //求最大的数字长度log2(n)
         int maxLen = (int) (Math.log(num) / Math.log(2) + 1);
-        for (int len = maxLen; len >= 2; len--) {
-            //k<n^(1/len)<k+1
+        for (int len = maxLen; len >= 3; len--) {
+            //k<n^(1/len)<k+1，这里有一个特点，当len=2的时候，这时候得到的数据有可能让double丢失一部分精度
             double pow = Math.pow(num, 1.0 / (len - 1));
             //判断k是否正整数
-            int k = (int) pow;
+            long k = Double.valueOf(pow).longValue();
             if (Math.ceil(pow) == Math.floor(pow)) {
                 k -= 1;
             }
-            int res = 0;
+            long res = 0;
             for (int i = 0; i < len; i++) {
                 res = res * k + 1;
             }
@@ -93,7 +93,7 @@ public class SmallestGoodBase {
                 return String.valueOf(k);
             }
         }
-        //实际上不会到这里
-        return "";
+        //len=2的场景
+        return String.valueOf(num - 1);
     }
 }

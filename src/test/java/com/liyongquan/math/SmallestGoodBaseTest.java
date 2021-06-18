@@ -12,8 +12,8 @@ public class SmallestGoodBaseTest {
 
     @Test
     public void smallestGoodBase() {
-        String res = sgb.smallestGoodBase2("13");
+        String res = sgb.smallestGoodBase2("821424692950225218");
         log.info("{}", res);
-        Assert.assertEquals("3", res);
+        Assert.assertEquals("821424692950225217", res);
     }
 }
