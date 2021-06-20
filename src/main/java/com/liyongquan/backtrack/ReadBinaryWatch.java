@@ -35,6 +35,12 @@ import java.util.List;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class ReadBinaryWatch {
+    /**
+     * 一个有10个bit，整个表盘的读数我们可以用一个int来存储，使用回溯查找合法的解
+     *
+     * @param turnedOn
+     * @return
+     */
     public List<String> readBinaryWatch(int turnedOn) {
         List<String> res = new LinkedList<>();
         backtrace(0, 0, 10, turnedOn, res);
