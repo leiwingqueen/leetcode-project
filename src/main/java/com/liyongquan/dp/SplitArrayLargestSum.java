@@ -71,4 +71,45 @@ public class SplitArrayLargestSum {
         }
         return dp[len][m];
     }
+
+    /**
+     * 贪心+二分
+     *
+     * @param nums
+     * @param m
+     * @return
+     */
+    public int splitArray2(int[] nums, int m) {
+        int l = 0, r = 0;
+        for (int num : nums) {
+            l = Math.max(l, num);
+            r += num;
+        }
+        //二分查找
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (available(nums, m, mid)) {
+                r = mid;
+            } else {
+                l = mid + 1;
+            }
+        }
+        return l;
+    }
+
+    public boolean available(int[] nums, int m, int max) {
+        int sum = 0;
+        int cnt = 0;
+        for (int num : nums) {
+            sum += num;
+            if (sum > max) {
+                sum = num;
+                cnt++;
+                if (cnt >= m) {
+                    return false;
+                }
+            }
+        }
+        return cnt <= m;
+    }
 }
