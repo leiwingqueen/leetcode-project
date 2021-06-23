@@ -33,8 +33,14 @@ package com.liyongquan.dp;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class DungeonGame {
+    /**
+     * 思路错误
+     *
+     * @param dungeon
+     * @return
+     */
     public int calculateMinimumHP(int[][] dungeon) {
-        int row = dungeon.length, col = dungeon.length;
+        int row = dungeon.length, col = dungeon[0].length;
         int[][] dp0 = new int[row][col], dp1 = new int[row][col];
         //初始化
         dp0[0][0] = dungeon[0][0];
@@ -54,14 +60,55 @@ public class DungeonGame {
                 int s1 = Math.min(dp0[i - 1][j], dp1[i - 1][j] + dungeon[i][j]);
                 int s2 = Math.min(dp0[i][j - 1], dp1[i][j - 1] + dungeon[i][j]);
                 if (s1 > s2) {
-                    dp0[i][j] = s2;
-                    dp1[i][j] = dp1[i][j - 1] + dungeon[i][j];
-                } else {
                     dp0[i][j] = s1;
                     dp1[i][j] = dp1[i - 1][j] + dungeon[i][j];
+                } else {
+                    dp0[i][j] = s2;
+                    dp1[i][j] = dp1[i][j - 1] + dungeon[i][j];
                 }
             }
         }
-        return dp0[row - 1][col - 1] > 0 ? 0 : 1 - dp0[row - 1][col - 1];
+        return dp0[row - 1][col - 1] > 0 ? 1 : 1 - dp0[row - 1][col - 1];
+    }
+
+    /**
+     * @param dungeon
+     * @return
+     */
+    public int calculateMinimumHP2(int[][] dungeon) {
+        int row = dungeon.length, col = dungeon[0].length;
+        //计算所有路径中的最小值，确定值的范围
+        int[][] dp1 = new int[row][col];
+        dp1[0][0] = dungeon[0][0];
+        int min = dp1[0][0];
+        for (int i = 1; i < row; i++) {
+            dp1[i][0] = dp1[i - 1][0] + dungeon[i][0];
+            min = Math.min(min, dp1[i][0]);
+        }
+        for (int i = 0; i < col; i++) {
+            dp1[0][i] = dp1[0][i - 1] + dungeon[0][i];
+            min = Math.min(min, dp1[0][i]);
+        }
+        for (int i = 1; i < row; i++) {
+            for (int j = 1; j < col; j++) {
+                dp1[i][j] = Math.min(dp1[i - 1][j], dp1[i][j - 1]) + dungeon[i][j];
+                Math.min(min, dp1[i][j]);
+            }
+        }
+        int k = min <= 0 ? 1 : 1 - min;
+        int[][][] dp2 = new int[row][col][k + 1];
+        for (int i = 0; i < row; i++) {
+            for (int l = 1; l <= k; l++) {
+                if (i == 0) {
+                    dp2[i][0][l]
+                }
+                dp2[i][0][l] =
+            }
+        }
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+
+            }
+        }
     }
 }
