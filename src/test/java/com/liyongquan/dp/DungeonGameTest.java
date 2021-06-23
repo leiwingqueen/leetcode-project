@@ -17,7 +17,7 @@ public class DungeonGameTest {
                 {-5, -10, 1},
                 {10, 30, -5}
         };
-        int res = dg.calculateMinimumHP(matrix);
+        int res = dg.calculateMinimumHP2(matrix);
         log.info("{}", res);
         Assert.assertEquals(7, res);
     }

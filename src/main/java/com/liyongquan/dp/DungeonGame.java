@@ -77,38 +77,39 @@ public class DungeonGame {
      */
     public int calculateMinimumHP2(int[][] dungeon) {
         int row = dungeon.length, col = dungeon[0].length;
-        //计算所有路径中的最小值，确定值的范围
-        int[][] dp1 = new int[row][col];
-        dp1[0][0] = dungeon[0][0];
-        int min = dp1[0][0];
-        for (int i = 1; i < row; i++) {
-            dp1[i][0] = dp1[i - 1][0] + dungeon[i][0];
-            min = Math.min(min, dp1[i][0]);
-        }
-        for (int i = 0; i < col; i++) {
-            dp1[0][i] = dp1[0][i - 1] + dungeon[0][i];
-            min = Math.min(min, dp1[0][i]);
-        }
-        for (int i = 1; i < row; i++) {
-            for (int j = 1; j < col; j++) {
-                dp1[i][j] = Math.min(dp1[i - 1][j], dp1[i][j - 1]) + dungeon[i][j];
-                Math.min(min, dp1[i][j]);
-            }
-        }
-        int k = min <= 0 ? 1 : 1 - min;
-        int[][][] dp2 = new int[row][col][k + 1];
-        for (int i = 0; i < row; i++) {
-            for (int l = 1; l <= k; l++) {
-                if (i == 0) {
-                    dp2[i][0][l]
-                }
-                dp2[i][0][l] =
-            }
-        }
+        int sumPlus = 0, sumMinus = 0;
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
-
+                if (dungeon[i][j] >= 0) {
+                    sumPlus += dungeon[i][j];
+                } else {
+                    sumMinus += dungeon[i][j];
+                }
             }
         }
+        //最大值的范围
+        int k = sumPlus - sumMinus + 1;
+        int[][][] dp2 = new int[row][col][k + 1];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                for (int l = 1; l <= k; l++) {
+                    if (i == 0 && j == 0) {
+                        dp2[0][0][l] = l - dungeon[0][0];
+                    } else {
+                        int tmp = Integer.MAX_VALUE;
+                        if (i > 0) {
+                            int s = l - dungeon[i][j] >= 1 ? dp2[i - 1][j][l - dungeon[i][j]] : dp2[i - 1][j][1];
+                            tmp = Math.min(s, tmp);
+                        }
+                        if (j > 0) {
+                            int s = l - dungeon[i][j] >= 1 ? dp2[i][j - 1][l - dungeon[i][j]] : dp2[i][j - 1][1];
+                            tmp = Math.min(s, tmp);
+                        }
+                        dp2[i][j][l] = tmp;
+                    }
+                }
+            }
+        }
+        return dp2[row - 1][col - 1][1];
     }
 }
