@@ -1,9 +1,6 @@
 package com.liyongquan.backtrack;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 752. 打开转盘锁
@@ -106,16 +103,6 @@ public class OpenLock {
         return res;
     }
 
-    private int[] toArr(int num) {
-        int[] arr = new int[4];
-        int idx = 3;
-        while (idx >= 0 && num > 0) {
-            arr[idx--] = num % 10;
-            num /= 10;
-        }
-        return arr;
-    }
-
     private int toNum(int[] arr) {
         int idx = 3;
         int num = 0, plus = 1;
@@ -124,5 +111,73 @@ public class OpenLock {
             plus *= 10;
         }
         return num;
+    }
+
+    /**
+     * BFS求最短路径
+     *
+     * @param deadends
+     * @param target
+     * @return
+     */
+    public int openLock2(String[] deadends, String target) {
+        if ("0000".equals(target)) {
+            return 0;
+        }
+        int len = 10000;
+        int[] visit = new int[len];
+        Queue<Integer> queue = new LinkedList();
+        Queue<Integer> depth = new LinkedList();
+        queue.add(0);
+        depth.add(0);
+        //把deadends放到visit里面，这样就少一层判断
+        for (String deadend : deadends) {
+            visit[Integer.parseInt(deadend)] = 1;
+        }
+        if (visit[0] == 1) {
+            return -1;
+        }
+        visit[0] = 1;
+        while (!queue.isEmpty()) {
+            Integer poll = queue.poll();
+            Integer dep = depth.poll();
+            //8种场景
+            int[] arr = toArr(poll);
+            for (int i = 0; i < 4; i++) {
+                int tmp = arr[i];
+                arr[i] = (tmp + 1) % 10;
+                int s1 = toNum(arr);
+                if (s1 == Integer.parseInt(target)) {
+                    return dep + 1;
+                }
+                if (visit[s1] == 0) {
+                    queue.add(s1);
+                    depth.add(dep + 1);
+                    visit[s1] = 1;
+                }
+                arr[i] = tmp == 0 ? 9 : tmp - 1;
+                int s2 = toNum(arr);
+                if (s2 == Integer.parseInt(target)) {
+                    return dep + 1;
+                }
+                if (visit[s2] == 0) {
+                    queue.add(s2);
+                    depth.add(dep + 1);
+                    visit[s2] = 1;
+                }
+                arr[i] = tmp;
+            }
+        }
+        return -1;
+    }
+
+    private int[] toArr(int num) {
+        int[] arr = new int[4];
+        int idx = 3;
+        while (idx >= 0 && num > 0) {
+            arr[idx--] = num % 10;
+            num /= 10;
+        }
+        return arr;
     }
 }
