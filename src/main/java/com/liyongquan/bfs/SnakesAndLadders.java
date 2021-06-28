@@ -61,11 +61,12 @@ public class SnakesAndLadders {
     public int snakesAndLadders(int[][] board) {
         int len = board.length;
         //先把二维改成1维
-        int[] arr = new int[len * len];
+        int size = len * len;
+        int[] arr = new int[size];
         int idx = 0;
         int x = len - 1, y = 0;
         int dir = 1;
-        while (idx < len * len) {
+        while (idx < size) {
             arr[idx++] = board[x][y];
             y += dir;
             if (y == len || y < 0) {
@@ -79,31 +80,22 @@ public class SnakesAndLadders {
         Queue<Integer> depthQueue = new LinkedList<>();
         queue.add(0);
         depthQueue.add(0);
-        int[] visit = new int[len * len];
+        int[] visit = new int[size];
         visit[0] = 1;
         while (!queue.isEmpty()) {
             Integer poll = queue.poll();
             Integer depth = depthQueue.poll();
             //6种场景
-            for (int i = 1; i <= 6; i++) {
-                int next = poll + i;
-                if (next == len * len - 1) {
+            for (int i = 1; i <= 6 && poll + i < size; i++) {
+                //计算下一次移动的位置
+                int next = arr[poll + i] == -1 ? poll + i : arr[poll + i] - 1;
+                if (next == size - 1) {
                     return depth + 1;
                 }
-                if (next < len * len && visit[next] == 0) {
+                if (visit[next] == 0) {
+                    queue.add(next);
+                    depthQueue.add(depth + 1);
                     visit[next] = 1;
-                    if (arr[next] == -1) {
-                        queue.add(next);
-                        depthQueue.add(depth + 1);
-                    } else if (visit[arr[next] - 1] == 0) {
-                        //梯子
-                        if (arr[next] == len * len) {
-                            return depth + 1;
-                        }
-                        queue.add(arr[next] - 1);
-                        depthQueue.add(depth + 1);
-                        visit[arr[next] - 1] = 1;
-                    }
                 }
             }
         }
