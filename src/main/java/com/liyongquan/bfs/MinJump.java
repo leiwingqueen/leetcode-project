@@ -38,6 +38,7 @@ public class MinJump {
         queue.add(new Pair<>(0, 0));
         int[] visit = new int[len];
         visit[0] = 1;
+        int far = 1;
         while (!queue.isEmpty()) {
             Pair<Integer, Integer> poll = queue.poll();
             Integer idx = poll.getKey();
@@ -50,12 +51,19 @@ public class MinJump {
                 queue.add(new Pair<>(jump[idx] + idx, depth + 1));
                 visit[jump[idx] + idx] = 1;
             }
-            //向左移动，
+            //向左移动
             // 小优化，从后往前遍历遍历，如果某个节点已经被访问过，那么他前面的节点必然也已经加入队列
-            for (int i = idx - 1; i >= 0 && visit[i] == 0; i--) {
+            /*for (int i = idx - 1; i >= 0 && visit[i] == 0; i--) {
                 queue.add(new Pair<>(i, depth + 1));
                 visit[i] = 1;
+            }*/
+            for (int i = far; i < idx; i++) {
+                if (visit[i] == 0) {
+                    queue.add(new Pair<>(i, depth + 1));
+                    visit[i] = 1;
+                }
             }
+            far = Math.max(far, idx + 1);
         }
         return -1;
     }
