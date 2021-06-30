@@ -71,6 +71,7 @@ public class ShortestPath {
      */
     public int shortestPath(int[][] grid, int k) {
         int row = grid.length, col = grid[0].length;
+        //统计障碍数量
         int block = 0;
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
@@ -79,6 +80,7 @@ public class ShortestPath {
                 }
             }
         }
+        //统计地图数量
         List<int[][]> mapList = new LinkedList<>();
         if (block <= k) {
             for (int i = 0; i < row; i++) {
@@ -90,27 +92,55 @@ public class ShortestPath {
         } else {
             backtrace(grid, row, col, block, k, new int[]{0, 0}, mapList);
         }
+        //bfs找到最优路径
+        int min = Integer.MAX_VALUE;
+        for (int[][] map : mapList) {
+            int r = bfs(map, row, col);
+            if (r >= 0) {
+                min = Math.min(r, min);
+            }
+        }
+        return min == Integer.MAX_VALUE ? -1 : min;
     }
 
     private int bfs(int[][] grid, int row, int col) {
         if (grid[0][0] == 1 || grid[row - 1][col - 1] == 1) {
             return -1;
         }
+        if (row == 1 && col == 1) {
+            return 0;
+        }
         Queue<Pair<int[], Integer>> queue = new LinkedList<>();
         queue.add(new Pair<>(new int[]{0, 0}, 0));
-
+        int[][] visit = new int[row][col];
+        visit[0][0] = 1;
         while (!queue.isEmpty()) {
             Pair<int[], Integer> poll = queue.poll();
             int[] pos = poll.getKey();
             Integer depth = poll.getValue();
-
+            for (int[] dir : DIR) {
+                int nx = pos[0] + dir[0];
+                int ny = pos[1] + dir[1];
+                if (nx >= 0 && nx < row && ny >= 0 && ny < col && visit[nx][ny] == 0 && grid[nx][ny] == 0) {
+                    if (nx == row - 1 && ny == col - 1) {
+                        return depth + 1;
+                    }
+                    queue.add(new Pair<>(new int[]{nx, ny}, depth + 1));
+                    visit[nx][ny] = 1;
+                }
+            }
         }
+        return -1;
     }
 
     private void backtrace(int[][] path, int row, int col, int block,
                            int k, int[] pos, List<int[][]> res) {
         int x = pos[0], y = pos[1];
-        if (x == row || y == col || block <= k) {
+        if (block == 0 || k == 0 || x >= row || y >= col) {
+            res.add(clone(path));
+            return;
+        }
+        if (block <= k) {
             int[][] r = clone(path);
             //后面所有的障碍全部消除
             for (int i = x; i < row; i++) {
