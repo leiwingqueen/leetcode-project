@@ -1,6 +1,8 @@
 package com.liyongquan.bfs;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 //小朋友 A 在和 ta 的小伙伴们玩传信息游戏，游戏规则如下：
@@ -61,6 +63,47 @@ public class ChuanDiXinXi {
                         if (edges[poll][j] == 1) {
                             queue.add(j);
                         }
+                    }
+                }
+            }
+            depth++;
+        }
+        return cnt;
+    }
+
+    /**
+     * 稍微优化一下
+     *
+     * @param n
+     * @param relation
+     * @param k
+     * @return
+     */
+    public int numWays2(int n, int[][] relation, int k) {
+        //构造有向图
+        List<Integer>[] edges = new List[n];
+        for (int i = 0; i < n; i++) {
+            edges[i] = new ArrayList<>(n);
+        }
+        for (int[] re : relation) {
+            edges[re[0]].add(re[1]);
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(0);
+        int depth = 0;
+        int cnt = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Integer poll = queue.poll();
+                //到达深度，不需要继续遍历
+                if (depth == k) {
+                    if (poll == n - 1) {
+                        cnt++;
+                    }
+                } else {
+                    for (Integer j : edges[poll]) {
+                        queue.add(j);
                     }
                 }
             }
