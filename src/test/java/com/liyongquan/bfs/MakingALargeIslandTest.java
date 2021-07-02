@@ -20,4 +20,15 @@ public class MakingALargeIslandTest {
         log.info("{}", res);
         Assert.assertEquals(3, res);
     }
+
+    @Test
+    public void testLargestIsland() {
+        int[][] grid = {
+                {1, 1},
+                {1, 0}
+        };
+        int res = ma.largestIsland2(grid);
+        log.info("{}", res);
+        Assert.assertEquals(4, res);
+    }
 }
