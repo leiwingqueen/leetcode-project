@@ -1,6 +1,10 @@
 package com.liyongquan.heap;
 
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 /**
@@ -39,17 +43,23 @@ import java.util.Queue;
  * 链接：https://leetcode-cn.com/problems/trapping-rain-water-ii
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
+@Slf4j
 public class TrapRainWater2 {
     public static final int[][] DIR = {
             {-1, 0},
             {1, 0},
             {0, -1},
-            {0, 1}
+            {0, 1},
+            //8个方向
+            //{1, 1},
+            //{-1, -1},
+            //{-1, 1},
+            //{1, -1}
     };
 
     /**
      * 暴力解法，这个跟上一题唯一的区别是由二维变成三维。我们可以用bfs找到边界的最高点
-     *
+     * <p>
      * 难，这个不能通过
      *
      * @param heightMap
@@ -106,5 +116,53 @@ public class TrapRainWater2 {
             max = Math.max(min, max);
         }
         return max;
+    }
+
+    /**
+     * 这道题其实真的有点难，代码不长，但是不容易想到
+     *
+     * @param heightMap
+     * @return
+     */
+    public int trapRainWater2(int[][] heightMap) {
+        int row = heightMap.length, col = heightMap[0].length;
+        if (row < 3 || col < 3) {
+            return 0;
+        }
+        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(o -> o[2]));
+        int[][] visit = new int[row][col];
+        //四条边入队列
+        for (int i = 0; i < row; i++) {
+            pq.add(new int[]{i, 0, heightMap[i][0]});
+            visit[i][0] = 1;
+            pq.add(new int[]{i, col - 1, heightMap[i][col - 1]});
+            visit[i][col - 1] = 1;
+        }
+        for (int i = 1; i < col - 1; i++) {
+            pq.add(new int[]{0, i, heightMap[0][i]});
+            visit[0][i] = 1;
+            pq.add(new int[]{row - 1, i, heightMap[row - 1][i]});
+            visit[row - 1][i] = 1;
+        }
+        //bfs过程
+        int res = 0;
+        while (!pq.isEmpty()) {
+            int[] poll = pq.poll();
+            int high = poll[2];
+            log.info("[{},{},{}]", poll[0], poll[1], poll[2]);
+            for (int[] dir : DIR) {
+                int nx = poll[0] + dir[0], ny = poll[1] + dir[1];
+                if (nx >= 0 && nx < row && ny >= 0 && ny < col && visit[nx][ny] == 0) {
+                    //比周围最低点要低
+                    if (high > heightMap[nx][ny]) {
+                        res += high - heightMap[nx][ny];
+                        heightMap[nx][ny] = high;
+                    }
+                    visit[nx][ny] = 1;
+                    pq.add(new int[]{nx, ny, heightMap[nx][ny]});
+                }
+            }
+        }
+        return res;
     }
 }
