@@ -55,9 +55,9 @@ package com.liyongquan.stack;
 // 👍 119 👎 0
 
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import javafx.util.Pair;
+
+import java.util.*;
 
 public class CountOfAtoms {
     /**
@@ -128,4 +128,169 @@ public class CountOfAtoms {
         }
         return map;
     }
+
+    /**
+     * 涉及到括号，首先想到利用栈进行计算
+     *
+     * @param formula
+     * @return
+     */
+    public String countOfAtoms2(String formula) {
+        List<Token> tokens = lex(formula);
+        //在元素后面补1
+        List<Token> list = new LinkedList<>();
+        Token before = null;
+        for (Token token : tokens) {
+            if (before != null && before instanceof Element && (token instanceof Element || token instanceof Bracket)) {
+                list.add(new Number(1));
+            }
+            if (before instanceof Bracket && ((Bracket) before).value == ')' && !(token instanceof Number)) {
+                list.add(new Number(1));
+            }
+            list.add(token);
+            before = token;
+        }
+        if (before instanceof Bracket || before instanceof Element) {
+            list.add(new Number(1));
+        }
+        Stack<Token> stack = new Stack<>();
+        Iterator<Token> it = list.iterator();
+        while (it.hasNext()) {
+            Token token = it.next();
+            if (token instanceof Number || token instanceof Element) {
+                stack.add(token);
+            } else if (token instanceof Bracket) {
+                Bracket bracket = (Bracket) token;
+                if (bracket.value == '(') {
+                    stack.add(token);
+                } else {
+                    //后面一定跟着一个数字？
+                    int next = 1;
+                    if (it.hasNext()) {
+                        Number number = (Number) it.next();
+                        next = number.value;
+                    }
+                    Map<String, Integer> map = new HashMap<>();
+                    //pop出所有节点，然后重新计算
+                    while (stack.size() > 0) {
+                        if (stack.peek() instanceof Bracket) {
+                            break;
+                        }
+                        Number num = (Number) stack.pop();
+                        Element ele = (Element) stack.pop();
+                        map.put(ele.name, map.getOrDefault(ele.name, 0) + num.value);
+                    }
+                    //pop出左空格
+                    stack.pop();
+                    //重新放入栈中
+                    for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                        stack.add(new Element(entry.getKey()));
+                        stack.add(new Number(next * entry.getValue()));
+                    }
+                }
+            }
+        }
+        Map<String, Integer> map = new TreeMap<>();
+        while (!stack.isEmpty()) {
+            Number num = (Number) stack.pop();
+            Element ele = (Element) stack.pop();
+            map.put(ele.name, map.getOrDefault(ele.name, 0) + num.value);
+        }
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            sb.append(entry.getKey());
+            if (entry.getValue() > 1) {
+                sb.append(entry.getValue());
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 词法分析
+     *
+     * @param formula
+     * @return
+     */
+    private List<Token> lex(String formula) {
+        List<Token> res = new LinkedList<>();
+        StringBuilder name = new StringBuilder();
+        int num = -1;
+        for (int i = 0; i < formula.length(); i++) {
+            char ch = formula.charAt(i);
+            //大写字母
+            if (ch >= 'A' && ch <= 'Z') {
+                if (name.length() > 0) {
+                    res.add(new Element(name.toString()));
+                    name = new StringBuilder();
+                }
+                if (num >= 0) {
+                    res.add(new Number(num));
+                    num = -1;
+                }
+                name.append(ch);
+            } else if (ch >= 'a' && ch <= 'z') {
+                if (name.length() > 0) {
+                    name.append(ch);
+                }
+            } else if (ch >= '0' && ch <= '9') {
+                if (name.length() > 0) {
+                    res.add(new Element(name.toString()));
+                    name = new StringBuilder();
+                }
+                if (num < 0) {
+                    num = ch - '0';
+                } else {
+                    num = num * 10 + (ch - '0');
+                }
+            } else if (ch == '(' || ch == ')') {
+                if (name.length() > 0) {
+                    res.add(new Element(name.toString()));
+                    name = new StringBuilder();
+                }
+                if (num >= 0) {
+                    res.add(new Number(num));
+                    num = -1;
+                }
+                res.add(new Bracket(ch));
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        if (name.length() > 0) {
+            res.add(new Element(name.toString()));
+        }
+        if (num >= 0) {
+            res.add(new Number(num));
+        }
+        return res;
+    }
+
+    private interface Token {
+    }
+
+    private static class Element implements Token {
+        String name;
+
+        public Element(String name) {
+            this.name = name;
+        }
+    }
+
+    private static class Number implements Token {
+        int value;
+
+        public Number(int value) {
+            this.value = value;
+        }
+    }
+
+    private static class Bracket implements Token {
+        char value;
+
+        public Bracket(char value) {
+            this.value = value;
+        }
+    }
+
 }
