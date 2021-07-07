@@ -44,21 +44,27 @@ public class CountGoodMeals {
         }
         int cnt = 0;
         int mod = 1000000007;
+        //计算组合情况。为了避免重复计算，这里需要保证第一个数字小于<=第二个数字
         for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
             Integer n1 = entry.getKey();
             Integer c1 = entry.getValue();
-            for (int i = 1; i <= 21; i++) {
+            //遍历2的幂的所有场景
+            for (int i = 21; i >= 0; i--) {
                 int sum = (int) Math.pow(2, i);
                 int n2 = sum - n1;
-                int c2 = map.getOrDefault(n2, 0);
-                if (n1 == n2) {
-                    c2--;
+                if (n2 < n1) {
+                    break;
                 }
-                int inc = (int) ((long) c1 * c2) % mod;
+                int c2 = map.getOrDefault(n2, 0);
+                int inc;
+                if (n1 == n2) {
+                    inc = (int) (((long) c1 * (c2 - 1) / 2) % mod);
+                } else {
+                    inc = (int) (((long) c1 * c2) % mod);
+                }
                 cnt = (cnt + inc) % mod;
             }
         }
-        //组合会重复，需要/2
-        return cnt / 2;
+        return cnt;
     }
 }
