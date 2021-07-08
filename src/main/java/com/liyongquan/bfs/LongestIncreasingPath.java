@@ -1,5 +1,8 @@
 package com.liyongquan.bfs;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 给定一个 m x n 整数矩阵 matrix ，找出其中 最长递增路径 的长度。
  * <p>
@@ -76,6 +79,42 @@ public class LongestIncreasingPath {
                 visit[x][y] = 0;
             }
         }
+        return max;
+    }
+
+    private Map<int[], Integer> map = new HashMap<>();
+
+    /**
+     * 增加记忆，还是会超时
+     * @param matrix
+     * @return
+     */
+    public int longestIncreasingPath2(int[][] matrix) {
+        int row = matrix.length, col = matrix[0].length;
+        int max = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                int r = dfs(new int[]{i, j}, matrix, row, col);
+                max = Math.max(max, r);
+            }
+        }
+        return max;
+    }
+
+    private int dfs(int[] pos, int[][] matrix, int row, int col) {
+        if (map.containsKey(pos)) {
+            return map.get(pos);
+        }
+        int max = 1;
+        for (int[] dir : DIR) {
+            int x = pos[0] + dir[0];
+            int y = pos[1] + dir[1];
+            if (x >= 0 && x < row && y >= 0 && y < col && matrix[x][y] > matrix[pos[0]][pos[1]]) {
+                int r = dfs(new int[]{x, y}, matrix, row, col);
+                max = Math.max(r + 1, max);
+            }
+        }
+        map.put(pos,max);
         return max;
     }
 }

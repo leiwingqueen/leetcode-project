@@ -16,7 +16,7 @@ public class LongestIncreasingPathTest {
         int[][] matrix = {
                 {9, 9, 4}, {6, 6, 8}, {2, 1, 1}
         };
-        int res = lip.longestIncreasingPath(matrix);
+        int res = lip.longestIncreasingPath2(matrix);
         log.info("{}", res);
         Assert.assertEquals(4, res);
     }
