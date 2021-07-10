@@ -40,4 +40,6 @@ public class MajorityElement {
         }
         return -1;
     }
+
+    //TODO:摩尔投票法
 }
