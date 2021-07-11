@@ -1,6 +1,7 @@
 package com.liyongquan.bfs;
 
 import javafx.util.Pair;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.annotation.Target;
 import java.util.*;
@@ -44,6 +45,7 @@ import java.util.*;
  * 链接：https://leetcode-cn.com/problems/word-ladder
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
+@Slf4j
 public class LadderLength {
     /**
      * 构造一个无向图，然后用bfs寻找最短路径
@@ -98,6 +100,7 @@ public class LadderLength {
         }
         Integer start = 0;
         Integer end = map.get(endWord);
+        //log.info("end:{}", end);
         //bfs找到最短路径
         Queue<Pair<Integer, Integer>> queue = new LinkedList();
         int[] visit = new int[len + 1];
@@ -110,11 +113,12 @@ public class LadderLength {
             if (edges.containsKey(index)) {
                 for (Integer next : edges.get(index)) {
                     if (visit[next] == 0) {
-                        if (next == end) {
+                        if (next.intValue() == end) {
                             return depth + 1;
                         }
                         visit[next] = 1;
                         queue.add(new Pair<>(next, depth + 1));
+                        //log.info("add node:{}", next);
                     }
                 }
             }
