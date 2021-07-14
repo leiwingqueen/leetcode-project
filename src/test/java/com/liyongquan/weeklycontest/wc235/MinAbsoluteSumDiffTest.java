@@ -10,10 +10,14 @@ import static org.junit.Assert.*;
 public class MinAbsoluteSumDiffTest {
     private MinAbsoluteSumDiff sumDiff = new MinAbsoluteSumDiff();
 
+    /**
+     * [5,4,7]
+     * [10,8,10]
+     */
     @Test
     public void minAbsoluteSumDiff() {
-        int res = sumDiff.minAbsoluteSumDiff(new int[]{1, 7, 5}, new int[]{2, 3, 5});
+        int res = sumDiff.minAbsoluteSumDiff(new int[]{5, 4, 7}, new int[]{10, 8, 10});
         log.info("{}", res);
-        Assert.assertEquals(3, res);
+        Assert.assertEquals(9, res);
     }
 }

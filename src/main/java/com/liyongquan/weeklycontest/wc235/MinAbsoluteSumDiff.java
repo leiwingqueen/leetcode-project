@@ -59,10 +59,8 @@ package com.liyongquan.weeklycontest.wc235;
 // Related Topics 贪心算法 二分查找
 // 👍 13 👎 0
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
 public class MinAbsoluteSumDiff {
     /**
@@ -79,44 +77,55 @@ public class MinAbsoluteSumDiff {
     public int minAbsoluteSumDiff(int[] nums1, int[] nums2) {
         int mod = 1000000007;
         int len = nums1.length;
-        int[][] arr = new int[len][2];
+        int[] arr = new int[len];
         //查找差值最大的项
-        int sum = 0;
+        long sum = 0;
         for (int i = 0; i < len; i++) {
-            arr[i][0] = nums1[i];
-            arr[i][1] = nums2[i];
-            int diff = Math.abs(arr[i][0] - arr[i][1]);
-            sum = (sum + diff) % mod;
+            arr[i] = nums1[i];
+            int diff = Math.abs(nums1[i] - nums2[i]);
+            sum += diff;
         }
         //排序
-        Arrays.sort(arr, Comparator.comparingInt(o -> o[0]));
+        Arrays.sort(arr);
         int max = 0;
-        for (int[] x : arr) {
+        for (int i = 0; i < len; i++) {
             //二分查找跟x[1]距离最近的项
-            int res = Math.abs(x[0] - x[1]) - search(arr, x[1]);
-            max = Math.max(res, max);
+            int target = nums2[i];
+            int idx = search(arr, target);
+            int min;
+            if (idx >= len) {
+                min = Math.abs(arr[len - 1] - target);
+            } else {
+                min = Math.abs(arr[idx] - target);
+                if (idx > 0) {
+                    min = Math.min(min, Math.abs(arr[idx - 1] - target));
+                }
+            }
+            max = Math.max(Math.abs(nums1[i] - target) - min, max);
         }
-        return (sum - max) % mod;
+        return (int) ((sum - max) % mod);
     }
 
-    private int search(int[][] arr, int target) {
+    /**
+     * 查找下标>=target的最小下标
+     *
+     * @param arr
+     * @param target
+     * @return
+     */
+    private int search(int[] arr, int target) {
+        if (arr[arr.length - 1] < target) {
+            return arr.length;
+        }
         int l = 0, r = arr.length - 1;
         while (l < r) {
             int mid = l + (r - l) / 2;
-            if (arr[mid][0] == target) {
-                return 0;
-            } else if (arr[mid][0] < target) {
-                if (arr[mid + 1][0] <= target) {
-                    l = mid + 1;
-                } else {
-                    int n1 = Math.abs(arr[mid + 1][0] - target);
-                    int n2 = Math.abs(arr[mid][0] - target);
-                    return Math.min(n1, n2);
-                }
-            } else {
+            if (arr[mid] >= target) {
                 r = mid;
+            } else {
+                l = mid + 1;
             }
         }
-        return Math.abs(arr[l][0] - target);
+        return l;
     }
 }
