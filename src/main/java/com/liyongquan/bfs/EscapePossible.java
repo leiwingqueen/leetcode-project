@@ -1,9 +1,8 @@
 package com.liyongquan.bfs;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.*;
 
 //
 // 1036. 逃离大迷宫
@@ -46,6 +45,8 @@ import java.util.Set;
 //来源：力扣（LeetCode）
 //链接：https://leetcode-cn.com/problems/escape-a-large-maze
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+@Slf4j
 public class EscapePossible {
     public static final int[][] DIRS = {
             {-1, 0},
@@ -54,28 +55,67 @@ public class EscapePossible {
             {0, -1},
     };
 
+    public static final int LEN = 1000000;
+
     public boolean isEscapePossible(int[][] blocked, int[] source, int[] target) {
-        int len = 1000000;
-        Queue<int[]> queue = new LinkedList<>();
-        queue.add(source);
-        int maxSize = blocked.length * (blocked.length - 1) / 2;
-        Set<int[]> visit = new HashSet<>(maxSize);
-        visit.add(source);
+        Set<Position> block = new HashSet<>(blocked.length);
+        for (int[] b : blocked) {
+            block.add(new Position(b[0], b[1]));
+        }
+        return bfs(block, source, target) && bfs(block, target, source);
+    }
+
+    private boolean bfs(Set<Position> block, int[] source, int[] target) {
+        log.info("start");
+        Queue<Position> queue = new LinkedList<>();
+        queue.add(new Position(source[0], source[1]));
+        int maxSize = block.size() * (block.size() - 1) / 2;
+        Set<Position> visit = new HashSet<>(maxSize);
+        visit.add(new Position(source[0], source[1]));
         while (!queue.isEmpty()) {
-            int[] pos = queue.poll();
+            Position pos = queue.poll();
             for (int[] dir : DIRS) {
-                int x = pos[0] + dir[0], y = pos[1] + dir[1];
-                int[] nPos = {x, y};
-                if (x >= 0 && x < len && y >= 0 && y < len && !visit.contains(nPos)) {
+                int x = pos.x + dir[0], y = pos.y + dir[1];
+                Position nPos = new Position(x, y);
+                if (x >= 0 && x < LEN && y >= 0 && y < LEN && !visit.contains(nPos) && !block.contains(nPos)) {
+                    log.info("[{},{}]", x, y);
+                    if (x == target[0] && y == target[1]) {
+                        return true;
+                    }
                     queue.add(nPos);
                     visit.add(nPos);
                     //关键点
                     if (visit.size() > maxSize) {
+                        log.info("true");
                         return true;
                     }
                 }
             }
         }
         return false;
+    }
+
+
+    private static class Position {
+        int x;
+        int y;
+
+        public Position(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(new int[]{x, y});
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Position position = (Position) o;
+            return x == position.x && y == position.y;
+        }
     }
 }
