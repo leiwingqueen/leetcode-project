@@ -78,7 +78,7 @@ public class EscapePossible {
                 int x = pos.x + dir[0], y = pos.y + dir[1];
                 Position nPos = new Position(x, y);
                 if (x >= 0 && x < LEN && y >= 0 && y < LEN && !visit.contains(nPos) && !block.contains(nPos)) {
-                    log.info("[{},{}]", x, y);
+                    //log.info("[{},{}]", x, y);
                     if (x == target[0] && y == target[1]) {
                         return true;
                     }
@@ -86,7 +86,7 @@ public class EscapePossible {
                     visit.add(nPos);
                     //关键点
                     if (visit.size() > maxSize) {
-                        log.info("true");
+                        //log.info("true");
                         return true;
                     }
                 }
