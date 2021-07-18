@@ -72,4 +72,53 @@ public class GroupAnagrams {
         return result;
     }
 
+    /**
+     * 分组问题，本质上是我们需要重写hashcode和equals方法
+     *
+     * @param strs
+     * @return
+     */
+    public List<List<String>> groupAnagrams3(String[] strs) {
+        Map<Str, List<String>> map = new HashMap<>();
+        for (String s : strs) {
+            Str str = new Str(s);
+            if (!map.containsKey(str)) {
+                map.put(str, new LinkedList<>());
+            }
+            map.get(str).add(s);
+        }
+        List<List<String>> res = new LinkedList<>();
+        for (List<String> list : map.values()) {
+            res.add(list);
+        }
+        return res;
+    }
+
+    private static class Str {
+        String s;
+
+        public Str(String s) {
+            this.s = s;
+        }
+
+        //统计26个字母分别出现的数量即可
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(toArr());
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return Arrays.equals(toArr(), ((Str) obj).toArr());
+        }
+
+        private int[] toArr() {
+            int[] bit = new int[26];
+            for (int i = 0; i < s.length(); i++) {
+                bit[s.charAt(i) - 'a']++;
+            }
+            return bit;
+        }
+    }
+
 }
