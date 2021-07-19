@@ -47,9 +47,12 @@ package com.liyongquan.bfs;
 //链接：https://leetcode-cn.com/problems/detect-cycles-in-2d-grid
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
+@Slf4j
 public class ContainsCycle {
     public static final int[][] DIRS = {
             {-1, 0},
@@ -58,6 +61,12 @@ public class ContainsCycle {
             {0, 1},
     };
 
+    /**
+     * TODO:为什么这么写是对的？
+     *
+     * @param grid
+     * @return
+     */
     public boolean containsCycle(char[][] grid) {
         int row = grid.length, col = grid[0].length;
         Queue<int[]> queue = new LinkedList<>();
@@ -68,6 +77,7 @@ public class ContainsCycle {
                 if (visit[i][j] == 1) {
                     continue;
                 }
+                //log.info("start...[{},{}]:{}", i, j, grid[i][j]);
                 queue.add(new int[]{i, j});
                 prev.add(new int[]{-1, -1});
                 visit[i][j] = 1;
@@ -77,10 +87,12 @@ public class ContainsCycle {
                     for (int[] dir : DIRS) {
                         int x = poll[0] + dir[0], y = poll[1] + dir[1];
                         if (x >= 0 && x < row && y >= 0 && y < col
-                                && pre[0] != x && pre[1] != y && grid[x][y] == grid[poll[0]][poll[1]]) {
+                                && (pre[0] != x || pre[1] != y) && grid[x][y] == grid[poll[0]][poll[1]]) {
                             if (visit[x][y] == 1) {
+                                //log.info("[{},{}]", x, y);
                                 return true;
                             }
+                            //log.info("append...[{},{}]", x, y);
                             queue.add(new int[]{x, y});
                             prev.add(poll);
                             visit[x][y] = 1;
