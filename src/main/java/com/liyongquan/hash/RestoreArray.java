@@ -1,4 +1,4 @@
-package com.liyongquan.backtrack;
+package com.liyongquan.hash;
 
 //1743. 从相邻元素对还原数组
 
@@ -46,16 +46,19 @@ package com.liyongquan.backtrack;
 
 import javafx.util.Pair;
 
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author liyongquan
  * @date 2021/7/25
  */
 public class RestoreArray {
+    /**
+     * 超时
+     *
+     * @param adjacentPairs
+     * @return
+     */
     public int[] restoreArray(int[][] adjacentPairs) {
         int n = adjacentPairs.length + 1;
         Deque<Integer> deque = new LinkedList<>();
@@ -97,5 +100,57 @@ public class RestoreArray {
         }
         //由于题意一定存在可行解，所以不可能会到这里
         return null;
+    }
+
+    /**
+     * 构造无向无环图，然后找到第一个节点，遍历一次即可
+     *
+     * @param adjacentPairs
+     * @return
+     */
+    public int[] restoreArray2(int[][] adjacentPairs) {
+        int len = adjacentPairs.length;
+        int n = len + 1;
+        Map<Integer, List<Integer>> edges = new HashMap<>();
+        Map<Integer, Integer> counter = new HashMap();
+        for (int[] pair : adjacentPairs) {
+            if (!edges.containsKey(pair[0])) {
+                edges.put(pair[0], new ArrayList<>());
+            }
+            if (!edges.containsKey(pair[1])) {
+                edges.put(pair[1], new ArrayList<>());
+            }
+            edges.get(pair[0]).add(pair[1]);
+            edges.get(pair[1]).add(pair[0]);
+            counter.put(pair[0], counter.getOrDefault(pair[0], 0) + 1);
+            counter.put(pair[1], counter.getOrDefault(pair[1], 0) + 1);
+        }
+        //找到起始点
+        int start = 0;
+        for (Map.Entry<Integer, Integer> entry : counter.entrySet()) {
+            if (entry.getValue().intValue() == 1) {
+                start = entry.getKey();
+                break;
+            }
+        }
+        //遍历
+        int[] res = new int[n];
+        int idx = 0;
+        int last = 100001;
+        int cur = start;
+        while (idx < n) {
+            res[idx++] = cur;
+            List<Integer> endList = edges.get(cur);
+            for (Integer end : endList) {
+                if (end == last) {
+                    continue;
+                } else {
+                    last = cur;
+                    cur = end;
+                    break;
+                }
+            }
+        }
+        return res;
     }
 }
