@@ -14,37 +14,39 @@ public class MaximumTime {
      * @return
      */
     public String maximumTime(String time) {
+        String[] split = time.split(":");
+        String s1 = "";
         for (int i = 23; i >= 0; i--) {
-            for (int j = 59; j >= 0; j--) {
-                String str = toStr(i, j);
-                if (match(time, str)) {
-                    return str;
-                }
+            s1 = toStr(i);
+            if (match(split[0], s1)) {
+                break;
             }
         }
-        return "";
+        String s2 = "";
+        for (int i = 59; i >= 0; i--) {
+            s2 = toStr(i);
+            if (match(split[1], s2)) {
+                break;
+            }
+        }
+        return s1 + ":" + s2;
     }
 
-    private boolean match(String format, String time) {
+    public boolean match(String format, String time) {
         for (int i = 0; i < format.length(); i++) {
-            if (time.charAt(i) != '?' && format.charAt(i) != time.charAt(i)) {
+            if (format.charAt(i) != '?' && format.charAt(i) != time.charAt(i)) {
                 return false;
             }
         }
         return true;
     }
 
-    private String toStr(int hour, int minute) {
+    private String toStr(int hour) {
         StringBuilder sb = new StringBuilder();
         if (hour < 10) {
             sb.append("0");
         }
         sb.append(hour);
-        sb.append(":");
-        if (minute < 10) {
-            sb.append("0");
-        }
-        sb.append(minute);
         return sb.toString();
     }
 }
