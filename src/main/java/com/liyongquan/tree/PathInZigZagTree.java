@@ -16,14 +16,19 @@ public class PathInZigZagTree {
      * @return
      */
     public List<Integer> pathInZigZagTree(int label) {
-        int depth = (int) (Math.log(label) / Math.log(2));
+        double d = (Math.log(label + 1) / Math.log(2));
+        int depth = (int) d;
+        if (d > (int) d) {
+            depth += 1;
+        }
         int size = (int) Math.pow(2, depth) - 1;
         int[] arr = new int[size];
         int num = 1;
         int labelIdx = 0;
+        //下一层的开始
+        int start = 0;
         for (int h = 0; h < depth; h++) {
             int len = (int) Math.pow(2, h);
-            int start = (int) Math.pow(2, h + 1) - 1;
             if (h % 2 == 0) {
                 for (int i = start; i < start + len; i++) {
                     if (num == label) {
@@ -41,12 +46,16 @@ public class PathInZigZagTree {
                     num++;
                 }
             }
+            start += len;
         }
         //找到父节点
         LinkedList<Integer> res = new LinkedList<>();
         int idx = labelIdx;
-        while (idx >= 0) {
+        while (true) {
             res.offerFirst(arr[idx]);
+            if (idx == 0) {
+                break;
+            }
             //获得父节点
             idx = (idx - 1) / 2;
         }
