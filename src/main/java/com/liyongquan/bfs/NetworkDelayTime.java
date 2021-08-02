@@ -84,10 +84,31 @@ public class NetworkDelayTime {
         }
         //松弛过程
         int cnt = 1;
+        int max = 0;
         while (cnt < n) {
             //找到距离最近的点
-            //TODO
+            int min = Integer.MAX_VALUE;
+            int idx = 0;
+            for (int i = 0; i < n; i++) {
+                if (book[i] == 0 && distance[i] >= 0 && distance[i] < min) {
+                    min = distance[i];
+                    idx = i;
+                }
+            }
+            if (min == Integer.MAX_VALUE) {
+                return -1;
+            }
+            //更新相邻的点的距离
+            cnt++;
+            book[idx] = 1;
+            max = distance[idx];
+            List<int[]> list = edges.getOrDefault(idx + 1, new LinkedList<>());
+            for (int[] arr : list) {
+                if (distance[idx] + arr[1] < distance[arr[0] - 1]) {
+                    distance[arr[0] - 1] = distance[idx] + arr[1];
+                }
+            }
         }
-        return -1;
+        return max;
     }
 }
