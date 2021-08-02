@@ -75,7 +75,7 @@ public class NetworkDelayTime {
             distance[i] = -1;
         }
         distance[k - 1] = 0;
-        book[k - 1] = 0;
+        book[k - 1] = 1;
         List<int[]> edge = edges.getOrDefault(k, new LinkedList<>());
         for (int[] arr : edge) {
             int target = arr[0];
@@ -104,8 +104,10 @@ public class NetworkDelayTime {
             max = distance[idx];
             List<int[]> list = edges.getOrDefault(idx + 1, new LinkedList<>());
             for (int[] arr : list) {
-                if (distance[idx] + arr[1] < distance[arr[0] - 1]) {
-                    distance[arr[0] - 1] = distance[idx] + arr[1];
+                int target = arr[0];
+                int weight = arr[1];
+                if (distance[target - 1] < 0 || distance[idx] + weight < distance[target - 1]) {
+                    distance[target - 1] = distance[idx] + weight;
                 }
             }
         }
