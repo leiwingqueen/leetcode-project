@@ -39,6 +39,8 @@ package com.liyongquan.bfs;
 //链接：https://leetcode-cn.com/problems/network-delay-time
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+import java.util.*;
+
 /**
  * @author liyongquan
  * @date 2021/8/2
@@ -46,6 +48,8 @@ package com.liyongquan.bfs;
 public class NetworkDelayTime {
     /**
      * 带权有向图的最短路径
+     * <p>
+     * Dijkstra算法
      *
      * @param times
      * @param n
@@ -53,6 +57,37 @@ public class NetworkDelayTime {
      * @return
      */
     public int networkDelayTime(int[][] times, int n, int k) {
+        //构造有向图,key-起始点，value-[[目标点，权重],...]
+        Map<Integer, List<int[]>> edges = new HashMap<>();
+        for (int[] time : times) {
+            int source = time[0];
+            int target = time[1];
+            int weight = time[2];
+            if (!edges.containsKey(source)) {
+                edges.put(source, new LinkedList<>());
+            }
+            edges.get(source).add(new int[]{target, weight});
+        }
+        //初始化
+        int[] distance = new int[n];
+        int[] book = new int[n];
+        for (int i = 0; i < n; i++) {
+            distance[i] = -1;
+        }
+        distance[k - 1] = 0;
+        book[k - 1] = 0;
+        List<int[]> edge = edges.getOrDefault(k, new LinkedList<>());
+        for (int[] arr : edge) {
+            int target = arr[0];
+            int weight = arr[1];
+            distance[target - 1] = weight;
+        }
+        //松弛过程
+        int cnt = 1;
+        while (cnt < n) {
+            //找到距离最近的点
+            //TODO
+        }
         return -1;
     }
 }
