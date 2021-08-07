@@ -39,9 +39,9 @@ package com.liyongquan.bfs;
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Queue;
+import java.util.Map;
 
 /**
  * @author liyongquan
@@ -49,7 +49,9 @@ import java.util.Queue;
  */
 public class EventualSafeNodes {
     /**
-     * bfs检测是否存在环？
+     * 回溯+记忆
+     * <p>
+     * 性能击败5%
      *
      * @param graph
      * @return
@@ -57,29 +59,39 @@ public class EventualSafeNodes {
     public List<Integer> eventualSafeNodes(int[][] graph) {
         int len = graph.length;
         List<Integer> res = new ArrayList<>();
+        Map<Integer, Boolean> cache = new HashMap<>();
         for (int i = 0; i < len; i++) {
-            if (check(graph, i, len)) {
+            if (check(graph, i, len, cache)) {
                 res.add(i);
             }
         }
         return res;
     }
 
-    private boolean check(int[][] graph, int i, int len) {
-        Queue<Integer> queue = new LinkedList<>();
+    private boolean check(int[][] graph, int i, int len, Map<Integer, Boolean> cache) {
         int[] visit = new int[len];
         visit[i] = 1;
-        queue.add(i);
-        while (!queue.isEmpty()) {
-            Integer poll = queue.poll();
-            for (int next : graph[poll]) {
-                if (visit[next] == 1) {
-                    return false;
-                }
-                visit[next] = 1;
-                queue.add(next);
-            }
+        return backtrace(graph, visit, i, cache);
+    }
+
+    private boolean backtrace(int[][] graph, int[] visit, int cur, Map<Integer, Boolean> cache) {
+        if (cache.containsKey(cur)) {
+            return cache.get(cur);
         }
+        for (int next : graph[cur]) {
+            if (visit[next] == 1) {
+                cache.put(cur, false);
+                return false;
+            }
+            visit[next] = 1;
+            if (!backtrace(graph, visit, next, cache)) {
+                visit[next] = 0;
+                cache.put(cur, false);
+                return false;
+            }
+            visit[next] = 0;
+        }
+        cache.put(cur, true);
         return true;
     }
 }
