@@ -101,4 +101,37 @@ public class CircularArrayLoop {
         path[start] = 0;
         return r;
     }
+
+    /**
+     * 快慢指针
+     *
+     * @param nums
+     * @return
+     */
+    public boolean circularArrayLoop2(int[] nums) {
+        int len = nums.length;
+        for (int i = 0; i < len; i++) {
+            int slow = i;
+            int fast = getNext(nums, i);
+            if (fast == slow) {
+                continue;
+            }
+            boolean dir = nums[i] > 0;
+            while (slow != fast) {
+                int next = getNext(nums, fast);
+                if (next == fast) {
+                    
+                }
+            }
+        }
+        return false;
+    }
+
+    private int getNext(int[] nums, int i) {
+        int next = i + nums[i];
+        while (next < 0) {
+            next += nums.length;
+        }
+        return next % nums.length;
+    }
 }
