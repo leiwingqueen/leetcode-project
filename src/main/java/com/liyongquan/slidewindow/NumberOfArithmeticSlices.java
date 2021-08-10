@@ -57,4 +57,41 @@ public class NumberOfArithmeticSlices {
         }
         return res;
     }
+
+    /**
+     * 代码优化
+     *
+     * @param nums
+     * @return
+     */
+    public int numberOfArithmeticSlices2(int[] nums) {
+        int l = 0, r = 0;
+        int res = 0;
+        while (r < nums.length) {
+            //右窗口移动
+            if (r - l < 2 || nums[r] - nums[r - 1] == nums[r - 1] - nums[r - 2]) {
+                r++;
+            } else {
+                //计算1+2+...+r-l-2
+                res += cal(l, r);
+                l = r - 1;
+            }
+        }
+        res += cal(l, r);
+        return res;
+    }
+
+    /**
+     * 高斯求和
+     *
+     * @param l
+     * @param r
+     * @return
+     */
+    private int cal(int l, int r) {
+        if (r - l < 3) {
+            return 0;
+        }
+        return (r - l - 1) * (r - l - 2) / 2;
+    }
 }
