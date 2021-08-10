@@ -66,4 +66,33 @@ public class TriangleNumber {
         }
         return cnt;
     }
+
+    /**
+     * 暴力解法
+     *
+     * @param nums
+     * @return
+     */
+    public int triangleNumber2(int[] nums) {
+        int len = nums.length;
+        if (len < 3) {
+            return 0;
+        }
+        Arrays.sort(nums);
+        int res = 0;
+        for (int i = 0; i < len - 2; i++) {
+            //稍微优化了一点点，当j向后移动的时候，k不需要重新从j+1开始扫描
+            int k = i + 2;
+            for (int j = i + 1; j < len - 1; j++) {
+                if (k <= j) {
+                    k = j + 1;
+                }
+                while (k < len && nums[i] + nums[j] > nums[k]) {
+                    k++;
+                }
+                res += k - j - 1;
+            }
+        }
+        return res;
+    }
 }
