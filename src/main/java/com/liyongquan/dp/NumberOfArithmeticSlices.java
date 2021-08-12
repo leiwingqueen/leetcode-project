@@ -47,16 +47,7 @@ package com.liyongquan.dp;
  * @date 2021/8/11
  */
 public class NumberOfArithmeticSlices {
-    /**
-     * 先尝试回溯解法
-     *
-     * @param nums
-     * @return
-     */
     public int numberOfArithmeticSlices(int[] nums) {
         return 0;
-    }
-
-    private int backtrace(int[] nums, int diff, int start) {
     }
 }
