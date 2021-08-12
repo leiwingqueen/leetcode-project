@@ -33,6 +33,11 @@ package com.liyongquan.dp;
  * @date 2021/8/12
  */
 public class LongestPalindromeSubseq {
+    /**
+     *
+     * @param s
+     * @return
+     */
     public int longestPalindromeSubseq(String s) {
         int len = s.length();
         if (len == 1) {
