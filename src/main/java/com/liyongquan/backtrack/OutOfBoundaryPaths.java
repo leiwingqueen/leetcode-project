@@ -2,6 +2,8 @@ package com.liyongquan.backtrack;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Map;
+
 /**
  * @author liyongquan
  * @date 2021/8/15
@@ -42,6 +44,51 @@ public class OutOfBoundaryPaths {
                 res = (res + findPaths(m, n, maxMove - 1, x, y)) % MOD;
             }
         }
+        return res;
+    }
+
+    /**
+     * 增加记忆搜索
+     *
+     * @param m
+     * @param n
+     * @param maxMove
+     * @param startRow
+     * @param startColumn
+     * @return
+     */
+    public int findPaths4(int m, int n, int maxMove, int startRow, int startColumn) {
+        if (maxMove == 0) {
+            return 0;
+        }
+        int[][][] cache = new int[maxMove + 1][m][n];
+        for (int k = 1; k <= maxMove; k++) {
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    cache[k][i][j] = -1;
+                }
+            }
+        }
+        return backtrace(m, n, maxMove, startRow, startColumn, cache);
+    }
+
+    private int backtrace(int m, int n, int maxMove, int startRow, int startColumn, int[][][] cache) {
+        if (maxMove == 0) {
+            return 0;
+        }
+        if (cache[maxMove][startRow][startColumn] != -1) {
+            return cache[maxMove][startRow][startColumn];
+        }
+        int res = 0;
+        for (int[] dir : DIRS) {
+            int x = startRow + dir[0], y = startColumn + dir[1];
+            if (x < 0 || x >= m || y < 0 || y >= n) {
+                res = (res + 1) % MOD;
+            } else {
+                res = (res + backtrace(m, n, maxMove - 1, x, y, cache)) % MOD;
+            }
+        }
+        cache[maxMove][startRow][startColumn] = res;
         return res;
     }
 
