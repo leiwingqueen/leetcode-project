@@ -76,4 +76,36 @@ public class OutOfBoundaryPaths {
         return dp[maxMove][startRow][startColumn];
     }
 
+    /**
+     * 空间压缩
+     *
+     * @param m
+     * @param n
+     * @param maxMove
+     * @param startRow
+     * @param startColumn
+     * @return
+     */
+    public int findPaths3(int m, int n, int maxMove, int startRow, int startColumn) {
+        int[][] prev = new int[m][n];
+        int[][] cur = new int[m][n];
+        for (int k = 1; k <= maxMove; k++) {
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    for (int[] dir : DIRS) {
+                        int x = i + dir[0], y = j + dir[1];
+                        if (x < 0 || x >= m || y < 0 || y >= n) {
+                            cur[i][j] = (cur[i][j] + 1) % MOD;
+                        } else {
+                            cur[i][j] = (cur[i][j] + prev[x][y]) % MOD;
+                        }
+                    }
+                }
+            }
+            prev = cur;
+            cur = new int[m][n];
+        }
+        return prev[startRow][startColumn];
+    }
+
 }
