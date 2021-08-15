@@ -1,10 +1,9 @@
-package com.liyongquan.backtrack;
+package com.liyongquan.dp;
 
+import com.liyongquan.dp.OutOfBoundaryPaths;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * @author liyongquan
