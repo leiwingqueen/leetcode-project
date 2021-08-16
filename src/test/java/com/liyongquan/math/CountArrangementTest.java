@@ -19,4 +19,10 @@ public class CountArrangementTest {
         int res = arrangement.countArrangement(2);
         Assert.assertEquals(2, res);
     }
+
+    @Test
+    public void countArrangement2() {
+        int res = arrangement.countArrangement2(4);
+        Assert.assertEquals(8, res);
+    }
 }

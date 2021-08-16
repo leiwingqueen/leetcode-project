@@ -29,6 +29,9 @@ package com.liyongquan.math;
 //链接：https://leetcode-cn.com/problems/beautiful-arrangement
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author liyongquan
  * @date 2021/8/16
@@ -65,5 +68,35 @@ public class CountArrangement {
         return i % (idx + 1) == 0 || (idx + 1) % i == 0;
     }
 
-    //TODO:优化解法？
+
+    /**
+     * 记忆+状态压缩
+     *
+     * @param n
+     * @return
+     */
+    public int countArrangement2(int n) {
+        return backtrace(0, n, 0, new HashMap<>());
+    }
+
+    private int backtrace(int idx, int n, int visit, Map<Integer, Integer> cache) {
+        if (idx == n) {
+            return 1;
+        }
+        if (cache.containsKey(visit)) {
+            return cache.get(visit);
+        }
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            int v = visit & (1 << i);
+            if (v == 0 && check(idx, i + 1)) {
+                visit |= (1 << i);
+                res += backtrace(idx + 1, n, visit, cache);
+                visit ^= (1 << i);
+            }
+        }
+        cache.put(visit, res);
+        return res;
+    }
+
 }
