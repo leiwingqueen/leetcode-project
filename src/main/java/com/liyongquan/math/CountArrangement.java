@@ -36,6 +36,8 @@ package com.liyongquan.math;
 public class CountArrangement {
     /**
      * 回溯
+     * <p>
+     * 时间复杂度O(n!)
      *
      * @param n
      * @return
@@ -62,4 +64,6 @@ public class CountArrangement {
     private boolean check(int idx, int i) {
         return i % (idx + 1) == 0 || (idx + 1) % i == 0;
     }
+
+    //TODO:优化解法？
 }
