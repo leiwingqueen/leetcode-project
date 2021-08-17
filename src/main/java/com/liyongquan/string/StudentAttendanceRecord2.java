@@ -44,6 +44,12 @@ package com.liyongquan.string;
  * @date 2021/8/17
  */
 public class StudentAttendanceRecord2 {
+    /**
+     * dp表达式还是有点问题
+     *
+     * @param n
+     * @return
+     */
     public int checkRecord(int n) {
         int mod = 1000000007;
         int[][][] dp = new int[n][3][2];
