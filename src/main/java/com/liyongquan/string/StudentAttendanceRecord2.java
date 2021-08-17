@@ -51,22 +51,34 @@ public class StudentAttendanceRecord2 {
      * @return
      */
     public int checkRecord(int n) {
-        int mod = 1000000007;
+        int mod = 1_000_000_007;
+        //第一维是前N个数字，二维是最后连续迟到的天数，最后为缺席的总数
         int[][][] dp = new int[n][3][2];
         //初始化
+        //P
         dp[0][0][0] = 1;
+        //L
         dp[0][1][0] = 1;
+        //A
         dp[0][0][1] = 1;
         for (int k = 1; k < n; k++) {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 2; j++) {
                     //分别对应的场景是，最后一天到场,最后一天迟到，最后一天缺席
-                    dp[k][i][j] = dp[k - 1][i][j];
-                    if (i > 0) {
+                    if (i == 0) {
+                        //最后一天到场
+                        for (int l = 0; l < 2; l++) {
+                            dp[k][i][j] = (dp[k][i][j] + dp[k - 1][l][j]) % mod;
+                        }
+                        //最后一天缺席
+                        if (j > 0) {
+                            for (int l = 0; l < 2; l++) {
+                                dp[k][i][j] = (dp[k][i][j] + dp[k - 1][l][j - 1]) % mod;
+                            }
+                        }
+                    } else {
+                        //最后一天迟到
                         dp[k][i][j] = (dp[k][i][j] + dp[k - 1][i - 1][j]) % mod;
-                    }
-                    if (j > 0) {
-                        dp[k][i][j] = (dp[k][i][j] + dp[k - 1][i][j - 1]) % mod;
                     }
                 }
             }
