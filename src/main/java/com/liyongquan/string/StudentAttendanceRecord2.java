@@ -45,7 +45,7 @@ package com.liyongquan.string;
  */
 public class StudentAttendanceRecord2 {
     /**
-     * dp表达式还是有点问题
+     * 终于通过了
      *
      * @param n
      * @return
@@ -64,15 +64,14 @@ public class StudentAttendanceRecord2 {
         for (int k = 1; k < n; k++) {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 2; j++) {
-                    //分别对应的场景是，最后一天到场,最后一天迟到，最后一天缺席
                     if (i == 0) {
                         //最后一天到场
-                        for (int l = 0; l < 2; l++) {
+                        for (int l = 0; l < 3; l++) {
                             dp[k][i][j] = (dp[k][i][j] + dp[k - 1][l][j]) % mod;
                         }
                         //最后一天缺席
                         if (j > 0) {
-                            for (int l = 0; l < 2; l++) {
+                            for (int l = 0; l < 3; l++) {
                                 dp[k][i][j] = (dp[k][i][j] + dp[k - 1][l][j - 1]) % mod;
                             }
                         }
