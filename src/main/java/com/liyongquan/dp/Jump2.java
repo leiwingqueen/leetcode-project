@@ -24,10 +24,25 @@ package com.liyongquan.dp;
 public class Jump2 {
     /**
      * 官方解法是通过贪心解的，事实上有没可能通过dp来解
+     *
      * @param nums
      * @return
      */
     public int jump(int[] nums) {
-        return 0;
+        int len = nums.length;
+        int[] dp = new int[len];
+        dp[0] = 0;
+        for (int i = 1; i < len; i++) {
+            //最多只能走1000步
+            int end = Math.max(i - 1000, 0);
+            int min = Integer.MAX_VALUE;
+            for (int j = i - 1; j >= end; j--) {
+                if (j + nums[j] >= i) {
+                    min = Math.min(min, dp[j] + 1);
+                }
+            }
+            dp[i] = min;
+        }
+        return dp[len - 1];
     }
 }
