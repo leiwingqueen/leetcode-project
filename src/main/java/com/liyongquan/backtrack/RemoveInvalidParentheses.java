@@ -1,6 +1,8 @@
 package com.liyongquan.backtrack;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -53,20 +55,60 @@ import java.util.List;
 public class RemoveInvalidParentheses {
     public List<String> removeInvalidParentheses(String s) {
         int len = s.length();
-        //统计左右括号的数量
-        int lCnt = 0, rCnt = 0;
+        char[] arr = s.toCharArray();
+        int lCnt = 0;
+        //需要删除的左右括号数量
+        int delLCnt = 0, delRCnt = 0;
         for (int i = 0; i < len; i++) {
+            if (arr[i] >= 'a' && arr[i] <= 'z') {
+                continue;
+            }
             if (s.charAt(i) == '(') {
                 lCnt++;
-            } else if (s.charAt(i) == ')') {
-                rCnt++;
+            } else {
+                if (lCnt > 0) {
+                    lCnt--;
+                } else {
+                    delRCnt++;
+                }
             }
         }
-        //TODO:待完成
-        return Collections.emptyList();
+        delLCnt += lCnt;
+        int len2 = len - delLCnt - delRCnt;
+        if (len2 == 0) {
+            return Arrays.asList("");
+        }
+        return backtrace(arr, new char[len2], 0, 0, len, len2, 0, 0, delLCnt, delRCnt);
     }
 
-    private void backtrace(String s) {
-
+    private List<String> backtrace(char[] arr, char[] path, int idx1, int idx2,
+                                   int len1, int len2, int lCnt, int rCnt,
+                                   int delLCnt, int delRCnt) {
+        if (idx1 == len1) {
+            return lCnt == rCnt ? Collections.emptyList() : Arrays.asList(new String(path));
+        }
+        if (arr[idx1] >= 'a' && arr[idx1] <= 'z') {
+            path[idx2] = arr[idx1];
+            return backtrace(arr, path, idx1 + 1, idx2 + 1, len1, len2, lCnt, rCnt, delLCnt, delRCnt);
+        }
+        List<String> res = new LinkedList<>();
+        if (arr[idx1] == '{') {
+            path[idx2] = '{';
+            res.addAll(backtrace(arr, path, idx1 + 1, idx2 + 1, len1, len2, lCnt + 1, rCnt, delLCnt, delRCnt));
+            if (delLCnt > 0) {
+                //删除左括号
+                res.addAll(backtrace(arr, path, idx1 + 1, idx2, len1, len2, lCnt, rCnt, delLCnt - 1, delRCnt));
+            }
+        } else {
+            if (lCnt < rCnt) {
+                path[idx2] = '}';
+                res.addAll(backtrace(arr, path, idx1 + 1, idx2 + 1, len1, len2, lCnt, rCnt + 1, delLCnt, delRCnt));
+            }
+            //删除右括号
+            if (delRCnt > 0) {
+                res.addAll(backtrace(arr, path, idx1 + 1, idx2, len1, len2, lCnt, rCnt, delLCnt, delRCnt - 1));
+            }
+        }
+        return res;
     }
 }
