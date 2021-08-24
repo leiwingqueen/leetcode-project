@@ -1,9 +1,9 @@
 package com.liyongquan.backtrack;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 301. 删除无效的括号
@@ -52,7 +52,14 @@ import java.util.List;
  * 链接：https://leetcode-cn.com/problems/remove-invalid-parentheses
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
+@Slf4j
 public class RemoveInvalidParentheses {
+    /**
+     * 即便是回溯解法，写起来也是极其痛苦...
+     *
+     * @param s
+     * @return
+     */
     public List<String> removeInvalidParentheses(String s) {
         int len = s.length();
         char[] arr = s.toCharArray();
@@ -78,37 +85,42 @@ public class RemoveInvalidParentheses {
         if (len2 == 0) {
             return Arrays.asList("");
         }
-        return backtrace(arr, new char[len2], 0, 0, len, len2, 0, 0, delLCnt, delRCnt);
+        Set<String> res = new HashSet<>();
+        backtrace(arr, new char[len2], 0, 0, len, len2, 0, 0, delLCnt, delRCnt, res);
+        return res.stream().collect(Collectors.toList());
     }
 
-    private List<String> backtrace(char[] arr, char[] path, int idx1, int idx2,
-                                   int len1, int len2, int lCnt, int rCnt,
-                                   int delLCnt, int delRCnt) {
-        if (idx1 == len1) {
-            return lCnt == rCnt ? Collections.emptyList() : Arrays.asList(new String(path));
+    private void backtrace(char[] arr, char[] path, int idx1, int idx2,
+                           int len1, int len2, int lCnt, int rCnt,
+                           int delLCnt, int delRCnt, Set<String> res) {
+        //log.info("idx1:{},idx2:{},path:{}", idx1, idx2, String.valueOf(path));
+        if (idx1 == len1 || idx2 == len2) {
+            if (lCnt == rCnt) {
+                res.add(String.valueOf(path));
+            }
+            return;
         }
         if (arr[idx1] >= 'a' && arr[idx1] <= 'z') {
             path[idx2] = arr[idx1];
-            return backtrace(arr, path, idx1 + 1, idx2 + 1, len1, len2, lCnt, rCnt, delLCnt, delRCnt);
+            backtrace(arr, path, idx1 + 1, idx2 + 1, len1, len2, lCnt, rCnt, delLCnt, delRCnt, res);
+            return;
         }
-        List<String> res = new LinkedList<>();
-        if (arr[idx1] == '{') {
-            path[idx2] = '{';
-            res.addAll(backtrace(arr, path, idx1 + 1, idx2 + 1, len1, len2, lCnt + 1, rCnt, delLCnt, delRCnt));
+        if (arr[idx1] == '(') {
+            path[idx2] = '(';
+            backtrace(arr, path, idx1 + 1, idx2 + 1, len1, len2, lCnt + 1, rCnt, delLCnt, delRCnt, res);
             if (delLCnt > 0) {
                 //删除左括号
-                res.addAll(backtrace(arr, path, idx1 + 1, idx2, len1, len2, lCnt, rCnt, delLCnt - 1, delRCnt));
+                backtrace(arr, path, idx1 + 1, idx2, len1, len2, lCnt, rCnt, delLCnt - 1, delRCnt, res);
             }
         } else {
-            if (lCnt < rCnt) {
-                path[idx2] = '}';
-                res.addAll(backtrace(arr, path, idx1 + 1, idx2 + 1, len1, len2, lCnt, rCnt + 1, delLCnt, delRCnt));
+            if (lCnt > rCnt) {
+                path[idx2] = ')';
+                backtrace(arr, path, idx1 + 1, idx2 + 1, len1, len2, lCnt, rCnt + 1, delLCnt, delRCnt, res);
             }
             //删除右括号
             if (delRCnt > 0) {
-                res.addAll(backtrace(arr, path, idx1 + 1, idx2, len1, len2, lCnt, rCnt, delLCnt, delRCnt - 1));
+                backtrace(arr, path, idx1 + 1, idx2, len1, len2, lCnt, rCnt, delLCnt, delRCnt - 1, res);
             }
         }
-        return res;
     }
 }
