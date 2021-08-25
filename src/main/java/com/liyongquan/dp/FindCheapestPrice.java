@@ -49,7 +49,7 @@ package com.liyongquan.dp;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.Queue;
 
 /**
  * @author liyongquan
@@ -57,7 +57,9 @@ import java.util.Map;
  */
 public class FindCheapestPrice {
     /**
-     * 记忆+dfs
+     * dfs
+     * <p>
+     * 超时
      *
      * @param n
      * @param flights
@@ -108,4 +110,47 @@ public class FindCheapestPrice {
 
 
     //TODO：是否可以借鉴Dijkstra算法
+    public int findCheapestPrice2(int n, int[][] flights, int src, int dst, int k) {
+        //构造图
+        List<int[]>[] edges = new List[n];
+        for (int i = 0; i < n; i++) {
+            edges[i] = new LinkedList<>();
+        }
+        for (int[] flight : flights) {
+            int from = flight[0];
+            int to = flight[1];
+            int weight = flight[2];
+            edges[from].add(new int[]{to, weight});
+        }
+        //结果表
+        int[] dis = new int[n];
+        for (int i = 0; i < n; i++) {
+            dis[i] = -1;
+        }
+        dis[src] = 0;
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(src);
+        int depth = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            //搜索深度限制
+            if (depth > k) {
+                break;
+            }
+            for (int i = 0; i < size; i++) {
+                Integer p = queue.poll();
+                for (int[] edge : edges[p]) {
+                    int to = edge[0];
+                    int weight = edge[1];
+                    //更新距离并且需要继续计算这个节点的后继
+                    if (dis[to] == -1 || dis[p] + weight < dis[to]) {
+                        dis[to] = dis[p] + weight;
+                        queue.add(to);
+                    }
+                }
+            }
+            depth++;
+        }
+        return dis[dst];
+    }
 }
