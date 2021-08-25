@@ -47,6 +47,7 @@ package com.liyongquan.dp;
 //链接：https://leetcode-cn.com/problems/cheapest-flights-within-k-stops
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -109,7 +110,11 @@ public class FindCheapestPrice {
     }
 
 
-    //TODO：是否可以借鉴Dijkstra算法
+    /**
+     * 借鉴Dijkstra算法
+     * <p>
+     * 通过
+     */
     public int findCheapestPrice2(int n, int[][] flights, int src, int dst, int k) {
         //构造图
         List<int[]>[] edges = new List[n];
@@ -122,11 +127,9 @@ public class FindCheapestPrice {
             int weight = flight[2];
             edges[from].add(new int[]{to, weight});
         }
-        //结果表
+        //结果表，第一维是最多移动的深度，第二维度是从src到达的最小的权重
         int[] dis = new int[n];
-        for (int i = 0; i < n; i++) {
-            dis[i] = -1;
-        }
+        Arrays.fill(dis, -1);
         dis[src] = 0;
         Queue<Integer> queue = new LinkedList<>();
         queue.add(src);
@@ -137,19 +140,25 @@ public class FindCheapestPrice {
             if (depth > k) {
                 break;
             }
+            depth++;
+            //从上一个结果复制下来
+            int[] dis2 = new int[n];
+            for (int i = 0; i < n; i++) {
+                dis2[i] = dis[i];
+            }
             for (int i = 0; i < size; i++) {
                 Integer p = queue.poll();
                 for (int[] edge : edges[p]) {
                     int to = edge[0];
                     int weight = edge[1];
                     //更新距离并且需要继续计算这个节点的后继
-                    if (dis[to] == -1 || dis[p] + weight < dis[to]) {
-                        dis[to] = dis[p] + weight;
+                    if (dis2[to] == -1 || dis[p] + weight < dis2[to]) {
+                        dis2[to] = dis[p] + weight;
                         queue.add(to);
                     }
                 }
             }
-            depth++;
+            dis = dis2;
         }
         return dis[dst];
     }
