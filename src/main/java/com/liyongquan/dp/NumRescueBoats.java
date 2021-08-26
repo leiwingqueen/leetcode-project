@@ -46,6 +46,8 @@ public class NumRescueBoats {
      * 贪心解法
      * <p>
      * 每次从船只中选择剩余空间最大的，能放下则开船离开。否则申请一条新的船只
+     * <p>
+     * 时间复杂度O(nlogn)
      *
      * @param people
      * @param limit
@@ -64,6 +66,35 @@ public class NumRescueBoats {
                 }
             } else {
                 pq.poll();
+            }
+        }
+        return cnt;
+    }
+
+    /**
+     * 双指针
+     * <p>
+     * 每艘船分别尝试装最重和最轻的两个人
+     *
+     * @param people
+     * @param limit
+     * @return
+     */
+    public int numRescueBoats2(int[] people, int limit) {
+        Arrays.sort(people);
+        int l = 0, r = people.length - 1;
+        int cnt = 0;
+        while (l <= r) {
+            if (l == r) {
+                cnt++;
+                break;
+            } else {
+                int left = limit - people[r];
+                cnt++;
+                r--;
+                if (left >= people[l]) {
+                    l++;
+                }
             }
         }
         return cnt;
