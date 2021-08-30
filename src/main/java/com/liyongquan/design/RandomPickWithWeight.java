@@ -53,6 +53,7 @@ package com.liyongquan.design;
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -77,16 +78,17 @@ public class RandomPickWithWeight {
      */
     public int pickIndex() {
         int max = range[range.length - 1];
+        //>rand的第一个下标
         int rand = ThreadLocalRandom.current().nextInt(max);
-        int l = 0, r = range.length - 2;
+        int l = 0, r = range.length - 1;
         while (l < r) {
             int mid = l + (r - l) / 2;
-            if (range[mid] >= rand) {
+            if (range[mid] > rand) {
                 r = mid;
             } else {
                 l = mid + 1;
             }
         }
-        return l;
+        return l - 1;
     }
 }
