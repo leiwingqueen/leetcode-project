@@ -49,6 +49,13 @@ package com.liyongquan.array;
  * @date 2021/8/31
  */
 public class CorpFlightBookings {
+    /**
+     * 这么实现可以认为是一道简单题
+     *
+     * @param bookings
+     * @param n
+     * @return
+     */
     public int[] corpFlightBookings(int[][] bookings, int n) {
         int[] res = new int[n];
         for (int[] booking : bookings) {
