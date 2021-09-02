@@ -45,7 +45,7 @@ public class PathSum {
             return Collections.emptyList();
         }
         List<List<Integer>> res = new LinkedList<>();
-        if (root.left==null&&root.right==null) {
+        if (root.left == null && root.right == null) {
             if (root.val == target) {
                 res.add(Arrays.asList(root.val));
             }
@@ -70,5 +70,52 @@ public class PathSum {
             }
         }
         return res;
+    }
+
+    /**
+     * 简化了每次迭代
+     */
+    public static final int INIT_SIZE = 10;
+
+    public List<List<Integer>> pathSum2(TreeNode root, int target) {
+        if (root == null) {
+            return Collections.emptyList();
+        }
+        List<List<Integer>> res = new LinkedList<>();
+        backtrace(root, new ArrayList<>(INIT_SIZE), 0, target, res);
+        return res;
+    }
+
+    private void backtrace(TreeNode root, ArrayList<Integer> path, int idx, int target, List<List<Integer>> res) {
+        if (root.left == null && root.right == null) {
+            if (root.val == target) {
+                updatePath(path, idx, root.val);
+                addRes(res, path, idx + 1);
+            }
+        } else {
+            updatePath(path, idx, root.val);
+            if (root.left != null) {
+                backtrace(root.left, path, idx + 1, target - root.val, res);
+            }
+            if (root.right != null) {
+                backtrace(root.right, path, idx + 1, target - root.val, res);
+            }
+        }
+    }
+
+    private void addRes(List<List<Integer>> res, List<Integer> r, int len) {
+        List<Integer> tmp = new ArrayList<>(len);
+        for (int i = 0; i < len; i++) {
+            tmp.add(r.get(i));
+        }
+        res.add(tmp);
+    }
+
+    private void updatePath(ArrayList<Integer> path, int idx, int value) {
+        if (idx < path.size()) {
+            path.set(idx, value);
+        } else {
+            path.add(value);
+        }
     }
 }
