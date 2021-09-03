@@ -35,6 +35,12 @@ package com.liyongquan.tree;
  * @date 2021/9/3
  */
 public class VerifyPostorder {
+    /**
+     * 递归解法
+     *
+     * @param postorder
+     * @return
+     */
     public boolean verifyPostorder(int[] postorder) {
         return verify(postorder, 0, postorder.length - 1);
     }
@@ -62,4 +68,6 @@ public class VerifyPostorder {
             return verify(postorder, start, mid - 1) && verify(postorder, mid, end - 1);
         }
     }
+
+    //TODO:单调栈
 }
