@@ -68,4 +68,6 @@ public class MinNumber {
         }*/
         return sb.toString();
     }
+
+    //TODO:如何证明这个逻辑的正确性？
 }
