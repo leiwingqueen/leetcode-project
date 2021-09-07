@@ -34,20 +34,38 @@ import java.util.List;
  * @date 2021/9/7
  */
 public class MinNumber {
+    /**
+     * 贪心
+     *
+     * @param nums
+     * @return
+     */
     public String minNumber(int[] nums) {
         List<String> list = new ArrayList<>(nums.length);
         for (int num : nums) {
             list.add(String.valueOf(num));
         }
         //这里有可能越界
-        list.sort((o1, o2) -> Integer.valueOf(o1 + o2) - Integer.valueOf(o2 + o1));
+        list.sort((o1, o2) -> {
+            String s1 = o1 + o2;
+            String s2 = o2 + o1;
+            int p = 0;
+            while (p < s1.length() && s1.charAt(p) == s2.charAt(p)) {
+                p++;
+            }
+            if (p == s1.length()) {
+                return 0;
+            }
+            return s1.charAt(p) - s2.charAt(p);
+        });
         StringBuilder sb = new StringBuilder();
         for (String s : list) {
             sb.append(s);
         }
-        while (sb.length() > 1 && sb.charAt(0) == '0') {
+        //去掉前缀0
+        /*while (sb.length() > 1 && sb.charAt(0) == '0') {
             sb.deleteCharAt(0);
-        }
+        }*/
         return sb.toString();
     }
 }
