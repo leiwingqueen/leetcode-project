@@ -43,8 +43,6 @@ package com.liyongquan.heap;
 //链接：https://leetcode-cn.com/problems/ipo
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-import javafx.util.Pair;
-
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
@@ -53,6 +51,17 @@ import java.util.PriorityQueue;
  * @date 2021/9/8
  */
 public class FindMaximizedCapital {
+    /**
+     * 贪心
+     * <p>
+     * 每次找到能够投资的项目列表，然后从列表中选择回报率最高的项目
+     *
+     * @param k
+     * @param w
+     * @param profits
+     * @param capital
+     * @return
+     */
     public int findMaximizedCapital(int k, int w, int[] profits, int[] capital) {
         PriorityQueue<int[]> pq1 = new PriorityQueue<>(Comparator.comparingInt(o -> o[0]));
         PriorityQueue<int[]> pq2 = new PriorityQueue<>((o1, o2) -> o2[1] - o1[1]);
