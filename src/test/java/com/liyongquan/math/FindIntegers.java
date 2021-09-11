@@ -42,26 +42,20 @@ public class FindIntegers {
      */
     public int findIntegers(int n) {
         if (n <= 1) {
-            return n;
+            return n + 1;
         }
         List<Integer> list = convert(n);
         int len = list.size();
         //dp方程
         int[][] dp = new int[2][len];
         dp[0][0] = 1;
-        dp[0][1] = 1;
+        dp[1][0] = 1;
         for (int i = 1; i < len; i++) {
             dp[0][i] = dp[0][i - 1] + dp[1][i - 1];
             dp[1][i] = dp[0][i - 1];
         }
-        //计算前缀和，方便统计前N位数字的合法数字总数[0,2^n-1]
-        int[] prefix = new int[len + 1];
-        prefix[0] = 0;
-        for (int i = 1; i <= len; i++) {
-            prefix[i] = prefix[i - 1] + dp[0][i - 1] + dp[1][i - 1];
-        }
         //先统计前n-1位的数量
-        int res = prefix[len - 1];
+        int res = dp[0][len - 2] + dp[1][len - 2];
         //从高位向低位遍历
         for (int i = len - 2; i >= 0; i--) {
             //前一位是0
@@ -70,13 +64,17 @@ public class FindIntegers {
                     res += list.get(i) + 1;
                 } else {
                     if (list.get(i) == 1) {
-                        res += prefix[i];
+                        res += dp[0][i - 1] + dp[1][i - 1];
                     }
                 }
             } else {
                 //前一位是1
-                if (list.get(i) == 1) {
-                    res += prefix[i];
+                if (i == 0) {
+                    res += 1;
+                } else {
+                    if (list.get(i) == 1) {
+                        res += dp[0][i - 1] + dp[1][i - 1];
+                    }
                 }
             }
         }
@@ -97,6 +95,50 @@ public class FindIntegers {
         }
         if (res.size() == 0) {
             res.add(0);
+        }
+        return res;
+    }
+
+    /**
+     * 回溯解法
+     *
+     * 超时
+     *
+     * @param n
+     * @return
+     */
+    public int findIntegers2(int n) {
+        if (n <= 1) {
+            return n + 1;
+        }
+        List<Integer> list = convert(n);
+        int len = list.size();
+        //翻转数组
+        int[] arr = new int[len];
+        for (int i = 0; i < len; i++) {
+            arr[i] = list.get(len - i - 1);
+        }
+        return backtrace(new int[len], len, 0, arr, true);
+    }
+
+    /**
+     * @param path
+     * @param len
+     * @param idx
+     * @param arr
+     * @param equal 表示前面的[0,idx-1]是否相等
+     * @return
+     */
+    private int backtrace(int[] path, int len, int idx, int[] arr, boolean equal) {
+        if (idx == len) {
+            return 1;
+        }
+        int res = 0;
+        path[idx] = 0;
+        res += backtrace(path, len, idx + 1, arr, equal && arr[idx] == 0);
+        if ((idx == 0 || path[idx - 1] == 0) && (!equal || arr[idx] == 1)) {
+            path[idx] = 1;
+            res += backtrace(path, len, idx + 1, arr, equal && arr[idx] == 1);
         }
         return res;
     }
