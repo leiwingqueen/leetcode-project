@@ -77,4 +77,38 @@ public class CheckValidString {
             return backtrace(arr, idx + 1, len, lCnt);
         }
     }
+
+    /**
+     * dp解法
+     *
+     * @param s
+     * @return
+     */
+    public boolean checkValidString2(String s) {
+        int len = s.length();
+        //第一位是前N个数字，第二位的左括号的数量(每出现一个右括号-1)
+        boolean[][] dp = new boolean[len + 1][len + 1];
+        dp[0][0] = true;
+        for (int i = 1; i <= len; i++) {
+            for (int j = 0; j <= i; j++) {
+                dp[i][j] = false;
+                char ch = s.charAt(i - 1);
+                if (ch == '(') {
+                    if (j > 0 && dp[i - 1][j - 1]) {
+                        dp[i][j] = true;
+                    }
+                } else if (ch == ')') {
+                    if (j < i && dp[i - 1][j + 1]) {
+                        dp[i][j] = true;
+                    }
+                } else {
+                    //分别对应的场景 左括号，右括号和空串
+                    if (j > 0 && dp[i - 1][j - 1] || j < i && dp[i - 1][j + 1] || dp[i - 1][j]) {
+                        dp[i][j] = true;
+                    }
+                }
+            }
+        }
+        return dp[len][0];
+    }
 }
