@@ -19,4 +19,10 @@ public class FindIntegersTest {
         int res = fi.findIntegers(5);
         Assert.assertEquals(5, res);
     }
+
+    @Test
+    public void findIntegers3() {
+        int res = fi.findIntegers3(3);
+        Assert.assertEquals(3, res);
+    }
 }

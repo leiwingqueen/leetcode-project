@@ -22,6 +22,8 @@ package com.liyongquan.math;
 //链接：https://leetcode-cn.com/problems/non-negative-integers-without-consecutive-ones
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,7 +103,7 @@ public class FindIntegers {
 
     /**
      * 回溯解法
-     *
+     * <p>
      * 超时
      *
      * @param n
@@ -141,5 +143,57 @@ public class FindIntegers {
             res += backtrace(path, len, idx + 1, arr, equal && arr[idx] == 1);
         }
         return res;
+    }
+
+    /**
+     * dp解法
+     * <p>
+     * 终于啃出来了，但是依赖不是很理解
+     *
+     * @param n
+     * @return
+     */
+    public int findIntegers3(int n) {
+        if (n <= 1) {
+            return n + 1;
+        }
+        List<Integer> list = convert(n);
+        int len = list.size();
+        //翻转数组
+        int[] arr = new int[len];
+        for (int i = 0; i < len; i++) {
+            arr[i] = list.get(len - i - 1);
+        }
+        int[] fn = new int[len];
+        fn[0] = 1;
+        for (int i = 1; i < len; i++) {
+            if (arr[i - 1] == 0) {
+                fn[i] = 1;
+            } else {
+                if (arr[i] == 0) {
+                    fn[i] = 1;
+                } else {
+                    fn[i] = 0;
+                    break;
+                }
+            }
+        }
+        //小于n
+        int[][] dp = new int[2][len];
+        dp[1][0] = 0;
+        if (arr[0] == 0) {
+            dp[0][0] = 0;
+        } else {
+            dp[0][0] = 1;
+        }
+        for (int i = 1; i < len; i++) {
+            dp[1][i] = dp[0][i - 1];
+            if (arr[i] == 0) {
+                dp[0][i] = dp[0][i - 1] + dp[1][i - 1];
+            } else {
+                dp[0][i] = dp[0][i - 1] + dp[1][i - 1] + fn[i - 1];
+            }
+        }
+        return dp[0][len - 1] + dp[1][len - 1] + fn[len - 1];
     }
 }
