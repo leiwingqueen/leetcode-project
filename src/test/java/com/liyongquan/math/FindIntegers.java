@@ -150,6 +150,8 @@ public class FindIntegers {
      * <p>
      * 终于啃出来了，但是依赖不是很理解
      *
+     * 好像搞懂了，但又没完全搞懂
+     *
      * @param n
      * @return
      */
@@ -164,6 +166,7 @@ public class FindIntegers {
         for (int i = 0; i < len; i++) {
             arr[i] = list.get(len - i - 1);
         }
+        //前k位等于n的合法数字
         int[] fn = new int[len];
         fn[0] = 1;
         for (int i = 1; i < len; i++) {
@@ -178,7 +181,7 @@ public class FindIntegers {
                 }
             }
         }
-        //小于n
+        //前k位<n的合法数字
         int[][] dp = new int[2][len];
         dp[1][0] = 0;
         if (arr[0] == 0) {
