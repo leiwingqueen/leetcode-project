@@ -62,7 +62,6 @@ public class ValidSudoku {
     public static final int LEN = 9;
 
     public boolean isValidSudoku(char[][] board) {
-        int len = 9;
         //行列判断
         if (!rowColCheck(board, true) || !rowColCheck(board, false)) {
             return false;
@@ -112,4 +111,38 @@ public class ValidSudoku {
     }
 
     //TODO:一次遍历能实现吗？
+
+    /**
+     * 每一行、每一列、每个格子用一个整形维护
+     *
+     * @param board
+     * @return
+     */
+    public boolean isValidSudoku2(char[][] board) {
+        int[] row = new int[LEN];
+        int[] col = new int[LEN];
+        int[] grid = new int[LEN];
+        for (int i = 0; i < LEN; i++) {
+            for (int j = 0; j < LEN; j++) {
+                if (board[i][j] != '.') {
+                    int num = board[i][j] - '0';
+                    int n = 1 << (num - 1);
+                    if ((row[i] & n) != 0) {
+                        return false;
+                    }
+                    row[i] |= n;
+                    if ((col[j] & n) != 0) {
+                        return false;
+                    }
+                    col[j] |= n;
+                    int idx = i * 3 + (j / 3);
+                    if ((grid[idx] & n) != 0) {
+                        return false;
+                    }
+                    grid[idx] |= n;
+                }
+            }
+        }
+        return true;
+    }
 }
