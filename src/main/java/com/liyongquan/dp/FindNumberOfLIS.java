@@ -26,6 +26,12 @@ package com.liyongquan.dp;
  * @date 2021/9/20
  */
 public class FindNumberOfLIS {
+    /**
+     * 超时
+     *
+     * @param nums
+     * @return
+     */
     public int findNumberOfLIS(int[] nums) {
         int len = nums.length;
         if (len == 1) {
@@ -33,17 +39,10 @@ public class FindNumberOfLIS {
         }
         //二分查找，找到第一个不符合的结果
         int l = 1, r = len;
-        int res = 0;
-        while (l <= r) {
-            if (l == r) {
-                int f = find(nums, len, l);
-                if (f > 0) {
-                    res = f;
-                }
-                break;
-            }
+        long res = 0;
+        while (l < r) {
             int mid = l + (r - l) / 2;
-            int f = find(nums, len, mid);
+            long f = find(nums, len, mid);
             if (f <= 0) {
                 r = mid;
             } else {
@@ -51,7 +50,11 @@ public class FindNumberOfLIS {
                 l = mid + 1;
             }
         }
-        return res;
+        long f = find(nums, len, l);
+        if (f > 0) {
+            res = f;
+        }
+        return (int) res;
     }
 
     /**
@@ -67,8 +70,14 @@ public class FindNumberOfLIS {
      * @param k
      * @return
      */
-    private int find(int[] nums, int len, int k) {
-        int[][] dp = new int[len][k];
+    private long find(int[] nums, int len, int k) {
+        if (k > len) {
+            return 0;
+        }
+        if (k == 1) {
+            return len;
+        }
+        long[][] dp = new long[len][k];
         //初始化
         for (int i = 0; i < len; i++) {
             dp[i][0] = 1;
@@ -76,7 +85,7 @@ public class FindNumberOfLIS {
         //dp迭代
         for (int i = 1; i < len; i++) {
             for (int j = 1; j <= i & j < k; j++) {
-                int sum = 0;
+                long sum = 0;
                 for (int l = j - 1; l < i; l++) {
                     if (nums[l] < nums[i]) {
                         sum += dp[l][j - 1];
@@ -86,7 +95,7 @@ public class FindNumberOfLIS {
             }
         }
         //求和
-        int res = 0;
+        long res = 0;
         for (int i = k - 1; i < len; i++) {
             res += dp[i][k - 1];
         }
