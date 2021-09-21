@@ -38,38 +38,52 @@ package com.liyongquan.dp;
  * @date 2021/9/19
  */
 public class MinSteps {
+    /**
+     * f(i,j)表示当前字符为i,最后一次拷贝的字符数量为j
+     * <p>
+     * f(i,j)，其中j < i，
+     * f(i,j)=f(i-j,j)+1,我们有i-j >= j,因此我们有
+     * f(i,i)=min{f(i-k,k)}+2,其中k < i,且i-k >= k，即k <= i/2
+     * 即粘贴+拷贝
+     * <p>
+     * 性能击败5%，时间复杂度O(n^2)
+     *
+     * @param n
+     * @return
+     */
     public int minSteps(int n) {
         if (n == 1) {
             return 0;
         }
         int[][] dp = new int[n + 1][n + 1];
+        dp[1][0] = 0;
+        dp[1][1] = 1;
         for (int i = 2; i <= n; i++) {
-            for (int j = 0; j <= i; j++) {
-                if (j < i) {
-                    //粘贴
-                    if (i - j >= j) {
-                        dp[i][j] = dp[i - j][j] + 1;
-                    } else {
-                        dp[i][j] = -1;
-                    }
-                } else {
-                    //拷贝
-                    int min = Integer.MAX_VALUE;
-                    for (int k = 0; k < i; k++) {
-                        if (dp[i][k] >= 0) {
-                            min = Math.min(min, dp[i][k] + 1);
-                        }
-                    }
-                    dp[i][j] = min == Integer.MAX_VALUE ? -1 : min;
+            for (int j = 1; j <= i / 2; j++) {
+                dp[i][j] = -1;
+                if (dp[i - j][j] >= 0) {
+                    dp[i][j] = dp[i - j][j] + 1;
+                }
+            }
+            for (int j = i / 2 + 1; j < i; j++) {
+                dp[i][j] = -1;
+            }
+            //计算dp[i][i]
+            dp[i][i] = -1;
+            for (int j = 1; j <= i / 2; j++) {
+                if (dp[i - j][j] >= 0 && (dp[i][i] == -1 || dp[i - j][j] + 2 < dp[i][i])) {
+                    dp[i][i] = dp[i - j][j] + 2;
                 }
             }
         }
         int res = Integer.MAX_VALUE;
-        for (int i = 0; i < n; i++) {
+        for (int i = 1; i <= n; i++) {
             if (dp[n][i] >= 0) {
                 res = Math.min(res, dp[n][i]);
             }
         }
         return res;
     }
+
+    //TODO:优化方案？数学解法，log(n)?
 }
