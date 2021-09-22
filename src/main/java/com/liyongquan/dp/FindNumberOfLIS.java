@@ -21,6 +21,8 @@ package com.liyongquan.dp;
 //链接：https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+import java.util.*;
+
 /**
  * @author liyongquan
  * @date 2021/9/20
@@ -98,6 +100,59 @@ public class FindNumberOfLIS {
         long res = 0;
         for (int i = k - 1; i < len; i++) {
             res += dp[i][k - 1];
+        }
+        return res;
+    }
+
+    /**
+     * f(n)表示以第n个数字结尾的最大长度
+     * g(n)表示以n个数字结尾的最长的子序列的数量
+     *
+     * @param nums
+     * @return
+     */
+    public int findNumberOfLIS2(int[] nums) {
+        int len = nums.length;
+        if (len <= 1) {
+            return len;
+        }
+        //求最大长度
+        int[] fn = new int[len];
+        fn[0] = 1;
+        for (int i = 1; i < len; i++) {
+            fn[i] = 1;
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j] && nums[j] + 1 > fn[i]) {
+                    fn[i] = nums[j] + 1;
+                }
+            }
+        }
+        int maxLen = 0;
+        for (int i = 0; i < len; i++) {
+            maxLen = Math.max(maxLen, fn[i]);
+        }
+        //gn的dp过程
+        int[] gn = new int[len];
+        gn[0] = 1;
+        for (int i = 1; i < len; i++) {
+            gn[i] = 0;
+            if (fn[i] == 1) {
+                //只有一个数字的场景
+                gn[i] = 1;
+            } else {
+                for (int j = 0; j < i; j++) {
+                    if (nums[j] < nums[i] && gn[j] == fn[i] - 1) {
+                        gn[i] += gn[j];
+                    }
+                }
+            }
+        }
+        //统一最大长度为maxLen的下标
+        int res = 0;
+        for (int i = 0; i < len; i++) {
+            if (fn[i] == maxLen) {
+                res += gn[i];
+            }
         }
         return res;
     }
