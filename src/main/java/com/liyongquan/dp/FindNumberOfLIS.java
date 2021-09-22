@@ -122,8 +122,8 @@ public class FindNumberOfLIS {
         for (int i = 1; i < len; i++) {
             fn[i] = 1;
             for (int j = 0; j < i; j++) {
-                if (nums[i] > nums[j] && nums[j] + 1 > fn[i]) {
-                    fn[i] = nums[j] + 1;
+                if (nums[i] > nums[j] && fn[j] + 1 > fn[i]) {
+                    fn[i] = fn[j] + 1;
                 }
             }
         }
@@ -141,10 +141,71 @@ public class FindNumberOfLIS {
                 gn[i] = 1;
             } else {
                 for (int j = 0; j < i; j++) {
-                    if (nums[j] < nums[i] && gn[j] == fn[i] - 1) {
+                    if (nums[j] < nums[i] && fn[j] == fn[i] - 1) {
                         gn[i] += gn[j];
                     }
                 }
+            }
+        }
+        //统一最大长度为maxLen的下标
+        int res = 0;
+        for (int i = 0; i < len; i++) {
+            if (fn[i] == maxLen) {
+                res += gn[i];
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 稍微在上面基础上优化一下
+     *
+     * @param nums
+     * @return
+     */
+    public int findNumberOfLIS3(int[] nums) {
+        int len = nums.length;
+        if (len <= 1) {
+            return len;
+        }
+        //求最大长度
+        int[] fn = new int[len];
+        fn[0] = 1;
+        for (int i = 1; i < len; i++) {
+            fn[i] = 1;
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j] && fn[j] + 1 > fn[i]) {
+                    fn[i] = fn[j] + 1;
+                }
+            }
+        }
+        int maxLen = 0;
+        for (int i = 0; i < len; i++) {
+            maxLen = Math.max(maxLen, fn[i]);
+        }
+        //gn的dp过程
+        int[] gn = new int[len];
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        gn[0] = 1;
+        map.put(1, new LinkedList<>());
+        map.get(1).add(0);
+        for (int i = 1; i < len; i++) {
+            gn[i] = 0;
+            if (fn[i] == 1) {
+                //只有一个数字的场景
+                gn[i] = 1;
+                map.get(1).add(i);
+            } else {
+                List<Integer> list = map.get(fn[i] - 1);
+                for (Integer j : list) {
+                    if (nums[j] < nums[i]) {
+                        gn[i] += gn[j];
+                    }
+                }
+                if (!map.containsKey(fn[i])) {
+                    map.put(fn[i], new LinkedList<>());
+                }
+                map.get(fn[i]).add(i);
             }
         }
         //统一最大长度为maxLen的下标
