@@ -185,6 +185,7 @@ public class FindNumberOfLIS {
         }
         //gn的dp过程
         int[] gn = new int[len];
+        //优化的核心逻辑，减少遍历前面的所有的下标
         Map<Integer, List<Integer>> map = new HashMap<>();
         gn[0] = 1;
         map.put(1, new LinkedList<>());
