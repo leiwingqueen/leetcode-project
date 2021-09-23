@@ -31,7 +31,7 @@ package com.liyongquan.math;
 public class CountDigitOne {
     /**
      * 暴力解法
-     *
+     * <p>
      * 超时
      *
      * @param n
@@ -49,5 +49,41 @@ public class CountDigitOne {
             }
         }
         return sum;
+    }
+
+    /**
+     * https://leetcode-cn.com/problems/number-of-digit-one/solution/gong-shui-san-xie-jiang-shu-wei-dp-wen-t-c9oi/
+     * <p>
+     * 要思路梳理得很清晰才行
+     *
+     * @param n
+     * @return
+     */
+    public int countDigitOne2(int n) {
+        if (n <= 9) {
+            return n == 0 ? 0 : 1;
+        }
+        //前后部分的数位
+        int before = n / 10;
+        int after = 0;
+        int res = 0;
+        //第几位
+        int bit = 1;
+        while (n > 0) {
+            int cur = n % 10;
+            //[0,before)
+            res += before * bit;
+            //=before
+            if (cur == 1) {
+                res += after + 1;
+            } else if (cur > 1) {
+                res += bit;
+            }
+            before /= 10;
+            after += cur * bit;
+            bit *= 10;
+            n /= 10;
+        }
+        return res;
     }
 }
