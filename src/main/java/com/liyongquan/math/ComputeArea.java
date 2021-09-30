@@ -35,6 +35,19 @@ import java.util.List;
  * @date 2021/9/30
  */
 public class ComputeArea {
+    /**
+     * 不通过，有一些边界场景还是不能通过
+     *
+     * @param ax1
+     * @param ay1
+     * @param ax2
+     * @param ay2
+     * @param bx1
+     * @param by1
+     * @param bx2
+     * @param by2
+     * @return
+     */
     public int computeArea(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2) {
         int[][] p1 = get4Point(ax1, ay1, ax2, ay2);
         int[][] p2 = get4Point(bx1, by1, bx2, by2);
@@ -71,11 +84,11 @@ public class ComputeArea {
         }
         //剩下就是两个点重叠的场景
         int s = 0;
-        if (inside.get(0) == 0) {
+        if (inside.get(0) == 0 && inside.get(1) == 1) {
             s = getSquare(p2[0], new int[]{p2[1][0], p1[2][1]});
-        } else if (inside.get(0) == 1) {
+        } else if (inside.get(0) == 1 && inside.get(1) == 2) {
             s = getSquare(p2[1], new int[]{p1[0][0], p2[2][1]});
-        } else if (inside.get(0) == 2) {
+        } else if (inside.get(0) == 2 && inside.get(1) == 3) {
             s = getSquare(p2[2], new int[]{p2[0][0], p1[0][1]});
         } else {
             s = getSquare(p2[3], new int[]{p1[1][0], p2[0][1]});
@@ -85,10 +98,10 @@ public class ComputeArea {
 
     private int[][] get4Point(int ax1, int ay1, int ax2, int ay2) {
         int[][] points = {
-                {ax1, ay1},
-                {ax2, ay1},
+                {ax1, ay2},
                 {ax2, ay2},
-                {ax1, ay2}
+                {ax2, ay1},
+                {ax1, ay1}
         };
         return points;
     }
@@ -96,7 +109,7 @@ public class ComputeArea {
     private int getSquare(int[][] p) {
         int[] left = p[0];
         int[] right = p[2];
-        return (right[0] - left[0]) * (right[1] - left[1]);
+        return Math.abs(right[0] - left[0]) * Math.abs(right[1] - left[1]);
     }
 
     private int getSquare(int[] p1, int[] p2) {
@@ -106,6 +119,54 @@ public class ComputeArea {
     private boolean inside(int[][] p1, int[] p2) {
         int[] left = p1[0];
         int[] right = p1[2];
-        return p2[0] >= left[0] && p2[0] <= right[0] && p2[1] >= left[1] && p2[0] <= right[1];
+        return p2[0] >= left[0] && p2[0] <= right[0] && p2[1] >= right[1] && p2[1] <= left[1];
+    }
+
+    /**
+     * 解法2
+     * <p>
+     * 核心逻辑是计算重叠区域，我们可以把1维的重叠计算逻辑扩展到二维
+     *
+     * @param ax1
+     * @param ay1
+     * @param ax2
+     * @param ay2
+     * @param bx1
+     * @param by1
+     * @param bx2
+     * @param by2
+     * @return
+     */
+    public int computeArea2(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2) {
+        int s1 = square(ax1, ay1, ax2, ay2);
+        int s2 = square(bx1, by1, bx2, by2);
+        int area = 0;
+        //计算x轴上的重叠区域
+        int xArea = cal(ax1, ax2, bx1, bx2);
+        if (xArea == 0) {
+            return s1 + s2;
+        }
+        //计算y轴上的重叠区域
+        int yArea = cal(ay1, ay2, by1, by2);
+        if (yArea == 0) {
+            return s1 + s2;
+        }
+        return s1 + s2 - xArea * yArea;
+    }
+
+    private int cal(int ax1, int ax2, int bx1, int bx2) {
+        if (ax2 <= bx1 || bx2 <= ax1) {
+            return 0;
+        }
+        if (ax1 < bx1) {
+            return Math.min(ax2, bx2) - bx1;
+        } else {
+            return Math.min(ax2, bx2) - ax1;
+        }
+
+    }
+
+    private int square(int ax1, int ay1, int ax2, int ay2) {
+        return Math.abs(ax1 - ax2) * Math.abs(ay1 - ay2);
     }
 }
