@@ -140,7 +140,6 @@ public class ComputeArea {
     public int computeArea2(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2) {
         int s1 = square(ax1, ay1, ax2, ay2);
         int s2 = square(bx1, by1, bx2, by2);
-        int area = 0;
         //计算x轴上的重叠区域
         int xArea = cal(ax1, ax2, bx1, bx2);
         if (xArea == 0) {
@@ -154,6 +153,7 @@ public class ComputeArea {
         return s1 + s2 - xArea * yArea;
     }
 
+    //计算一维上空间上的重叠区域
     private int cal(int ax1, int ax2, int bx1, int bx2) {
         if (ax2 <= bx1 || bx2 <= ax1) {
             return 0;
