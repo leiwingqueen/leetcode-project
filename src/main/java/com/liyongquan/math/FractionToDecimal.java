@@ -42,27 +42,48 @@ package com.liyongquan.math;
 //链接：https://leetcode-cn.com/problems/fraction-to-recurring-decimal
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Stack;
 
 /**
  * @author liyongquan
  * @date 2021/10/3
  */
 public class FractionToDecimal {
+    /**
+     * 相当于高精度除法运算
+     *
+     * @param numerator
+     * @param denominator
+     * @return
+     */
     public String fractionToDecimal(int numerator, int denominator) {
+        //为了避免除法之后越界
+        long num = numerator;
+        long den = denominator;
+        if (num % den == 0) {
+            return String.valueOf(num / den);
+        }
         StringBuilder sb = new StringBuilder();
+        //符号位处理
+        if (num > 0 && den < 0 || num < 0 && den > 0) {
+            sb.append("-");
+        }
+        num = Math.abs(num);
+        den = Math.abs(den);
         //整数部分
-        int p1 = numerator / denominator;
+        long p1 = num / den;
         sb.append(p1);
-        if (numerator % denominator == 0) {
+        if (num % den == 0) {
             return sb.toString();
         }
         sb.append(".");
         //小数部分
         //重复小数处理
-        Set<Integer> set = new HashSet<>();
-        Stack<Integer> stack = new Stack<>();
-        int p2 = numerator - p1 * denominator;
+        Set<Long> set = new HashSet<>();
+        Stack<Long> stack = new Stack<>();
+        long p2 = num - p1 * den;
         while (p2 != 0) {
             if (!set.contains(p2)) {
                 stack.add(p2);
@@ -82,8 +103,8 @@ public class FractionToDecimal {
                 return sb.toString();
             }
             p2 *= 10;
-            int div = p2 / denominator;
-            p2 -= div * denominator;
+            long div = p2 / den;
+            p2 -= div * den;
             sb.append(div);
         }
         return sb.toString();
