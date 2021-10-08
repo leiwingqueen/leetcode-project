@@ -55,4 +55,70 @@ public class FindRepeatedDnaSequences {
         }
         return res.stream().collect(Collectors.toList());
     }
+
+    /**
+     * 优化解法，位运算
+     * 2个bit存放一个字符,10个字符20个bit。
+     *
+     * @param s
+     * @return
+     */
+    public List<String> findRepeatedDnaSequences2(String s) {
+        if (s.length() < 10) {
+            return Collections.emptyList();
+        }
+        List<String> res = new LinkedList<>();
+        Map<Integer, Integer> map = new HashMap<>();
+        //初始化第一个窗口
+        int num = 0;
+        for (int i = 0; i < 10; i++) {
+            num = (num << 2) + char2int(s.charAt(i));
+        }
+        map.put(num, 1);
+        //滑动窗口
+        int l = 1, r = l + 9;
+        while (r < s.length()) {
+            //删除高位
+            num &= 0b111111111111111111;
+            num = (num << 2) | char2int(s.charAt(r));
+            map.put(num, map.getOrDefault(num, 0) + 1);
+            if (map.get(num) == 2) {
+                //res.add(int2string(num));
+                res.add(s.substring(l, l + 10));
+            }
+            l++;
+            r++;
+        }
+        return res;
+    }
+
+    private int char2int(char ch) {
+        if (ch == 'A') {
+            return 0b00;
+        } else if (ch == 'C') {
+            return 0b01;
+        } else if (ch == 'G') {
+            return 0b10;
+        } else {
+            return 0b11;
+        }
+    }
+
+    private String int2string(int num) {
+        char[] arr = new char[10];
+        for (int i = 9; i >= 0; i--) {
+            int b = num & 0b11;
+            if (b == 0) {
+                arr[i] = 'A';
+            } else if (b == 1) {
+                arr[i] = 'C';
+            } else if (b == 2) {
+                arr[i] = 'G';
+            } else {
+                arr[i] = 'T';
+            }
+            num >>= 2;
+        }
+        return new String(arr);
+    }
 }
