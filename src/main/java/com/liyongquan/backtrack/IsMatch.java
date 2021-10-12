@@ -91,5 +91,49 @@ public class IsMatch {
         return false;
     }
 
-    //TODO:dp解法？
+    /**
+     * dp解法
+     *
+     * @param s
+     * @param p
+     * @return
+     */
+    public boolean isMatch2(String s, String p) {
+        char[] s1 = s.toCharArray();
+        char[] s2 = p.toCharArray();
+        boolean[][] dp = new boolean[s1.length + 1][s2.length + 1];
+        //初始化第一列
+        dp[0][0] = true;
+        for (int i = 1; i <= s1.length; i++) {
+            dp[i][0] = false;
+        }
+        //初始化第一行
+        for (int i = 1; i <= s2.length; i++) {
+            if (s2[i - 1] == '*') {
+                dp[0][i] = dp[0][i - 2];
+            } else {
+                dp[0][i] = false;
+            }
+        }
+        //dp迭代
+        for (int i = 1; i <= s1.length; i++) {
+            for (int j = 1; j <= s2.length; j++) {
+                if (s2[j - 1] != '*') {
+                    dp[i][j] = (s1[i - 1] == s2[j - 1] || s2[j - 1] == '.') && dp[i - 1][j - 1];
+                } else {
+                    //出现0次
+                    if (dp[i][j - 2]) {
+                        dp[i][j] = true;
+                    } else {
+                        //上一个数字相同
+                        if (s1[i - 1] == s2[j - 2] || s2[j - 2] == '.') {
+                            //1次或以上
+                            dp[i][j] = dp[i - 1][j - 2] || dp[i - 1][j];
+                        }
+                    }
+                }
+            }
+        }
+        return dp[s1.length][s2.length];
+    }
 }
