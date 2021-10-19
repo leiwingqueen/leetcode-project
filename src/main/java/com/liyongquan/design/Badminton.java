@@ -1,14 +1,21 @@
 package com.liyongquan.design;
 
-import com.sun.javafx.logging.PulseLogger;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.PriorityQueue;
 
 /**
  * @author liyongquan
  * @date 2021/10/18
  */
 public class Badminton {
+    /**
+     * 这个算法还是有点问题，
+     *
+     * @param players
+     * @return
+     */
     public List<String[]> match(Player[] players) {
         int len = players.length;
         //穷举所有组合
@@ -37,6 +44,9 @@ public class Badminton {
                 } else {
                     tmp.add(c2);
                 }
+            }
+            if (pq.size() == 0) {
+                System.out.println("not match");
             }
             for (Player[] p : tmp) {
                 pq.add(p);
