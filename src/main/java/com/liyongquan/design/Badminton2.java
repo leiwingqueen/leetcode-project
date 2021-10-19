@@ -1,8 +1,8 @@
 package com.liyongquan.design;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import sun.rmi.runtime.Log;
+
+import java.util.*;
 
 /**
  * 算法一可能会存在一些匹配不成功的场景，这里尝试使用回溯求最优解。
@@ -38,8 +38,16 @@ public class Badminton2 {
         };
         List<String[]> res = badminton.match(players);
         System.out.println("==============对战名单==============");
+        Map<String, Integer> map = new HashMap<>();
         for (String[] re : res) {
             System.out.println(String.format("%s 和 %s VS %s 和 %s", re[0], re[1], re[2], re[3]));
+            for (int i = 0; i < 4; i++) {
+                map.put(re[i], map.getOrDefault(re[i], 0) + 1);
+            }
+        }
+        System.out.println("==============每人参赛场次==============");
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            System.out.println(String.format("%s:%s", entry.getKey(), entry.getValue()));
         }
     }
 
@@ -65,7 +73,7 @@ public class Badminton2 {
             }
         }
         int matchSize = compose.size() / 2;
-        backtrace(compose, graph, new boolean[compose.size()], new Team[matchSize][matchSize], 0, matchSize, 0);
+        backtrace(compose, graph, new Team[matchSize][matchSize], 0, matchSize, 0);
         //输出结果
         List<String[]> r = new ArrayList<>(matchSize);
         if (res != null) {
@@ -76,7 +84,7 @@ public class Badminton2 {
         return r;
     }
 
-    private void backtrace(List<Team> compose, int[][] graph, boolean[] visit, Team[][] path, int idx, int len, int weight) {
+    private void backtrace(List<Team> compose, int[][] graph, Team[][] path, int idx, int len, int weight) {
         if (idx >= len) {
             if (weight < min) {
                 min = weight;
@@ -104,24 +112,34 @@ public class Badminton2 {
         edges.sort(Comparator.comparingInt(o -> o.weight));
         for (Edge edge : edges) {
             //更新图,i,j下所有的线取消
-            //visit[edge.start] = true;
-            //visit[edge.end] = true;
             int[] backup1 = new int[compose.size()];
             int[] backup2 = new int[compose.size()];
+            int[] backup3 = new int[compose.size()];
+            int[] backup4 = new int[compose.size()];
+            //横线处理
             for (int k = 0; k < compose.size(); k++) {
                 backup1[k] = graph[edge.start][k];
                 graph[edge.start][k] = -1;
                 backup2[k] = graph[edge.end][k];
                 graph[edge.end][k] = -1;
             }
+            //竖线处理
+            for (int k = 0; k < compose.size(); k++) {
+                backup3[k] = graph[k][edge.start];
+                graph[k][edge.start] = -1;
+                backup4[k] = graph[k][edge.end];
+                graph[k][edge.end] = -1;
+            }
             path[idx] = new Team[]{compose.get(edge.start), compose.get(edge.end)};
-            backtrace(compose, graph, visit, path, idx + 1, len, weight + graph[edge.start][edge.end]);
+            backtrace(compose, graph, path, idx + 1, len, weight + graph[edge.start][edge.end]);
             //还原现场
-            //visit[edge.start] = false;
-            //visit[edge.end] = false;
             for (int k = 0; k < compose.size(); k++) {
                 graph[edge.start][k] = backup1[k];
                 graph[edge.end][k] = backup2[k];
+            }
+            for (int k = 0; k < compose.size(); k++) {
+                graph[k][edge.start] = backup3[k];
+                graph[k][edge.end] = backup4[k];
             }
         }
     }
