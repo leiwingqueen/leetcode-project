@@ -33,8 +33,8 @@ public class Badminton2 {
                 new Player("海真", 300),
                 new Player("健宁", 50),
                 new Player("命文", 50),
-                //new Player("毅", 120),
-                //new Player("明", 150),
+                new Player("毅", 120),
+                new Player("明", 150),
         };
         List<String[]> res = badminton.match(players);
         System.out.println("==============对战名单==============");
@@ -79,6 +79,7 @@ public class Badminton2 {
     private void backtrace(List<Team> compose, int[][] graph, boolean[] visit, Team[][] path, int idx, int len, int weight) {
         if (idx >= len) {
             if (weight < min) {
+                min = weight;
                 res = new ArrayList<>(len);
                 for (Team[] t : path) {
                     res.add(new Team[]{t[0], t[1]});
@@ -114,7 +115,7 @@ public class Badminton2 {
                 graph[edge.end][k] = -1;
             }
             path[idx] = new Team[]{compose.get(edge.start), compose.get(edge.end)};
-            backtrace(compose, graph, visit, path, idx + 1, len, weight + (int) Math.pow(graph[edge.start][edge.end], 2));
+            backtrace(compose, graph, visit, path, idx + 1, len, weight + graph[edge.start][edge.end]);
             //还原现场
             visit[edge.start] = false;
             visit[edge.end] = false;
