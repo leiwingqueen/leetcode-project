@@ -64,7 +64,7 @@ public class Badminton2 {
         }
         if (compose.size() % 2 == 1) {
             //如果是奇数的话随机抽取两个人作为一个新的组合加入(这两个人可以多打一场),p2这样处理可以保证两个下标一定不相同
-            int p = ThreadLocalRandom.current().nextInt(players.length);
+            int p = ThreadLocalRandom.current().nextInt(compose.size());
             compose.add(new Team(compose.get(p).p1, compose.get(p).p2));
         }
         //构造图
