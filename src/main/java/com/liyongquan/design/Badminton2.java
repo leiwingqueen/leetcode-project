@@ -1,8 +1,5 @@
 package com.liyongquan.design;
 
-import javafx.scene.input.TouchEvent;
-import sun.rmi.runtime.Log;
-
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -50,6 +47,20 @@ public class Badminton2 {
         System.out.println("==============每人参赛场次==============");
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             System.out.println(String.format("%s:%s", entry.getKey(), entry.getValue()));
+        }
+        System.out.println("==============重复出现的组合==============");
+        Set<String> m2 = new HashSet<>();
+        for (String[] re : res) {
+            String c1 = String.format("%s 和 %s", re[0], re[1]);
+            String c2 = String.format("%s 和 %s", re[2], re[3]);
+            if (m2.contains(c1)) {
+                System.out.println(c1);
+            }
+            m2.add(c1);
+            if (m2.contains(c2)) {
+                System.out.println(c2);
+            }
+            m2.add(c2);
         }
     }
 
