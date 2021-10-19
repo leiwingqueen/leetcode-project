@@ -104,8 +104,8 @@ public class Badminton2 {
         edges.sort(Comparator.comparingInt(o -> o.weight));
         for (Edge edge : edges) {
             //更新图,i,j下所有的线取消
-            visit[edge.start] = true;
-            visit[edge.end] = true;
+            //visit[edge.start] = true;
+            //visit[edge.end] = true;
             int[] backup1 = new int[compose.size()];
             int[] backup2 = new int[compose.size()];
             for (int k = 0; k < compose.size(); k++) {
@@ -117,8 +117,8 @@ public class Badminton2 {
             path[idx] = new Team[]{compose.get(edge.start), compose.get(edge.end)};
             backtrace(compose, graph, visit, path, idx + 1, len, weight + graph[edge.start][edge.end]);
             //还原现场
-            visit[edge.start] = false;
-            visit[edge.end] = false;
+            //visit[edge.start] = false;
+            //visit[edge.end] = false;
             for (int k = 0; k < compose.size(); k++) {
                 graph[edge.start][k] = backup1[k];
                 graph[edge.end][k] = backup2[k];
