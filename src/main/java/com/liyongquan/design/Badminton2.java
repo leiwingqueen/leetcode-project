@@ -1,8 +1,10 @@
 package com.liyongquan.design;
 
+import javafx.scene.input.TouchEvent;
 import sun.rmi.runtime.Log;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 算法一可能会存在一些匹配不成功的场景，这里尝试使用回溯求最优解。
@@ -59,6 +61,11 @@ public class Badminton2 {
             for (int j = i + 1; j < len; j++) {
                 compose.add(new Team(players[i], players[j]));
             }
+        }
+        if (compose.size() % 2 == 1) {
+            //如果是奇数的话随机抽取两个人作为一个新的组合加入(这两个人可以多打一场),p2这样处理可以保证两个下标一定不相同
+            int p = ThreadLocalRandom.current().nextInt(players.length);
+            compose.add(new Team(compose.get(p).p1, compose.get(p).p2));
         }
         //构造图
         int[][] graph = new int[compose.size()][compose.size()];
