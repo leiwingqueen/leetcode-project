@@ -62,6 +62,15 @@ public class AddOperators {
         return res;
     }
 
+    /**
+     * @param nums
+     * @param exp
+     * @param idx1
+     * @param idx2    当前计算得到的结果总和
+     * @param current 乘数
+     * @param plusNum 紧接着的最后一个数字
+     * @param lastNum
+     */
     private void backtrace(int[] nums, char[] exp, int idx1, int idx2, long current, long plusNum, long lastNum) {
         if (idx1 == nums.length) {
             current += plusNum * lastNum;
