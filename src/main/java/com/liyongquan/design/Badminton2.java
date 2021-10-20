@@ -32,8 +32,8 @@ public class Badminton2 {
                 new Player("海真", 300),
                 new Player("健宁", 50),
                 new Player("命文", 50),
-                new Player("毅", 120),
-                new Player("明", 150),
+                //new Player("毅", 120),
+                //new Player("明", 150),
         };
         List<String[]> res = badminton.match(players);
         System.out.println("==============对战名单==============");

@@ -1,5 +1,8 @@
 package com.liyongquan.backtrack;
 
+import com.liyongquan.weeklycontest.spring2021.PurchasePlans;
+
+import java.util.LinkedList;
 import java.util.List;
 
 //282. 给表达式添加运算符
@@ -44,22 +47,44 @@ import java.util.List;
  * @date 2021/10/18
  */
 public class AddOperators {
+    private List<String> res = new LinkedList<>();
+    private int target;
+
     public List<String> addOperators(String num, int target) {
         int len = num.length();
         int[] nums = new int[len];
-        for (int i = 0; i < len; i--) {
+        for (int i = 0; i < len; i++) {
             nums[i] = num.charAt(i) - '0';
         }
-        char[] op = new char[2 * len - 1];
-        //TODO:暂时想不到乘法的处理方式
-        return null;
+        char[] exp = new char[2 * len - 1];
+        this.target = target;
+        backtrace(nums, exp, 0, 0, 0, 1, 0);
+        return res;
     }
 
-    private void backtrace(int[] nums, char[] op, int idx1, int idx2, int target, int lastNum, List<String> res) {
+    private void backtrace(int[] nums, char[] exp, int idx1, int idx2, long current, long plusNum, long lastNum) {
         if (idx1 == nums.length) {
-            if (target == 0) {
-
+            current += plusNum * lastNum;
+            if (current == target) {
+                res.add(new String(exp, 0, idx2));
             }
+            return;
+        }
+        //不插运算符的场景，需要保证没有前导0
+        if (idx2 == 0 || lastNum != 0 || exp[idx2 - 1] != '0') {
+            exp[idx2] = (char) (nums[idx1] + '0');
+            backtrace(nums, exp, idx1 + 1, idx2 + 1, current, plusNum, lastNum * 10 + nums[idx1]);
+        }
+        if (idx2 > 0 && exp[idx2 - 1] >= '0' && exp[idx2 - 1] <= '9') {
+            //插入加法
+            exp[idx2] = '+';
+            backtrace(nums, exp, idx1, idx2 + 1, current + plusNum * lastNum, 1, 0);
+            //减法
+            exp[idx2] = '-';
+            backtrace(nums, exp, idx1, idx2 + 1, current + plusNum * lastNum, -1, 0);
+            //乘法
+            exp[idx2] = '*';
+            backtrace(nums, exp, idx1, idx2 + 1, current, plusNum * lastNum, 0);
         }
     }
 }
