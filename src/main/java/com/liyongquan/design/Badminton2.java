@@ -1,5 +1,6 @@
 package com.liyongquan.design;
 
+import java.rmi.MarshalException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -28,12 +29,12 @@ public class Badminton2 {
         Player[] players = {
                 new Player("权", 100),
                 new Player("礼", 100),
-                new Player("锋", 300),
-                new Player("海真", 300),
+                new Player("锋", 150),
+                new Player("梓坤", 150),
+                new Player("毅", 100),
+                new Player("明", 120),
                 new Player("健宁", 50),
                 new Player("命文", 50),
-                //new Player("毅", 120),
-                //new Player("明", 150),
         };
         List<String[]> res = badminton.match(players);
         System.out.println("==============对战名单==============");
@@ -129,6 +130,7 @@ public class Badminton2 {
         }
         edges.sort(Comparator.comparingInt(o -> o.weight));
         for (Edge edge : edges) {
+            int[][] before = clone(graph);
             //更新图,i,j下所有的线取消
             int[] backup1 = new int[compose.size()];
             int[] backup2 = new int[compose.size()];
@@ -143,9 +145,12 @@ public class Badminton2 {
             }
             //竖线处理
             for (int k = 0; k < compose.size(); k++) {
-                backup3[k] = graph[k][edge.start];
+                //横竖线相交的地方需要特殊处理
+                if (k != edge.start && k != edge.end) {
+                    backup4[k] = graph[k][edge.end];
+                    backup3[k] = graph[k][edge.start];
+                }
                 graph[k][edge.start] = -1;
-                backup4[k] = graph[k][edge.end];
                 graph[k][edge.end] = -1;
             }
             path[idx] = new Team[]{compose.get(edge.start), compose.get(edge.end)};
@@ -156,10 +161,39 @@ public class Badminton2 {
                 graph[edge.end][k] = backup2[k];
             }
             for (int k = 0; k < compose.size(); k++) {
-                graph[k][edge.start] = backup3[k];
-                graph[k][edge.end] = backup4[k];
+                if (k != edge.start && k != edge.end) {
+                    graph[k][edge.start] = backup3[k];
+                    graph[k][edge.end] = backup4[k];
+                }
+            }
+            if (!equals(before, graph)) {
+                System.out.println("err");
             }
         }
+    }
+
+    private int[][] clone(int[][] matrix) {
+        int row = matrix.length;
+        int col = matrix[0].length;
+        int[][] res = new int[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                res[i][j] = matrix[i][j];
+            }
+        }
+        return res;
+    }
+
+    private boolean equals(int[][] m1, int[][] m2) {
+        int row = m1.length, col = m1[0].length;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (m1[i][j] != m2[i][j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private boolean conflict(Team c1, Team c2) {
