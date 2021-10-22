@@ -1,6 +1,5 @@
 package com.liyongquan.design;
 
-import java.rmi.MarshalException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
