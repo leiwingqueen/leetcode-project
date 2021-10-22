@@ -130,7 +130,6 @@ public class Badminton2 {
         }
         edges.sort(Comparator.comparingInt(o -> o.weight));
         for (Edge edge : edges) {
-            int[][] before = clone(graph);
             //更新图,i,j下所有的线取消
             int[] backup1 = new int[compose.size()];
             int[] backup2 = new int[compose.size()];
@@ -166,13 +165,10 @@ public class Badminton2 {
                     graph[k][edge.end] = backup4[k];
                 }
             }
-            if (!equals(before, graph)) {
-                System.out.println("err");
-            }
         }
     }
 
-    private int[][] clone(int[][] matrix) {
+    /*private int[][] clone(int[][] matrix) {
         int row = matrix.length;
         int col = matrix[0].length;
         int[][] res = new int[row][col];
@@ -194,7 +190,7 @@ public class Badminton2 {
             }
         }
         return true;
-    }
+    }*/
 
     private boolean conflict(Team c1, Team c2) {
         return c1.p1.name.equals(c2.p1.name) || c1.p1.name.equals(c2.p2.name)
