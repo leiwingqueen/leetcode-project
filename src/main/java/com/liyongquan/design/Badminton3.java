@@ -19,7 +19,7 @@ public class Badminton3 {
         Player[] players = {
                 new Player("权", 100),
                 new Player("礼", 100),
-                new Player("锋", 150),
+                new Player("一雷", 100),
                 new Player("梓坤", 150),
                 new Player("毅", 100),
                 new Player("明", 120),
@@ -177,9 +177,9 @@ public class Badminton3 {
         List<Team[]> r = new ArrayList<>(list.size());
         r.add(list.get(0));
         list.remove(0);
-        int idx = 1;
-        while (idx < list.size()) {
-            Team[] last = list.get(idx++);
+        int idx = 0;
+        while (list.size() > 0) {
+            Team[] last = r.get(idx++);
             int conflict = 5;
             int id = -1;
             for (int i = 0; i < list.size(); i++) {
@@ -237,7 +237,7 @@ public class Badminton3 {
         }
 
         public int getTeamId() {
-            return (1 << p1) + (1 << p2);
+            return p1 + p2;
         }
     }
 
