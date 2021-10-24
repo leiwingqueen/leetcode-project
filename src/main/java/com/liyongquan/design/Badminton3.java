@@ -92,8 +92,11 @@ public class Badminton3 {
         //输出结果
         List<String[]> r = new ArrayList<>(matchSize);
         if (res != null) {
-            for (Team[] re : res) {
-                r.add(new String[]{mp.get(re[0].p1).name, mp.get(re[0].p2).name, mp.get(re[1].p1).name, mp.get(re[1].p2).name});
+            //尽可能让两场比赛冲突的人员减少
+            List<Team[]> sort = sort(res);
+            for (Team[] re : sort) {
+                r.add(new String[]{mp.get(re[0].p1).name, mp.get(re[0].p2).name,
+                        mp.get(re[1].p1).name, mp.get(re[1].p2).name});
             }
         }
         return r;
@@ -162,6 +165,37 @@ public class Badminton3 {
                 }
             }
         }
+    }
+
+    /**
+     * 避免相同的人多长连续打
+     *
+     * @param list
+     * @return
+     */
+    private List<Team[]> sort(List<Team[]> list) {
+        List<Team[]> r = new ArrayList<>(list.size());
+        r.add(list.get(0));
+        list.remove(0);
+        int idx = 1;
+        while (idx < list.size()) {
+            Team[] last = list.get(idx++);
+            int conflict = 5;
+            int id = -1;
+            for (int i = 0; i < list.size(); i++) {
+                int t1 = last[0].getTeamId() + last[1].getTeamId();
+                int t2 = list.get(i)[0].getTeamId() + list.get(i)[1].getTeamId();
+                //冲突的人数
+                int bit = Integer.bitCount(t1 & t2);
+                if (bit < conflict) {
+                    conflict = bit;
+                    id = i;
+                }
+            }
+            r.add(list.get(id));
+            list.remove(id);
+        }
+        return r;
     }
 
     static class Edge {
