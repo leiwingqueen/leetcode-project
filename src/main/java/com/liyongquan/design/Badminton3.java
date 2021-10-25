@@ -17,7 +17,7 @@ public class Badminton3 {
     public static void main(String[] args) {
         Badminton3 badminton = new Badminton3();
         Player[] players = {
-                new Player("权", 100),
+                new Player("权", 110),
                 new Player("礼", 100),
                 new Player("一雷", 100),
                 new Player("梓坤", 150),
@@ -52,6 +52,10 @@ public class Badminton3 {
                 System.out.println(c2);
             }
             m2.add(c2);
+        }
+        System.out.println("==============excel格式==============");
+        for (String[] re : res) {
+            System.out.println(String.format("%s\t%s\tVS\t%s\t%s", re[0], re[1], re[2], re[3]));
         }
     }
 
@@ -177,23 +181,38 @@ public class Badminton3 {
         List<Team[]> r = new ArrayList<>(list.size());
         r.add(list.get(0));
         list.remove(0);
-        int idx = 0;
+        //保存每个人的连打次数，用来控制筛选下一场的权重
+        Map<Integer, Integer> mp = new HashMap<>();
+        Team[] teams = list.get(0);
+        mp.put(teams[0].p1, 1);
+        mp.put(teams[0].p2, 1);
+        mp.put(teams[1].p1, 1);
+        mp.put(teams[1].p2, 1);
         while (list.size() > 0) {
-            Team[] last = r.get(idx++);
-            int conflict = 5;
-            int id = -1;
-            for (int i = 0; i < list.size(); i++) {
-                int t1 = last[0].getTeamId() + last[1].getTeamId();
-                int t2 = list.get(i)[0].getTeamId() + list.get(i)[1].getTeamId();
-                //冲突的人数
-                int bit = Integer.bitCount(t1 & t2);
-                if (bit < conflict) {
-                    conflict = bit;
-                    id = i;
+            list.sort((o1, o2) -> {
+                //避免一个人连打的次数太多，需要增加一个人连打场次作为权重
+                //eg.[A,B]VS[C,D],[A,E]VS[F,G],[A,C]VS[B,D]，虽然两句之间冲突的人数只有1，但是A连打了三局，我们需要把A的权重调高
+                int b1 = mp.getOrDefault(o1[0].p1, 0) + mp.getOrDefault(o1[0].p2, 0) +
+                        mp.getOrDefault(o1[1].p1, 0) + mp.getOrDefault(o1[1].p2, 0);
+                int b2 = mp.getOrDefault(o2[0].p1, 0) + mp.getOrDefault(o2[0].p2, 0) +
+                        mp.getOrDefault(o2[1].p1, 0) + mp.getOrDefault(o2[1].p2, 0);
+                return b1 - b2;
+            });
+            Team[] select = list.get(0);
+            r.add(select);
+            list.remove(0);
+            //更新连打次数
+            for (Team team : select) {
+                mp.put(team.p1, mp.getOrDefault(team.p1, 0) + 1);
+                mp.put(team.p2, mp.getOrDefault(team.p2, 0) + 1);
+            }
+            for (Map.Entry<Integer, Integer> entry : mp.entrySet()) {
+                Integer id = entry.getKey();
+                //没有交集，删除连打
+                if ((id & (select[0].getTeamId() + select[1].getTeamId())) == 0) {
+                    mp.put(id, 0);
                 }
             }
-            r.add(list.get(id));
-            list.remove(id);
         }
         return r;
     }
