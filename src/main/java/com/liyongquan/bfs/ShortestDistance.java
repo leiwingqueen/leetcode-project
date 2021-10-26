@@ -122,4 +122,65 @@ public class ShortestDistance {
         }
         return cnt > 0 ? -1 : sum;
     }
+
+    //距离各个建筑物的距离
+    private int[][] distance;
+    //连接的建筑物
+    private int[][] reachCnt;
+
+    //假设建筑物多，空地少,那么是不是可以反过来计算?
+    public int shortestDistanc2(int[][] grid) {
+        int row = grid.length, col = grid[0].length;
+        //计算有多少个建筑
+        int cnt = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (grid[i][j] == 1) {
+                    cnt++;
+                }
+            }
+        }
+        distance = new int[row][col];
+        reachCnt = new int[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (grid[i][j] == 1) {
+                    bfs2(grid, row, col, new int[]{i, j});
+                }
+            }
+        }
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (reachCnt[i][j] == cnt) {
+                    min = Math.min(distance[i][j], min);
+                }
+            }
+        }
+        return min == Integer.MAX_VALUE ? -1 : min;
+    }
+
+    private void bfs2(int[][] grid, int row, int col, int[] start) {
+        Queue<int[]> queue = new LinkedList<>();
+        Queue<Integer> depth = new LinkedList<>();
+        queue.add(start);
+        depth.add(0);
+        boolean[][] visit = new boolean[row][col];
+        visit[start[0]][start[1]] = true;
+        while (!queue.isEmpty()) {
+            int[] poll = queue.poll();
+            Integer dep = depth.poll();
+            for (int[] dir : DIRS) {
+                int x = poll[0] + dir[0];
+                int y = poll[1] + dir[1];
+                if (x >= 0 && x < row && y >= 0 && y < col && !visit[x][y] && grid[x][y] == 0) {
+                    visit[x][y] = true;
+                    distance[x][y] += dep + 1;
+                    reachCnt[x][y]++;
+                    queue.add(new int[]{x, y});
+                    depth.add(dep + 1);
+                }
+            }
+        }
+    }
 }
