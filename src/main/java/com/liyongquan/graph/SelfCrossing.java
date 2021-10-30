@@ -52,6 +52,12 @@ public class SelfCrossing {
             {1, 0},
     };
 
+    /**
+     * 超时
+     *
+     * @param distance
+     * @return
+     */
     public boolean isSelfCrossing(int[] distance) {
         //分别是水平线和竖线
         TreeMap<Integer, TreeMap<Integer, int[]>> horizon = new TreeMap<>();
@@ -63,7 +69,7 @@ public class SelfCrossing {
             int y = DIRS[dir][1] * distance[i];
             int[] next = {pos[0] + x, pos[1] + y};
             //水平线移动
-            if (x > 0) {
+            if (x != 0) {
                 if (!horizon.containsKey(next[1])) {
                     horizon.put(next[1], new TreeMap<>());
                 }
