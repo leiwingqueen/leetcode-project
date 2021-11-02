@@ -1,5 +1,6 @@
 package com.liyongquan.design;
 
+//扫地机器人
 //房间（用格栅表示）中有一个扫地机器人。格栅中的每一个格子有空和障碍物两种可能。
 //
 //扫地机器人提供4个API，可以向前进，向左转或者向右转。每次转弯90度。
@@ -99,24 +100,44 @@ public class RobotRoomCleaner {
         Position p2 = new Position(cur.x + DIRS[left][0], cur.y + DIRS[left][1]);
         int right = (dir + 1) % 4;
         Position p3 = new Position(cur.x + DIRS[right][0], cur.y + DIRS[right][1]);
-        if (map.get(p1) == UNKNOWN) {
-            if (robot.move()) {
-                robot.clean();
-                map.put(p1, EMPTY);
-                dfs(p1, dir);
-            } else {
-                //左边
-                if (map.get(p2) == UNKNOWN) {
+        Position[] posList = {p1, p2, p3};
+        //3个方向分别有未知的地图就尝试往那边开拓新领域
+        for (int i = 0; i < 3; i++) {
+            int d = (dir + i) % 4;
+            Position p = new Position(cur.x + DIRS[d][0], cur.y + DIRS[d][1]);
+            if (map.get(p) == UNKNOWN) {
+                if (i == 1) {
                     robot.turnLeft();
-                    if (robot.move()) {
-                        robot.clean();
-                        map.put(p2, EMPTY);
-                        dfs(p2, left);
-                    } else {
-
-                    }
+                } else if (i == 2) {
+                    robot.turnRight();
+                }
+                if (robot.move()) {
+                    robot.clean();
+                    map.put(p, EMPTY);
+                    dfs(p, d);
                 }
             }
+        }
+        //如果都是已知领域，则统计4个方向的未知领域谁更多
+        int maxDir = 0;
+        int maxCnt = 0;
+        for (int i = 0; i < 4; i++) {
+            int d = (dir + i) % 4;
+            Position p = new Position(cur.x + DIRS[d][0], cur.y + DIRS[d][1]);
+            int cnt = 0;
+            for (int j = 0; j < 4; j++) {
+                Position neighbor = new Position(p.x + DIRS[j][0], p.y + DIRS[j][1]);
+                if (map.get(neighbor) == UNKNOWN) {
+                    cnt++;
+                }
+            }
+            if (cnt > maxCnt) {
+                maxCnt = cnt;
+                maxDir = d;
+            }
+        }
+        if (maxCnt == 0) {
+            return;
         }
     }
 
