@@ -33,10 +33,8 @@ package com.liyongquan.dp;
 //链接：https://leetcode-cn.com/problems/longest-arithmetic-subsequence-of-given-difference
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.PriorityQueue;
 
 /**
  * @author liyongquan
