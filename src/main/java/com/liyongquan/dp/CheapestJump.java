@@ -35,7 +35,7 @@ package com.liyongquan.dp;
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 import java.util.Collections;
-import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -49,6 +49,8 @@ public class CheapestJump {
      * <p>
      * f(n)=min{f(n-B),f(n-B+1),...,f(n-1)}+A[n-1]。需要字典排序，
      * f(1)=A[0]
+     * <p>
+     * 字典序需要额外进行遍历和比较
      *
      * @param coins
      * @param maxJump
@@ -57,6 +59,7 @@ public class CheapestJump {
     public List<Integer> cheapestJump(int[] coins, int maxJump) {
         int len = coins.length;
         int[] dp = new int[len];
+        //这里会有一个字典序的问题
         int[] path = new int[len];
         path[0] = -1;
         dp[0] = coins[0];
@@ -65,9 +68,17 @@ public class CheapestJump {
             int preIdx = -1;
             if (coins[i] >= 0) {
                 for (int j = maxJump; j >= 1; j--) {
-                    if (i - j >= 0 && (min == -1 || (dp[i - j] >= 0 && dp[i - j] < min))) {
+                    if (i - j < 0 || dp[i - j] < 0) {
+                        continue;
+                    }
+                    if (min == -1 || dp[i - j] < min) {
                         min = dp[i - j];
                         preIdx = i - j;
+                    } else if (dp[i - j] == min) {
+                        //这种场景需要比较字典序
+                        if (compare(path, i - j, preIdx, i + 1) < 0) {
+                            preIdx = i - j;
+                        }
                     }
                 }
             }
@@ -81,13 +92,32 @@ public class CheapestJump {
         if (dp[len - 1] < 0) {
             return Collections.emptyList();
         }
-        //输出路径
+        return build(path, len - 1);
+    }
+
+    private int compare(int[] path, int p1, int p2, int last) {
+        List<Integer> l1 = build(path, p1);
+        List<Integer> l2 = build(path, p2);
+        l1.add(last);
+        l2.add(last);
+        Iterator<Integer> it1 = l1.iterator();
+        Iterator<Integer> it2 = l2.iterator();
+        while (it1.hasNext() && it2.hasNext()) {
+            Integer n1 = it1.next();
+            Integer n2 = it2.next();
+            if (n1 != n2) {
+                return n1 - n2;
+            }
+        }
+        return l1.size() - l2.size();
+    }
+
+    private List<Integer> build(int[] path, int p) {
         LinkedList<Integer> list = new LinkedList<>();
-        int idx = len - 1;
-        list.offerFirst(idx + 1);
-        while (path[idx] >= 0) {
-            list.offerFirst(path[idx] + 1);
-            idx = path[idx];
+        list.offerFirst(p + 1);
+        while (path[p] >= 0) {
+            list.offerFirst(path[p] + 1);
+            p = path[p];
         }
         return list;
     }
