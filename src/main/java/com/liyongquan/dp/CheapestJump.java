@@ -105,7 +105,7 @@ public class CheapestJump {
         while (it1.hasNext() && it2.hasNext()) {
             Integer n1 = it1.next();
             Integer n2 = it2.next();
-            if (n1 != n2) {
+            if (n1.intValue() != n2.intValue()) {
                 return n1 - n2;
             }
         }
