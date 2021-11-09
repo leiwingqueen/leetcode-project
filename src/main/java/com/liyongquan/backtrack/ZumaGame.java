@@ -62,12 +62,53 @@ package com.liyongquan.backtrack;
 //链接：https://leetcode-cn.com/problems/zuma-game
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 /**
  * @author liyongquan
  * @date 2021/11/9
  */
 public class ZumaGame {
     public int findMinStep(String board, String hand) {
+        return 0;
+    }
+
+    private int backtrace(int[] board, int[] hand, int len, int left) {
+        if (len == 0) {
+            return 0;
+        }
+        if (left == 0) {
+            return -1;
+        }
+        //先把连续>=3的子串给删掉
+        Deque<Integer> deque = new LinkedList<>();
+        int cnt = 0;
+        for (int i = 0; i < len; i++) {
+            if (i == 0 || board[i] == board[i - 1]) {
+                deque.offerLast(board[i]);
+                cnt++;
+            } else {
+                if (cnt >= 3) {
+                    while (!deque.isEmpty() && deque.peekLast() == board[i - 1]) {
+                        deque.pollLast();
+                    }
+                }
+                deque.offerLast(board[i]);
+                cnt = 1;
+            }
+        }
+        //找到连续最长的子串
+        int l = 0, r = 0;
+        while (r < len) {
+            if (r == 0 || board[r] == board[r - 1]) {
+                r++;
+            } else {
+                //尝试插入
+
+                l = r;
+            }
+        }
         return 0;
     }
 }
