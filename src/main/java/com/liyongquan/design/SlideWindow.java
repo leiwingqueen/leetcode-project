@@ -4,6 +4,8 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 /**
+ * 滑动窗口统计QPS
+ *
  * @author liyongquan
  * @date 2021/11/10
  */
@@ -21,10 +23,7 @@ public class SlideWindow {
     //得到当前的QPS
     public int getQPS() {
         long now = System.currentTimeMillis();
-        //pop过时的slot
-        while (!slots.isEmpty() && slots.peekFirst().timestamp < now - SLOT_INTERVAL * SLOT_NUM) {
-            slots.pollFirst();
-        }
+        expire(now);
         int sum = 0;
         for (Slot slot : slots) {
             sum += slot.num;
@@ -35,12 +34,9 @@ public class SlideWindow {
 
     public int inc(int num) {
         long now = System.currentTimeMillis();
+        expire(now);
         //slot的时间戳
         long t = now - now % SLOT_INTERVAL;
-        //pop过时的slot
-        while (!slots.isEmpty() && slots.peekFirst().timestamp < now - SLOT_INTERVAL * SLOT_NUM) {
-            slots.pollFirst();
-        }
         //更新最后一个slot
         if (!slots.isEmpty() && slots.peekLast().timestamp == t) {
             Slot last = slots.peekLast();
@@ -49,7 +45,18 @@ public class SlideWindow {
             Slot slot = new Slot(num, t);
             slots.offerLast(slot);
         }
-        return getQPS();
+        int sum = 0;
+        for (Slot slot : slots) {
+            sum += slot.num;
+        }
+        return sum;
+    }
+
+    private void expire(long now) {
+        //pop过时的slot
+        while (!slots.isEmpty() && slots.peekFirst().timestamp < now - SLOT_INTERVAL * SLOT_NUM) {
+            slots.pollFirst();
+        }
     }
 
     static class Slot {
