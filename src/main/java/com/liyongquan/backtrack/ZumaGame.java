@@ -105,7 +105,6 @@ public class ZumaGame {
                 r++;
             } else {
                 //尝试插入
-
                 l = r;
             }
         }
