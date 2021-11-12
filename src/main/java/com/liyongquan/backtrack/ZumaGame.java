@@ -62,52 +62,130 @@ package com.liyongquan.backtrack;
 //链接：https://leetcode-cn.com/problems/zuma-game
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-import java.util.Deque;
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author liyongquan
  * @date 2021/11/9
  */
 public class ZumaGame {
+    /**
+     * 超时，看能否做一些剪枝
+     *
+     * @param board
+     * @param hand
+     * @return
+     */
+    private int res = -1;
+
     public int findMinStep(String board, String hand) {
-        return 0;
+        //'R'、'Y'、'B'、'G'、'W'
+        Map<Character, Integer> mp = new HashMap<>();
+        mp.put('R', 0);
+        mp.put('Y', 1);
+        mp.put('B', 2);
+        mp.put('G', 3);
+        mp.put('W', 4);
+        int[] bo = new int[board.length()];
+        for (int i = 0; i < board.length(); i++) {
+            Integer num = mp.get(board.charAt(i));
+            bo[i] = num;
+        }
+        int[] ha = new int[5];
+        for (int i = 0; i < hand.length(); i++) {
+            ha[mp.get(hand.charAt(i))]++;
+        }
+        backtrace(bo, ha, 0);
+        return res;
     }
 
-    private int backtrace(int[] board, int[] hand, int len, int left) {
-        if (len == 0) {
-            return 0;
-        }
-        if (left == 0) {
-            return -1;
-        }
-        //先把连续>=3的子串给删掉
-        Deque<Integer> deque = new LinkedList<>();
-        int cnt = 0;
-        for (int i = 0; i < len; i++) {
-            if (i == 0 || board[i] == board[i - 1]) {
-                deque.offerLast(board[i]);
-                cnt++;
-            } else {
-                if (cnt >= 3) {
-                    while (!deque.isEmpty() && deque.peekLast() == board[i - 1]) {
-                        deque.pollLast();
-                    }
-                }
-                deque.offerLast(board[i]);
-                cnt = 1;
+    private void backtrace(int[] board, int[] hand, int cur) {
+        if (board.length == 0) {
+            if ((res == -1 || cur < res)) {
+                res = cur;
             }
+            return;
         }
-        //找到连续最长的子串
+        //剪枝
+        if (res >= 0 && cur >= res) {
+            return;
+        }
+        //优先尝试找相邻的地方插入
         int l = 0, r = 0;
-        while (r < len) {
-            if (r == 0 || board[r] == board[r - 1]) {
+        int res = -1;
+        while (r < board.length) {
+            if (l == r || board[r] == board[r - 1]) {
                 r++;
             } else {
-                //尝试插入
+                if (r - l >= 3) {
+                    //直接消除[l,r)这个区间的数字
+                    int[] nb = remove(board, l, r);
+                    backtrace(nb, hand, cur);
+                    return;
+                } else {
+                    //尝试插入看够不够数字
+                    if (hand[board[l]] + r - l >= 3) {
+                        int[] nb = remove(board, l, r);
+                        int use = 3 - r + l;
+                        hand[board[l]] -= use;
+                        backtrace(nb, hand, cur + use);
+                        hand[board[l]] += use;
+                    }
+                }
                 l = r;
             }
         }
-        return 0;
+        if (r - l >= 3) {
+            //直接消除[l,r)这个区间的数字
+            int[] nb = remove(board, l, r);
+            backtrace(nb, hand, cur);
+            return;
+        } else {
+            //尝试插入看够不够数字
+            if (hand[board[l]] + r - l >= 3) {
+                int[] nb = remove(board, l, r);
+                int use = 3 - r + l;
+                hand[board[l]] -= use;
+                backtrace(nb, hand, cur + use);
+                hand[board[l]] += use;
+            }
+        }
+        //上面的方式都不行，则只能穷举
+        for (int i = 0; i <= board.length; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (hand[j] > 0) {
+                    int[] nb = add(board, i, j);
+                    hand[j]--;
+                    backtrace(nb, hand, cur + 1);
+                    hand[j]++;
+                }
+            }
+        }
+    }
+
+    private int[] remove(int[] board, int l, int r) {
+        int[] nb = new int[board.length - (r - l)];
+        int idx = 0;
+        for (int i = 0; i < l; i++) {
+            nb[idx++] = board[i];
+        }
+        for (int i = r; i < board.length; i++) {
+            nb[idx++] = board[i];
+        }
+        return nb;
+    }
+
+    private int[] add(int[] board, int idx, int num) {
+        int[] nb = new int[board.length + 1];
+        int j = 0;
+        for (int i = 0; i < idx; i++) {
+            nb[j++] = board[i];
+        }
+        nb[j++] = num;
+        for (int i = idx; i < board.length; i++) {
+            nb[j++] = board[i];
+        }
+        return nb;
     }
 }
