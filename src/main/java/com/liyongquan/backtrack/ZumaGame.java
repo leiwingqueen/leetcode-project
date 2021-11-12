@@ -72,14 +72,7 @@ import java.util.*;
  */
 @Slf4j
 public class ZumaGame {
-    /**
-     * 超时，看能否做一些剪枝
-     *
-     * @param board
-     * @param hand
-     * @return
-     */
-    private int res = -1;
+    private Map<State, Integer> cache = new HashMap<>();
 
     /**
      * 最后一个用例超时，状态压缩后使用记忆？
@@ -105,20 +98,17 @@ public class ZumaGame {
         for (int i = 0; i < hand.length(); i++) {
             ha[mp.get(hand.charAt(i))]++;
         }
-        backtrace(bo, ha, 0);
-        return res;
+        return backtrace(bo, ha);
     }
 
-    private void backtrace(int[] board, int[] hand, int cur) {
+    private int backtrace(int[] board, int[] hand) {
         if (board.length == 0) {
-            if ((res == -1 || cur < res)) {
-                res = cur;
-            }
-            return;
+            return 0;
         }
-        //剪枝
-        if (res >= 0 && cur >= res) {
-            return;
+        //增加记忆
+        State state = new State(board, hand);
+        if (cache.containsKey(state)) {
+            return cache.get(state);
         }
         //先扫描一遍，看下是否能够直接删除
         int l = 0, r = 0;
@@ -129,8 +119,9 @@ public class ZumaGame {
                 if (r - l >= 3) {
                     //直接消除[l,r)这个区间的数字
                     int[] nb = remove(board, l, r);
-                    backtrace(nb, hand, cur);
-                    return;
+                    int sub = backtrace(nb, hand);
+                    cache.put(state, sub);
+                    return sub;
                 }
                 l = r;
             }
@@ -138,10 +129,12 @@ public class ZumaGame {
         if (r - l >= 3) {
             //直接消除[l,r)这个区间的数字
             int[] nb = remove(board, l, r);
-            backtrace(nb, hand, cur);
-            return;
+            int sub = backtrace(nb, hand);
+            cache.put(state, sub);
+            return sub;
         }
         //优先尝试找相邻的地方插入
+        int min = -1;
         l = 0;
         r = 0;
         while (r < board.length) {
@@ -149,35 +142,43 @@ public class ZumaGame {
                 r++;
             } else {
                 //尝试插入看够不够数字
-                if (hand[board[l]] + r - l >= 3) {
-                    int[] nb = remove(board, l, r);
-                    int use = 3 - r + l;
-                    hand[board[l]] -= use;
-                    backtrace(nb, hand, cur + use);
-                    hand[board[l]] += use;
-                }
+                min = removeNum(board, hand, l, r, min);
                 l = r;
             }
         }
         //尝试插入看够不够数字
-        if (hand[board[l]] + r - l >= 3) {
-            int[] nb = remove(board, l, r);
-            int use = 3 - r + l;
-            hand[board[l]] -= use;
-            backtrace(nb, hand, cur + use);
-            hand[board[l]] += use;
-        }
+        min = removeNum(board, hand, l, r, min);
         //上面的方式都不行，则只能穷举
         for (int i = 0; i <= board.length; i++) {
             for (int j = 0; j < 5; j++) {
                 if (hand[j] > 0) {
                     int[] nb = add(board, i, j);
                     hand[j]--;
-                    backtrace(nb, hand, cur + 1);
+                    int sub = backtrace(nb, hand);
+                    if (sub >= 0 && (min == -1 || sub + 1 < min)) {
+                        min = sub + 1;
+                    }
                     hand[j]++;
                 }
             }
         }
+        //更新缓存
+        cache.put(state, min);
+        return min;
+    }
+
+    private int removeNum(int[] board, int[] hand, int l, int r, int min) {
+        if (hand[board[l]] + r - l >= 3) {
+            int[] nb = remove(board, l, r);
+            int use = 3 - r + l;
+            hand[board[l]] -= use;
+            int sub = backtrace(nb, hand);
+            if (sub >= 0 && (min == -1 || sub + use < min)) {
+                min = sub + use;
+            }
+            hand[board[l]] += use;
+        }
+        return min;
     }
 
     private int[] remove(int[] board, int l, int r) {
@@ -203,5 +204,30 @@ public class ZumaGame {
             nb[j++] = board[i];
         }
         return nb;
+    }
+
+    static class State {
+        int[] board;
+        int[] hand;
+
+        public State(int[] board, int[] hand) {
+            this.board = board;
+            this.hand = hand;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            State state = (State) o;
+            return Arrays.equals(board, state.board) && Arrays.equals(hand, state.hand);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = Arrays.hashCode(board);
+            result = 31 * result + Arrays.hashCode(hand);
+            return result;
+        }
     }
 }
