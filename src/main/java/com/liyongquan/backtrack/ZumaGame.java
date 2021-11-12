@@ -62,13 +62,15 @@ package com.liyongquan.backtrack;
 //链接：https://leetcode-cn.com/problems/zuma-game
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-import java.util.HashMap;
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.*;
 
 /**
  * @author liyongquan
  * @date 2021/11/9
  */
+@Slf4j
 public class ZumaGame {
     /**
      * 超时，看能否做一些剪枝
@@ -79,6 +81,13 @@ public class ZumaGame {
      */
     private int res = -1;
 
+    /**
+     * 最后一个用例超时，状态压缩后使用记忆？
+     *
+     * @param board
+     * @param hand
+     * @return
+     */
     public int findMinStep(String board, String hand) {
         //'R'、'Y'、'B'、'G'、'W'
         Map<Character, Integer> mp = new HashMap<>();
@@ -111,9 +120,8 @@ public class ZumaGame {
         if (res >= 0 && cur >= res) {
             return;
         }
-        //优先尝试找相邻的地方插入
+        //先扫描一遍，看下是否能够直接删除
         int l = 0, r = 0;
-        int res = -1;
         while (r < board.length) {
             if (l == r || board[r] == board[r - 1]) {
                 r++;
@@ -123,15 +131,6 @@ public class ZumaGame {
                     int[] nb = remove(board, l, r);
                     backtrace(nb, hand, cur);
                     return;
-                } else {
-                    //尝试插入看够不够数字
-                    if (hand[board[l]] + r - l >= 3) {
-                        int[] nb = remove(board, l, r);
-                        int use = 3 - r + l;
-                        hand[board[l]] -= use;
-                        backtrace(nb, hand, cur + use);
-                        hand[board[l]] += use;
-                    }
                 }
                 l = r;
             }
@@ -141,15 +140,32 @@ public class ZumaGame {
             int[] nb = remove(board, l, r);
             backtrace(nb, hand, cur);
             return;
-        } else {
-            //尝试插入看够不够数字
-            if (hand[board[l]] + r - l >= 3) {
-                int[] nb = remove(board, l, r);
-                int use = 3 - r + l;
-                hand[board[l]] -= use;
-                backtrace(nb, hand, cur + use);
-                hand[board[l]] += use;
+        }
+        //优先尝试找相邻的地方插入
+        l = 0;
+        r = 0;
+        while (r < board.length) {
+            if (l == r || board[r] == board[r - 1]) {
+                r++;
+            } else {
+                //尝试插入看够不够数字
+                if (hand[board[l]] + r - l >= 3) {
+                    int[] nb = remove(board, l, r);
+                    int use = 3 - r + l;
+                    hand[board[l]] -= use;
+                    backtrace(nb, hand, cur + use);
+                    hand[board[l]] += use;
+                }
+                l = r;
             }
+        }
+        //尝试插入看够不够数字
+        if (hand[board[l]] + r - l >= 3) {
+            int[] nb = remove(board, l, r);
+            int use = 3 - r + l;
+            hand[board[l]] -= use;
+            backtrace(nb, hand, cur + use);
+            hand[board[l]] += use;
         }
         //上面的方式都不行，则只能穷举
         for (int i = 0; i <= board.length; i++) {
