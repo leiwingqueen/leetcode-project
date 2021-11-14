@@ -16,8 +16,7 @@ public class MapSum {
     }
 
     public int sum(String prefix) {
-        TrieNode node = tree.scan(prefix);
-        return node == null ? 0 : node.val;
+        return tree.sum(prefix);
     }
 
     public class TrieTree {
