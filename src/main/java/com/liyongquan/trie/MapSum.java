@@ -12,15 +12,12 @@ public class MapSum {
     }
 
     public void insert(String key, int val) {
-        boolean add = tree.add(key);
-        if (add) {
-            tree.updateCnt(key);
-        }
+        tree.add(key, val);
     }
 
     public int sum(String prefix) {
         TrieNode node = tree.scan(prefix);
-        return node == null ? 0 : node.cnt;
+        return node == null ? 0 : node.val;
     }
 
     public class TrieTree {
@@ -30,7 +27,7 @@ public class MapSum {
             root = new TrieNode('-');
         }
 
-        public boolean add(String word) {
+        public TrieNode add(String word, int val) {
             TrieNode cur = root;
             for (int i = 0; i < word.length(); i++) {
                 char c = word.charAt(i);
@@ -42,10 +39,9 @@ public class MapSum {
             }
             if (!cur.end) {
                 cur.end = true;
-                return true;
-            } else {
-                return false;
             }
+            cur.val = val;
+            return cur;
         }
 
         public boolean containPrefix(String prefix) {
@@ -58,7 +54,7 @@ public class MapSum {
             return node != null && node.end;
         }
 
-        public TrieNode scan(String word) {
+        private TrieNode scan(String word) {
             TrieNode cur = root;
             for (int i = 0; i < word.length(); i++) {
                 char ch = word.charAt(i);
@@ -70,14 +66,28 @@ public class MapSum {
             return cur;
         }
 
-        public void updateCnt(String word) {
+        public int sum(String prefix) {
             TrieNode cur = root;
-            for (int i = 0; i < word.length(); i++) {
-                char c = word.charAt(i);
-                int idx = c - 'a';
-                cur.child[idx].cnt++;
-                cur = cur.child[idx];
+            for (int i = 0; i < prefix.length(); i++) {
+                char ch = prefix.charAt(i);
+                if (cur.child[ch - 'a'] == null) {
+                    return 0;
+                }
+                cur = cur.child[ch - 'a'];
             }
+            //统计下面的所有节点
+            return dfs(cur);
+        }
+
+        private int dfs(TrieNode node) {
+            if (node == null) {
+                return 0;
+            }
+            int sum = node.val;
+            for (TrieNode child : node.child) {
+                sum += dfs(child);
+            }
+            return sum;
         }
     }
 
@@ -85,11 +95,12 @@ public class MapSum {
         char ch;
         boolean end;
         private TrieNode[] child = new TrieNode[26];
-        private int cnt;
+        private int val;
 
         public TrieNode(char ch) {
             this.ch = ch;
             this.end = false;
+            this.val = 0;
         }
     }
 }
