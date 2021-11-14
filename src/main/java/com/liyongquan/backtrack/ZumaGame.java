@@ -154,7 +154,13 @@ public class ZumaGame {
                 if (hand[j] > 0) {
                     int[] nb = add(board, i, j);
                     hand[j]--;
+                    int[] handClone = new int[5];
+                    for (int k = 0; k < 5; k++) {
+                        handClone[k] = hand[k];
+                    }
+                    State subState = new State(nb, handClone);
                     int sub = backtrace(nb, hand);
+                    cache.put(subState, sub);
                     if (sub >= 0 && (min == -1 || sub + 1 < min)) {
                         min = sub + 1;
                     }
