@@ -61,6 +61,11 @@ public class PerfectRectangle {
             if (handle(top, x1, x2, y2)) return false;
             //down
             if (handle(down, x1, x2, y1)) return false;
+        }
+        Arrays.sort(rectangles, Comparator.comparingInt(o -> o[1]));
+        for (int[] rectangle : rectangles) {
+            int x1 = rectangle[0], y1 = rectangle[1];
+            int x2 = rectangle[2], y2 = rectangle[3];
             //left
             if (handle(left, y1, y2, x1)) return false;
             //right
