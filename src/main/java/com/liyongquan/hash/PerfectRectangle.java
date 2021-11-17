@@ -51,42 +51,49 @@ import java.util.*;
 public class PerfectRectangle {
     public boolean isRectangleCover(int[][] rectangles) {
         //统计上下左右，4条边分别的范围
-        Map<Integer, int[]> top = new HashMap<>(), down = new HashMap<>(),
+        Map<Integer, List<int[]>> top = new HashMap<>(), down = new HashMap<>(),
                 left = new HashMap<>(), right = new HashMap<>();
         Arrays.sort(rectangles, Comparator.comparingInt(o -> o[0]));
         for (int[] rectangle : rectangles) {
             int x1 = rectangle[0], y1 = rectangle[1];
             int x2 = rectangle[2], y2 = rectangle[3];
             //top
-            if (handle(top, x1, x2, y2)) return false;
+            handle(top, x1, x2, y2);
             //down
-            if (handle(down, x1, x2, y1)) return false;
+            handle(down, x1, x2, y1);
         }
+        //上下边进行抵消？
+        if (!remove(top, down)) return false;
         Arrays.sort(rectangles, Comparator.comparingInt(o -> o[1]));
         for (int[] rectangle : rectangles) {
             int x1 = rectangle[0], y1 = rectangle[1];
             int x2 = rectangle[2], y2 = rectangle[3];
             //left
-            if (handle(left, y1, y2, x1)) return false;
+            handle(left, y1, y2, x1);
             //right
-            if (handle(right, y1, y2, x2)) return false;
+            handle(right, y1, y2, x2);
         }
-        //上下边进行抵消？
-        if (remove(top, down)) return false;
         //左右边进行抵消
-        if (remove(left, right)) return false;
+        if (!remove(left, right)) return false;
         return true;
     }
 
-    private boolean remove(Map<Integer, int[]> left, Map<Integer, int[]> right) {
+    private boolean remove(Map<Integer, List<int[]>> left, Map<Integer, List<int[]>> right) {
         List<Integer> del = new LinkedList<>();
-        for (Map.Entry<Integer, int[]> entry : left.entrySet()) {
+        for (Map.Entry<Integer, List<int[]>> entry : left.entrySet()) {
             Integer y = entry.getKey();
             if (right.containsKey(y)) {
-                int[] t1 = entry.getValue();
-                int[] t2 = right.get(y);
-                if (t1[0] != t2[0] || t1[1] != t2[1]) {
-                    return true;
+                List<int[]> t1 = entry.getValue();
+                List<int[]> t2 = right.get(y);
+                if (t1.size() != t2.size()) {
+                    return false;
+                }
+                for (int i = 0; i < t1.size(); i++) {
+                    int[] arr1 = t1.get(i);
+                    int[] arr2 = t2.get(i);
+                    if (arr1[0] != arr2[0] || arr1[1] != arr2[1]) {
+                        return false;
+                    }
                 }
                 del.add(y);
             }
@@ -96,26 +103,28 @@ public class PerfectRectangle {
             right.remove(d);
         }
         if (left.size() != 1 || right.size() != 1) {
-            return true;
+            return false;
         }
-        int[] l = left.entrySet().iterator().next().getValue();
-        int[] r = right.entrySet().iterator().next().getValue();
-        if (l[0] != r[0] || l[1] != r[1]) {
-            return true;
+        List<int[]> l = left.entrySet().iterator().next().getValue();
+        List<int[]> r = right.entrySet().iterator().next().getValue();
+        if (l.size() != 1 || r.size() != 1 ||
+                l.get(0)[0] != r.get(0)[0] ||
+                l.get(0)[1] != r.get(0)[1]) {
+            return false;
         }
-        return false;
+        return true;
     }
 
-    private boolean handle(Map<Integer, int[]> map, int x1, int x2, int y) {
+    private void handle(Map<Integer, List<int[]>> map, int x1, int x2, int y) {
         if (!map.containsKey(y)) {
-            map.put(y, new int[]{x1, x2});
-        } else {
-            int[] t = map.get(y);
-            if (t[1] != x1) {
-                return true;
-            }
-            map.put(y, new int[]{t[0], x2});
+            map.put(y, new ArrayList<>());
         }
-        return false;
+        List<int[]> list = map.get(y);
+        if (list.size() == 0 || list.get(list.size() - 1)[1] != x1) {
+            list.add(new int[]{x1, x2});
+        } else {
+            int[] last = list.get(list.size() - 1);
+            list.set(list.size() - 1, new int[]{last[0], x2});
+        }
     }
 }
