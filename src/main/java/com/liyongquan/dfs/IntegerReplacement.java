@@ -40,8 +40,10 @@ import java.util.Map;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class IntegerReplacement {
+    private Map<Integer, Integer> cache = new HashMap<>();
+
     /**
-     * 勉强通过
+     * 增加记忆
      * log(n)的时间效率
      *
      * @param n
@@ -51,10 +53,17 @@ public class IntegerReplacement {
         if (n == 1) {
             return 0;
         }
-        if ((n & 1) == 0) {
-            return integerReplacement(n >> 1) + 1;
+        if (cache.containsKey(n)) {
+            return cache.get(n);
         }
-        return Math.min(integerReplacement(n / 2), integerReplacement(n / 2 + 1)) + 2;
+        if ((n & 1) == 0) {
+            int r = integerReplacement(n >> 1) + 1;
+            cache.put(n, r);
+            return r;
+        }
+        int res = Math.min(integerReplacement(n / 2), integerReplacement(n / 2 + 1)) + 2;
+        cache.put(n, res);
+        return res;
     }
 
     /**
