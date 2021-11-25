@@ -26,7 +26,9 @@ package com.liyongquan.dfs;
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * @author liyongquan
@@ -70,6 +72,9 @@ public class OriginalDigits {
 
     private String res;
 
+    //增加记忆
+    private Map<int[], Boolean> cache = new HashMap<>();
+
     private boolean backtrace(int[] map, int number, Deque<Integer> path) {
         //结束判断
         if (empty(map)) {
@@ -80,18 +85,25 @@ public class OriginalDigits {
             res = sb.toString();
             return true;
         }
+        if (cache.containsKey(map)) {
+            return cache.get(map);
+        }
         //由于只需要升序返回，我们后面选的数字一定要比前面大
         for (int i = number; i <= 9; i++) {
             if (canUse(map, i)) {
                 path.offerLast(i);
                 reduce(map, i);
                 if (backtrace(map, i, path)) {
+                    add(map, i);
+                    int[] clone = map.clone();
+                    cache.put(clone, true);
                     return true;
                 }
                 add(map, i);
                 path.pollLast();
             }
         }
+        cache.put(map.clone(), false);
         return false;
     }
 
