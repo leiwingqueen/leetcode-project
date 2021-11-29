@@ -83,46 +83,91 @@ public class FindAnagrams {
 
     /**
      * 作者：jiang-mi-2
-     *     链接：https://leetcode-cn.com/problems/find-all-anagrams-in-a-string/solution/javayou-hua-labuladongda-lao-hua-dong-chuang-kou-t/
-     *     来源：力扣（LeetCode）
-     *     著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     * 链接：https://leetcode-cn.com/problems/find-all-anagrams-in-a-string/solution/javayou-hua-labuladongda-lao-hua-dong-chuang-kou-t/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     * <p>
+     * 增加一个total变量，这个做法比较巧妙
      *
-     *     增加一个total变量，这个做法比较巧妙
      * @param s
      * @param p
      * @return
      */
     public List<Integer> findAnagrams2(String s, String p) {
-        if(s == null || s.length() == 0) return new ArrayList<>();
+        if (s == null || s.length() == 0) return new ArrayList<>();
         List<Integer> res = new ArrayList<>();
         int[] needs = new int[26]; //由于都是小写字母，因此直接用26个长度的数组代替原来的HashMap
         int[] window = new int[26];
         int left = 0, right = 0, total = p.length(); //用total检测窗口中是否已经涵盖了p中的字符
-        for(char ch : p.toCharArray()){
-            needs[ch - 'a'] ++;
+        for (char ch : p.toCharArray()) {
+            needs[ch - 'a']++;
         }
-        while(right < s.length()){
+        while (right < s.length()) {
             char chr = s.charAt(right);
-            if(needs[chr - 'a'] > 0){
-                window[chr - 'a'] ++;
-                if(window[chr - 'a'] <= needs[chr - 'a']){
-                    total --;
+            if (needs[chr - 'a'] > 0) {
+                window[chr - 'a']++;
+                if (window[chr - 'a'] <= needs[chr - 'a']) {
+                    total--;
                 }
             }
-            while(total == 0){
-                if(right-left+1 == p.length()){
+            while (total == 0) {
+                if (right - left + 1 == p.length()) {
                     res.add(left);
                 }
                 char chl = s.charAt(left);
-                if(needs[chl - 'a'] > 0){
-                    window[chl - 'a'] --;
-                    if(window[chl - 'a'] < needs[chl - 'a']){
-                        total ++;
+                if (needs[chl - 'a'] > 0) {
+                    window[chl - 'a']--;
+                    if (window[chl - 'a'] < needs[chl - 'a']) {
+                        total++;
                     }
                 }
-                left ++;
+                left++;
             }
-            right ++;
+            right++;
+        }
+        return res;
+    }
+
+    /**
+     * 滑动窗口另外一种写法
+     *
+     * @param s
+     * @param p
+     * @return
+     */
+    public List<Integer> findAnagrams3(String s, String p) {
+        if (s.length() < p.length()) {
+            return Collections.emptyList();
+        }
+        int[] need = new int[26], window = new int[26];
+        int satisfy = 0;
+        for (int i = 0; i < p.length(); i++) {
+            need[p.charAt(i) - 'a']++;
+        }
+        //滑动窗口
+        List<Integer> res = new LinkedList<>();
+        int l = 0, r = 0;
+        while (r < s.length()) {
+            char ch = s.charAt(r);
+            window[ch - 'a']++;
+            r++;
+            if (window[ch - 'a'] <= need[ch - 'a']) {
+                satisfy++;
+                if (satisfy == p.length()) {
+                    res.add(l);
+                }
+            } else {
+                //窗口左边界移动
+                while (l < r && window[s.charAt(l) - 'a'] <= need[s.charAt(l) - 'a']) {
+                    satisfy--;
+                    window[s.charAt(l) - 'a']--;
+                    l++;
+                }
+                if (l < r) {
+                    window[s.charAt(l) - 'a']--;
+                    l++;
+                }
+            }
         }
         return res;
     }
