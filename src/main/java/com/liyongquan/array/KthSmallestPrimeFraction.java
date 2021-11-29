@@ -74,4 +74,6 @@ public class KthSmallestPrimeFraction {
         });
         return list.get(k - 1);
     }
+
+    //TODO:二分查找
 }
