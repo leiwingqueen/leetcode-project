@@ -23,4 +23,13 @@ public class FindAnagramsTest {
             log.info("{}", re);
         }
     }
+
+    @Test
+    public void test1() {
+        List<Integer> res = fa.findAnagrams3("abab"
+                , "ab");
+        for (Integer re : res) {
+            log.info("{}", re);
+        }
+    }
 }

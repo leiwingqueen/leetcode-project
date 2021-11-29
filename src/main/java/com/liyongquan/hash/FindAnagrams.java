@@ -167,6 +167,9 @@ public class FindAnagrams {
                     window[s.charAt(l) - 'a']--;
                     l++;
                 }
+                if (satisfy == p.length()) {
+                    res.add(l);
+                }
             }
         }
         return res;
