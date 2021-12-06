@@ -153,4 +153,36 @@ public class BestLine {
     private String hash(long a, long b, long c) {
         return a + "#" + b + "#" + c;
     }
+
+    /**
+     * 向量共线，主要要注意精度的问题
+     * 通过
+     *
+     * @param points
+     * @return
+     */
+    public int[] bestLine3(int[][] points) {
+        int max = 0;
+        int[] res = new int[2];
+        for (int i = 0; i < points.length - 1; i++) {
+            for (int j = i + 1; j < points.length; j++) {
+                int cnt = 2;
+                for (int k = j + 1; k < points.length; k++) {
+                    int deltaX1 = points[j][0] - points[i][0];
+                    int deltaY1 = points[j][1] - points[i][1];
+                    int deltaX2 = points[k][0] - points[j][0];
+                    int deltaY2 = points[k][1] - points[j][1];
+                    if ((long) deltaY1 * deltaX2 == (long) deltaX1 * deltaY2) {
+                        cnt++;
+                    }
+                }
+                if (cnt > max) {
+                    max = cnt;
+                    res[0] = i;
+                    res[1] = j;
+                }
+            }
+        }
+        return res;
+    }
 }

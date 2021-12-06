@@ -18,5 +18,7 @@ public class MedianFinderTest {
         mf.addNum(1);
         mf.addNum(2);
         mf.addNum(3);
+        double median = mf.findMedian();
+        log.info("{}", median);
     }
 }

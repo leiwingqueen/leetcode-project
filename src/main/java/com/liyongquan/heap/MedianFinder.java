@@ -28,7 +28,6 @@ package com.liyongquan.heap;
 //链接：https://leetcode-cn.com/problems/find-median-from-data-stream
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-import java.util.Comparator;
 import java.util.PriorityQueue;
 
 /**
@@ -75,7 +74,8 @@ public class MedianFinder {
         }
         if (size % 2 == 0) {
             return (queueMax.peek() + queueMin.peek()) / 2D;
+        } else {
+            return queueMax.peek();
         }
-        return queueMax.peek();
     }
 }
