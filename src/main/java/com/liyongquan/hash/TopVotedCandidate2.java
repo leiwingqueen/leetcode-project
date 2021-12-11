@@ -36,13 +36,14 @@ public class TopVotedCandidate2 {
     public int q(int t) {
         int l = 0, r = times.length - 1;
         while (l < r) {
-            int mid = l + (r - l) / 2;
+            //这里是关键，取右边界
+            int mid = l + (r - l + 1) / 2;
             if (times[mid] <= t) {
-                l = mid + 1;
+                l = mid;
             } else {
-                r = mid;
+                r = mid - 1;
             }
         }
-        return wins[l - 1];
+        return wins[l];
     }
 }
