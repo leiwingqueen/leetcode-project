@@ -42,7 +42,7 @@ import java.util.Map;
 public class LongestRepeatingSubstring {
     /**
      * 暴力解法
-     *
+     * <p>
      * 超出内存限制
      *
      * @param s
@@ -64,5 +64,44 @@ public class LongestRepeatingSubstring {
             }
         }
         return max;
+    }
+
+    /**
+     * 当没有特别好的思路的时候就尝试二分
+     * <p>
+     * 时间复杂度O(nlogn)
+     *
+     * @param s
+     * @return
+     */
+    public int longestRepeatingSubstring2(String s) {
+        int l = 0, r = s.length();
+        while (l < r) {
+            int mid = l + (r - l + 1) / 2;
+            if (check(s, mid)) {
+                l = mid;
+            } else {
+                r = mid - 1;
+            }
+        }
+        return l;
+    }
+
+    //时间复杂度O(n)
+    private boolean check(String s, int len) {
+        if (len == 0) {
+            return true;
+        }
+        Map<String, Integer> map = new HashMap<>();
+        for (int i = 0; i <= s.length() - len; i++) {
+            String sub = s.substring(i, i + len);
+            map.put(sub, map.getOrDefault(sub, 0) + 1);
+        }
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            if (entry.getValue() > 1) {
+                return true;
+            }
+        }
+        return false;
     }
 }
