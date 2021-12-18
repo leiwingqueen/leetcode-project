@@ -15,9 +15,18 @@ public class MissingElementTest {
         int[] arr = {
                 4, 7, 9, 10
         };
-        int res = me.missing(arr, 7);
+        int res = me.missing(arr, 1);
         log.info("{}", res);
         //int r = me.missingElement(arr, 1);
         //log.info("{}", r);
+    }
+
+    @Test
+    public void test2() {
+        int[] arr = {
+                4, 7, 9, 10
+        };
+        int r = me.missingElement(arr, 1);
+        log.info("{}", r);
     }
 }

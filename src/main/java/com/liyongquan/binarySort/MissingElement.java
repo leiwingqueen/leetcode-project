@@ -50,7 +50,7 @@ public class MissingElement {
         while (l < r) {
             int mid = l + (r - l) / 2;
             int missing = missing(nums, mid);
-            if (missing <= k) {
+            if (missing >= k) {
                 r = mid;
             } else {
                 l = mid + 1;
