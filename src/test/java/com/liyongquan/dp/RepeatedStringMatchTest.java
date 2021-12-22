@@ -12,14 +12,14 @@ public class RepeatedStringMatchTest {
 
     @Test
     public void repeatedStringMatch() {
-        int res = rsm.repeatedStringMatch("abcd",
+        int res = rsm.repeatedStringMatch2("abcd",
                 "cdabcdab");
         Assert.assertEquals(3, res);
     }
 
     @Test
     public void test2() {
-        int res = rsm.repeatedStringMatch("a",
+        int res = rsm.repeatedStringMatch2("a",
                 "aa");
         Assert.assertEquals(2, res);
     }

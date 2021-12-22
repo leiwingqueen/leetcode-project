@@ -67,4 +67,24 @@ public class RepeatedStringMatch {
         }
         return cnt;
     }
+
+    public int repeatedStringMatch2(String a, String b) {
+        //计算最多需要多少个a串
+        int cnt = 1 + ((b.length() - 1) / a.length());
+        if ((b.length() - 1) % a.length() != 0) {
+            cnt++;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < cnt; i++) {
+            sb.append(a);
+        }
+        int idx = sb.toString().indexOf(b);
+        if (idx < 0) {
+            return -1;
+        }
+        int len = idx + b.length();
+        return len / a.length() + (len % a.length() != 0 ? 1 : 0);
+    }
+
+    //TODO:KMP?
 }
