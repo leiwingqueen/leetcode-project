@@ -92,6 +92,7 @@ public class NumFriendRequests {
         Arrays.sort(ages);
         int cnt = 0;
         for (int i = 0; i < ages.length; i++) {
+            //二分查找找到满足条件的y值，需要左右两边同时查找
             int left = searchLeft(ages, i);
             if (left >= 0) {
                 //[idx,i)
@@ -126,7 +127,9 @@ public class NumFriendRequests {
         return l;
     }
 
+    //右边界其实就是找相等的数字的右边界，y<=x,y>0.5x+7，右边也有可能满足这个条件。y==x，且y>0.5x+7，最终换算得到y>14
     private int searchRight(int[] ages, int idx) {
+        //上面条件y>14
         if (ages[idx] <= 14) {
             return -1;
         }
