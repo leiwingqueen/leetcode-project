@@ -84,20 +84,22 @@ public class NumFriendRequests {
      * <p>
      * y<=x
      * y>0.5x+7
+     *
+     * 时间复杂度O(nlogn)
      */
     public int numFriendRequests2(int[] ages) {
         //排序
         Arrays.sort(ages);
         int cnt = 0;
         for (int i = 0; i < ages.length; i++) {
-            int idx = searchLeft(ages, i);
-            if (idx >= 0) {
-                //[idx,i-1]
-                cnt += i - idx;
+            int left = searchLeft(ages, i);
+            if (left >= 0) {
+                //[idx,i)
+                cnt += i - left;
             }
             int right = searchRight(ages, i);
-            if (right >= 0) {
-                cnt += right - idx - 1;
+            if (right > i) {
+                cnt += right - i;
             }
         }
         return cnt;
