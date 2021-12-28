@@ -5,7 +5,7 @@ package com.liyongquan.trie;
  * @date 2021/11/14
  */
 public class TrieTree {
-    private TrieNode root;
+    protected TrieNode root;
 
     public TrieTree() {
         root = new TrieNode('-');
@@ -49,7 +49,7 @@ public class TrieTree {
     static class TrieNode {
         char ch;
         boolean end;
-        private TrieNode[] child = new TrieNode[26];
+        protected TrieNode[] child = new TrieNode[26];
 
         public TrieNode(char ch) {
             this.ch = ch;
