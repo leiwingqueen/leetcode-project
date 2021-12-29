@@ -1,5 +1,7 @@
 package com.liyongquan.trie;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,36 +36,42 @@ import java.util.List;
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 public class FindAllConcatenatedWordsInADict {
+    /**
+     * 总算通过
+     *
+     * @param words
+     * @return
+     */
     public List<String> findAllConcatenatedWordsInADict(String[] words) {
         TrieTreeExt tree = new TrieTreeExt();
-        for (String word : words) {
-            tree.add(word);
-        }
+        Arrays.sort(words, Comparator.comparingInt(String::length));
         List<String> res = new LinkedList<>();
         for (String word : words) {
-            if (check(word, tree) > 1) {
+            if (word.length() == 0) {
+                continue;
+            }
+            if (check(word, tree)) {
                 res.add(word);
+            } else {
+                //这里必须加else，可以减少很多多余的检查。假设c由a,b组成，e由c,d组成，那么c其实不需要加入到前缀树中
+                tree.add(word);
             }
         }
         return res;
     }
 
-    private int check(String word, TrieTreeExt tree) {
+    private boolean check(String word, TrieTreeExt tree) {
+        if (word.length() == 0) {
+            return true;
+        }
         List<String> match = tree.findMatch(word);
-        int res = 0;
         for (String s : match) {
-            if (word.length() == s.length()) {
-                if (res < 1) {
-                    res = 1;
-                }
-            }
             String sub = word.substring(s.length());
-            int r = check(sub, tree);
-            if (r > 0) {
-                res = Math.max(res, r + 1);
+            if (check(sub, tree)) {
+                return true;
             }
         }
-        return res;
+        return false;
     }
 
     static class TrieTreeExt extends TrieTree {
