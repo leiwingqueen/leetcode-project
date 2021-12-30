@@ -1,7 +1,5 @@
 package com.liyongquan.tree;
 
-import jdk.nashorn.internal.runtime.linker.LinkerCallSite;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,13 +33,6 @@ import java.util.TreeMap;
 //链接：https://leetcode-cn.com/problems/hand-of-straights
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 public class NStraightHand {
-    /**
-     * 时间复杂度O(nlogn)
-     *
-     * @param hand
-     * @param groupSize
-     * @return
-     */
     public boolean isNStraightHand(int[] hand, int groupSize) {
         TreeMap<Integer, Integer> map = new TreeMap<>();
         for (int h : hand) {
@@ -72,6 +63,38 @@ public class NStraightHand {
                     map.remove(d);
                 } else {
                     map.put(d, map.get(d) - 1);
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 时间复杂度O(nlogn)
+     * <p>
+     * 在上面的写法上做些优化
+     *
+     * @param hand
+     * @param groupSize
+     * @return
+     */
+    public boolean isNStraightHand2(int[] hand, int groupSize) {
+        TreeMap<Integer, Integer> map = new TreeMap<>();
+        for (int h : hand) {
+            map.put(h, map.getOrDefault(h, 0) + 1);
+        }
+        while (!map.isEmpty()) {
+            Integer first = map.firstKey();
+            int last = first + groupSize - 1;
+            for (int i = first; i <= last; i++) {
+                Integer cnt = map.getOrDefault(i, 0);
+                if (cnt == 0) {
+                    return false;
+                }
+                if (cnt == 1) {
+                    map.remove(i);
+                } else {
+                    map.put(i, cnt - 1);
                 }
             }
         }
