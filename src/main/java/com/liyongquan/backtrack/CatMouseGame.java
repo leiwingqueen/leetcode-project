@@ -62,11 +62,11 @@ public class CatMouseGame {
      * @return
      */
     public int catMouseGame(int[][] graph) {
-        return backtrace(graph, 1, 2, true, new HashMap<>());
+        return backtrace(graph, 1, 2, true, new HashSet<>());
     }
 
-    private int backtrace(int[][] graph, int p1, int p2, boolean seq, Map<Integer, Integer> map) {
-        log.info("p1:{},p2:{},seq:{}", p1, p2, seq);
+    private int backtrace(int[][] graph, int p1, int p2, boolean seq, Set<Integer> set) {
+        //log.info("p1:{},p2:{},seq:{}", p1, p2, seq);
         if (p1 == 0) {
             return 1;
         }
@@ -74,16 +74,17 @@ public class CatMouseGame {
             return 2;
         }
         int state = encode(p1, p2, seq);
-        if (map.containsKey(state)) {
-            return map.get(state);
+        if (set.contains(state)) {
+            return 0;
         }
+        //注意这里一定要放前面
+        set.add(state);
         int res;
         if (seq) {
             //老鼠先走
             res = 2;
             for (int next : graph[p1]) {
-                int r = backtrace(graph, next, p2, false, map);
-                map.put(encode(next, p2, false), r);
+                int r = backtrace(graph, next, p2, false, set);
                 if (r == 1) {
                     res = 1;
                     break;
@@ -99,8 +100,7 @@ public class CatMouseGame {
                 if (next == 0) {
                     continue;
                 }
-                int r = backtrace(graph, p1, next, true, map);
-                map.put(encode(p1, next, true), r);
+                int r = backtrace(graph, p1, next, true, set);
                 if (r == 2) {
                     res = 2;
                     break;
@@ -109,11 +109,73 @@ public class CatMouseGame {
                 }
             }
         }
-        map.put(state, res);
         return res;
     }
 
     private int encode(int p1, int p2, boolean seq) {
         return ((seq ? 1 : 0) << 12) | (p1 << 6) | p2;
+    }
+
+    /**
+     * dp解法
+     * <p>
+     * 击败了8%的用户
+     *
+     * @param graph
+     * @return
+     */
+    public int catMouseGame2(int[][] graph) {
+        int n = graph.length;
+        int[][][] dp = new int[2 * n][n][n];
+        //初始化
+        /*for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                dp[2 * n - 1][i][j] = 0;
+            }
+        }*/
+        for (int i = 0; i < 2 * n; i++) {
+            for (int j = 1; j < n; j++) {
+                dp[i][0][j] = 1;
+                dp[i][j][j] = 2;
+            }
+        }
+        for (int i = 2 * n - 2; i >= 0; i--) {
+            for (int j = 1; j < n; j++) {
+                for (int k = 1; k < n; k++) {
+                    if (j == k) {
+                        dp[i][j][k] = 2;
+                    } else {
+                        if (i % 2 == 0) {
+                            //老鼠走
+                            dp[i][j][k] = 2;
+                            for (int next : graph[j]) {
+                                if (dp[i + 1][next][k] == 1) {
+                                    dp[i][j][k] = 1;
+                                    break;
+                                } else if (dp[i + 1][next][k] == 0) {
+                                    dp[i][j][k] = 0;
+                                }
+                            }
+                        } else {
+                            //猫走
+                            dp[i][j][k] = 1;
+                            for (int next : graph[k]) {
+                                //猫不能去0
+                                if (next == 0) {
+                                    continue;
+                                }
+                                if (dp[i + 1][j][next] == 2) {
+                                    dp[i][j][k] = 2;
+                                    break;
+                                } else if (dp[i + 1][j][next] == 0) {
+                                    dp[i][j][k] = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return dp[0][1][2];
     }
 }
