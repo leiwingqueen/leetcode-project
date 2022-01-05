@@ -2,9 +2,7 @@ package com.liyongquan.backtrack;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 //913. 猫和老鼠
