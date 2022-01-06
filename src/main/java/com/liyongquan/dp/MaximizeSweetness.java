@@ -45,6 +45,12 @@ public class MaximizeSweetness {
      * f(n,k)=max{min{f(n-1,k-1),A[i-1]},min{f(n-2,k-1),A[i-1]+A[i-2]},...}
      * <p>
      * 其中k<=n
+     * <p>
+     * 时间复杂度O(n^2*k)
+     * <p>
+     * 超时
+     * <p>
+     * 这个数量级只能考虑二分
      *
      * @param sweetness
      * @param k
@@ -72,7 +78,7 @@ public class MaximizeSweetness {
         for (int i = 1; i < n; i++) {
             for (int j = 1; j < i && j <= k; j++) {
                 int max = 0;
-                for (int l = j; l <= i - 1; l++) {
+                for (int l = j - 1; l < i; l++) {
                     //[l+1,i+1)
                     int r = Math.min(dp[l][j - 1], preSum[i + 1] - preSum[l + 1]);
                     max = Math.max(max, r);
@@ -81,5 +87,49 @@ public class MaximizeSweetness {
             }
         }
         return dp[n - 1][k];
+    }
+
+    /**
+     * 二分查找
+     *
+     * @param sweetness
+     * @param k
+     * @return
+     */
+    public int maximizeSweetness2(int[] sweetness, int k) {
+        int n = sweetness.length;
+        int min = Integer.MAX_VALUE;
+        int sum = 0;
+        for (int i = 0; i < n; i++) {
+            min = Math.min(sweetness[i], min);
+            sum += sweetness[i];
+        }
+        int l = min, r = sum;
+        while (l < r) {
+            int mid = l + (r - l + 1) / 2;
+            if (check(sweetness, k, mid)) {
+                l = mid;
+            } else {
+                r = mid - 1;
+            }
+        }
+        return l;
+    }
+
+    private boolean check(int[] sweetness, int k, int s) {
+        int n = sweetness.length;
+        int idx = 0;
+        int cnt = 0;
+        while (idx < n && cnt < k + 1) {
+            int sum = 0;
+            while (idx < n && sum < s) {
+                sum += sweetness[idx++];
+            }
+            if (sum < s) {
+                return false;
+            }
+            cnt++;
+        }
+        return cnt >= k + 1;
     }
 }
