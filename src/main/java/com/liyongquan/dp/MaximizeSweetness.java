@@ -43,7 +43,7 @@ public class MaximizeSweetness {
      * dp表达式
      * <p>
      * f(n,k)=max{min{f(n-1,k-1),A[i-1]},min{f(n-2,k-1),A[i-1]+A[i-2]},...}
-     *
+     * <p>
      * 其中k<=n
      *
      * @param sweetness
@@ -52,14 +52,15 @@ public class MaximizeSweetness {
      */
     public int maximizeSweetness(int[] sweetness, int k) {
         int n = sweetness.length;
-        int[][] dp = new int[n][k];
+        //前n个巧克力，切k刀,其中k<n
+        int[][] dp = new int[n][k + 1];
         //初始化
         dp[0][0] = sweetness[0];
         for (int i = 1; i < n; i++) {
             dp[i][0] = dp[i - 1][0] + sweetness[i];
         }
         //对角线
-        for (int i = 1; i < k; i++) {
+        for (int i = 1; i < n && i <= k; i++) {
             dp[i][i] = Math.min(dp[i - 1][i - 1], sweetness[i]);
         }
         //前缀和
@@ -69,16 +70,16 @@ public class MaximizeSweetness {
         }
         //dp迭代
         for (int i = 1; i < n; i++) {
-            for (int j = 1; j < Math.min(i, k); j++) {
+            for (int j = 1; j < i && j <= k; j++) {
                 int max = 0;
                 for (int l = j; l <= i - 1; l++) {
-                    //[l,i)
-                    int r = Math.min(dp[l][j - 1], preSum[i] - preSum[l]);
+                    //[l+1,i+1)
+                    int r = Math.min(dp[l][j - 1], preSum[i + 1] - preSum[l + 1]);
                     max = Math.max(max, r);
                 }
                 dp[i][j] = max;
             }
         }
-        return dp[n - 1][k - 1];
+        return dp[n - 1][k];
     }
 }
