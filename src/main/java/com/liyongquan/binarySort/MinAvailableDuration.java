@@ -45,6 +45,8 @@ import java.util.List;
 public class MinAvailableDuration {
     /**
      * 这个双指针其实不那么容易想到
+     * <p>
+     * java的双指针写法有点恶心，还是go的写法比较优雅
      *
      * @param slots1
      * @param slots2
