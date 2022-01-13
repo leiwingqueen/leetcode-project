@@ -72,5 +72,36 @@ public class IncreasingTriplet {
         return false;
     }
 
-    //TODO:dp解法
+    /**
+     * 双向扫描
+     *
+     * 时间复杂度O(n)
+     *
+     * 空间复杂度O(n)
+     *
+     * @param nums
+     * @return
+     */
+    public boolean increasingTriplet2(int[] nums) {
+        int len = nums.length;
+        //某个位置左边的最小数字
+        int[] left = new int[len];
+        //某个位置右边的最大数字
+        int[] right = new int[len];
+        left[0] = Integer.MAX_VALUE;
+        for (int i = 1; i < len; i++) {
+            left[i] = Math.min(nums[i - 1], left[i - 1]);
+        }
+        right[len - 1] = Integer.MIN_VALUE;
+        for (int i = len - 2; i >= 0; i--) {
+            right[i] = Math.max(nums[i + 1], right[i + 1]);
+        }
+        //再做一次遍历
+        for (int i = 1; i < len - 1; i++) {
+            if (nums[i] > left[i] && nums[i] < right[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
