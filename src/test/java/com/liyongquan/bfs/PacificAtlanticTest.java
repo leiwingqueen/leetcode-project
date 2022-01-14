@@ -20,7 +20,7 @@ public class PacificAtlanticTest {
                 {6, 7, 1, 4, 5},
                 {5, 1, 1, 2, 4}
         };
-        List<List<Integer>> res = atlantic.pacificAtlantic(grids);
+        List<List<Integer>> res = atlantic.pacificAtlantic2(grids);
         for (List<Integer> re : res) {
             log.info("[{},{}]", re.get(0), re.get(1));
         }

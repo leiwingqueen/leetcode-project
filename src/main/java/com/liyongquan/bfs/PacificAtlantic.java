@@ -47,8 +47,8 @@ public class PacificAtlantic {
     };
 
     /**
-     * 先用最简单的bfs
-     *
+     * 先用最简单的bfs，多源的BFS
+     * <p>
      * 果然是性能击败5%
      *
      * @param heights
@@ -95,5 +95,35 @@ public class PacificAtlantic {
             }
         }
         return false;
+    }
+
+    /**
+     * 同样是BFS，但是一开始的源头只有左下和右上节点
+     *
+     * @param heights
+     * @return
+     */
+    public List<List<Integer>> pacificAtlantic2(int[][] heights) {
+        int row = heights.length, col = heights[0].length;
+        Queue<int[]> queue = new LinkedList<>();
+        queue.add(new int[]{row - 1, 0});
+        queue.add(new int[]{0, col - 1});
+        boolean[][] visit = new boolean[row][col];
+        visit[row - 1][0] = true;
+        visit[0][col - 1] = true;
+        List<List<Integer>> res = new LinkedList<>();
+        while (!queue.isEmpty()) {
+            int[] poll = queue.poll();
+            res.add(Arrays.asList(poll[0], poll[1]));
+            for (int[] dir : DIRS) {
+                int x = poll[0] + dir[0];
+                int y = poll[1] + dir[1];
+                if (x >= 0 && x < row && y >= 0 && y < col && !visit[x][y] && heights[x][y] >= heights[poll[0]][poll[1]]) {
+                    visit[x][y] = true;
+                    queue.add(new int[]{x, y});
+                }
+            }
+        }
+        return res;
     }
 }
