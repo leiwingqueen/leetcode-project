@@ -1,6 +1,8 @@
 package com.liyongquan.bfs;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 //给定一个 m x n 的非负整数矩阵来表示一片大陆上各个单元格的高度。“太平洋”处于大陆的左边界和上边界，而“大西洋”处于大陆的右边界和下边界。
 //
@@ -98,23 +100,56 @@ public class PacificAtlantic {
     }
 
     /**
-     * 同样是BFS，但是一开始的源头只有左下和右上节点
+     * 同样是BFS
+     * https://leetcode-cn.com/problems/pacific-atlantic-water-flow/solution/shui-wang-gao-chu-liu-by-xiaohu9527-xxsx/
      *
      * @param heights
      * @return
      */
     public List<List<Integer>> pacificAtlantic2(int[][] heights) {
         int row = heights.length, col = heights[0].length;
-        Queue<int[]> queue = new LinkedList<>();
-        queue.add(new int[]{row - 1, 0});
-        queue.add(new int[]{0, col - 1});
-        boolean[][] visit = new boolean[row][col];
-        visit[row - 1][0] = true;
-        visit[0][col - 1] = true;
+        Set<Integer> s1 = bfs2(heights, row, col, () -> {
+            List<int[]> list = new LinkedList<>();
+            for (int i = 0; i < row; i++) {
+                list.add(new int[]{i, 0});
+            }
+            for (int i = 0; i < col; i++) {
+                list.add(new int[]{0, i});
+            }
+            return list;
+        });
+        Set<Integer> s2 = bfs2(heights, row, col, () -> {
+            List<int[]> list = new LinkedList<>();
+            for (int i = 0; i < row; i++) {
+                list.add(new int[]{i, col - 1});
+            }
+            for (int i = 0; i < col; i++) {
+                list.add(new int[]{row - 1, i});
+            }
+            return list;
+        });
+        //取交集
         List<List<Integer>> res = new LinkedList<>();
+        for (Integer p : s1) {
+            if (s2.contains(p)) {
+                res.add(Arrays.asList(p / col, p % col));
+            }
+        }
+        return res;
+    }
+
+    private Set<Integer> bfs2(int[][] heights, int row, int col, Supplier<List<int[]>> initFun) {
+        Queue<int[]> queue = new LinkedList<>();
+        List<int[]> list = initFun.get();
+        boolean[][] visit = new boolean[row][col];
+        for (int[] pos : list) {
+            queue.add(pos);
+            visit[pos[0]][pos[1]] = true;
+        }
+        Set<Integer> res = new HashSet<>();
         while (!queue.isEmpty()) {
             int[] poll = queue.poll();
-            res.add(Arrays.asList(poll[0], poll[1]));
+            res.add(poll[0] * col + poll[1]);
             for (int[] dir : DIRS) {
                 int x = poll[0] + dir[0];
                 int y = poll[1] + dir[1];
