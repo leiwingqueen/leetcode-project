@@ -38,6 +38,8 @@ package com.liyongquan.fsm;
 //链接：https://leetcode-cn.com/problems/count-vowels-permutation
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+import java.util.Arrays;
+
 public class CountVowelPermutation {
     public static final int[][] fsm = {
             {1},
@@ -98,6 +100,37 @@ public class CountVowelPermutation {
         int sum = 0;
         for (int i = 0; i < 5; i++) {
             sum += dp[i][n - 1];
+            sum %= mod;
+        }
+        return sum;
+    }
+
+    /**
+     * 上面基础做优化，每次DP迭代只用到上一个状态，因此空间复杂度还可以降一下
+     *
+     * @param n
+     * @return
+     */
+    public int countVowelPermutation3(int n) {
+        int mod = 1000000007;
+        int[] dp = new int[5];
+        //初始化
+        for (int i = 0; i < 5; i++) {
+            dp[i] = 1;
+        }
+        for (int i = 1; i < n; i++) {
+            int[] ndp = new int[5];
+            for (int j = 0; j < 5; j++) {
+                for (int next : fsm[j]) {
+                    ndp[j] += dp[next];
+                    ndp[j] %= mod;
+                }
+            }
+            System.arraycopy(ndp, 0, dp, 0, 5);
+        }
+        int sum = 0;
+        for (int i = 0; i < 5; i++) {
+            sum += dp[i];
             sum %= mod;
         }
         return sum;
