@@ -136,5 +136,54 @@ public class CountVowelPermutation {
         return sum;
     }
 
-    //TODO:快速幂
+    //TODO:矩阵乘法+快速幂
+    public static final int[][] matrix = {
+            {0, 1, 1, 0, 1},
+            {1, 0, 1, 0, 0},
+            {0, 1, 0, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 0, 1, 1, 0}
+    };
+
+    public static final int MOD = 1000000007;
+
+    public int countVowelPermutation4(int n) {
+        if (n == 1) {
+            return 5;
+        }
+        //快速幂
+        int[][] pow = pow(matrix, n - 1);
+        int[][] res = plus(pow, new int[][]{{1, 1, 1, 1}});
+        int sum = 0;
+        for (int r : res[0]) {
+            sum = (sum + r) % MOD;
+        }
+        return sum;
+    }
+
+    private int[][] pow(int[][] mtr, int n) {
+        if (n == 1) {
+            return mtr;
+        }
+        if (n % 2 == 0) {
+            return pow(plus(mtr, mtr), n / 2);
+        } else {
+            return plus(pow(mtr, n - 1), mtr);
+        }
+    }
+
+    private int[][] plus(int[][] a, int[][] b) {
+        int m = a.length;
+        int n = b[0].length;
+        int p = a[0].length;
+        int[][] res = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int k = 0; k < p; k++) {
+                    res[i][j] = (res[i][j] + a[i][k] * b[k][j]) % MOD;
+                }
+            }
+        }
+        return res;
+    }
 }
