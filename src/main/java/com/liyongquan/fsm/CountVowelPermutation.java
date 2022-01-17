@@ -73,4 +73,35 @@ public class CountVowelPermutation {
         }
         return sum;
     }
+
+    /**
+     * 把回溯改成DP?
+     *
+     * @param n
+     * @return
+     */
+    public int countVowelPermutation2(int n) {
+        int mod = 1000000007;
+        int[][] dp = new int[5][n];
+        //初始化
+        for (int i = 0; i < 5; i++) {
+            dp[i][0] = 1;
+        }
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < 5; j++) {
+                for (int next : fsm[j]) {
+                    dp[j][i] += dp[next][i - 1];
+                    dp[j][i] %= mod;
+                }
+            }
+        }
+        int sum = 0;
+        for (int i = 0; i < 5; i++) {
+            sum += dp[i][n - 1];
+            sum %= mod;
+        }
+        return sum;
+    }
+
+    //TODO:快速幂
 }
