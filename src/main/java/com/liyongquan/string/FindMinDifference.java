@@ -35,6 +35,10 @@ public class FindMinDifference {
      * @return
      */
     public int findMinDifference(List<String> timePoints) {
+        //抽屉原理
+        if (timePoints.size() > 60 * 24) {
+            return 0;
+        }
         timePoints.sort(String::compareTo);
         int diff = Integer.MAX_VALUE;
         for (int i = 0; i < timePoints.size(); i++) {
