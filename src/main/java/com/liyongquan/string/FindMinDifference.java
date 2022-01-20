@@ -1,7 +1,5 @@
 package com.liyongquan.string;
 
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 //539. 最小时间差
