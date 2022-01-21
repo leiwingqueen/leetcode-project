@@ -113,4 +113,105 @@ public class MinJumpsIV {
         }
         return path[0];
     }
+
+    /**
+     * 既然是求两个点的最短路径，直接用BFS就好。。。脑子抽风
+     *
+     * @param arr
+     * @return
+     */
+    public int minJumps2(int[] arr) {
+        //构造相同value的下标的列表
+        int len = arr.length;
+        Map<Integer, List<Integer>> mp = new HashMap<>();
+        for (int i = 0; i < len; i++) {
+            if (!mp.containsKey(arr[i])) {
+                mp.put(arr[i], new LinkedList<>());
+            }
+            mp.get(arr[i]).add(i);
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        boolean[] visit = new boolean[len];
+        visit[0] = true;
+        queue.add(0);
+        int depth = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Integer poll = queue.poll();
+                if (poll == len - 1) {
+                    return depth;
+                }
+                int idx = poll - 1;
+                if (idx >= 0 && !visit[idx]) {
+                    queue.add(idx);
+                    visit[idx] = true;
+                }
+                idx = poll + 1;
+                if (idx < len && !visit[idx]) {
+                    queue.add(idx);
+                    visit[idx] = true;
+                }
+                //这里还是可能会导致超时，每次把相邻的边都要扫描一次
+                List<Integer> list = mp.getOrDefault(arr[poll], new ArrayList<>());
+                for (Integer x : list) {
+                    if (x != poll && !visit[x]) {
+                        queue.add(x);
+                        visit[x] = true;
+                    }
+                }
+            }
+            depth++;
+        }
+        return depth;
+    }
+
+    public static final int[] NEIGHBOR = {-1, 1};
+
+    public int minJumps3(int[] arr) {
+        //构造相同value的下标的列表
+        int len = arr.length;
+        Map<Integer, Set<Integer>> mp = new HashMap<>();
+        for (int i = 0; i < len; i++) {
+            if (!mp.containsKey(arr[i])) {
+                mp.put(arr[i], new HashSet<>());
+            }
+            mp.get(arr[i]).add(i);
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        boolean[] visit = new boolean[len];
+        visit[0] = true;
+        queue.add(0);
+        int depth = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Integer poll = queue.poll();
+                if (poll == len - 1) {
+                    return depth;
+                }
+                for (int x : NEIGHBOR) {
+                    int idx = poll + x;
+                    if (idx >= 0 && idx < len && !visit[idx]) {
+                        queue.add(idx);
+                        visit[idx] = true;
+                        //避免后面扫描到重复的边
+                        mp.get(arr[idx]).remove(idx);
+                    }
+                }
+                //这里还是可能会导致超时，每次把相邻的边都要扫描一次
+                Set<Integer> list = mp.getOrDefault(arr[poll], new HashSet<>());
+                for (Integer x : list) {
+                    if (!visit[x]) {
+                        queue.add(x);
+                        visit[x] = true;
+                    }
+                }
+                //这里是关键，相邻的边都扫描过了，这里就可以直接删掉了
+                mp.remove(arr[poll]);
+            }
+            depth++;
+        }
+        return depth;
+    }
 }
