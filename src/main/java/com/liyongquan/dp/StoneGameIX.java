@@ -51,6 +51,8 @@ public class StoneGameIX {
     /**
      * 先尝试最简单的回溯
      *
+     * 必然超时
+     *
      * @param stones
      * @return
      */
@@ -71,6 +73,7 @@ public class StoneGameIX {
                 stones[i]--;
                 boolean sub = backtrace(stones, cnt - 1, !alice, (sum + i) % 3);
                 if (!sub) {
+                    stones[i]++;
                     return true;
                 }
                 stones[i]++;
