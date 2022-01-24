@@ -184,7 +184,7 @@ public class SecondMinimum {
         //第二短的路径
         int[] second = new int[n];
         for (int i = 0; i < n; i++) {
-            second[i] = Integer.MAX_VALUE;
+            second[i] = -1;
         }
         visit[0] = true;
         queue.add(0);
@@ -194,13 +194,8 @@ public class SecondMinimum {
                 //没有访问过的话就是最短路径
                 int d1 = dis[poll] + time;
                 //等待时间处理
-                if (d1 % round >= change) {
+                if (dis[poll] % round >= change) {
                     d1 += round - dis[poll] % round;
-                }
-                //次短路径的时间
-                int d2 = second[poll] + time;
-                if (d2 % round >= change) {
-                    d2 += round - second[poll] % round;
                 }
                 if (!visit[next]) {
                     dis[next] = d1;
@@ -209,12 +204,19 @@ public class SecondMinimum {
                 } else {
                     //次短路径处理
                     boolean flag = false;
-                    if (d1 < second[next] && d1 > dis[poll]) {
+                    if ((second[next] == -1 || d1 < second[next]) && d1 > dis[next]) {
                         second[next] = d1;
                         flag = true;
-                    } else if (d2 < second[next] && d2 > dis[poll]) {
-                        second[next] = d2;
-                        flag = true;
+                    } else if (second[poll] >= 0) {
+                        //次短路径的时间
+                        int d2 = second[poll] + time;
+                        if (second[poll] % round >= change) {
+                            d2 += round - second[poll] % round;
+                        }
+                        if ((second[next] == -1 || d2 < second[next]) && d2 > dis[next]) {
+                            second[next] = d2;
+                            flag = true;
+                        }
                     }
                     //需要继续更新后面的节点
                     if (flag) {
