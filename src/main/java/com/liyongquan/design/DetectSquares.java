@@ -74,6 +74,10 @@ public class DetectSquares {
             if (pos[0] == point[0] || pos[1] == point[1]) {
                 continue;
             }
+            //保证是正方形
+            if (Math.abs(pos[0] - point[0]) != Math.abs(pos[1] - point[1])) {
+                continue;
+            }
             //剩下的两个点
             int[] p1 = {pos[0], point[1]};
             int[] p2 = {point[0], pos[1]};
