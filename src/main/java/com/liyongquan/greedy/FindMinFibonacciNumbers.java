@@ -104,4 +104,23 @@ public class FindMinFibonacciNumbers {
         }
         return fib[l];
     }
+
+    /**
+     * 还有一个理解，我们下一次取的数不可能比上一次的数字大
+     *
+     * @param k
+     * @return
+     */
+    public int findMinFibonacciNumbers3(int k) {
+        int cnt = 0;
+        int idx = FIB.length - 1;
+        while (k > 0) {
+            while (k < FIB[idx]) {
+                idx--;
+            }
+            k -= FIB[idx];
+            cnt++;
+        }
+        return cnt;
+    }
 }
