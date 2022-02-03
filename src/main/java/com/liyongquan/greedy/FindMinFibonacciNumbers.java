@@ -39,6 +39,7 @@ package com.liyongquan.greedy;
 
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 
 public class FindMinFibonacciNumbers {
     /**
@@ -69,5 +70,38 @@ public class FindMinFibonacciNumbers {
             }
         }
         return cnt;
+    }
+
+
+    //预先计算
+    public static final int[] FIB = {
+            1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597,
+            2584, 4181, 6765, 10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811,
+            514229, 832040, 1346269, 2178309, 3524578, 5702887, 9227465, 14930352, 24157817,
+            39088169, 63245986, 102334155, 165580141, 267914296, 433494437, 701408733, 1134903170
+    };
+
+    //由于斐波那契数列的单调性，我们可以用二分查找加速查找过程
+    public int findMinFibonacciNumbers2(int k) {
+        int cnt = 0;
+        while (k > 0) {
+            int num = search(FIB, k);
+            k -= num;
+            cnt++;
+        }
+        return cnt;
+    }
+
+    private int search(int[] fib, int k) {
+        int l = 0, r = fib.length - 1;
+        while (l < r) {
+            int mid = l + (r - l + 1) / 2;
+            if (fib[mid] <= k) {
+                l = mid;
+            } else {
+                r = mid - 1;
+            }
+        }
+        return fib[l];
     }
 }
