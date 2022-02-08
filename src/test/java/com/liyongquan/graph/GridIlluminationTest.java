@@ -26,4 +26,20 @@ public class GridIlluminationTest {
             log.info("{}", re);
         }
     }
+
+    //6
+    //[[1,1]]
+    //[[2,0],[1,0]]
+    @Test
+    public void test2() {
+        int[] res = illumination.gridIllumination(6, new int[][]{
+                {1, 1},
+        }, new int[][]{
+                {2, 0},
+                {1, 0}
+        });
+        for (int re : res) {
+            log.info("{}", re);
+        }
+    }
 }
