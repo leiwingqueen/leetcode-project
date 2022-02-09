@@ -15,4 +15,10 @@ public class MinimumTimeTest {
         int res = mt.minimumTime("1100101");
         Assert.assertEquals(5, res);
     }
+
+    @Test
+    public void minimumTime2() {
+        int res = mt.minimumTime2("1100101");
+        Assert.assertEquals(5, res);
+    }
 }

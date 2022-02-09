@@ -65,7 +65,7 @@ package com.liyongquan.weeklycontest.wc279;
 public class MinimumTime {
     /**
      * 回溯？
-     *
+     * <p>
      * 必然超时了
      *
      * @param s
@@ -113,5 +113,32 @@ public class MinimumTime {
         arr[idx] = '1';
         int sub4 = backtrace(arr, l, idx - 1) + (r - idx + 1);
         return Math.min(Math.min(Math.min(sub1, sub2), sub3), sub4);
+    }
+
+    /**
+     * 前缀和+数学
+     * <p>
+     * i+(n-j)+2*(pre[j]-pre[i])
+     * <p>
+     * (i-2*pre[i])+(2*pre[j]-j)+n
+     * <p>
+     * 其中i<=j
+     *
+     * @param s
+     * @return
+     */
+    public int minimumTime2(String s) {
+        int len = s.length();
+        int[] pre = new int[len + 1];
+        for (int i = 0; i < len; i++) {
+            pre[i + 1] = pre[i] + (s.charAt(i) == '1' ? 1 : 0);
+        }
+        int res = Integer.MAX_VALUE;
+        int iMin = Integer.MAX_VALUE;
+        for (int i = 0; i <= len; i++) {
+            iMin = Math.min(iMin, i - 2 * pre[i]);
+            res = Math.min(2 * pre[i] - i + iMin + len, res);
+        }
+        return res;
     }
 }
