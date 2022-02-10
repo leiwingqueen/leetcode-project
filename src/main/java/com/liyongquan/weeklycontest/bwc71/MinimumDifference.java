@@ -53,7 +53,7 @@ public class MinimumDifference {
      * <p>
      * 左右两份部分为
      * [0,k),[k,3n)
-     * 我们需要保证左右两边都至少有n个数字，那么k的取值范围[n,2n)
+     * 我们需要保证左右两边都至少有n个数字，那么k的取值范围[n,2n]，一共n+1个选项
      * <p>
      * 分别求左右两边的最小和最大的n个数字和我们可以考虑用空间换时间，预计算来得到
      *
@@ -62,16 +62,16 @@ public class MinimumDifference {
      */
     public long minimumDifference(int[] nums) {
         int n = nums.length / 3;
-        int[] left = new int[n], right = new int[n];
+        long[] left = new long[n + 1], right = new long[n + 1];
         //计算左边区域
         PriorityQueue<Integer> pqMax = new PriorityQueue<>((o1, o2) -> o2 - o1);
-        int sum = 0;
+        long sum = 0;
         for (int i = 0; i < n; i++) {
             sum += nums[i];
             pqMax.add(nums[i]);
         }
         left[0] = sum;
-        for (int i = 1; i < n; i++) {
+        for (int i = 1; i <= n; i++) {
             int num = nums[n + i - 1];
             pqMax.add(num);
             Integer poll = pqMax.poll();
@@ -85,17 +85,17 @@ public class MinimumDifference {
             sum += nums[i];
             pqMin.add(nums[i]);
         }
-        right[n - 1] = sum;
-        for (int i = 1; i < n; i--) {
+        right[n] = sum;
+        for (int i = 1; i <= n; i++) {
             int num = nums[2 * n - i];
             pqMin.add(num);
             Integer poll = pqMin.poll();
             sum += num - poll;
-            right[n - i - 1] = sum;
+            right[n - i] = sum;
         }
         //遍历一次，求最小值
-        int res = Integer.MAX_VALUE;
-        for (int i = 0; i < n; i++) {
+        long res = Long.MAX_VALUE;
+        for (int i = 0; i <= n; i++) {
             res = Math.min(left[i] - right[i], res);
         }
         return res;
