@@ -71,17 +71,20 @@ public class NumEnclaves {
         int cnt = 0;
         Queue<int[]> queue = new LinkedList<>();
         queue.add(pos);
+        grid[pos[0]][pos[1]] = 0;
         cnt++;
         while (!queue.isEmpty()) {
             int[] poll = queue.poll();
-            int nx = pos[0] + poll[0], ny = pos[1] + poll[1];
-            if (nx >= 0 && nx < m && ny >= 0 && ny < n && grid[nx][ny] == 1) {
-                if (nx == 0 || nx == m - 1 || ny == 0 || ny == n - 1) {
-                    flag = true;
+            for (int[] dir : DIRS) {
+                int nx = dir[0] + poll[0], ny = dir[1] + poll[1];
+                if (nx >= 0 && nx < m && ny >= 0 && ny < n && grid[nx][ny] == 1) {
+                    if (nx == 0 || nx == m - 1 || ny == 0 || ny == n - 1) {
+                        flag = true;
+                    }
+                    grid[nx][ny] = 0;
+                    cnt++;
+                    queue.add(new int[]{nx, ny});
                 }
-                grid[nx][ny] = 0;
-                cnt++;
-                queue.add(new int[]{nx, ny});
             }
         }
         return new Pair<>(cnt, flag);
