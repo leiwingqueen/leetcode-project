@@ -37,11 +37,15 @@ package com.liyongquan.weeklycontest.wc280;
 //链接：https://leetcode-cn.com/problems/maximum-and-sum-of-array
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 public class MaximumANDSum {
     /**
      * 先来个最简单的回溯解法
-     *
+     * <p>
      * 超时
+     *
      * @param nums
      * @param numSlots
      * @return
@@ -65,5 +69,46 @@ public class MaximumANDSum {
             }
         }
         return res;
+    }
+
+    /**
+     * 贪心？
+     *
+     * @param nums
+     * @param numSlots
+     * @return
+     */
+    public int maximumANDSum2(int[] nums, int numSlots) {
+        //取numSlots的最高位
+        int s = numSlots;
+        int bit = 0;
+        while (s > 0) {
+            s >>= 1;
+            bit++;
+        }
+        int mask = (1 << (bit + 1)) - 1;
+        //范围[1,mask]
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] = nums[i] & mask;
+        }
+        Arrays.sort(nums);
+        //数字大的整数拥有优先选择权
+        int sum = 0;
+        int[] slots = new int[numSlots];
+        for (int i = nums.length - 1; i >= 0; i--) {
+            int max = -1;
+            int maxIdx = -1;
+            for (int j = 0; j < numSlots; j++) {
+                if (slots[j] < 2) {
+                    if ((nums[i] & (j + 1)) > max) {
+                        max = nums[i] & (j + 1);
+                        maxIdx = j;
+                    }
+                }
+            }
+            slots[maxIdx]++;
+            sum += max;
+        }
+        return sum;
     }
 }
