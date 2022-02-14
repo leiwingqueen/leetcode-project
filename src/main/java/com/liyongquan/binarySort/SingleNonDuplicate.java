@@ -68,7 +68,7 @@ public class SingleNonDuplicate {
                         l = mid + 1;
                     }
                 } else {
-                    //左半边是[l,mid),右半边是[mid+2,r)
+                    //左半边是[l,mid),右半边是[mid+2,r]
                     if ((mid - l) % 2 != 0) {
                         r = mid - 1;
                     } else {
