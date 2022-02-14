@@ -38,7 +38,6 @@ package com.liyongquan.weeklycontest.wc280;
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 public class MaximumANDSum {
     /**
@@ -73,6 +72,8 @@ public class MaximumANDSum {
 
     /**
      * 贪心？
+     *
+     * 不通过，有漏洞
      *
      * @param nums
      * @param numSlots
@@ -111,4 +112,6 @@ public class MaximumANDSum {
         }
         return sum;
     }
+
+    //TODO:状态压缩
 }
