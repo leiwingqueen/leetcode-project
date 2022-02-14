@@ -61,15 +61,15 @@ public class SingleNonDuplicate {
                 return nums[mid];
             } else {
                 if (mid - 1 >= 0 && nums[mid] == nums[mid - 1]) {
-                    //左半边是[0,mid-1),右半边是[mid+1,len)
-                    if ((mid - 1) % 2 != 0) {
+                    //左半边是[l,mid-1),右半边是[mid+1,r]
+                    if ((mid - 1 - l) % 2 != 0) {
                         r = mid - 2;
                     } else {
                         l = mid + 1;
                     }
                 } else {
-                    //左半边是[0,mid),右半边是[mid+2,len)
-                    if (mid % 2 != 0) {
+                    //左半边是[l,mid),右半边是[mid+2,r)
+                    if ((mid - l) % 2 != 0) {
                         r = mid - 1;
                     } else {
                         l = mid + 2;
