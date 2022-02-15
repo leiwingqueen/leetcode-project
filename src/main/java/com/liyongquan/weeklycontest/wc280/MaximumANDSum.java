@@ -127,7 +127,7 @@ public class MaximumANDSum {
                     //把第i个球投到第k个slot
                     for (int k = 0; k < numSlots * 2; k++) {
                         if ((j & (1 << k)) == 0) {
-                            dp[i][j + (1 << k)] = Math.max(dp[i][j + (1 << k)], dp[i - 1][j] + (k / 2 + 1) & nums[i - 1]);
+                            dp[i][j + (1 << k)] = Math.max(dp[i][j + (1 << k)], dp[i - 1][j] + ((k / 2 + 1) & nums[i - 1]));
                         }
                     }
                 }
