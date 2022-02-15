@@ -113,7 +113,13 @@ public class MaximumANDSum {
         return sum;
     }
 
-    //TODO:状态压缩
+    /**
+     * 状态压缩
+     *
+     * @param nums
+     * @param numSlots
+     * @return
+     */
     public int maximumANDSum3(int[] nums, int numSlots) {
         int n = nums.length;
         int m = 1 << numSlots * 2;
@@ -137,6 +143,39 @@ public class MaximumANDSum {
         int max = 0;
         for (int i = 0; i < m; i++) {
             max = Math.max(dp[n][i], max);
+        }
+        return max;
+    }
+
+    /**
+     * 上面基础上对状态压缩再做下优化
+     * <p>
+     * 原先每一行都包含了很多不合法的状态，我们能否去掉
+     *
+     * @param nums
+     * @param numSlots
+     * @return
+     */
+    public int maximumANDSum4(int[] nums, int numSlots) {
+        int n = nums.length;
+        int m = 1 << numSlots * 2;
+        int[] dp = new int[m];
+        //dp迭代
+        int max = 0;
+        //这里能这么写的一个关键前提的next的状态必然>cur当前状态，所以才能直接顺序遍历
+        for (int i = 0; i < m; i++) {
+            int c = Integer.bitCount(i);
+            if (c >= n) {
+                continue;
+            }
+            //把第c+1个球投到第k个slot
+            for (int k = 0; k < numSlots * 2; k++) {
+                if ((i & (1 << k)) == 0) {
+                    int next = i | (1 << k);
+                    dp[next] = Math.max(dp[next], dp[i] + ((k / 2 + 1) & nums[c]));
+                    max = Math.max(max, dp[next]);
+                }
+            }
         }
         return max;
     }
