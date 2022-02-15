@@ -72,7 +72,7 @@ public class MaximumANDSum {
 
     /**
      * 贪心？
-     *
+     * <p>
      * 不通过，有漏洞
      *
      * @param nums
@@ -114,4 +114,30 @@ public class MaximumANDSum {
     }
 
     //TODO:状态压缩
+    public int maximumANDSum3(int[] nums, int numSlots) {
+        int n = nums.length;
+        int m = 1 << numSlots * 2;
+        //第一维是表示选择前K个数字，第二位表示slot的状态
+        int[][] dp = new int[n + 1][m];
+        //dp迭代
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j < m; j++) {
+                //过滤掉不合法的状态
+                if (Integer.bitCount(j) == i - 1) {
+                    //把第i个球投到第k个slot
+                    for (int k = 0; k < numSlots * 2; k++) {
+                        if ((j & (1 << k)) == 0) {
+                            dp[i][j + (1 << k)] = Math.max(dp[i][j + (1 << k)], dp[i - 1][j] + (k / 2 + 1) & nums[i - 1]);
+                        }
+                    }
+                }
+            }
+        }
+        //查找最大值
+        int max = 0;
+        for (int i = 0; i < m; i++) {
+            max = Math.max(dp[n][i], max);
+        }
+        return max;
+    }
 }
