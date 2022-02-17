@@ -40,7 +40,6 @@ package com.liyongquan.dfs;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class KnightProbability {
     public static final int[][] DIRS = {
@@ -90,8 +89,6 @@ public class KnightProbability {
     /**
      * dp解法
      * <p>
-     * 这样算状态压缩么
-     * <p>
      * 时间复杂度O(k*n^2)
      *
      * @param n
@@ -101,12 +98,13 @@ public class KnightProbability {
      * @return
      */
     public double knightProbability2(int n, int k, int row, int column) {
-        //初始化
+        //初始化，考虑到并不是所有的位置都是有效的状态，这里直接用map来存储，过滤掉无效的状态
         Map<Integer, Double> mp = new HashMap<>();
         mp.put(row * n + column, 1D);
         //dp迭代
         for (int i = 0; i < k; i++) {
             Map<Integer, Double> mp2 = new HashMap<>();
+            //从上一层的状态推导到下一层的状态
             for (Map.Entry<Integer, Double> entry : mp.entrySet()) {
                 int x = entry.getKey() / n;
                 int y = entry.getKey() % n;
