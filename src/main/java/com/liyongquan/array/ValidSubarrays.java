@@ -32,6 +32,8 @@ package com.liyongquan.array;
 //链接：https://leetcode-cn.com/problems/number-of-valid-subarrays
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+import java.util.Stack;
+
 public class ValidSubarrays {
     /**
      * 先来一个最简单的暴力
@@ -55,7 +57,7 @@ public class ValidSubarrays {
 
     /**
      * 简单优化
-     *
+     * <p>
      * 结果耗时更长
      *
      * @param nums
@@ -79,4 +81,26 @@ public class ValidSubarrays {
     }
 
     //TODO:单调栈
+
+    /**
+     * 单调栈，一次遍历
+     * [1,2,7,11,3]
+     *
+     * @param nums
+     * @return
+     */
+    public int validSubarray3(int[] nums) {
+        Stack<Integer> stack = new Stack<>();
+        int cnt = 0;
+        for (int i = 0; i < nums.length; i++) {
+            while (!stack.isEmpty() && nums[stack.peek()] > nums[i]) {
+                cnt += i - stack.pop();
+            }
+            stack.add(i);
+        }
+        while (stack.size() > 0) {
+            cnt += nums.length - stack.pop();
+        }
+        return cnt;
+    }
 }
