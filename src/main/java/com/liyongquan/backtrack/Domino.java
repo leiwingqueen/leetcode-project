@@ -38,8 +38,7 @@ package com.liyongquan.backtrack;
 //链接：https://leetcode-cn.com/problems/broken-board-dominoes
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Domino {
     private Map<Long, Integer> cache = new HashMap<>();
@@ -95,5 +94,56 @@ public class Domino {
         }
         cache.put(state, max);
         return max;
+    }
+
+    /**
+     * BFS？树的深度就是能够填入的最多的骨牌的数量
+     *
+     * 还是超时
+     *
+     * @param n
+     * @param m
+     * @param broken
+     * @return
+     */
+    public int domino2(int n, int m, int[][] broken) {
+        long state = 0;
+        for (int[] b : broken) {
+            int idx = b[0] * m + b[1];
+            state |= 1 << idx;
+        }
+        int depth = 0;
+        Queue<Long> queue = new LinkedList<>();
+        queue.add(state);
+        Set<Long> visit = new HashSet<>();
+        visit.add(state);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            depth++;
+            for (int l = 0; l < size; l++) {
+                Long s = queue.poll();
+                //遍历所有的空点
+                for (int i = 0; i < n; i++) {
+                    for (int j = 0; j < m; j++) {
+                        int idx = i * m + j;
+                        if ((s & (1 << idx)) == 0) {
+                            //尝试所有方向看能不能放得下
+                            for (int[] dir : DIRS) {
+                                int x = dir[0] + i;
+                                int y = dir[1] + j;
+                                if (x >= 0 && x < n && y >= 0 && y < m && (s & (1 << (x * m + y))) == 0) {
+                                    int ns = (1 << idx) | (1 << (x * m + y));
+                                    if (!visit.contains(s | ns)) {
+                                        queue.add(s | ns);
+                                        visit.add(s | ns);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return depth - 1;
     }
 }
