@@ -51,6 +51,16 @@ public class Domino {
             {0, 1},
     };
 
+    /**
+     * 回溯解法
+     * <p>
+     * 超时
+     *
+     * @param n
+     * @param m
+     * @param broken
+     * @return
+     */
     public int domino(int n, int m, int[][] broken) {
         long state = 0;
         for (int[] b : broken) {
@@ -73,11 +83,11 @@ public class Domino {
                     for (int[] dir : DIRS) {
                         int x = dir[0] + i;
                         int y = dir[1] + j;
-                        if ((state & (1 << (x * m + y))) == 0) {
-                            int ns = (1 << idx) + (1 << (x * m + y));
-                            state += ns;
+                        if (x >= 0 && x < n && y >= 0 && y < m && (state & (1 << (x * m + y))) == 0) {
+                            int ns = (1 << idx) | (1 << (x * m + y));
+                            state |= ns;
                             max = Math.max(max, backtrace(state, n, m) + 1);
-                            state -= ns;
+                            state ^= ns;
                         }
                     }
                 }
