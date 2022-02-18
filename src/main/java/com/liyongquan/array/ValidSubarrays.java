@@ -80,8 +80,6 @@ public class ValidSubarrays {
         return cnt;
     }
 
-    //TODO:单调栈
-
     /**
      * 单调栈，一次遍历
      * [1,2,7,11,3]
