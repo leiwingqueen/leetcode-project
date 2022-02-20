@@ -98,7 +98,7 @@ public class Domino {
 
     /**
      * BFS？树的深度就是能够填入的最多的骨牌的数量
-     *
+     * <p>
      * 还是超时
      *
      * @param n
@@ -146,4 +146,27 @@ public class Domino {
         }
         return depth - 1;
     }
+
+    //TODO:匈牙利算法
+
+    /**
+     * 二分图最大匹配算法
+     * <p>
+     * 匈牙利算法
+     *
+     * @param n
+     * @param m
+     * @param broken
+     * @return
+     */
+    public int domino3(int n, int m, int[][] broken) {
+        Set<Integer> s1 = new HashSet<>(), s2 = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+
+            }
+        }
+        return 0;
+    }
+
 }
