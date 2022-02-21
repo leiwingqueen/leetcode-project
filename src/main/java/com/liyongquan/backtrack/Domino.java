@@ -39,6 +39,7 @@ package com.liyongquan.backtrack;
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 import java.util.*;
+import java.util.jar.JarEntry;
 
 public class Domino {
     private Map<Long, Integer> cache = new HashMap<>();
@@ -160,13 +161,74 @@ public class Domino {
      * @return
      */
     public int domino3(int n, int m, int[][] broken) {
+        Set<Integer> brokenSet = new HashSet<>();
+        for (int[] b : broken) {
+            brokenSet.add(b[0] * m + b[1]);
+        }
+        //分成两个集合
         Set<Integer> s1 = new HashSet<>(), s2 = new HashSet<>();
         for (int i = 0; i < n; i++) {
+            boolean flag = true;
+            if (i % 2 != 0) {
+                flag = false;
+            }
             for (int j = 0; j < m; j++) {
-
+                int idx = i * m + j;
+                if (flag) {
+                    if (!brokenSet.contains(idx)) {
+                        s1.add(idx);
+                    }
+                    flag = false;
+                } else {
+                    if (!brokenSet.contains(idx)) {
+                        s2.add(idx);
+                    }
+                    flag = true;
+                }
             }
         }
-        return 0;
+        //生成边的关系
+        int[][] edges = new int[n * m][n * m];
+        for (Integer p : s1) {
+            int x = p / m, y = p % m;
+            for (int[] dir : DIRS) {
+                int nx = x + dir[0], ny = y + dir[1];
+                if (nx >= 0 && nx < n && ny >= 0 && ny < m && !brokenSet.contains(nx * m + ny)) {
+                    edges[x * m + y][nx * m + ny] = 1;
+                    edges[nx * m + ny][x * m + y] = 1;
+                }
+            }
+        }
+        //匈牙利算法
+        int[] matchList = new int[n * m];
+        for (int i = 0; i < n * m; i++) {
+            matchList[i] = -1;
+        }
+        return hungarian(edges, matchList, s1);
+    }
+
+    //# v 代表当前的 x 集合中的顶点
+    //# current 代表 y 集合中起冲突的顶点，如果为 -1 则代表没有冲突
+    private boolean match(int v, int current, int[][] edges, int[] matchList) {
+        for (int i = 0; i < edges[v].length; i++) {
+            if (edges[v][i] == 1 && i != current) {
+                if (matchList[i] == -1 || match(matchList[i], i, edges, matchList)) {
+                    matchList[i] = v;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private int hungarian(int[][] edges, int[] matchList, Set<Integer> s1) {
+        int cnt = 0;
+        for (Integer v : s1) {
+            if (match(v, -1, edges, matchList)) {
+                cnt++;
+            }
+        }
+        return cnt;
     }
 
 }
