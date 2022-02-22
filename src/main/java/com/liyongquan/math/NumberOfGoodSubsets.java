@@ -50,7 +50,14 @@ import java.util.List;
 public class NumberOfGoodSubsets {
     public static final int[] PRIME = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
 
+    /**
+     * 超时
+     *
+     * @param nums
+     * @return
+     */
     public int numberOfGoodSubsets(int[] nums) {
+        int mod = 1_000_000_007;
         //1的数量
         int oneCnt = 0;
         //过滤1和其他不合法数字
@@ -70,26 +77,24 @@ public class NumberOfGoodSubsets {
         int mx = 1 << PRIME.length;
         //前N个数字选中，并且集合为k的dp的合法数量（第N个数字必须选中）
         int[][] dp = new int[list.size() + 1][mx];
-        for (int i = 0; i <= list.size(); i++) {
-            dp[i][0] = 1;
-        }
+        dp[0][0] = 1;
         int cnt = 0;
         for (int i = 1; i <= list.size(); i++) {
             Integer mask = list.get(i - 1);
             for (int j = 1; j < mx; j++) {
                 if ((j & mask) == mask) {
-                    int sum = 0;
                     //计算一列的和
                     for (int k = 0; k < i; k++) {
-                        sum += dp[k][j - mask];
+                        dp[i][j] = (dp[i][j] + dp[k][j - mask]) % mod;
                     }
-                    dp[i][j] = sum;
-                    cnt += dp[i][j];
+                    cnt = (cnt + dp[i][j]) % mod;
                 }
             }
         }
         //对1的情况单独计算
-        cnt *= (1 << oneCnt);
+        for (int i = 0; i < oneCnt; i++) {
+            cnt = (cnt << 1) % mod;
+        }
         return cnt;
     }
 
