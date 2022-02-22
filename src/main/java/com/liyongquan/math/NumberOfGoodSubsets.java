@@ -75,9 +75,15 @@ public class NumberOfGoodSubsets {
         }
         int cnt = 0;
         for (int i = 1; i <= list.size(); i++) {
+            Integer mask = list.get(i - 1);
             for (int j = 1; j < mx; j++) {
-                if ((j & list.get(i - 1)) == list.get(i - 1)) {
-                    dp[i][j] = dp[i - 1][j - list.get(i - 1)];
+                if ((j & mask) == mask) {
+                    int sum = 0;
+                    //计算一列的和
+                    for (int k = 0; k < i; k++) {
+                        sum += dp[k][j - mask];
+                    }
+                    dp[i][j] = sum;
                     cnt += dp[i][j];
                 }
             }

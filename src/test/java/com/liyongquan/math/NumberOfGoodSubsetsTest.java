@@ -46,4 +46,13 @@ public class NumberOfGoodSubsetsTest {
         int res = subsets.numberOfGoodSubsets(new int[]{1, 2, 3, 4});
         Assert.assertEquals(6, res);
     }
+
+    /**
+     * [4,2,3,15]
+     */
+    @Test
+    public void test2() {
+        int res = subsets.numberOfGoodSubsets(new int[]{4, 2, 3, 15});
+        Assert.assertEquals(5, res);
+    }
 }
