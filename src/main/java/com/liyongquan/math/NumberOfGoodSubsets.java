@@ -75,24 +75,142 @@ public class NumberOfGoodSubsets {
         //状态压缩dp
         //也就1024种情况
         int mx = 1 << PRIME.length;
-        //前N个数字选中，并且集合为k的dp的合法数量（第N个数字必须选中）
-        int[][] dp = new int[list.size() + 1][mx];
-        dp[0][0] = 1;
-        int cnt = 0;
+        //从前N个数字选，并且集合为k的dp的合法数量(背包问题，最后一个数字选和不选)
+        //f(n,k)=f(n-1,k)+f(n-1,k-a[n-1])
+        //int[][] dp = new int[list.size() + 1][mx];
+        int[] dp = new int[mx];
+        int[] ndp = new int[mx];
+        dp[0] = 1;
         for (int i = 1; i <= list.size(); i++) {
             Integer mask = list.get(i - 1);
-            for (int j = 1; j < mx; j++) {
+            for (int j = 0; j < mx; j++) {
+                ndp[j] = dp[j];
                 if ((j & mask) == mask) {
-                    //计算一列的和
-                    for (int k = 0; k < i; k++) {
-                        dp[i][j] = (dp[i][j] + dp[k][j - mask]) % mod;
-                    }
-                    cnt = (cnt + dp[i][j]) % mod;
+                    ndp[j] = (ndp[j] + dp[j - mask]) % mod;
+                }
+            }
+            //替换数组
+            System.arraycopy(ndp, 0, dp, 0, mx);
+            //dp = ndp;
+        }
+        int cnt = 0;
+        //排除掉0的场景，不能算一个合法解
+        for (int i = 1; i < mx; i++) {
+            cnt = (cnt + dp[i]) % mod;
+        }
+        //对1的情况单独计算(多一个1的话会让解增加1倍，选和不选两种选项)，为了避免溢出只能一个个算了
+        //等价于cnt<<oneCnt
+        for (int i = 0; i < oneCnt; i++) {
+            cnt = (cnt << 1) % mod;
+        }
+        return cnt;
+    }
+
+    /**
+     * 状态压缩优化
+     * <p>
+     * 总算击败5%的人
+     *
+     * @param nums
+     * @return
+     */
+    public int numberOfGoodSubsets2(int[] nums) {
+        int mod = 1_000_000_007;
+        //1的数量
+        int oneCnt = 0;
+        //过滤1和其他不合法数字
+        List<Integer> list = new ArrayList<>();
+        for (int num : nums) {
+            if (num == 1) {
+                oneCnt++;
+            } else {
+                int mask = split(num);
+                if (mask > 0) {
+                    list.add(mask);
                 }
             }
         }
-        //对1的情况单独计算
+        //状态压缩dp
+        //也就1024种情况
+        int mx = 1 << PRIME.length;
+        //从前N个数字选，并且集合为k的dp的合法数量(背包问题，最后一个数字选和不选)
+        //f(n,k)=f(n-1,k)+f(n-1,k-a[n-1])
+        //int[][] dp = new int[list.size() + 1][mx];
+        int[] dp = new int[mx];
+        dp[0] = 1;
+        for (int i = 1; i <= list.size(); i++) {
+            Integer mask = list.get(i - 1);
+            //反过来遍历，因为状态j只会由上一层的[0,j]的状态决定，因此从后遍历可以减少空间使用
+            for (int j = mx - 1; j >= 0; j--) {
+                if ((j & mask) == mask) {
+                    dp[j] = (dp[j] + dp[j - mask]) % mod;
+                }
+            }
+        }
+        int cnt = 0;
+        //排除掉0的场景，不能算一个合法解
+        for (int i = 1; i < mx; i++) {
+            cnt = (cnt + dp[i]) % mod;
+        }
+        //对1的情况单独计算(多一个1的话会让解增加1倍，选和不选两种选项)，为了避免溢出只能一个个算了
+        //等价于cnt<<oneCnt
         for (int i = 0; i < oneCnt; i++) {
+            cnt = (cnt << 1) % mod;
+        }
+        return cnt;
+    }
+
+    /**
+     * 继续优化，由于数字可能的范围很小，因此数字重复的概率很高，相同的数字我们可以归并到一种场景下
+     *
+     * @param nums
+     * @return
+     */
+    public int numberOfGoodSubsets3(int[] nums) {
+        int mod = 1_000_000_007;
+        int nmx = 30;
+        //统计出现频率
+        int[] freq = new int[nmx + 1];
+        for (int num : nums) {
+            freq[num]++;
+        }
+        //过滤掉其他不合法数字和预生成对应的mask
+        int[] masks = new int[nmx + 1];
+        for (int i = 2; i <= nmx; i++) {
+            int mask = split(i);
+            if (mask < 0) {
+                freq[i] = 0;
+            } else {
+                masks[i] = mask;
+            }
+        }
+        //状态压缩dp
+        //也就1024种情况
+        int mx = 1 << PRIME.length;
+        //从前N个数字选，并且集合为k的dp的合法数量(背包问题，最后一个数字选和不选)
+        //f(n,k)=f(n-1,k)+f(n-1,k-a[n-1])
+        //int[][] dp = new int[list.size() + 1][mx];
+        int[] dp = new int[mx];
+        dp[0] = 1;
+        for (int i = 2; i <= nmx; i++) {
+            if (freq[i] > 0) {
+                int mask = masks[i];
+                //反过来遍历，因为状态j只会由上一层的[0,j]的状态决定，因此从后遍历可以减少空间使用
+                for (int j = mx - 1; j >= 0; j--) {
+                    if ((j & mask) == mask) {
+                        dp[j] = (int) ((dp[j] + (long) dp[j - mask] * freq[i]) % mod);
+                    }
+                }
+            }
+        }
+        int cnt = 0;
+        //排除掉0的场景，不能算一个合法解
+        for (int i = 1; i < mx; i++) {
+            cnt = (cnt + dp[i]) % mod;
+        }
+        //对1的情况单独计算(多一个1的话会让解增加1倍，选和不选两种选项)，为了避免溢出只能一个个算了
+        //等价于cnt<<oneCnt
+        for (int i = 0; i < freq[1]; i++) {
             cnt = (cnt << 1) % mod;
         }
         return cnt;
