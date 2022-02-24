@@ -18,6 +18,10 @@ public class TestAns {
                 return;
             }
         }
-        System.out.println("Yes");
+        if (pre == 0) {
+            System.out.println("Yes");
+        } else {
+            System.out.println("No");
+        }
     }
 }
