@@ -50,7 +50,7 @@ import java.util.Arrays;
 public class MaxRunTime {
     /**
      * 暴力解法
-     *
+     * <p>
      * 超时
      *
      * @param n
@@ -85,6 +85,35 @@ public class MaxRunTime {
     }
 
     /**
+     * 我服了，二分容易想，check的方法确实没想到
+     * <p>
+     * https://leetcode-cn.com/problems/maximum-running-time-of-n-computers/solution/er-fen-da-an-de-checkhan-shu-de-si-kao-f-g8no/
+     *
+     * @param n
+     * @param batteries
+     * @return
+     */
+    public long maxRunTime2(int n, int[] batteries) {
+        int min = Integer.MAX_VALUE;
+        long sum = 0;
+        for (int battery : batteries) {
+            min = Math.min(min, battery);
+            sum += battery;
+        }
+        long l = min, r = sum / n;
+        while (l < r) {
+            long mid = l + (r - l + 1) / 2;
+            if (check(n, batteries, mid)) {
+                l = mid;
+            } else {
+                r = mid - 1;
+            }
+        }
+        return l;
+    }
+
+
+    /**
      * 贪心
      * <p>
      * 为了减少批量减法的时间复杂度，我们把数据改成用前缀和来进行计算
@@ -94,18 +123,14 @@ public class MaxRunTime {
      * @param k
      * @return
      */
-    private boolean check(int n, int[] batteries, int k) {
-        int len = batteries.length;
-        Arrays.sort(batteries);
-        //改成使用一个差数列来保存
-        int[] arr = new int[len + 1];
-        for (int i = 1; i <= len; i++) {
-            if (i == 0) {
-                arr[i] = batteries[i - 1];
-            } else {
-                arr[i] = batteries[i - 1] - arr[i];
+    private boolean check(int n, int[] batteries, long k) {
+        long sum = 0;
+        for (int battery : batteries) {
+            sum += Math.min(battery, k);
+            if (sum >= k * n) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 }
