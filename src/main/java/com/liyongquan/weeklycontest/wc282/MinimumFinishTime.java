@@ -1,5 +1,7 @@
 package com.liyongquan.weeklycontest.wc282;
 
+import jdk.nashorn.internal.ir.IfNode;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -91,5 +93,47 @@ public class MinimumFinishTime {
             }
         }
         return res;
+    }
+
+    /**
+     * 还是得看官解
+     *
+     * @param tires
+     * @param changeTime
+     * @param numLaps
+     * @return
+     */
+    public int minimumFinishTime2(int[][] tires, int changeTime, int numLaps) {
+        int mx = 17;
+        //轮胎连续跑k圈的最小时间
+        int[] fn = new int[mx + 1];
+        for (int i = 1; i <= mx; i++) {
+            //避免溢出
+            fn[i] = Integer.MAX_VALUE / 2;
+        }
+        for (int[] tire : tires) {
+            long sum = 0;
+            long cur = tire[0];
+            for (int i = 1; i <= mx; i++) {
+                sum += cur;
+                if (sum < Integer.MAX_VALUE / 2) {
+                    fn[i] = Math.min((int) sum, fn[i]);
+                }
+                cur *= tire[1];
+                if (sum >= Integer.MAX_VALUE / 2 || cur >= Integer.MAX_VALUE / 2) {
+                    break;
+                }
+            }
+        }
+        //dp迭代
+        int[] dp = new int[numLaps + 1];
+        dp[0] = -changeTime;
+        for (int i = 1; i <= numLaps; i++) {
+            dp[i] = Integer.MAX_VALUE;
+            for (int j = 1; j <= Math.min(i, mx); j++) {
+                dp[i] = Math.min(changeTime + dp[i - j] + fn[j], dp[i]);
+            }
+        }
+        return dp[numLaps];
     }
 }
