@@ -86,7 +86,7 @@ public class MaximumRequests {
         state[request[0]]--;
         state[request[1]]++;
         sub = backtrace(state, requests, idx + 1);
-        if (sub >= 0 && (res < 0 || sub > res)) {
+        if (sub >= 0 && (res < 0 || sub + 1 > res)) {
             res = sub + 1;
         }
         state[request[0]]++;
