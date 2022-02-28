@@ -1,7 +1,5 @@
 package com.liyongquan.weeklycontest.wc282;
 
-import jdk.nashorn.internal.ir.IfNode;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -114,15 +112,10 @@ public class MinimumFinishTime {
         for (int[] tire : tires) {
             long sum = 0;
             long cur = tire[0];
-            for (int i = 1; i <= mx; i++) {
+            for (int i = 1; i <= mx && sum < Integer.MAX_VALUE / 2; i++) {
                 sum += cur;
-                if (sum < Integer.MAX_VALUE / 2) {
-                    fn[i] = Math.min((int) sum, fn[i]);
-                }
+                fn[i] = Math.min((int) sum, fn[i]);
                 cur *= tire[1];
-                if (sum >= Integer.MAX_VALUE / 2 || cur >= Integer.MAX_VALUE / 2) {
-                    break;
-                }
             }
         }
         //dp迭代
