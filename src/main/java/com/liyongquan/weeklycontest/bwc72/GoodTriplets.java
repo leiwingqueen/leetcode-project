@@ -65,7 +65,7 @@ public class GoodTriplets {
             }
         }
         //满足条件的3元祖
-        int sum = 0;
+        long sum = 0;
         for (int i = 2; i < n; i++) {
             for (int j = 1; j < i; j++) {
                 if (mp2[i] > mp2[j]) {
