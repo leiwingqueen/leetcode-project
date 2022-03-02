@@ -73,4 +73,6 @@ public class GoodTriplets {
         }
         return sum;
     }
+
+    //TODO:树状数组
 }
