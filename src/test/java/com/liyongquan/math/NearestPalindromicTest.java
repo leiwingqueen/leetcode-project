@@ -18,7 +18,7 @@ public class NearestPalindromicTest {
 
     @Test
     public void testNearestPalindromic() {
-        String res = np.nearestPalindromic("11");
-        Assert.assertEquals("9", res);
+        String res = np.nearestPalindromic("45654");
+        Assert.assertEquals("45554", res);
     }
 }
