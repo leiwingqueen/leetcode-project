@@ -119,5 +119,35 @@ public class NumberOfWays {
         return dp2;
     }
 
-    //TODO:还有一种解法，每两个座位分组。然后计算中间的植物数量
+    /**
+     * 还有一种解法，每两个座位分组。然后计算中间的植物数量
+     */
+    public int numberOfWay3(String corridor) {
+        int mod = 1_000_000_007;
+        int len = corridor.length();
+        int idx = 0;
+        int res = 1;
+        while (idx < len) {
+            //找到两个一组的作为
+            int cnt = 0;
+            while (idx < len && cnt < 2) {
+                if (corridor.charAt(idx++) == 'S') {
+                    cnt++;
+                }
+            }
+            if (cnt < 2) {
+                return 0;
+            }
+            int start = idx;
+            //找到下一个分组的开始
+            while (idx < len && corridor.charAt(idx) == 'P') {
+                idx++;
+            }
+            if (idx < len) {
+                //乘法的同余
+                res = (int) ((long) res * (idx - start + 1) % mod) % mod;
+            }
+        }
+        return res;
+    }
 }
