@@ -109,4 +109,34 @@ public class PossibleToStamp {
         }
         return true;
     }
+
+    //二维差分数组
+    public boolean possibleToStamp2(int[][] grid, int stampHeight, int stampWidth) {
+        int m = grid.length, n = grid[0].length;
+        //维护前缀和，方便判断某个格子能否贴
+        int[][] gridSum = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                gridSum[i][j] = grid[i - 1][j - 1] + gridSum[i - 1][j] + gridSum[i][j - 1] - gridSum[i - 1][j - 1];
+            }
+        }
+        //维护一个差分数组，方便后面统计是否贴上
+        int[][] diff = new int[m][n];
+        //判断能否放入
+        for (int i = 0; i < m - stampHeight; i++) {
+            for (int j = 0; j < n - stampWidth; j++) {
+                //[i,j]-[i+height-1,j+width-1]
+                int s = gridSum[i + stampHeight][j + stampWidth] - gridSum[i + stampHeight][j] - gridSum[i][j + stampWidth] + gridSum[i][j];
+                //能贴，尽量贴
+                if (s == 0) {
+                    //差分数组更新
+                    diff[i][j]++;
+                    diff[i][j + stampWidth]--;
+                    diff[i + stampHeight][j]--;
+                    diff[i + stampHeight][j + stampWidth]++;
+                }
+            }
+        }
+        return true;
+    }
 }
