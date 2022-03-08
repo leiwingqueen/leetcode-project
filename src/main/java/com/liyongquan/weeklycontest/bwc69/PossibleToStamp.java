@@ -110,7 +110,16 @@ public class PossibleToStamp {
         return true;
     }
 
-    //二维差分数组
+    /**
+     * 二维差分数组
+     * <p>
+     * 昨晚这题差点原地去世>_<
+     *
+     * @param grid
+     * @param stampHeight
+     * @param stampWidth
+     * @return
+     */
     public boolean possibleToStamp2(int[][] grid, int stampHeight, int stampWidth) {
         int m = grid.length, n = grid[0].length;
         //维护前缀和，方便判断某个格子能否贴
@@ -121,19 +130,34 @@ public class PossibleToStamp {
             }
         }
         //维护一个差分数组，方便后面统计是否贴上
-        int[][] diff = new int[m][n];
+        int[][] diff = new int[m + 1][n + 1];
         //判断能否放入
-        for (int i = 0; i < m - stampHeight; i++) {
-            for (int j = 0; j < n - stampWidth; j++) {
+        for (int i = 0; i <= m - stampHeight; i++) {
+            for (int j = 0; j <= n - stampWidth; j++) {
+                if (grid[i][j] == 1) {
+                    continue;
+                }
                 //[i,j]-[i+height-1,j+width-1]
-                int s = gridSum[i + stampHeight][j + stampWidth] - gridSum[i + stampHeight][j] - gridSum[i][j + stampWidth] + gridSum[i][j];
+                int x1 = i + stampHeight;
+                int y1 = j + stampWidth;
+                int s = gridSum[x1][y1] - gridSum[x1][j] - gridSum[i][y1] + gridSum[i][j];
                 //能贴，尽量贴
                 if (s == 0) {
                     //差分数组更新
                     diff[i][j]++;
-                    diff[i][j + stampWidth]--;
-                    diff[i + stampHeight][j]--;
-                    diff[i + stampHeight][j + stampWidth]++;
+                    diff[i][y1]--;
+                    diff[x1][j]--;
+                    diff[x1][y1]++;
+                }
+            }
+        }
+        //把差分数组还原成二维前缀和
+        int[][] pre = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                pre[i][j] = diff[i - 1][j - 1] + pre[i - 1][j] + pre[i][j - 1] - pre[i - 1][j - 1];
+                if (pre[i][j] == 0 && grid[i - 1][j - 1] == 0) {
+                    return false;
                 }
             }
         }
