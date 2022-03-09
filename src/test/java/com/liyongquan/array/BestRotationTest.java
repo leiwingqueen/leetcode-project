@@ -15,4 +15,10 @@ public class BestRotationTest {
         int res = br.bestRotation(new int[]{2, 3, 1, 4, 0});
         Assert.assertEquals(3, res);
     }
+
+    @Test
+    public void test2() {
+        int res = br.bestRotation2(new int[]{2, 4, 1, 3, 0});
+        Assert.assertEquals(0, res);
+    }
 }

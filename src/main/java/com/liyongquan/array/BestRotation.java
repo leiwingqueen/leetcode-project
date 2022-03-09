@@ -64,4 +64,34 @@ public class BestRotation {
         }
         return res;
     }
+
+    //TODO:差分数组
+    public int bestRotation2(int[] nums) {
+        int len = nums.length;
+        int[] arr = new int[len];
+        for (int i = 0; i < len; i++) {
+            arr[i] = nums[i] - i;
+        }
+        int max = 0;
+        int res = 0;
+        for (int k = 0; k < len; k++) {
+            int sum = 0;
+            for (int i = 0; i < len; i++) {
+                if (i >= k) {
+                    if (k >= arr[i]) {
+                        sum++;
+                    }
+                } else {
+                    if (k >= len - arr[i]) {
+                        sum++;
+                    }
+                }
+            }
+            if (sum > max) {
+                max = sum;
+                res = k;
+            }
+        }
+        return res;
+    }
 }
