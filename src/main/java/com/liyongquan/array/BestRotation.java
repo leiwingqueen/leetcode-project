@@ -65,31 +65,35 @@ public class BestRotation {
         return res;
     }
 
-    //TODO:差分数组
+    /**
+     * 看题解的时候发现的解法
+     *
+     * @param nums
+     * @return
+     */
     public int bestRotation2(int[] nums) {
         int len = nums.length;
         int[] arr = new int[len];
+        //统计每个数字出现的次数
+        int[] cnt = new int[len];
         for (int i = 0; i < len; i++) {
-            arr[i] = nums[i] - i;
+            arr[i] = i - nums[i];
+            cnt[arr[i]]++;
         }
         int max = 0;
         int res = 0;
-        for (int k = 0; k < len; k++) {
-            int sum = 0;
-            for (int i = 0; i < len; i++) {
-                if (i >= k) {
-                    if (k >= arr[i]) {
-                        sum++;
-                    }
-                } else {
-                    if (k >= len - arr[i]) {
-                        sum++;
-                    }
-                }
+        //计算初始状态的值
+        for (int i = 0; i < len; i++) {
+            if (arr[i] >= 0) {
+                max++;
             }
-            if (sum > max) {
-                max = sum;
-                res = k;
+        }
+        //轮转迭代
+        int before = max;
+        for (int k = 1; k < len; k++) {
+            before -= arr[k];
+            if (arr[k - 1] >= k) {
+                //TODO:待完成
             }
         }
         return res;
