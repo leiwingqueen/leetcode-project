@@ -37,6 +37,9 @@ package com.liyongquan.array;
 //链接：https://leetcode-cn.com/problems/smallest-rotation-with-highest-score
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class BestRotation {
     /**
      * 暴力解法
@@ -75,10 +78,10 @@ public class BestRotation {
         int len = nums.length;
         int[] arr = new int[len];
         //统计每个数字出现的次数
-        int[] cnt = new int[len];
+        Map<Integer, Integer> cnt = new HashMap<>();
         for (int i = 0; i < len; i++) {
             arr[i] = i - nums[i];
-            cnt[arr[i]]++;
+            cnt.put(arr[i], cnt.getOrDefault(arr[i], 0) + 1);
         }
         int max = 0;
         int res = 0;
@@ -89,11 +92,14 @@ public class BestRotation {
             }
         }
         //轮转迭代
-        int before = max;
+        int cur = max;
         for (int k = 1; k < len; k++) {
-            before -= arr[k];
-            if (arr[k - 1] >= k) {
-                //TODO:待完成
+            cur = cur - cnt.getOrDefault(k - 1, 0) + 1;
+            int v = arr[k - 1] + len - 1;
+            cnt.put(v, cnt.getOrDefault(v, 0) + 1);
+            if (cur > max) {
+                max = cur;
+                res = k;
             }
         }
         return res;
