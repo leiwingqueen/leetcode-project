@@ -46,81 +46,69 @@ package com.liyongquan.tree;
 //链接：https://leetcode-cn.com/problems/count-nodes-with-the-highest-score
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-import com.liyongquan.linklist.ListNode;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CountHighestScoreNodes {
-    private int[] cnt;
+    int[] cnt;
+
+    List<Integer>[] children;
 
     public int countHighestScoreNodes(int[] parents) {
-        //先构造一颗二叉树
-        Map<Integer, TreeNode> map = new HashMap<>();
-        TreeNode root = null;
-        for (int i = 0; i < parents.length; i++) {
-            if (!map.containsKey(i)) {
-                map.put(i, new TreeNode(i));
-            }
-            TreeNode cur = map.get(i);
-            if (parents[i] < 0) {
-                root = cur;
+        //构造树
+        int len = parents.length;
+        children = new List[len];
+        int root = 0;
+        for (int i = 0; i < len; i++) {
+            int p = parents[i];
+            if (p == -1) {
+                root = i;
             } else {
-                if (!map.containsKey(parents[i])) {
-                    map.put(parents[i], new TreeNode(parents[i]));
+                if (children[p] == null) {
+                    children[p] = new ArrayList<>();
                 }
-                TreeNode parent = map.get(parents[i]);
-                if (parent.left == null) {
-                    parent.left = cur;
-                } else {
-                    parent.right = cur;
-                }
+                children[p].add(i);
             }
         }
-        //dfs扫描，计算每个节点下的节点数量和
-        cnt = new int[parents.length];
+        //计算每个节点的子节点数量
+        cnt = new int[len];
         dfs(root);
-        //分数和数量
-        int max = 0;
-        int c = 0;
-        for (int i = 0; i < parents.length; i++) {
-
+        //遍历每个节点，计算最大的乘积
+        long max = 0;
+        int res = 0;
+        for (int i = 0; i < len; i++) {
+            //子树相乘
+            long r = 1;
+            int sum = 0;
+            if (children[i] != null) {
+                for (Integer child : children[i]) {
+                    r *= cnt[child];
+                    sum += cnt[child];
+                }
+            }
+            //父子树就是len-sum-1;
+            int r2 = len - sum - 1;
+            if (r2 > 0) {
+                r *= r2;
+            }
+            if (r == max) {
+                res++;
+            } else if (r > max) {
+                res = 1;
+                max = r;
+            }
         }
-        return 0;
+        return res;
     }
 
-    private int dfs(TreeNode root) {
-        if (root == null) {
-            return 0;
+    private int dfs(int root) {
+        int sum = 1;
+        if (children[root] != null) {
+            for (Integer child : children[root]) {
+                sum += dfs(child);
+            }
         }
-        int sum = dfs(root.left) + dfs(root.right) + 1;
-        cnt[root.val] = sum;
+        cnt[root] = sum;
         return sum;
-    }
-
-    private int cal(TreeNode root, int rm, int sum) {
-        if (root == null) {
-            return 1;
-        }
-        if (root.val == rm) {
-            return cal(root.left, rm, 0) * cal(root.right, rm, 0);
-        }
-        sum++;
-        if (root.left != null && root.left.val == root.val) {
-            int l = cal(root.left, rm, 0);
-            if (root.right != null) {
-                l *= cnt[root.right.val] + 1;
-            }
-            return l;
-        } else if (root.right != null && root.right.val == root.val) {
-            int r = cal(root.right, rm, 0);
-            if (root.left != null) {
-                r *= cnt[root.left.val] + 1;
-            }
-            return r;
-        } else {
-            //TODO:
-        }
-        return 0;
     }
 }
