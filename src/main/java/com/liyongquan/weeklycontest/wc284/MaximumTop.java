@@ -1,6 +1,15 @@
 package com.liyongquan.weeklycontest.wc284;
 
 public class MaximumTop {
+    /**
+     * 哎，主要思路要清晰才行
+     * <p>
+     * 贪心某种程度上反而是比较难的思路
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
     public int maximumTop(int[] nums, int k) {
         if (k == 0) {
             return nums[0];
