@@ -72,4 +72,30 @@ public class CountMaxOrSubsets {
         }
         return sum;
     }
+
+    /**
+     * 既然回溯可以，相当于穷举所有的可能性了。每个位选和不选分别用1和0表示，那么也遍历所有场景
+     *
+     * @param nums
+     * @return
+     */
+    public int countMaxOrSubsets2(int[] nums) {
+        int or = 0;
+        for (int num : nums) {
+            or |= num;
+        }
+        int cnt = 0;
+        for (int i = 0; i < (1 << nums.length); i++) {
+            int d = 0;
+            for (int j = 0; j < nums.length; j++) {
+                if ((i & (1 << j)) != 0) {
+                    d |= nums[j];
+                }
+            }
+            if (d == or) {
+                cnt++;
+            }
+        }
+        return cnt;
+    }
 }
