@@ -112,7 +112,7 @@ public class AllOne2 {
             if (node.cnt > 1) {
                 //直接更新上一个节点
                 node.prev.add(key);
-                mp.put(key, node.next);
+                mp.put(key, node.prev);
             } else {
                 mp.remove(key);
             }
