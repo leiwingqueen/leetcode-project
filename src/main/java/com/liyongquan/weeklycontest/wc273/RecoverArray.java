@@ -54,6 +54,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class RecoverArray {
+    /**
+     * 还差最后一个用例
+     *
+     * @param nums
+     * @return
+     */
     public int[] recoverArray(int[] nums) {
         //统计两两数字的差，如果差异的数量<n，则为不可能解
         Map<Integer, Integer> sub = new HashMap<>();
