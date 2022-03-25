@@ -68,7 +68,7 @@ public class NumIslands2 {
             {1, 0},
             {-1, 0},
             {0, -1},
-            {0, 1}
+            {0, 1},
     };
 
     public List<Integer> numIslands2(int m, int n, int[][] positions) {
