@@ -34,6 +34,11 @@ package com.liyongquan.math;
 //链接：https://leetcode-cn.com/problems/factorial-trailing-zeroes
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+
 public class TrailingZeroes {
     /**
      * 核心是计算数字里面包含的2和5的因子有多少对
@@ -62,5 +67,37 @@ public class TrailingZeroes {
             num /= 5;
         }
         return res;
+    }
+
+    /**
+     * 上面基础上改进，BFS?
+     *
+     * @param n
+     * @return
+     */
+    public int trailingZeroes2(int n) {
+        int[] cnt = {0, 0};
+        Queue<int[]> queue = new LinkedList<>();
+        queue.add(new int[]{1, 0, 0});
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            Set<Integer> set = new HashSet<>();
+            for (int i = 0; i < size; i++) {
+                int[] poll = queue.poll();
+                cnt[0] += poll[1];
+                cnt[1] += poll[2];
+                int next1 = poll[0] * 2;
+                if (next1 <= n && !set.contains(next1)) {
+                    set.add(next1);
+                    queue.add(new int[]{next1, poll[1] + 1, poll[2]});
+                }
+                int next2 = poll[0] * 5;
+                if (next2 <= n && !set.contains(next2)) {
+                    set.add(next2);
+                    queue.add(new int[]{next2, poll[1], poll[2] + 1});
+                }
+            }
+        }
+        return Math.min(cnt[0], cnt[1]);
     }
 }
