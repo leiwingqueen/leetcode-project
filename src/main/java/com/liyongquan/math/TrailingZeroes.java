@@ -72,6 +72,8 @@ public class TrailingZeroes {
     /**
      * 上面基础上改进，BFS?
      *
+     * 错误
+     *
      * @param n
      * @return
      */
@@ -86,7 +88,7 @@ public class TrailingZeroes {
                 int[] poll = queue.poll();
                 cnt[0] += poll[1];
                 cnt[1] += poll[2];
-                int next1 = poll[0] * 2;
+                int next1 = poll[0] + 2;
                 if (next1 <= n && !set.contains(next1)) {
                     set.add(next1);
                     queue.add(new int[]{next1, poll[1] + 1, poll[2]});
