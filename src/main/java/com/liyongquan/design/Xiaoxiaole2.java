@@ -63,7 +63,7 @@ public class Xiaoxiaole2 {
             //初始化，每个节点的父节点就是自己
             for (int i = 0; i < row; i++) {
                 for (int j = 0; j < col; j++) {
-                    if (grid[i][j] == 1) {
+                    if (grid[i][j] != 0) {
                         int idx = i * col + j;
                         parent[idx] = idx;
                         cnt.put(idx, 1);
