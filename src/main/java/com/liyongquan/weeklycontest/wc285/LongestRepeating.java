@@ -25,4 +25,70 @@ public class LongestRepeating {
     }
 
     //TODO:线段树
+    public int[] longestRepeating2(String s, String queryCharacters, int[] queryIndices) {
+        return null;
+    }
+
+    private static class SegmentData {
+        //左右两边的字符
+        char lch;
+        char rch;
+        //范围
+        int size;
+        //前后缀的最长字符
+        int pre;
+        int suf;
+
+        public SegmentData(int size) {
+            this.pre = 0;
+            this.suf = 0;
+            this.size = size;
+        }
+
+        public SegmentData(char ch) {
+            this.lch = ch;
+            this.rch = ch;
+            this.pre = 1;
+            this.suf = 1;
+            this.size = 1;
+        }
+
+        public SegmentData merge(SegmentData right) {
+            SegmentData data = new SegmentData(this.size + right.size);
+            data.rch = right.rch;
+            if (this.rch != right.lch || right.suf != right.size) {
+                data.suf = right.rch;
+            } else {
+                data.suf = right.size + this.suf;
+            }
+            data.lch = this.lch;
+            if (this.lch != this.size || this.lch != right.lch) {
+                data.pre = this.pre;
+            } else {
+                data.pre = this.size + right.pre;
+            }
+            return data;
+        }
+    }
+
+    private static class SegmentNode {
+        SegmentData data;
+        int l;
+        int r;
+        SegmentNode left;
+        SegmentNode right;
+
+        public static SegmentNode build(char[] arr, int l, int r) {
+            if (l == r) {
+                return new SegmentNode(arr[l]);
+            }
+            int mid = l + (r - l) / 2;
+            //左区间[l,mid],右区间[mid+1,r]
+            SegmentData left = build(arr, l, mid);
+            SegmentData right = build(arr, mid + 1, r);
+            SegmentData cur = new SegmentData();
+            cur.left = left;
+            cur.right = right;
+        }
+    }
 }
