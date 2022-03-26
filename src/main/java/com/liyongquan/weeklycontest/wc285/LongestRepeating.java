@@ -78,17 +78,26 @@ public class LongestRepeating {
         SegmentNode left;
         SegmentNode right;
 
+        public SegmentNode(SegmentData data, int l, int r) {
+            this.data = data;
+            this.l = l;
+            this.r = r;
+        }
+
         public static SegmentNode build(char[] arr, int l, int r) {
             if (l == r) {
-                return new SegmentNode(arr[l]);
+                SegmentData data = new SegmentData(arr[l]);
+                return new SegmentNode(data, l, r);
             }
             int mid = l + (r - l) / 2;
             //左区间[l,mid],右区间[mid+1,r]
-            SegmentData left = build(arr, l, mid);
-            SegmentData right = build(arr, mid + 1, r);
-            SegmentData cur = new SegmentData();
+            SegmentNode left = build(arr, l, mid);
+            SegmentNode right = build(arr, mid + 1, r);
+            SegmentData data = left.data.merge(right.data);
+            SegmentNode cur = new SegmentNode(data, l, r);
             cur.left = left;
             cur.right = right;
+            return cur;
         }
     }
 }
