@@ -14,4 +14,10 @@ public class KthPalindromeTest {
         long[] res = palindrome.kthPalindrome(new int[]{1, 2, 3, 4, 5, 90}, 3);
         log.info("{}", res);
     }
+
+    @Test
+    public void kthPalindrome2() {
+        long[] res = palindrome.kthPalindrome(new int[]{2, 4, 6}, 4);
+        log.info("{}", res);
+    }
 }

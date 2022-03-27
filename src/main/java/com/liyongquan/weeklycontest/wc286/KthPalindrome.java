@@ -46,7 +46,7 @@ public class KthPalindrome {
             list.add(i);
         }
         for (int i : list) {
-            int high = n - idx;
+            int high = n - idx - 1;
             long cnt = (long) Math.pow(10, high);
             if (k <= cnt) {
                 path[idx++] = i;
