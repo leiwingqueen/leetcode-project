@@ -1,8 +1,6 @@
 package com.liyongquan.stack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 //你有 k 个服务器，编号为 0 到 k-1 ，它们可以同时处理多个请求组。每个服务器有无穷的计算能力但是 不能同时处理超过一个请求 。请求分配到服务器的规则如下：
 //
@@ -66,7 +64,7 @@ import java.util.List;
 public class BusiestServers {
     /**
      * 暴力解法
-     *
+     * <p>
      * 超时
      *
      * @param k
@@ -93,6 +91,56 @@ public class BusiestServers {
                 next[idx] = arrival[i] + load[i];
                 max = Math.max(max, cnt[idx]);
             }
+        }
+        List<Integer> res = new ArrayList<>();
+        for (int i = 0; i < k; i++) {
+            if (cnt[i] == max) {
+                res.add(i);
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 问题难点在于怎么快速找到一个可用的最近的点
+     *
+     * @param k
+     * @param arrival
+     * @param load
+     * @return
+     */
+    public List<Integer> busiestServers2(int k, int[] arrival, int[] load) {
+        int[] next = new int[k];
+        int max = 0;
+        int[] cnt = new int[k];
+        Arrays.fill(next, 1);
+        int n = arrival.length;
+        PriorityQueue<int[]> busy = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
+        TreeSet<Integer> free = new TreeSet<>();
+        for (int i = 0; i < k; i++) {
+            free.add(i);
+        }
+        for (int i = 0; i < n; i++) {
+            int at = arrival[i];
+            int idx = i % k;
+            //从busy中选出空闲的
+            while (!busy.isEmpty() && busy.peek()[1] <= at) {
+                int[] poll = busy.poll();
+                free.add(poll[0]);
+            }
+            //找到距离最近的
+            Integer choose = free.ceiling(idx);
+            if (choose == null) {
+                choose = free.ceiling(0);
+            }
+            if (choose == null) {
+                continue;
+            }
+            cnt[choose]++;
+            next[choose] = at + load[i];
+            busy.offer(new int[]{choose, next[choose]});
+            free.remove(choose);
+            max = Math.max(max, cnt[choose]);
         }
         List<Integer> res = new ArrayList<>();
         for (int i = 0; i < k; i++) {
