@@ -119,4 +119,7 @@ public class MaximumInvitations {
         }
         return max;
     }
+
+    //TODO:拓补排序，我好像知道该怎么写了。
+    //https://zhuanlan.zhihu.com/p/135094687
 }
