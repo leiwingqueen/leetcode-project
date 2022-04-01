@@ -55,10 +55,7 @@ package com.liyongquan.weeklycontest.wc274;
 //链接：https://leetcode-cn.com/problems/maximum-employees-to-be-invited-to-a-meeting
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 public class MaximumInvitations {
     /**
@@ -122,4 +119,67 @@ public class MaximumInvitations {
 
     //TODO:拓补排序，我好像知道该怎么写了。
     //https://zhuanlan.zhihu.com/p/135094687
+    public int maximumInvitations3(int[] favorite) {
+        int len = favorite.length;
+        //计算反图
+        Map<Integer, List<Integer>> reverse = new HashMap<>();
+        //处理每个点的入度
+        int[] deg = new int[len];
+        for (int i = 0; i < len; i++) {
+            deg[favorite[i]]++;
+            if (!reverse.containsKey(favorite[i])) {
+                reverse.put(favorite[i], new LinkedList<>());
+            }
+            reverse.get(favorite[i]).add(i);
+        }
+        //bfs，更新每个点的入度，区分树枝和环
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < len; i++) {
+            if (deg[i] == 0) {
+                queue.add(i);
+            }
+        }
+        if (!queue.isEmpty()) {
+            Integer poll = queue.poll();
+            //更新下一个点的入度
+            int next = favorite[poll];
+            deg[next]--;
+            if (deg[next] == 0) {
+                queue.offer(next);
+            }
+        }
+        //这时候deg=0的就是树枝，deg=1的就是环。(思考：为什么不会有入度是2的？)
+        int max = 0;
+        boolean[] visit = new boolean[len];
+        int c = 0;
+        for (int i = 0; i < len; i++) {
+            if (deg[i] > 0 && !visit[i]) {
+                //找到环的最大大小
+                int cur = i;
+                int cnt = 0;
+                while (!visit[cur]) {
+                    cnt++;
+                    visit[cur] = true;
+                    cur = favorite[cur];
+                }
+                if (cnt > 2) {
+                    max = Math.max(max, cnt);
+                } else {
+                    //需要计算反图
+                    c += dfs(reverse, deg, i) + dfs(reverse, deg, favorite[i]);
+                }
+            }
+        }
+        return Math.max(c, max);
+    }
+
+    private int dfs(Map<Integer, List<Integer>> reverse, int[] deg, int i) {
+        int max = 1;
+        for (Integer pre : reverse.getOrDefault(i, new ArrayList<>())) {
+            if (deg[pre] == 0) {
+                max = Math.max(max, dfs(reverse, deg, pre) + 1);
+            }
+        }
+        return max;
+    }
 }
