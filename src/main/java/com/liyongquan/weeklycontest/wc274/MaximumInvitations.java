@@ -139,7 +139,7 @@ public class MaximumInvitations {
                 queue.add(i);
             }
         }
-        if (!queue.isEmpty()) {
+        while (!queue.isEmpty()) {
             Integer poll = queue.poll();
             //更新下一个点的入度
             int next = favorite[poll];

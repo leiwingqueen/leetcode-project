@@ -22,4 +22,11 @@ public class MaximumInvitationsTest {
         int res = mi.maximumInvitations(new int[]{3, 0, 1, 4, 1});
         Assert.assertEquals(4, res);
     }
+
+    //[1,0,0,2,1,4,7,8,9,6,7,10,8]
+    @Test
+    public void maximumInvitations3() {
+        int res = mi.maximumInvitations3(new int[]{1, 0, 0, 2, 1, 4, 7, 8, 9, 6, 7, 10, 8});
+        Assert.assertEquals(6, res);
+    }
 }
