@@ -55,7 +55,6 @@ package com.liyongquan.weeklycontest.wc272;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 public class KIncreasing {
     /**
@@ -96,8 +95,12 @@ public class KIncreasing {
                             r = mid - 1;
                         }
                     }
-                    //d[l]<=a[o],且d[l+1]>a[o]
-                    d[l + 1] = a[o];
+                    if (d[l] > a[o]) {
+                        d[l] = a[o];
+                    } else {
+                        //d[l]<=a[o],且d[l+1]>a[o]
+                        d[l + 1] = a[o];
+                    }
                 }
             }
             cnt += a.length - (idx + 1);

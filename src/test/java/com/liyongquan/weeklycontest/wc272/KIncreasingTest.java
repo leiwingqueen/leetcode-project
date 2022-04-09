@@ -15,4 +15,12 @@ public class KIncreasingTest {
         int res = kIncreasing.kIncreasing(new int[]{12, 6, 12, 6, 14, 2, 13, 17, 3, 8, 11, 7, 4, 11, 18, 8, 8, 3}, 1);
         Assert.assertEquals(12, res);
     }
+
+    //[12,6,12,6,14,2,13,17,3,8,11,7,4,11,18,8,8,3]
+    //1
+    @Test
+    public void test2() {
+        int res = kIncreasing.kIncreasing(new int[]{12, 6, 12, 6, 14, 2, 13, 17, 3, 8, 11, 7, 4, 11, 18, 8, 8, 3}, 1);
+        Assert.assertEquals(12, res);
+    }
 }
