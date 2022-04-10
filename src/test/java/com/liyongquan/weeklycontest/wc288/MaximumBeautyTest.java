@@ -31,4 +31,15 @@ public class MaximumBeautyTest {
         long res = mb.maximumBeauty(new int[]{2, 4, 5, 3}, 10, 5, 2, 6);
         Assert.assertEquals(30, res);
     }
+
+    //[20,1,15,17,10,2,4,16,15,11]
+    //2
+    //20
+    //10
+    //2
+    @Test
+    public void test2() {
+        long res = mb.maximumBeauty(new int[]{20, 1, 15, 17, 10, 2, 4, 16, 15, 11}, 2, 20, 10, 2);
+        Assert.assertEquals(14, res);
+    }
 }

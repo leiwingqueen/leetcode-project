@@ -24,12 +24,12 @@ public class MaximumBeauty {
         //遍历所有完善花园的数量
         long res = 0;
         //不完善花园的总数
-        long sum = 0;
-        for (int i = 0; i < idx; i++) {
-            sum += flowers[i];
+        long[] preSum = new long[idx + 1];
+        for (int i = 1; i <= idx; i++) {
+            preSum[i] = preSum[i - 1] + flowers[i - 1];
         }
         for (int i = 0; i <= idx; i++) {
-            int p = i * full;
+            long p = (long) i * full;
             //不完善花园的数量
             int q = idx - i;
             //二分查找找到不完善花园的最大值
@@ -37,14 +37,14 @@ public class MaximumBeauty {
             r = target - 1;
             while (l < r) {
                 int mid = l + (r - l + 1) / 2;
-                if ((long) mid * q - sum <= newFlowers) {
+                if (need(flowers, q, mid, preSum) <= newFlowers) {
                     l = mid;
                 } else {
                     r = mid - 1;
                 }
             }
             if (q > 0) {
-                p += l * partial;
+                p += (long) l * partial;
             }
             res = Math.max(res, p);
             //更新下一轮迭代
@@ -53,11 +53,37 @@ public class MaximumBeauty {
                 if (newFlowers < target - next) {
                     break;
                 }
-                sum -= next;
                 newFlowers -= target - next;
             }
         }
         return res + (len - idx) * full;
+    }
+
+    /**
+     * 保证前n个都必须>=k的最小需要的数量
+     *
+     * @param arr
+     * @param n
+     * @param k
+     * @return
+     */
+    private long need(int[] arr, int n, int k, long[] preSum) {
+        if (arr[0] >= k) {
+            return 0;
+        }
+        //找到<k的分界点
+        int l = 0, r = n - 1;
+        while (l < r) {
+            int mid = l + (r - l + 1) / 2;
+            if (arr[mid] < k) {
+                l = mid;
+            } else {
+                r = mid - 1;
+            }
+        }
+        //统计[0,l]的和
+        int len = l + 1;
+        return (long) len * k - preSum[len];
     }
 
 }
