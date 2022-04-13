@@ -114,25 +114,42 @@ public class CountPairs {
             int bit = 1 << (MAX_BIT - 1);
             int sum = 0;
             while (cur != null && bit > 0) {
-                if ((mx & bit) == 0) {
-                    //mx对应是0，则xor只能是0
-                    if ((num & bit) == 0) {
-                        cur = cur.left;
+                if (bit == 1) {
+                    //最后一层，不需要继续迭代
+                    if ((mx & bit) == 0) {
+                        if ((num & bit) == 0) {
+                            if (cur.left != null) {
+                                sum += cur.left.cnt;
+                            }
+                        } else {
+                            if (cur.right != null) {
+                                sum += cur.right.cnt;
+                            }
+                        }
                     } else {
-                        cur = cur.right;
+                        sum += cur.cnt;
                     }
                 } else {
-                    //mx对应是1，则xor可以是1和0
-                    if ((num & bit) == 0) {
-                        if (cur.left != null) {
-                            sum += cur.left.cnt;
+                    if ((mx & bit) == 0) {
+                        //mx对应是0，则xor只能是0
+                        if ((num & bit) == 0) {
+                            cur = cur.left;
+                        } else {
+                            cur = cur.right;
                         }
-                        cur = cur.right;
                     } else {
-                        if (cur.right != null) {
-                            sum += cur.right.cnt;
+                        //mx对应是1，则xor可以是1和0
+                        if ((num & bit) == 0) {
+                            if (cur.left != null) {
+                                sum += cur.left.cnt;
+                            }
+                            cur = cur.right;
+                        } else {
+                            if (cur.right != null) {
+                                sum += cur.right.cnt;
+                            }
+                            cur = cur.left;
                         }
-                        cur = cur.left;
                     }
                 }
                 bit >>= 1;
