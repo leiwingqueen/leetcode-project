@@ -43,9 +43,6 @@ package com.liyongquan.weeklycontest.wc233;
 //链接：https://leetcode-cn.com/problems/count-pairs-with-xor-in-a-range
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-import com.liyongquan.trie.TrieTree;
-import com.liyongquan.weeklycontest.wc283.CreateBinaryTree;
-
 public class CountPairs {
     public int countPairs(int[] nums, int low, int high) {
         int cnt = 0;
