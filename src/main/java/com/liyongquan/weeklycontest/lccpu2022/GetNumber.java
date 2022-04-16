@@ -1,11 +1,20 @@
 package com.liyongquan.weeklycontest.lccpu2022;
 
-import com.liyongquan.queue.CalPoints;
 import com.liyongquan.tree.TreeNode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class GetNumber {
+    /**
+     * 超时
+     *
+     * @param root
+     * @param ops
+     * @return
+     */
     public int getNumber(TreeNode root, int[][] ops) {
         Set<Integer> set = new HashSet<>();
         for (int[] op : ops) {
@@ -81,5 +90,41 @@ public class GetNumber {
             }
         }
         return -1;
+    }
+
+    /**
+     * 还是暴力，但是思路反向
+     * <p>
+     * 看数据量应该是过不了的，奈何最后还是过了。。
+     *
+     * @param root
+     * @param ops
+     * @return
+     */
+    public int getNumber3(TreeNode root, int[][] ops) {
+        return dfs(root, ops);
+    }
+
+    private int dfs(TreeNode root, int[][] ops) {
+        if (root == null) {
+            return 0;
+        }
+        int n = ops.length;
+        int cnt = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            int[] op = ops[i];
+            int type = op[0];
+            int from = op[1];
+            int to = op[2];
+            if (root.val >= from && root.val <= to) {
+                if (type == 1) {
+                    cnt++;
+                }
+                break;
+            }
+        }
+        cnt += dfs(root.left, ops);
+        cnt += dfs(root.right, ops);
+        return cnt;
     }
 }
