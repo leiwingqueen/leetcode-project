@@ -65,4 +65,40 @@ public class ShortestToChar {
         }
         return res;
     }
+
+    /**
+     * 两次遍历
+     *
+     * @param s
+     * @param c
+     * @return
+     */
+    public int[] shortestToChar2(String s, char c) {
+        int lIdx = -1;
+        int[] res = new int[s.length()];
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == c) {
+                res[i] = 0;
+                lIdx = i;
+            } else {
+                if (lIdx < 0) {
+                    res[i] = Integer.MAX_VALUE;
+                } else {
+                    res[i] = i - lIdx;
+                }
+            }
+        }
+        int rIdx = s.length();
+        for (int i = s.length() - 1; i >= 0; i--) {
+            if (s.charAt(i) == c) {
+                res[i] = 0;
+                rIdx = i;
+            } else {
+                if (rIdx < s.length()) {
+                    res[i] = Math.min(res[i], rIdx - i);
+                }
+            }
+        }
+        return res;
+    }
 }
