@@ -78,32 +78,83 @@ public class LengthLongestPath {
             }
             int cnt = r - l;
             l = r;
+            boolean file = false;
             while (r < len && input.charAt(r) != '\n') {
+                if (input.charAt(r) == '.') {
+                    file = true;
+                }
                 r++;
             }
             String s = input.substring(l, r);
-            if (cnt >= stack.size()) {
+            //pop元素
+            while (cnt < stack.size()) {
+                String pop = stack.pop();
+                cur -= pop.length();
                 if (stack.size() > 0) {
-                    //斜杠
-                    cur++;
+                    cur--;
                 }
-                cur += s.length();
-                stack.add(s);
-            } else {
-                res = Math.max(res, cur);
-                //pop元素
-                while (cnt < stack.size()) {
-                    String pop = stack.pop();
-                    cur -= pop.length();
-                    if (stack.size() > 0) {
-                        cur--;
-                    }
+            }
+            if (stack.size() > 0) {
+                //斜杠
+                cur++;
+            }
+            cur += s.length();
+            stack.add(s);
+            if (file) {
+                res = Math.max(cur, res);
+            }
+            //跳过\n
+            r++;
+            l = r;
+        }
+        return res;
+    }
+
+    /**
+     * 在上面基础
+     *
+     * @param input
+     * @return
+     */
+    public int lengthLongestPath2(String input) {
+        //这里保存长度就可以了
+        Stack<Integer> stack = new Stack<>();
+        int res = 0;
+        int len = input.length();
+        int l = 0, r = 0;
+        //当前长度
+        int cur = 0;
+        while (r < len) {
+            //判断前面有多少个\t
+            while (r < len && input.charAt(r) == '\t') {
+                r++;
+            }
+            int cnt = r - l;
+            l = r;
+            boolean file = false;
+            while (r < len && input.charAt(r) != '\n') {
+                if (input.charAt(r) == '.') {
+                    file = true;
                 }
+                r++;
+            }
+            int n = r - l;
+            //pop元素
+            while (cnt < stack.size()) {
+                int pop = stack.pop();
+                cur -= pop;
                 if (stack.size() > 0) {
-                    cur++;
+                    cur--;
                 }
-                cur += s.length();
-                stack.add(s);
+            }
+            if (stack.size() > 0) {
+                //斜杠
+                cur++;
+            }
+            cur += n;
+            stack.add(n);
+            if (file) {
+                res = Math.max(cur, res);
             }
             //跳过\n
             r++;
