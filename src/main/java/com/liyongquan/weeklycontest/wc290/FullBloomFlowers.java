@@ -87,48 +87,37 @@ public class FullBloomFlowers {
                 int mid = left + (right - left) / 2;
                 if (lNode == null) {
                     lNode = new Segment(left, mid, sum);
-                }
-                if (rNode == null) {
                     rNode = new Segment(mid + 1, right, sum);
                 }
-                lNode.add(l, r, val + lazy);
-                rNode.add(l, r, val + lazy);
-                lazy = 0;
+                pushDown();
+                lNode.add(l, r, val);
+                rNode.add(l, r, val);
             } else {
-                //完全吻合，需要的时候再更新到下层
-                lazy += val;
+                //完全吻合，需要的时候再更新到下层(非叶子节点)
+                this.lazy += val;
             }
-            this.sum += val;
         }
 
         /**
          * 更新下推
          */
         private void pushDown() {
-            if (lazy == 0 || (lNode == null && rNode == null)) {
-                return;
+            this.sum += this.lazy;
+            if (lNode != null || rNode != null) {
+                lNode.lazy += this.lazy;
+                rNode.lazy += this.lazy;
             }
-            lNode.lazy += this.lazy;
-            rNode.lazy += this.lazy;
             this.lazy = 0;
-            lNode.pushDown();
-            rNode.pushDown();
         }
 
         public int find(int idx) {
             //叶子节点
             if (lNode == null && rNode == null) {
+                pushDown();
                 return sum;
             }
             int mid = left + (right - left) / 2;
-            //更新子节点
-            if (this.lazy > 0) {
-                lNode.sum += this.lazy;
-                lNode.lazy += this.lazy;
-                rNode.sum += this.lazy;
-                rNode.lazy += this.lazy;
-                this.lazy = 0;
-            }
+            pushDown();
             if (idx <= mid) {
                 return lNode.find(idx);
             } else {
