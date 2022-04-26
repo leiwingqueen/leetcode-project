@@ -46,7 +46,7 @@ public class FullBloomFlowers {
         int mx = 1_000_000_000;
         Segment segment = new Segment(1, mx, 0);
         for (int[] flower : flowers) {
-            segment.add(flower[0], flower[1]);
+            segment.add(flower[0], flower[1], 1);
         }
         int[] res = new int[persons.length];
         for (int i = 0; i < persons.length; i++) {
@@ -62,18 +62,21 @@ public class FullBloomFlowers {
         int sum;
         Segment lNode;
         Segment rNode;
+        //懒更新标记
+        int lazy;
 
         public Segment(int left, int right, int sum) {
             this.left = left;
             this.right = right;
             this.sum = sum;
+            this.lazy = 0;
         }
 
         public static Segment build(int l, int r) {
             return new Segment(l, r, 0);
         }
 
-        public void add(int l, int r) {
+        public void add(int l, int r, int val) {
             l = Math.max(l, left);
             r = Math.min(r, right);
             if (r < l) {
@@ -88,14 +91,28 @@ public class FullBloomFlowers {
                 if (rNode == null) {
                     rNode = new Segment(mid + 1, right, sum);
                 }
+                lNode.add(l, r, val + lazy);
+                rNode.add(l, r, val + lazy);
+                lazy = 0;
+            } else {
+                //完全吻合，需要的时候再更新到下层
+                lazy += val;
             }
-            if (lNode != null) {
-                lNode.add(l, r);
+            this.sum += val;
+        }
+
+        /**
+         * 更新下推
+         */
+        private void pushDown() {
+            if (lazy == 0 || (lNode == null && rNode == null)) {
+                return;
             }
-            if (rNode != null) {
-                rNode.add(l, r);
-            }
-            this.sum++;
+            lNode.lazy += this.lazy;
+            rNode.lazy += this.lazy;
+            this.lazy = 0;
+            lNode.pushDown();
+            rNode.pushDown();
         }
 
         public int find(int idx) {
@@ -104,6 +121,14 @@ public class FullBloomFlowers {
                 return sum;
             }
             int mid = left + (right - left) / 2;
+            //更新子节点
+            if (this.lazy > 0) {
+                lNode.sum += this.lazy;
+                lNode.lazy += this.lazy;
+                rNode.sum += this.lazy;
+                rNode.lazy += this.lazy;
+                this.lazy = 0;
+            }
             if (idx <= mid) {
                 return lNode.find(idx);
             } else {
