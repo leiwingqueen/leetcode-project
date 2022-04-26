@@ -33,8 +33,26 @@ package com.liyongquan.weeklycontest.wc290;
 //1 <= persons[i] <= 109
 
 public class FullBloomFlowers {
+    /**
+     * 线段树解法
+     * <p>
+     * 还是超时
+     *
+     * @param flowers
+     * @param persons
+     * @return
+     */
     public int[] fullBloomFlowers(int[][] flowers, int[] persons) {
-
+        int mx = 1_000_000_000;
+        Segment segment = new Segment(1, mx, 0);
+        for (int[] flower : flowers) {
+            segment.add(flower[0], flower[1]);
+        }
+        int[] res = new int[persons.length];
+        for (int i = 0; i < persons.length; i++) {
+            res[i] = segment.find(persons[i]);
+        }
+        return res;
     }
 
     //线段树
@@ -56,46 +74,40 @@ public class FullBloomFlowers {
         }
 
         public void add(int l, int r) {
-            this.sum++;
-            int mid = left + (right - left) / 2;
-            if (r <= mid) {
-                if (lNode != null) {
-                    lNode.add(l, r);
-                }
-            }
-        }
-
-        public void inc(int key) {
-            this.sum++;
-            if (this.left == this.right) {
+            l = Math.max(l, left);
+            r = Math.min(r, right);
+            if (r < l) {
                 return;
             }
-            int mid = left + (right - left) / 2;
-            if (key <= mid) {
+            if (l != left || r != right) {
+                //不能完全吻合，扩展下一层节点
+                int mid = left + (right - left) / 2;
                 if (lNode == null) {
-                    lNode = new Segment(left, mid, 0);
+                    lNode = new Segment(left, mid, sum);
                 }
-                lNode.inc(key);
-            } else {
                 if (rNode == null) {
-                    rNode = new Segment(mid + 1, right, 0);
+                    rNode = new Segment(mid + 1, right, sum);
                 }
-                rNode.inc(key);
             }
+            if (lNode != null) {
+                lNode.add(l, r);
+            }
+            if (rNode != null) {
+                rNode.add(l, r);
+            }
+            this.sum++;
         }
 
-        //排序>=idx的最小key
         public int find(int idx) {
-            if (sum < idx) {
-                return -1;
+            //叶子节点
+            if (lNode == null && rNode == null) {
+                return sum;
             }
-            if (left == right) {
-                return left;
-            }
-            if (lNode != null && lNode.sum >= idx) {
+            int mid = left + (right - left) / 2;
+            if (idx <= mid) {
                 return lNode.find(idx);
             } else {
-                return rNode.find(idx - lNode.sum);
+                return rNode.find(idx);
             }
         }
     }
