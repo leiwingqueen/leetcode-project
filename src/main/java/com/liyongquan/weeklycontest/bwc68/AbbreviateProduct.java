@@ -48,6 +48,13 @@ package com.liyongquan.weeklycontest.bwc68;
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 public class AbbreviateProduct {
+    /**
+     * 还是有些用例不能通过
+     *
+     * @param left
+     * @param right
+     * @return
+     */
     public String abbreviateProduct(int left, int right) {
         //m,n分别是2和5的质因子
         int m = 0, n = 0;
