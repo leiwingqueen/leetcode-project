@@ -27,10 +27,7 @@ package com.liyongquan.tree;
 //链接：https://leetcode-cn.com/problems/all-elements-in-two-binary-search-trees
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class GetAllElements {
 
@@ -73,4 +70,28 @@ public class GetAllElements {
     }
 
     //TODO:非递归写法肯定更优
+
+    /**
+     * 中序遍历
+     *
+     * @param root
+     * @return
+     */
+    private List<Integer> midOrder(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode cur = root;
+        while (cur != null || stack.size() > 0) {
+            if (cur == null) {
+                cur = stack.pop();
+                list.add(cur.val);
+                //访问右子树
+                cur = cur.right;
+            } else {
+                stack.add(cur);
+                cur = cur.left;
+            }
+        }
+        return list;
+    }
 }
