@@ -1,13 +1,12 @@
 package com.liyongquan.design;
 
 import com.alibaba.fastjson.JSON;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -25,22 +24,40 @@ public class BitcastDB {
     private RandomAccessFile reader;
     private RandomAccessFile writer;
 
+    public static final int MX_LEN = 1024;
+
     private Map<String, CommandPos> index;
     private String path;
 
     public BitcastDB(String path) throws IOException {
         index = new HashMap<>();
         this.path = path;
+        load();
+    }
+
+    private void load() throws IOException {
+        index.clear();
         String filename = path + "/0.log";
-        File file = new File(filename);
-        if (!file.exists()) {
-            file.createNewFile();
-        }
-        try {
-            reader = new RandomAccessFile(filename, "r");
-            writer = new RandomAccessFile(filename, "rw");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        writer = new RandomAccessFile(filename, "rw");
+        writer.seek(writer.length());
+        reader = new RandomAccessFile(filename, "r");
+        //扫描一遍日志进行数据加载
+        int b;
+        byte[] buffer = new byte[MX_LEN];
+        int pos = 0;
+        while ((b = reader.read()) != -1) {
+            int b2 = reader.read();
+            int b3 = reader.read();
+            int b4 = reader.read();
+            if ((b | b2 | b3 | b4) < 0)
+                throw new EOFException();
+            int len = ((b << 24) + (b2 << 16) + (b3 << 8) + (b4 << 0));
+            reader.read(buffer, 0, len);
+            Command cmd = JSON.parseObject(buffer, 0, len, Charset.defaultCharset(), Command.class);
+            if (OP_PUT.equals(cmd.op)) {
+                index.put(cmd.key, new CommandPos(pos));
+            }
+            pos += 4 + len;
         }
     }
 
@@ -48,10 +65,11 @@ public class BitcastDB {
         long pos = writer.length();
         Command cmd = new Command(OP_PUT, key, value);
         byte[] json = JSON.toJSONBytes(cmd);
-        //顺序写
+        //顺序写,4个byte是长度，剩下是内容
+        writer.writeInt(json.length);
         writer.write(json);
         log.info("put:{}", new String(json));
-        index.put(key, new CommandPos(pos, json.length));
+        index.put(key, new CommandPos(pos));
         return true;
     }
 
@@ -70,8 +88,9 @@ public class BitcastDB {
         }
         CommandPos commandPos = index.get(key);
         reader.seek(commandPos.pos);
-        byte[] buffer = new byte[commandPos.len];
-        reader.read(buffer, 0, commandPos.len);
+        int len = reader.readInt();
+        byte[] buffer = new byte[len];
+        reader.read(buffer, 0, len);
         log.info("get:{}", new String(buffer));
         Command cmd = JSON.parseObject(buffer, Command.class);
         return Optional.of(cmd.value);
@@ -79,11 +98,12 @@ public class BitcastDB {
 
     public static class CommandPos {
         long pos;
-        int len;
+        //长度直接在文件里面标识
+        //int len;
 
-        public CommandPos(long pos, int len) {
+        public CommandPos(long pos) {
             this.pos = pos;
-            this.len = len;
+            //this.len = len;
         }
     }
 

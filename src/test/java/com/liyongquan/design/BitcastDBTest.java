@@ -15,9 +15,11 @@ public class BitcastDBTest {
     public void put() throws IOException {
         BitcastDB db = new BitcastDB("/Users/liyongquan");
         for (int i = 0; i < 10; i++) {
-            db.put(String.valueOf(i), String.valueOf(i));
+            //db.put(String.valueOf(i), String.valueOf(i));
         }
-        for (int i = 0; i < 10; i++) {
+        db.remove("0");
+        Assert.assertEquals(false, db.get("0").isPresent());
+        for (int i = 1; i < 10; i++) {
             Assert.assertEquals(String.valueOf(i), db.get(String.valueOf(i)).get());
         }
     }
