@@ -78,6 +78,8 @@ package com.liyongquan.design;
 //链接：https://leetcode-cn.com/problems/tag-validator
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+import com.sun.source.doctree.BlockTagTree;
+
 import java.util.Stack;
 
 public class TagValidator {
@@ -95,56 +97,65 @@ public class TagValidator {
         }
         Stack<String> stack = new Stack<>();
         int l = 0, r = 0;
-        while (r < code.length()) {
+        int len = code.length();
+        while (r < len) {
             if (code.charAt(r) == '<') {
                 r++;
-                //TAG
-                boolean cTag = false;
-                boolean upper = true;
-                while (r < code.length()) {
-                    char ch = code.charAt(r);
-                    if (!cTag && ch == '<') {
-                        return false;
-                    }
-                    if (ch < 'A' || ch > 'Z') {
-                        upper = false;
-                    }
-                    if (ch == '>') {
-                        if (!cTag) {
-                            break;
-                        } else {
-                            if (r - l + 1 >= 12 && "]]".equals(code.substring(r - 2, r))) {
-                                break;
-                            }
-                        }
-                    }
-                    if (r - l + 1 == 9 && "<![CDATA[".equals(code.substring(l, r + 1))) {
-                        cTag = true;
-                    }
-                    r++;
-                }
-                if (r == code.length() || r - l <= 1) {
+                if (r == len) {
                     return false;
                 }
-                //左标签
+                //TAG
+                boolean cTag = false;
+                boolean leftBracket = false;
+                if (code.charAt(r) == '!') {
+                    //CDATA
+                    if (len - l < 10) {
+                        return false;
+                    }
+                    if (!code.startsWith("<![CDATA[", l)) {
+                        return false;
+                    }
+                    while (r < len) {
+                        if (code.charAt(r) == '>' && "]]".equals(code.substring(r - 2, r))) {
+                            cTag = true;
+                            break;
+                        }
+                        r++;
+                    }
+                } else if (code.charAt(r) == '/') {
+                    leftBracket = false;
+                    r++;
+                    while (r < len && code.charAt(r) != '>') {
+                        if (code.charAt(r) < 'A' || code.charAt(r) > 'Z') {
+                            return false;
+                        }
+                        r++;
+                    }
+                } else {
+                    leftBracket = true;
+                    while (r < len && code.charAt(r) != '>') {
+                        if (code.charAt(r) < 'A' || code.charAt(r) > 'Z') {
+                            return false;
+                        }
+                        r++;
+                    }
+                }
+                if (r == len) {
+                    return false;
+                }
                 if (cTag) {
                     if (stack.isEmpty()) {
                         return false;
                     }
-                    //do nothing
-                } else if (code.charAt(l + 1) != '/') {
-                    String s = code.substring(l + 1, r);
-                    if (s.length() > 9 || !s.equals(s.toUpperCase())) {
+                } else if (leftBracket) {
+                    if (r - l - 1 < 1 || r - l - 1 > 9) {
                         return false;
                     }
+                    String s = code.substring(l + 1, r);
                     stack.add(s);
                 } else {
                     //右标签 [l+2,r)
-                    if (r - l - 2 <= 0) {
-                        return false;
-                    }
-                    String s = code.substring(l + 2, r);
-                    if (s.length() > 9 || !s.equals(s.toUpperCase())) {
+                    if (r - l - 2 < 1 || r - l - 2 > 9) {
                         return false;
                     }
                     if (stack.isEmpty() || !stack.peek().equals(code.substring(l + 2, r))) {
@@ -154,10 +165,13 @@ public class TagValidator {
                 }
                 r++;
                 l = r;
-                if (stack.isEmpty() && r != code.length()) {
+                if (stack.isEmpty() && r != len) {
                     return false;
                 }
             } else {
+                if (stack.isEmpty()) {
+                    return false;
+                }
                 r++;
                 l = r;
             }
