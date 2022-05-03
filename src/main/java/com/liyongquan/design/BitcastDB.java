@@ -21,7 +21,7 @@ public class BitcastDB {
     public static final String OP_PUT = "PUT";
     public static final String OP_RM = "RM";
 
-    private RandomAccessFile reader;
+    private Map<Integer, RandomAccessFile> readerMap;
     private RandomAccessFile writer;
 
     public static final int MX_LEN = 1024;
@@ -29,18 +29,33 @@ public class BitcastDB {
     private Map<String, CommandPos> index;
     private String path;
 
-    public BitcastDB(String path) throws IOException {
+    //日志压缩相关
+    private int curLogId;
+    //已经压缩的日志，一般是curLogId-1
+    private int compactLogId;
+
+
+    public BitcastDB(String path, int curLogId, int compactLogId) throws IOException {
         index = new HashMap<>();
+        readerMap = new HashMap<>();
         this.path = path;
+        this.curLogId = curLogId;
+        this.compactLogId = compactLogId;
         load();
     }
 
     private void load() throws IOException {
         index.clear();
-        String filename = path + "/0.log";
-        writer = new RandomAccessFile(filename, "rw");
+        writer = new RandomAccessFile(buildFilename(path, curLogId), "rw");
         writer.seek(writer.length());
-        reader = new RandomAccessFile(filename, "r");
+        readerMap.put(curLogId, new RandomAccessFile(buildFilename(path, curLogId), "r"));
+        readerMap.put(compactLogId, new RandomAccessFile(buildFilename(path, compactLogId), "r"));
+        //扫描一遍日志进行数据加载
+        load0(readerMap.get(compactLogId));
+        load0(readerMap.get(curLogId));
+    }
+
+    private void load0(RandomAccessFile reader) throws IOException {
         //扫描一遍日志进行数据加载
         int b;
         byte[] buffer = new byte[MX_LEN];
@@ -51,14 +66,28 @@ public class BitcastDB {
             int b4 = reader.read();
             if ((b | b2 | b3 | b4) < 0)
                 throw new EOFException();
+            //读前4个byte，这是内容的长度
             int len = ((b << 24) + (b2 << 16) + (b3 << 8) + (b4 << 0));
             reader.read(buffer, 0, len);
             Command cmd = JSON.parseObject(buffer, 0, len, Charset.defaultCharset(), Command.class);
             if (OP_PUT.equals(cmd.op)) {
-                index.put(cmd.key, new CommandPos(pos));
+                index.put(cmd.key, new CommandPos(pos, curLogId));
+            } else if (OP_RM.equals(cmd.op)) {
+                index.remove(cmd.key);
+            } else {
+                throw new IllegalArgumentException("命令异常");
             }
             pos += 4 + len;
         }
+    }
+
+    private static String buildFilename(String path, int logId) {
+        StringBuilder sb = new StringBuilder(path);
+        if (path.charAt(path.length() - 1) != '/') {
+            sb.append('/');
+        }
+        sb.append(logId + ".log");
+        return sb.toString();
     }
 
     public boolean put(String key, String value) throws IOException {
@@ -69,7 +98,7 @@ public class BitcastDB {
         writer.writeInt(json.length);
         writer.write(json);
         log.info("put:{}", new String(json));
-        index.put(key, new CommandPos(pos));
+        index.put(key, new CommandPos(pos, curLogId));
         return true;
     }
 
@@ -88,6 +117,7 @@ public class BitcastDB {
             return Optional.empty();
         }
         CommandPos commandPos = index.get(key);
+        RandomAccessFile reader = readerMap.get(curLogId);
         reader.seek(commandPos.pos);
         int len = reader.readInt();
         byte[] buffer = new byte[len];
@@ -97,14 +127,54 @@ public class BitcastDB {
         return Optional.of(cmd.value);
     }
 
+    /**
+     * 日志文件压缩
+     * 经典的write on copy的做法
+     */
+    public void compact() throws IOException {
+        //TODO:这里需要加锁
+        int compactTo = curLogId + 1;
+        int compactFrom = curLogId;
+        curLogId = compactTo + 1;
+        //这里理论上是不需要加锁了？日志压缩的过程
+        RandomAccessFile compactWriter = new RandomAccessFile(buildFilename(path, compactTo), "rw");
+        long pos = 0;
+        byte[] buffer = new byte[MX_LEN];
+        for (Map.Entry<String, CommandPos> entry : index.entrySet()) {
+            String key = entry.getKey();
+            CommandPos commandPos = entry.getValue();
+            if (commandPos.logId == curLogId) {
+                //写入到新文件的key不需要压缩
+                continue;
+            }
+            RandomAccessFile reader = readerMap.get(commandPos.logId);
+            reader.seek(commandPos.pos);
+            int len = reader.readInt();
+            reader.read(buffer, 0, len);
+            compactWriter.writeInt(len);
+            compactWriter.write(buffer, 0, len);
+            index.put(key, new CommandPos(pos, curLogId));
+            pos += 4 + len;
+        }
+        //删除旧的日志文件
+        readerMap.get(compactLogId).close();
+        readerMap.get(compactFrom).close();
+        readerMap.remove(compactLogId);
+        readerMap.remove(compactFrom);
+        compactLogId = compactTo;
+    }
+
     public static class CommandPos {
         long pos;
         //长度直接在文件里面标识
         //int len;
+        //对应的日志文件
+        int logId;
 
-        public CommandPos(long pos) {
+        public CommandPos(long pos, int logId) {
             this.pos = pos;
             //this.len = len;
+            this.logId = logId;
         }
     }
 
