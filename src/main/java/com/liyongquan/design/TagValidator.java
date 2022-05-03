@@ -83,7 +83,7 @@ import java.util.Stack;
 public class TagValidator {
     /**
      * 还没通过，这个用例好恶心
-     *
+     * <p>
      * 本质上就是写一个html的解析器
      *
      * @param code
@@ -97,9 +97,27 @@ public class TagValidator {
         int l = 0, r = 0;
         while (r < code.length()) {
             if (code.charAt(r) == '<') {
+                r++;
                 //TAG
                 boolean cTag = false;
-                while (r < code.length() && (!cTag && code.charAt(r) != '>' || cTag && code.charAt(r) != ']')) {
+                boolean upper = true;
+                while (r < code.length()) {
+                    char ch = code.charAt(r);
+                    if (!cTag && ch == '<') {
+                        return false;
+                    }
+                    if (ch < 'A' || ch > 'Z') {
+                        upper = false;
+                    }
+                    if (ch == '>') {
+                        if (!cTag) {
+                            break;
+                        } else {
+                            if (r - l + 1 >= 12 && "]]".equals(code.substring(r - 2, r))) {
+                                break;
+                            }
+                        }
+                    }
                     if (r - l + 1 == 9 && "<![CDATA[".equals(code.substring(l, r + 1))) {
                         cTag = true;
                     }
@@ -110,15 +128,23 @@ public class TagValidator {
                 }
                 //左标签
                 if (cTag) {
-                    if (code.length() - r < 3 || !code.startsWith("]]>", r)) {
+                    if (stack.isEmpty()) {
                         return false;
                     }
-                    r += 3;
+                    //do nothing
                 } else if (code.charAt(l + 1) != '/') {
-                    stack.add(code.substring(l + 1, r));
+                    String s = code.substring(l + 1, r);
+                    if (s.length() > 9 || !s.equals(s.toUpperCase())) {
+                        return false;
+                    }
+                    stack.add(s);
                 } else {
                     //右标签 [l+2,r)
                     if (r - l - 2 <= 0) {
+                        return false;
+                    }
+                    String s = code.substring(l + 2, r);
+                    if (s.length() > 9 || !s.equals(s.toUpperCase())) {
                         return false;
                     }
                     if (stack.isEmpty() || !stack.peek().equals(code.substring(l + 2, r))) {
@@ -126,12 +152,16 @@ public class TagValidator {
                     }
                     stack.pop();
                 }
+                r++;
                 l = r;
+                if (stack.isEmpty() && r != code.length()) {
+                    return false;
+                }
             } else {
                 r++;
                 l = r;
             }
         }
-        return true;
+        return stack.isEmpty();
     }
 }

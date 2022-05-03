@@ -22,4 +22,12 @@ public class TagValidatorTest {
         boolean res = validator.isValid("<DIV>This is the first line <![CDATA[<div>]]></DIV>");
         Assert.assertEquals(true, res);
     }
+
+
+    //"<DIV>This is the first line <![CDATA[<div>]]><DIV>"
+    @Test
+    public void test2() {
+        boolean res = validator.isValid("<DIV>This is the first line <![CDATA[<div>]]><DIV>");
+        Assert.assertEquals(false, res);
+    }
 }
