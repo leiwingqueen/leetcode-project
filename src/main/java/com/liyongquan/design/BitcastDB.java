@@ -77,6 +77,7 @@ public class BitcastDB {
         Command cmd = new Command(OP_RM, key, "");
         byte[] json = JSON.toJSONBytes(cmd);
         //顺序写
+        writer.writeInt(json.length);
         writer.write(json);
         index.remove(key);
         return true;
