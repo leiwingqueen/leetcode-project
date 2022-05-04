@@ -14,6 +14,7 @@ public class BitcastDBTest {
     @Test
     public void put() throws IOException {
         BitcastDB db = new BitcastDB("/Users/liyongquan/bitcast");
+        db.start();
         for (int i = 0; i < 10; i++) {
             db.put(String.valueOf(i), String.valueOf(i));
         }

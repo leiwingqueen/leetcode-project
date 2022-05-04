@@ -25,7 +25,8 @@ public class BitcastDB {
     private Map<Integer, RandomAccessFile> readerMap;
     private RandomAccessFile writer;
 
-    public static final int MX_LEN = 1024 * 1024;
+    public static final int BUFFER_MX_SIZE = 1024;
+    public static final int LOG_MX_SIZE = 1024 * 1024;
 
     private Map<String, CommandPos> index;
     private String path;
@@ -36,14 +37,37 @@ public class BitcastDB {
     private int compactLogId;
     //记录curLogId和compactLogId
     private RandomAccessFile logIndexRW;
+    private volatile boolean running;
 
 
-    public BitcastDB(String path) throws IOException {
+    public BitcastDB(String path) {
         index = new HashMap<>();
         readerMap = new HashMap<>();
         this.path = path;
-        load();
+        this.running = false;
     }
+
+    public void start() throws IOException {
+        running = true;
+        load();
+        final BitcastDB db = this;
+        Thread checkCompact = new Thread(() -> {
+            try {
+                db.compact();
+                Thread.sleep(1000);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        checkCompact.start();
+    }
+
+    public void stop() {
+        running = false;
+    }
+
 
     private void load() throws IOException {
         index.clear();
@@ -73,7 +97,7 @@ public class BitcastDB {
     private void load0(RandomAccessFile reader) throws IOException {
         //扫描一遍日志进行数据加载
         int b;
-        byte[] buffer = new byte[MX_LEN];
+        byte[] buffer = new byte[BUFFER_MX_SIZE];
         int pos = 0;
         while ((b = reader.read()) != -1) {
             int b2 = reader.read();
@@ -151,11 +175,19 @@ public class BitcastDB {
         return Optional.of(cmd.value);
     }
 
+    public void compact() throws IOException {
+        if (writer.length() <= LOG_MX_SIZE) {
+            return;
+        }
+        compact0();
+    }
+
     /**
      * 日志文件压缩
      * 经典的write on copy的做法
      */
-    public void compact() throws IOException {
+    public void compact0() throws IOException {
+        log.info("start compact...");
         //TODO:这里需要加锁
         int compactTo = curLogId + 1;
         int compactFrom = curLogId;
@@ -163,7 +195,7 @@ public class BitcastDB {
         //这里理论上是不需要加锁了？日志压缩的过程
         RandomAccessFile compactWriter = new RandomAccessFile(buildFilename(path, compactTo), "rw");
         long pos = 0;
-        byte[] buffer = new byte[MX_LEN];
+        byte[] buffer = new byte[BUFFER_MX_SIZE];
         for (Map.Entry<String, CommandPos> entry : index.entrySet()) {
             String key = entry.getKey();
             CommandPos commandPos = entry.getValue();
