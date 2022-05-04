@@ -18,13 +18,14 @@ import java.util.Optional;
  */
 @Slf4j
 public class BitcastDB {
+    public static final String LOG_INDEX_FILENAME = "index";
     public static final String OP_PUT = "PUT";
     public static final String OP_RM = "RM";
 
     private Map<Integer, RandomAccessFile> readerMap;
     private RandomAccessFile writer;
 
-    public static final int MX_LEN = 1024;
+    public static final int MX_LEN = 1024 * 1024;
 
     private Map<String, CommandPos> index;
     private String path;
@@ -33,25 +34,39 @@ public class BitcastDB {
     private int curLogId;
     //已经压缩的日志，一般是curLogId-1
     private int compactLogId;
+    //记录curLogId和compactLogId
+    private RandomAccessFile logIndexRW;
 
 
-    public BitcastDB(String path, int curLogId, int compactLogId) throws IOException {
+    public BitcastDB(String path) throws IOException {
         index = new HashMap<>();
         readerMap = new HashMap<>();
         this.path = path;
-        this.curLogId = curLogId;
-        this.compactLogId = compactLogId;
         load();
     }
 
     private void load() throws IOException {
         index.clear();
+        //加载curLogId和compactLogId
+        logIndexRW = new RandomAccessFile(buildFilename(path, LOG_INDEX_FILENAME), "rw");
+        if (logIndexRW.length() == 0) {
+            //空文件
+            curLogId = 0;
+            compactLogId = -1;
+            logIndexRW.writeInt(curLogId);
+            logIndexRW.writeInt(compactLogId);
+        } else {
+            curLogId = logIndexRW.readInt();
+            compactLogId = logIndexRW.readInt();
+        }
         writer = new RandomAccessFile(buildFilename(path, curLogId), "rw");
         writer.seek(writer.length());
+        if (compactLogId >= 0) {
+            readerMap.put(compactLogId, new RandomAccessFile(buildFilename(path, String.valueOf(compactLogId)), "r"));
+            //扫描一遍日志进行数据加载
+            load0(readerMap.get(compactLogId));
+        }
         readerMap.put(curLogId, new RandomAccessFile(buildFilename(path, curLogId), "r"));
-        readerMap.put(compactLogId, new RandomAccessFile(buildFilename(path, compactLogId), "r"));
-        //扫描一遍日志进行数据加载
-        load0(readerMap.get(compactLogId));
         load0(readerMap.get(curLogId));
     }
 
@@ -87,6 +102,15 @@ public class BitcastDB {
             sb.append('/');
         }
         sb.append(logId + ".log");
+        return sb.toString();
+    }
+
+    private static String buildFilename(String path, String filename) {
+        StringBuilder sb = new StringBuilder(path);
+        if (path.charAt(path.length() - 1) != '/') {
+            sb.append('/');
+        }
+        sb.append(filename + ".log");
         return sb.toString();
     }
 
@@ -162,6 +186,8 @@ public class BitcastDB {
         readerMap.remove(compactLogId);
         readerMap.remove(compactFrom);
         compactLogId = compactTo;
+        logIndexRW.writeInt(curLogId);
+        logIndexRW.writeInt(compactLogId);
     }
 
     public static class CommandPos {
