@@ -4,12 +4,11 @@ import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.EOFException;
+import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -173,7 +172,10 @@ public class BitcastDB {
                 return Optional.empty();
             }
             CommandPos commandPos = index.get(key);
-            RandomAccessFile reader = readerMap.get(curLogId);
+            RandomAccessFile reader = readerMap.get(commandPos.logId);
+            if (reader == null) {
+                log.error("reader is null...logId:{},key:{}", commandPos.logId, key);
+            }
             reader.seek(commandPos.pos);
             int len = reader.readInt();
             byte[] buffer = new byte[len];
@@ -206,10 +208,13 @@ public class BitcastDB {
         curLogId = compactTo + 1;
         //dump一份索引出来，为了实现WOC
         Map<String, CommandPos> dumpIndex = dump();
+        writer = new RandomAccessFile(buildFilename(path, String.valueOf(curLogId)), "rw");
+        RandomAccessFile compactWriter = new RandomAccessFile(buildFilename(path, String.valueOf(compactTo)), "rw");
+        readerMap.put(curLogId, new RandomAccessFile(buildFilename(path, String.valueOf(curLogId)), "r"));
+        readerMap.put(compactTo, new RandomAccessFile(buildFilename(path, String.valueOf(compactTo)), "r"));
         lock.writeLock().unlock();
         //这里理论上是不需要加锁了？日志压缩的过程，这里涉及到文件的随机读，但是因为使用了WOC，所以也是不需要加锁的
         //注意，其实这里的压缩失败问题也不大，下次再从新写入就可以了
-        RandomAccessFile compactWriter = new RandomAccessFile(buildFilename(path, String.valueOf(compactTo)), "rw");
         long pos = 0;
         byte[] buffer = new byte[BUFFER_MX_SIZE];
         Map<String, CommandPos> indexUpdate = new HashMap<>();
@@ -226,7 +231,7 @@ public class BitcastDB {
             reader.read(buffer, 0, len);
             compactWriter.writeInt(len);
             compactWriter.write(buffer, 0, len);
-            indexUpdate.put(key, new CommandPos(pos, curLogId));
+            indexUpdate.put(key, new CommandPos(pos, compactTo));
             pos += 4 + len;
         }
         //更新索引和对应的日志文件
@@ -235,20 +240,28 @@ public class BitcastDB {
             String key = entry.getKey();
             CommandPos commandPos = entry.getValue();
             //后面有更新的场景
-            if (index.containsKey(key) || index.get(key).logId == curLogId) {
+            if (!index.containsKey(key) || index.get(key).logId == curLogId) {
                 continue;
             }
             index.put(key, commandPos);
         }
-        if (compactLogId >= 0) {
-            readerMap.get(compactLogId).close();
-            readerMap.remove(compactLogId);
+        //删除压缩前的文件
+        Set<Integer> delSet = new HashSet<>();
+        for (Integer logId : readerMap.keySet()) {
+            if (logId <= compactFrom) {
+                delSet.add(logId);
+            }
         }
-        readerMap.get(compactFrom).close();
-        readerMap.remove(compactFrom);
+        for (Integer logId : delSet) {
+            readerMap.get(logId).close();
+            readerMap.remove(logId);
+            File file = new File(buildFilename(path, String.valueOf(logId)));
+            file.delete();
+        }
         compactLogId = compactTo;
         logIndexRW.writeInt(curLogId);
         logIndexRW.writeInt(compactLogId);
+        log.info("compact[finish]...compactLogId:{},curLogId:{}", compactLogId, curLogId);
         lock.writeLock().unlock();
     }
 
