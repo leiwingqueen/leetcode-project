@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * 参考bitcast的DB实现
@@ -26,10 +27,12 @@ public class BitcastDB {
     private RandomAccessFile writer;
 
     public static final int BUFFER_MX_SIZE = 1024;
-    public static final int LOG_MX_SIZE = 1024 * 1024;
+    public static final int LOG_MX_SIZE = 1024;
 
     private Map<String, CommandPos> index;
     private String path;
+
+    ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     //日志压缩相关
     private int curLogId;
@@ -52,13 +55,15 @@ public class BitcastDB {
         load();
         final BitcastDB db = this;
         Thread checkCompact = new Thread(() -> {
-            try {
-                db.compact();
-                Thread.sleep(1000);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            while (db.running) {
+                try {
+                    db.compact();
+                    Thread.sleep(1000);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
         checkCompact.start();
@@ -83,14 +88,14 @@ public class BitcastDB {
             curLogId = logIndexRW.readInt();
             compactLogId = logIndexRW.readInt();
         }
-        writer = new RandomAccessFile(buildFilename(path, curLogId), "rw");
+        writer = new RandomAccessFile(buildFilename(path, String.valueOf(curLogId)), "rw");
         writer.seek(writer.length());
         if (compactLogId >= 0) {
             readerMap.put(compactLogId, new RandomAccessFile(buildFilename(path, String.valueOf(compactLogId)), "r"));
             //扫描一遍日志进行数据加载
             load0(readerMap.get(compactLogId));
         }
-        readerMap.put(curLogId, new RandomAccessFile(buildFilename(path, curLogId), "r"));
+        readerMap.put(curLogId, new RandomAccessFile(buildFilename(path, String.valueOf(curLogId)), "r"));
         load0(readerMap.get(curLogId));
     }
 
@@ -120,15 +125,6 @@ public class BitcastDB {
         }
     }
 
-    private static String buildFilename(String path, int logId) {
-        StringBuilder sb = new StringBuilder(path);
-        if (path.charAt(path.length() - 1) != '/') {
-            sb.append('/');
-        }
-        sb.append(logId + ".log");
-        return sb.toString();
-    }
-
     private static String buildFilename(String path, String filename) {
         StringBuilder sb = new StringBuilder(path);
         if (path.charAt(path.length() - 1) != '/') {
@@ -139,40 +135,55 @@ public class BitcastDB {
     }
 
     public boolean put(String key, String value) throws IOException {
-        long pos = writer.length();
-        Command cmd = new Command(OP_PUT, key, value);
-        byte[] json = JSON.toJSONBytes(cmd);
-        //顺序写,4个byte是长度，剩下是内容
-        writer.writeInt(json.length);
-        writer.write(json);
-        log.info("put:{}", new String(json));
-        index.put(key, new CommandPos(pos, curLogId));
-        return true;
+        try {
+            lock.writeLock().lock();
+            long pos = writer.length();
+            Command cmd = new Command(OP_PUT, key, value);
+            byte[] json = JSON.toJSONBytes(cmd);
+            //顺序写,4个byte是长度，剩下是内容
+            writer.writeInt(json.length);
+            writer.write(json);
+            //log.info("put:{}", new String(json));
+            index.put(key, new CommandPos(pos, curLogId));
+            return true;
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     public boolean remove(String key) throws IOException {
-        Command cmd = new Command(OP_RM, key, "");
-        byte[] json = JSON.toJSONBytes(cmd);
-        //顺序写
-        writer.writeInt(json.length);
-        writer.write(json);
-        index.remove(key);
-        return true;
+        try {
+            lock.writeLock().lock();
+            Command cmd = new Command(OP_RM, key, "");
+            byte[] json = JSON.toJSONBytes(cmd);
+            //顺序写
+            writer.writeInt(json.length);
+            writer.write(json);
+            index.remove(key);
+            return true;
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     public Optional<String> get(String key) throws IOException {
-        if (!index.containsKey(key)) {
-            return Optional.empty();
+        try {
+            lock.readLock().lock();
+            if (!index.containsKey(key)) {
+                return Optional.empty();
+            }
+            CommandPos commandPos = index.get(key);
+            RandomAccessFile reader = readerMap.get(curLogId);
+            reader.seek(commandPos.pos);
+            int len = reader.readInt();
+            byte[] buffer = new byte[len];
+            reader.read(buffer, 0, len);
+            //log.info("get:{}", new String(buffer));
+            Command cmd = JSON.parseObject(buffer, Command.class);
+            return Optional.of(cmd.value);
+        } finally {
+            lock.readLock().unlock();
         }
-        CommandPos commandPos = index.get(key);
-        RandomAccessFile reader = readerMap.get(curLogId);
-        reader.seek(commandPos.pos);
-        int len = reader.readInt();
-        byte[] buffer = new byte[len];
-        reader.read(buffer, 0, len);
-        log.info("get:{}", new String(buffer));
-        Command cmd = JSON.parseObject(buffer, Command.class);
-        return Optional.of(cmd.value);
     }
 
     public void compact() throws IOException {
@@ -188,15 +199,21 @@ public class BitcastDB {
      */
     public void compact0() throws IOException {
         log.info("start compact...");
-        //TODO:这里需要加锁
+        //写锁
+        lock.writeLock().lock();
         int compactTo = curLogId + 1;
         int compactFrom = curLogId;
         curLogId = compactTo + 1;
-        //这里理论上是不需要加锁了？日志压缩的过程
-        RandomAccessFile compactWriter = new RandomAccessFile(buildFilename(path, compactTo), "rw");
+        //dump一份索引出来，为了实现WOC
+        Map<String, CommandPos> dumpIndex = dump();
+        lock.writeLock().unlock();
+        //这里理论上是不需要加锁了？日志压缩的过程，这里涉及到文件的随机读，但是因为使用了WOC，所以也是不需要加锁的
+        //注意，其实这里的压缩失败问题也不大，下次再从新写入就可以了
+        RandomAccessFile compactWriter = new RandomAccessFile(buildFilename(path, String.valueOf(compactTo)), "rw");
         long pos = 0;
         byte[] buffer = new byte[BUFFER_MX_SIZE];
-        for (Map.Entry<String, CommandPos> entry : index.entrySet()) {
+        Map<String, CommandPos> indexUpdate = new HashMap<>();
+        for (Map.Entry<String, CommandPos> entry : dumpIndex.entrySet()) {
             String key = entry.getKey();
             CommandPos commandPos = entry.getValue();
             if (commandPos.logId == curLogId) {
@@ -209,17 +226,39 @@ public class BitcastDB {
             reader.read(buffer, 0, len);
             compactWriter.writeInt(len);
             compactWriter.write(buffer, 0, len);
-            index.put(key, new CommandPos(pos, curLogId));
+            indexUpdate.put(key, new CommandPos(pos, curLogId));
             pos += 4 + len;
         }
-        //删除旧的日志文件
-        readerMap.get(compactLogId).close();
+        //更新索引和对应的日志文件
+        lock.writeLock().lock();
+        for (Map.Entry<String, CommandPos> entry : indexUpdate.entrySet()) {
+            String key = entry.getKey();
+            CommandPos commandPos = entry.getValue();
+            //后面有更新的场景
+            if (index.containsKey(key) || index.get(key).logId == curLogId) {
+                continue;
+            }
+            index.put(key, commandPos);
+        }
+        if (compactLogId >= 0) {
+            readerMap.get(compactLogId).close();
+            readerMap.remove(compactLogId);
+        }
         readerMap.get(compactFrom).close();
-        readerMap.remove(compactLogId);
         readerMap.remove(compactFrom);
         compactLogId = compactTo;
         logIndexRW.writeInt(curLogId);
         logIndexRW.writeInt(compactLogId);
+        lock.writeLock().unlock();
+    }
+
+    private Map<String, CommandPos> dump() {
+        Map<String, CommandPos> dummy = new HashMap<>();
+        for (Map.Entry<String, CommandPos> entry : index.entrySet()) {
+            CommandPos commandPos = entry.getValue();
+            dummy.put(entry.getKey(), new CommandPos(commandPos.pos, commandPos.logId));
+        }
+        return dummy;
     }
 
     public static class CommandPos {
