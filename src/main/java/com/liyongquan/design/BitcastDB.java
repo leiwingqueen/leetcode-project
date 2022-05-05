@@ -13,6 +13,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * 参考bitcast的DB实现
+ * https://zhuanlan.zhihu.com/p/351897096
+ * 这篇文章写得真的好，有真正实操过的跟只是在网上看结论的果然层次不一样
  * <p>
  * 顺序写，随机读
  */
@@ -92,13 +94,14 @@ public class BitcastDB {
         if (compactLogId >= 0) {
             readerMap.put(compactLogId, new RandomAccessFile(buildFilename(path, String.valueOf(compactLogId)), "r"));
             //扫描一遍日志进行数据加载
-            load0(readerMap.get(compactLogId));
+            load0(compactLogId);
         }
         readerMap.put(curLogId, new RandomAccessFile(buildFilename(path, String.valueOf(curLogId)), "r"));
-        load0(readerMap.get(curLogId));
+        load0(curLogId);
     }
 
-    private void load0(RandomAccessFile reader) throws IOException {
+    private void load0(int logId) throws IOException {
+        RandomAccessFile reader = readerMap.get(logId);
         //扫描一遍日志进行数据加载
         int b;
         byte[] buffer = new byte[BUFFER_MX_SIZE];
@@ -114,7 +117,7 @@ public class BitcastDB {
             reader.read(buffer, 0, len);
             Command cmd = JSON.parseObject(buffer, 0, len, Charset.defaultCharset(), Command.class);
             if (OP_PUT.equals(cmd.op)) {
-                index.put(cmd.key, new CommandPos(pos, curLogId));
+                index.put(cmd.key, new CommandPos(pos, logId));
             } else if (OP_RM.equals(cmd.op)) {
                 index.remove(cmd.key);
             } else {
@@ -200,12 +203,12 @@ public class BitcastDB {
      * 经典的write on copy的做法
      */
     public void compact0() throws IOException {
-        log.info("start compact...");
         //写锁
         lock.writeLock().lock();
         int compactTo = curLogId + 1;
         int compactFrom = curLogId;
         curLogId = compactTo + 1;
+        log.info("compact[start]...compactTo:{}", compactTo);
         //dump一份索引出来，为了实现WOC
         Map<String, CommandPos> dumpIndex = dump();
         writer = new RandomAccessFile(buildFilename(path, String.valueOf(curLogId)), "rw");
@@ -259,6 +262,7 @@ public class BitcastDB {
             file.delete();
         }
         compactLogId = compactTo;
+        logIndexRW.seek(0);
         logIndexRW.writeInt(curLogId);
         logIndexRW.writeInt(compactLogId);
         log.info("compact[finish]...compactLogId:{},curLogId:{}", compactLogId, curLogId);
