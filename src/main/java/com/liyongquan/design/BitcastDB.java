@@ -20,9 +20,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 @Slf4j
 public class BitcastDB {
-    public static final String LOG_INDEX_FILENAME = "index";
-    public static final String OP_PUT = "PUT";
-    public static final String OP_RM = "RM";
+    private static final String LOG_INDEX_FILENAME = "index";
+    private static final String OP_PUT = "PUT";
+    private static final String OP_RM = "RM";
 
     private Map<Integer, RandomAccessFile> readerMap;
     private RandomAccessFile writer;
