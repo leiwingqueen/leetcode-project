@@ -1,7 +1,5 @@
 package com.liyongquan.weeklycontest.wc292;
 
-import javax.sound.midi.Soundbank;
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,35 +45,28 @@ public class CountTexts {
             //dp4[i] = (int) ((long) dp4[i - 1] + dp4[i - 2] + dp4[i - 3] + dp4[i - 4]) % MOD;
         }
         int l = 0, r = 0;
-        BigDecimal res = BigDecimal.ONE;
+        int res = 1;
         while (r < len) {
             char ch = pressedKeys.charAt(l);
             if (pressedKeys.charAt(r) == ch) {
                 r++;
             } else {
                 if (mp.get(ch - '0') == 3) {
-                    res = res.multiply(BigDecimal.valueOf(dp3[r - l - 1])).remainder(BigDecimal.valueOf(MOD));
-                    //System.out.println("*" + dp3[r - l - 1]);
+                    res = (int) ((long) res * dp3[r - l - 1] % MOD);
                 } else {
-                    res = res.multiply(BigDecimal.valueOf(dp4[r - l - 1])).remainder(BigDecimal.valueOf(MOD));
-                    //res = (int) ((long) res * dp4[r - l - 1] % MOD);
-                    //System.out.println("*" + dp4[r - l - 1]);
+                    res = (int) ((long) res * dp4[r - l - 1] % MOD);
                 }
-                //System.out.println("res:" + res.intValue());
-
                 l = r;
             }
         }
         if (r > l) {
             char ch = pressedKeys.charAt(l);
             if (mp.get(ch - '0') == 3) {
-                res = res.multiply(BigDecimal.valueOf(dp3[r - l - 1])).remainder(BigDecimal.valueOf(MOD));
-                //System.out.println("*" + dp3[r - l - 1]);
+                res = (int) ((long) res * dp3[r - l - 1] % MOD);
             } else {
-                res = res.multiply(BigDecimal.valueOf(dp4[r - l - 1])).remainder(BigDecimal.valueOf(MOD));
-                //System.out.println("*" + dp4[r - l - 1]);
+                res = (int) ((long) res * dp4[r - l - 1] % MOD);
             }
         }
-        return res.intValue();
+        return res;
     }
 }
