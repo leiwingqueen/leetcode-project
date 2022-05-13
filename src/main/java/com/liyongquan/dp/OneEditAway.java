@@ -108,4 +108,80 @@ public class OneEditAway {
         }
         return j - i < 1 && k - i < 1;
     }
+
+    /**
+     * 分情况讨论
+     *
+     * 俗话说的，代码越长，性能越好
+     *
+     * @param first
+     * @param second
+     * @return
+     */
+    public boolean oneEditAway3(String first, String second) {
+        int m = first.length();
+        int n = second.length();
+        if (Math.abs(m - n) > 1) {
+            return false;
+        }
+        if (m == n) {
+            //替换的场景
+            int cnt = 0;
+            for (int i = 0; i < m; i++) {
+                if (first.charAt(i) != second.charAt(i)) {
+                    cnt++;
+                    if (cnt > 1) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        } else if (m > n) {
+            //删除的场景
+            int i = 0, j = 0;
+            int cnt = 0;
+            while (i < m && j < n) {
+                if (first.charAt(i) == second.charAt(j)) {
+                    i++;
+                    j++;
+                } else {
+                    cnt++;
+                    if (cnt > 1) {
+                        return false;
+                    }
+                    i++;
+                }
+            }
+            if (i < m) {
+                cnt += m - i;
+            }
+            if (j < n) {
+                cnt += n - j;
+            }
+            return cnt <= 1;
+        } else {
+            //插入的场景
+            int i = 0, j = 0;
+            int cnt = 0;
+            while (i < m && j < n) {
+                if (first.charAt(i) == second.charAt(j)) {
+                    i++;
+                    j++;
+                } else {
+                    cnt++;
+                    if (cnt > 1) {
+                        return false;
+                    }
+                    j++;
+                }
+            }
+            if (i < m) {
+                cnt += m - i;
+            }
+            if (j < n) {
+                cnt += n - j;
+            }
+            return cnt <= 1;
+        }
+    }
 }
