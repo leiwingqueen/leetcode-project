@@ -70,4 +70,45 @@ public class LargestVariance {
         }
         return res;
     }
+
+    /**
+     * 解法2。
+     * <p>
+     * 还是没理解
+     *
+     * @param s
+     * @return
+     */
+    public int largestVariance2(String s) {
+        int len = s.length();
+        if (len == 1) {
+            return 0;
+        }
+        int res = 0;
+        for (int i = 0; i < 26; i++) {
+            for (int j = 0; j < 26; j++) {
+                if (i == j) {
+                    continue;
+                }
+                char a = (char) ('a' + i);
+                char b = (char) ('a' + j);
+                int sum = 0;
+                int diff = 0;
+                int min = 0;
+                for (int k = 0; k < len; k++) {
+                    int val = 0;
+                    if (s.charAt(k) == a) {
+                        val = 1;
+                    } else if (s.charAt(k) == b) {
+                        val = -1;
+                    }
+                    sum += val;
+                    diff = Math.max(sum - min, min);
+                    min = Math.min(min, sum);
+                }
+                res = Math.max(diff, res);
+            }
+        }
+        return res;
+    }
 }
