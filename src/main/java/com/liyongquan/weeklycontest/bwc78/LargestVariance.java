@@ -38,6 +38,8 @@ package com.liyongquan.weeklycontest.bwc78;
 //链接：https://leetcode.cn/problems/substring-with-largest-variance
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+import sun.nio.cs.ext.MacHebrew;
+
 public class LargestVariance {
     /**
      * 暂时想不到，先尝试暴力
@@ -92,9 +94,9 @@ public class LargestVariance {
                 }
                 char a = (char) ('a' + i);
                 char b = (char) ('a' + j);
-                int sum = 0;
-                int diff = 0;
-                int min = 0;
+                int fn = 0;
+                int gn = Integer.MIN_VALUE;
+                int gnMax = Integer.MIN_VALUE;
                 for (int k = 0; k < len; k++) {
                     int val = 0;
                     if (s.charAt(k) == a) {
@@ -102,11 +104,17 @@ public class LargestVariance {
                     } else if (s.charAt(k) == b) {
                         val = -1;
                     }
-                    sum += val;
-                    diff = Math.max(sum - min, min);
-                    min = Math.min(min, sum);
+                    fn = Math.max(fn + val, val);
+                    if (val == -1) {
+                        gn = fn;
+                    } else {
+                        if (gn != Integer.MIN_VALUE) {
+                            gn += val;
+                        }
+                    }
+                    gnMax = Math.max(gnMax, gn);
                 }
-                res = Math.max(diff, res);
+                res = Math.max(gnMax, res);
             }
         }
         return res;
