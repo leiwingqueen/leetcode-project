@@ -19,7 +19,7 @@ public class MaximumWhiteTiles {
             int edge = range[0] + carpetLen - 1;
             int idx = search(ranges, edge);
             //前idx个总和,然后再加上最后一个区间
-            int r = prefixSum[idx];
+            int r = prefixSum[idx] - prefixSum[i];
             int[] last = ranges.get(idx);
             r += Math.min(edge - last[0] + 1, last[1] - last[0] + 1);
             res = Math.max(res, r);
