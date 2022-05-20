@@ -60,10 +60,10 @@ public class FindRightInterval {
 
     private int search(int[][] arr, int idx) {
         int len = arr.length;
-        if (idx == len || arr[len - 1][0] < arr[idx][1]) {
+        if (arr[len - 1][0] < arr[idx][1]) {
             return -1;
         }
-        int l = idx + 1;
+        int l = idx;
         int r = len - 1;
         int target = arr[idx][1];
         while (l < r) {
