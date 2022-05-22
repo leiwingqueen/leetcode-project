@@ -43,8 +43,12 @@ package com.liyongquan.dp;
 public class CanIWin {
     /**
      * dp+状态压缩
-     *
+     * <p>
      * 超时
+     * <p>
+     * 假设最大选择的整数为m，我们期望得到的整数位n
+     * <p>
+     * 时间复杂度:O(n*m*2^m)
      *
      * @param maxChoosableInteger
      * @param desiredTotal
@@ -57,9 +61,9 @@ public class CanIWin {
             dp[0][i] = true;
         }
         for (int i = 1; i <= desiredTotal; i++) {
-            for (int j = 0; j < mx; j++) {
+            for (int j = 0; j < mx - 1; j++) {
                 //选择的整数
-                for (int k = 1; k <= maxChoosableInteger; k++) {
+                for (int k = maxChoosableInteger; k >= 1; k--) {
                     if ((j & (1 << (k - 1))) == 0) {
                         if (k >= i) {
                             dp[i][j] = true;
@@ -75,5 +79,44 @@ public class CanIWin {
             }
         }
         return dp[desiredTotal][0];
+    }
+
+    private int[] dp;
+    private int n;
+    private int desiredTotal;
+
+    public boolean canIWin2(int maxChoosableInteger, int desiredTotal) {
+        this.n = maxChoosableInteger;
+        this.desiredTotal = desiredTotal;
+        this.dp = new int[1 << n];
+        int sum = 0;
+        for (int i = 1; i <= n; i++) {
+            sum += i;
+        }
+        if (sum < desiredTotal) {
+            return false;
+        }
+        return dfs(0, 0);
+    }
+
+    private boolean dfs(int state, int total) {
+        if (dp[state] > 0) {
+            return dp[state] == 1;
+        }
+        for (int i = 1; i <= n; i++) {
+            if ((state & (1 << (i - 1))) == 0) {
+                if (total + i >= desiredTotal) {
+                    dp[state] = 1;
+                    return true;
+                } else {
+                    if (!dfs(state | 1 << (i - 1), total + i)) {
+                        dp[state] = 1;
+                        return true;
+                    }
+                }
+            }
+        }
+        dp[state] = 2;
+        return false;
     }
 }
