@@ -16,36 +16,46 @@ package com.liyongquan.binarySort;
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 public class FindClosest {
+    /**
+     * 滑动窗口+双指针
+     *
+     * @param words
+     * @param word1
+     * @param word2
+     * @return
+     */
     public int findClosest(String[] words, String word1, String word2) {
-        int l = 1, r = word1.length();
+        int l = 1, r = words.length;
         while (l < r) {
-            int mid = l + (r - l + 1) / 2;
+            int mid = l + (r - l) / 2;
             if (check(words, word1, word2, mid)) {
-                l = mid;
+                r = mid;
             } else {
-                r = mid - 1;
+                l = mid + 1;
             }
         }
         return l - 1;
     }
 
-    private boolean check(String[] words, String word1, String word2, int distance) {
+    public boolean check(String[] words, String word1, String word2, int distance) {
         int cnt1 = 0;
         int cnt2 = 0;
         int p1 = 0;
         int p2 = 0;
-        while (p2 < word2.length()) {
-            if (p2 - p1 > distance) {
+        while (p2 < words.length) {
+            if (p2 - p1 >= distance) {
                 if (words[p1].equals(word1)) {
                     cnt1--;
-                } else if (words[p1].equals(word2)) {
+                }
+                if (words[p1].equals(word2)) {
                     cnt2--;
                 }
                 p1++;
             }
             if (words[p2].equals(word1)) {
                 cnt1++;
-            } else if (words[p2].equals(word2)) {
+            }
+            if (words[p2].equals(word2)) {
                 cnt2++;
             }
             if (cnt1 > 0 && cnt2 > 0) {
