@@ -48,7 +48,7 @@ public class ConsecutiveNumbersSum {
         int r = n - k + 1;
         while (l <= r) {
             int mid = l + (r - l) / 2;
-            int sum = (mid + mid + k - 1) * k / 2;
+            long sum = (mid + mid + k - 1) * (long) k / 2;
             if (sum == n) {
                 return true;
             } else if (sum < n) {
