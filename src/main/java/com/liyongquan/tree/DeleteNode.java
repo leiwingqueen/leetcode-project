@@ -65,27 +65,37 @@ public class DeleteNode {
         if (root.val == key) {
             if (root.left == null && root.right == null) {
                 return null;
-            } else if (root.right != null) {
-                //把右子树提升
-                int val = root.right.val;
-                root.val = val;
-                TreeNode right = deleteNode(root.right, root.right.val);
-                root.right = right;
-            } else {
-                //把左子树提升
-                int val = root.left.val;
-                root.val = val;
-                TreeNode left = deleteNode(root.left, root.left.val);
-                root.left = left;
             }
+            if (root.right == null) {
+                return root.left;
+            }
+            if (root.left == null) {
+                return root.right;
+            }
+            TreeNode parent = null;
+            TreeNode node = root.right;
+            while (node.left != null) {
+                parent = node;
+                node = node.left;
+            }
+            if (parent == null) {
+                node.left = root.left;
+            } else {
+                //删掉后继节点
+                parent.left = node.right;
+                node.right = root.right;
+                node.left = root.left;
+            }
+            return node;
         } else if (key < root.val) {
             TreeNode left = deleteNode(root.left, key);
             root.left = left;
+            return root;
         } else {
             TreeNode right = deleteNode(root.right, key);
             root.right = right;
+            return root;
         }
-        return root;
     }
 
     /**
