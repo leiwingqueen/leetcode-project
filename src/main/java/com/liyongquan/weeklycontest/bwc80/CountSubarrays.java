@@ -58,7 +58,7 @@ public class CountSubarrays {
     }
 
     private int search(long[] preSum, int i, long k, int n) {
-        if (i >= k) {
+        if (preSum[i + 1] - preSum[i] >= k) {
             return 0;
         }
         int l = i, r = n - 1;
