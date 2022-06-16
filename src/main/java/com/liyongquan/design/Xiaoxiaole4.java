@@ -64,6 +64,10 @@ public class Xiaoxiaole4 {
                 }
             }
         }
+        //当前自身的点也算上
+        if (uf.find(pos[0] * n + pos[1]) == p) {
+            return true;
+        }
         return false;
     }
 
