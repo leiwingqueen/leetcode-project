@@ -67,9 +67,7 @@ public class RangeModule {
         for (Map.Entry<Integer, Integer> entry : subMap.entrySet()) {
             Integer r = entry.getValue();
             delRange.add(entry.getKey());
-            if (r > right) {
-                right = entry.getValue();
-            }
+            right = r;
         }
         for (Integer key : delRange) {
             map.remove(key);
@@ -114,20 +112,17 @@ public class RangeModule {
         }
         NavigableMap<Integer, Integer> subMap = map.subMap(left, false, right, false);
         List<Integer> delRange = new LinkedList<>();
-        int l1 = 0, r1 = 0;
+        int r1 = 0;
         for (Map.Entry<Integer, Integer> entry : subMap.entrySet()) {
             Integer r = entry.getValue();
             delRange.add(entry.getKey());
-            if (r > right) {
-                l1 = right;
-                r1 = r;
-            }
+            r1 = r;
         }
         for (Integer key : delRange) {
             map.remove(key);
         }
-        if (r1 > l1) {
-            map.put(l1, r1);
+        if (r1 > right) {
+            map.put(right, r1);
         }
     }
 }
