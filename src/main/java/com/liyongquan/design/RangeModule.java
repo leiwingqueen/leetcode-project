@@ -66,9 +66,8 @@ public class RangeModule {
         List<Integer> delRange = new LinkedList<>();
         for (Map.Entry<Integer, Integer> entry : subMap.entrySet()) {
             Integer r = entry.getValue();
-            if (r <= right) {
-                delRange.add(entry.getKey());
-            } else {
+            delRange.add(entry.getKey());
+            if (r > right) {
                 right = entry.getValue();
             }
         }
@@ -79,10 +78,56 @@ public class RangeModule {
     }
 
     public boolean queryRange(int left, int right) {
-        return false;
+        Map.Entry<Integer, Integer> floorEntry = map.floorEntry(left);
+        if (floorEntry == null) {
+            return false;
+        }
+        return floorEntry.getValue() >= right;
     }
 
     public void removeRange(int left, int right) {
-
+        Map.Entry<Integer, Integer> floorEntry = map.floorEntry(left);
+        if (floorEntry != null) {
+            Integer l = floorEntry.getKey();
+            Integer r = floorEntry.getValue();
+            if (r < right) {
+                //没有交集
+            } else if (r >= right) {
+                //完全包含
+                map.remove(l);
+                //插入新的区间[l,left),[right,r)
+                if (left > l) {
+                    map.put(l, left);
+                }
+                if (r > right) {
+                    map.put(right, r);
+                }
+                return;
+            } else {
+                //[l,r)->[l,left)
+                map.remove(l);
+                if (left > l) {
+                    map.put(l, left);
+                }
+                left = r;
+            }
+        }
+        NavigableMap<Integer, Integer> subMap = map.subMap(left, false, right, false);
+        List<Integer> delRange = new LinkedList<>();
+        int l1 = 0, r1 = 0;
+        for (Map.Entry<Integer, Integer> entry : subMap.entrySet()) {
+            Integer r = entry.getValue();
+            delRange.add(entry.getKey());
+            if (r > right) {
+                l1 = right;
+                r1 = r;
+            }
+        }
+        for (Integer key : delRange) {
+            map.remove(key);
+        }
+        if (r1 > l1) {
+            map.put(l1, r1);
+        }
     }
 }
