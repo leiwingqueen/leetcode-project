@@ -3,3 +3,7 @@
 /leetcode-project.iml
 /log/
 .DS_Store
+*.iml
+.idea
+log
+target
