@@ -48,7 +48,6 @@ PS：我曾经在给我的一个工作多年的同事讲时间复杂度的时候
 
 | #    | title                                                        | solution                                         | Difficulty |
 | ---- | ------------------------------------------------------------ | ------------------------------------------------ | ---------- |
+| 091  | [剑指 Offer II 091. 粉刷房子](https://leetcode.cn/problems/JEj789/) | [GO](./algorithm/golang/dp/minCost.go)           | Medium     |
 | 30   | [30. 串联所有单词的子串](https://leetcode.cn/problems/substring-with-concatenation-of-all-words/) | [GO](./algorithm/golang/string/FindSubstring.go) | Medium     |
-|      |                                                              |                                                  |            |
-|      |                                                              |                                                  |            |
 
