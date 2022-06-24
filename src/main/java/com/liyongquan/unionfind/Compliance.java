@@ -38,6 +38,8 @@ package com.liyongquan.unionfind;
 //0 <= distance[i][j] < 100
 //0 < n < 100
 
+import java.util.Arrays;
+
 public class Compliance {
     public boolean isCompliance(int[][] distance, int n) {
         int m = distance.length;
