@@ -41,3 +41,14 @@ PS：我曾经在给我的一个工作多年的同事讲时间复杂度的时候
 - 刷题破1K
 - 周赛积分破2K，拿到knight的称号
 - 每周一场周赛，克服hard的阴影
+
+## 题目连接
+
+目前已经写了1K+题目，后续还是慢慢完善下这个list。尽可能把经典的题目列下
+
+| #    | title                                                        | solution                                         | Difficulty |
+| ---- | ------------------------------------------------------------ | ------------------------------------------------ | ---------- |
+| 30   | [30. 串联所有单词的子串](https://leetcode.cn/problems/substring-with-concatenation-of-all-words/) | [GO](./algorithm/golang/string/FindSubstring.go) | Medium     |
+|      |                                                              |                                                  |            |
+|      |                                                              |                                                  |            |
+
