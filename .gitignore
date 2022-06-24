@@ -4,6 +4,6 @@
 /log/
 .DS_Store
 *.iml
-.idea
-log
-target
+**/.idea/
+**/log/
+**/target/
