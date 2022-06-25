@@ -7,3 +7,4 @@
 **/.idea/
 **/log/
 **/target/
+**/cmake-build-debug/
