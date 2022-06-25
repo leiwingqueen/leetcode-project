@@ -1,6 +1,8 @@
 package dp
 
-import "testing"
+import (
+	"testing"
+)
 
 func Test_findLUSlength2(t *testing.T) {
 	type args struct {
