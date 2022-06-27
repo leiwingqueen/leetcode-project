@@ -1,4 +1,22 @@
+#include "unordered_map"
 #include "lru_replacer.h"
+
+void remove(LRUNode *node) {
+    LRUNode *next = node->next;
+    LRUNode *pre = node->pre;
+    pre->next = next;
+    next->pre = pre;
+    node->pre = NULL;
+    node->next = NULL;
+}
+
+void insert(LRUNode *head, LRUNode *node) {
+    LRUNode *next = head->next;
+    node->pre = head;
+    head->next = node;
+    next->pre = node;
+    node->next = next;
+}
 
 LRUReplacer::LRUReplacer(size_t num_pages) {
     this->capacity = num_pages;
@@ -41,35 +59,18 @@ void LRUReplacer::Pin(int frame_id) {
 
 void LRUReplacer::Unpin(int frame_id) {
     // insert operation
-    std::unordered_map<int, LRUNode *>::iterator it;
+    std::map<int, LRUNode *>::iterator it;
     it = mp.find(frame_id);
     if (it == mp.end()) {
         // not exist
         LRUNode *node = new LRUNode(frame_id);
-        mp.insert(frame_id, node);
+        mp.insert_or_assign(frame_id, node);
         insert(this->head, node);
     } else {
-        LRUNode* node = it->second;
+        LRUNode *node = it->second;
         remove(node);
         insert(this->head, node);
     }
 }
 
 int LRUReplacer::Size() { return mp.size(); }
-
-void remove(LRUNode *node) {
-    LRUNode *next = node->next;
-    LRUNode *pre = node->pre;
-    pre->next = next;
-    next->pre = pre;
-    node->pre = NULL;
-    node->next = NULL;
-}
-
-void insert(LRUNode *head, LRUNode *node) {
-    LRUNode *next = head->next;
-    node->pre = head;
-    head->next = node;
-    next->pre = node;
-    node->next = next;
-}

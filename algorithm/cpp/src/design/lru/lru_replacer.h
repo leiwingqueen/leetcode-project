@@ -2,7 +2,7 @@
 #include <mutex>  // NOLINT
 #include <vector>
 
-#include <unordered_map>
+#include <map>
 #include "replacer.h"
 
 class LRUNode {
@@ -46,7 +46,7 @@ public:
     int Size() override;
 
 private:
-    std::unordered_map<int, LRUNode *> mp;
+    std::map<int, LRUNode *> mp;
     int capacity;
     LRUNode *head;
     LRUNode *tail;
