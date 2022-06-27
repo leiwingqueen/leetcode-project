@@ -102,6 +102,7 @@ public:
         } else {
             //移动到头部
             LRUNode *node = map[key];
+            node->value = value;
             remove(node);
             append(node);
         }
