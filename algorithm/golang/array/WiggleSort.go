@@ -32,6 +32,7 @@ import "sort"
 //链接：https://leetcode.cn/problems/wiggle-sort-ii
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+//贪心，过是过了，但是不知道为什么对
 func wiggleSort(nums []int) {
 	tmp := make([]int, len(nums))
 	for i, v := range nums {
@@ -40,17 +41,33 @@ func wiggleSort(nums []int) {
 	sort.Slice(tmp, func(i, j int) bool {
 		return tmp[i] < tmp[j]
 	})
-	idx1 := 0
-	idx2 := 0
-	for idx1 < len(nums) {
-		nums[idx1] = tmp[idx2]
-		idx1 += 2
-		idx2++
-	}
-	idx1 = 1
-	for idx1 < len(nums) {
-		nums[idx1] = tmp[idx2]
-		idx1 += 2
-		idx2++
+	if len(nums)%2 == 1 {
+		idx1 := 0
+		idx2 := 0
+		for idx1 < len(nums) {
+			nums[idx1] = tmp[idx2]
+			idx1 += 2
+			idx2++
+		}
+		idx1 = 1
+		for idx1 < len(nums) {
+			nums[idx1] = tmp[idx2]
+			idx1 += 2
+			idx2++
+		}
+	} else {
+		idx1 := len(nums) - 2
+		idx2 := 0
+		for idx1 >= 0 {
+			nums[idx1] = tmp[idx2]
+			idx1 -= 2
+			idx2++
+		}
+		idx1 = len(nums) - 1
+		for idx1 >= 0 {
+			nums[idx1] = tmp[idx2]
+			idx1 -= 2
+			idx2++
+		}
 	}
 }

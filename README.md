@@ -48,6 +48,7 @@ PS：我曾经在给我的一个工作多年的同事讲时间复杂度的时候
 
 | #    | Title                                                        | Solution                                         | Difficulty |
 | ---- | ------------------------------------------------------------ | ------------------------------------------------ | ---------- |
+| 324  | [324. 摆动排序 II](https://leetcode.cn/problems/wiggle-sort-ii/) | [GO](./algorithm/golang/array/WiggleSort.go)     | Medium     |
 | 522  | [522. 最长特殊序列 II](https://leetcode.cn/problems/longest-uncommon-subsequence-ii/) | [GO](./algorithm/golang/array/findLUSlength.go)  | Medium     |
 | 091  | [剑指 Offer II 091. 粉刷房子](https://leetcode.cn/problems/JEj789/) | [GO](./algorithm/golang/dp/minCost.go)           | Medium     |
 | 30   | [30. 串联所有单词的子串](https://leetcode.cn/problems/substring-with-concatenation-of-all-words/) | [GO](./algorithm/golang/string/FindSubstring.go) | Medium     |
