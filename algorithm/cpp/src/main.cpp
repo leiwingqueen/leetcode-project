@@ -1,4 +1,5 @@
 #include <iostream>
+#include "vector"
 
 using namespace std;
 
@@ -61,5 +62,11 @@ int main() {
     cout << "====================================" << endl;
     int r2 = [](int a) -> int { return a + 1; }(2);
     cout << r2 << endl;
+    cout << "====================================" << endl;
+    vector<int> iVector;
+    for (int i = 0; i < 10; ++i) {
+        iVector.push_back(i);
+    }
+    for_each(begin(iVector), end(iVector), [](int n) { if (n % 2 == 0)cout << n << endl; });
     return 0;
 }
