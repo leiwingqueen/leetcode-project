@@ -8,7 +8,15 @@ struct TestObj {
     TestObj(int value) : value(value) {}
 };
 
+enum class CoordinateArea {
+    First,
+    Second,
+    Third,
+};
+
 int main() {
+    //https://www.thegeekstuff.com/2016/02/c-plus-plus-11/
+    //按照这里进行测试
     cout << "Hello, World!" << endl;
     for (int i = 0; i < 10; ++i) {
         cout << i << endl;
@@ -38,5 +46,20 @@ int main() {
     for (TestObj *obj: arr2) {
         cout << obj->value << endl;
     }
+    cout << "====================================" << endl;
+    //枚举测试
+    //https://www.tutorialspoint.com/Scope-resolution-operator-in-Cplusplus，范围作用域解决方案
+    CoordinateArea area = CoordinateArea::First;
+    cout << (area == CoordinateArea::First) << endl;
+    //lambda expression
+    cout << "====================================" << endl;
+    double a = 1;
+    double b = 1;
+    auto dUpperPart = [](double dX, double dY) -> double { return dX * dX + dY * dY; };
+    double r = dUpperPart(a, b);
+    cout << r << endl;
+    cout << "====================================" << endl;
+    int r2 = [](int a) -> int { return a + 1; }(2);
+    cout << r2 << endl;
     return 0;
 }
