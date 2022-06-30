@@ -46,10 +46,11 @@ PS：我曾经在给我的一个工作多年的同事讲时间复杂度的时候
 
 目前已经写了1K+题目，后续还是慢慢完善下这个list。尽可能把经典的题目列下
 
-| #    | Title                                                        | Solution                                         | Difficulty |
-| ---- | ------------------------------------------------------------ | ------------------------------------------------ | ---------- |
-| 324  | [324. 摆动排序 II](https://leetcode.cn/problems/wiggle-sort-ii/) | [GO](./algorithm/golang/array/WiggleSort.go)     | Medium     |
-| 522  | [522. 最长特殊序列 II](https://leetcode.cn/problems/longest-uncommon-subsequence-ii/) | [GO](./algorithm/golang/array/findLUSlength.go)  | Medium     |
-| 091  | [剑指 Offer II 091. 粉刷房子](https://leetcode.cn/problems/JEj789/) | [GO](./algorithm/golang/dp/minCost.go)           | Medium     |
-| 30   | [30. 串联所有单词的子串](https://leetcode.cn/problems/substring-with-concatenation-of-all-words/) | [GO](./algorithm/golang/string/FindSubstring.go) | Medium     |
+| #    | Title                                                        | Solution                                                     | Difficulty |
+| ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---------- |
+| 1175 | [1175. 质数排列](https://leetcode.cn/problems/prime-arrangements/) | [GO](./algorithm/golang/array/numPrimeArrangements.go),[C++](./algorithm/cpp/array/NumPrimeArrangements.cpp) | easy       |
+| 324  | [324. 摆动排序 II](https://leetcode.cn/problems/wiggle-sort-ii/) | [GO](./algorithm/golang/array/WiggleSort.go)                 | Medium     |
+| 522  | [522. 最长特殊序列 II](https://leetcode.cn/problems/longest-uncommon-subsequence-ii/) | [GO](./algorithm/golang/array/findLUSlength.go)              | Medium     |
+| 091  | [剑指 Offer II 091. 粉刷房子](https://leetcode.cn/problems/JEj789/) | [GO](./algorithm/golang/dp/minCost.go)                       | Medium     |
+| 30   | [30. 串联所有单词的子串](https://leetcode.cn/problems/substring-with-concatenation-of-all-words/) | [GO](./algorithm/golang/string/FindSubstring.go)             | Medium     |
 
