@@ -68,5 +68,11 @@ int main() {
         iVector.push_back(i);
     }
     for_each(begin(iVector), end(iVector), [](int n) { if (n % 2 == 0)cout << n << endl; });
+    cout << "====================================" << endl;
+    //static assertion
+    cout << sizeof(long int) << endl;
+    int c;
+    static_assert(sizeof(c) <= 8, "This is unexpected");
+
     return 0;
 }
