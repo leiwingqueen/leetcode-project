@@ -84,5 +84,20 @@ int main() {
     if (p1 == nullptr) {
         cout << "null" << endl;
     }
+    //Uniform Initialization
+    cout << "====================================" << endl;
+    vector<int> v1{1, 2, 3};
+    int v2[]{1, 2, 3};
+    for (const auto &item: v2) {
+        cout << item << endl;
+    }
+    //if condition
+    if (a > 0)
+        cout << "hello" << endl;
+    else
+        cout << "word" << endl;
+    //tuple
+    auto tuple = make_tuple("hello", "world", 1, 2);
+    cout << get<0>(tuple) << endl;
     return 0;
 }

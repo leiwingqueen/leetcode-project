@@ -42,7 +42,8 @@ func diffWaysToCompute(expression string) []int {
 			return []int{}
 		}
 		p := l
-		mp := make(map[int]struct{})
+		res := make([]int, 0)
+		//mp := make(map[int]struct{})
 		sum := 0
 		//上一次的运算符
 		op := byte('+')
@@ -63,34 +64,30 @@ func diffWaysToCompute(expression string) []int {
 				sum /= num
 			}
 			if p == r {
-				mp[num] = struct{}{}
-				break
+				res = append(res, sum)
+				return res
 			}
 			sub := dfs(p+1, r)
 			op = expression[p]
 			switch op {
 			case '+':
 				for _, v := range sub {
-					mp[sum+v] = struct{}{}
+					res = append(res, sum+v)
 				}
 			case '-':
 				for _, v := range sub {
-					mp[sum-v] = struct{}{}
+					res = append(res, sum-v)
 				}
 			case '*':
 				for _, v := range sub {
-					mp[sum*v] = struct{}{}
+					res = append(res, sum*v)
 				}
 			case '/':
 				for _, v := range sub {
-					mp[sum/v] = struct{}{}
+					res = append(res, sum/v)
 				}
 			}
 			p++
-		}
-		res := make([]int, 0)
-		for k := range mp {
-			res = append(res, k)
 		}
 		return res
 	}
