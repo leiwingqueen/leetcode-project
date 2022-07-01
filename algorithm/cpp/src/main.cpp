@@ -1,5 +1,6 @@
 #include <iostream>
 #include "vector"
+#include "memory"
 
 using namespace std;
 
@@ -73,6 +74,15 @@ int main() {
     cout << sizeof(long int) << endl;
     int c;
     static_assert(sizeof(c) <= 8, "This is unexpected");
-
+    //smart pointer
+    cout << "====================================" << endl;
+    unique_ptr<int> p1(new int);
+    *p1 = 15;
+    unique_ptr<int> p2(new int);
+    p2 = move(p1);
+    cout << *p2 << endl;
+    if (p1 == nullptr) {
+        cout << "null" << endl;
+    }
     return 0;
 }
