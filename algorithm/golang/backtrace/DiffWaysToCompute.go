@@ -35,6 +35,7 @@ package backtrace
 //链接：https://leetcode.cn/problems/different-ways-to-add-parentheses
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+//还是错
 func diffWaysToCompute(expression string) []int {
 	var dfs func(l int, r int) []int
 	dfs = func(l int, r int) []int {
@@ -92,4 +93,60 @@ func diffWaysToCompute(expression string) []int {
 		return res
 	}
 	return dfs(0, len(expression))
+}
+
+//通过了,没有任何优化的情况
+func diffWaysToCompute2(expression string) []int {
+	//数字和运算符分别存储
+	nums := make([]int, 0)
+	ops := make([]byte, 0)
+	p := 0
+	for p < len(expression) {
+		num := 0
+		for p < len(expression) && expression[p] >= '0' && expression[p] <= '9' {
+			num = num*10 + int(expression[p]-'0')
+			p++
+		}
+		nums = append(nums, num)
+		if p < len(expression) {
+			ops = append(ops, expression[p])
+			p++
+		}
+	}
+	var dfs func(l int, r int) []int
+	var calculate func(num1 int, num2 int, op byte) int
+	dfs = func(l int, r int) []int {
+		if l > r {
+			return []int{nums[l]}
+		}
+		if l == r {
+			return []int{calculate(nums[l], nums[l+1], ops[l])}
+		}
+		res := make([]int, 0)
+		for idx := l; idx <= r; idx++ {
+			sub1 := dfs(l, idx-1)
+			sub2 := dfs(idx+1, r)
+			for _, v1 := range sub1 {
+				for _, v2 := range sub2 {
+					res = append(res, calculate(v1, v2, ops[idx]))
+				}
+			}
+		}
+		return res
+	}
+	calculate = func(num1 int, num2 int, op byte) int {
+		res := 0
+		switch op {
+		case '+':
+			res = num1 + num2
+		case '-':
+			res = num1 - num2
+		case '*':
+			res = num1 * num2
+		case '/':
+			res = num1 / num2
+		}
+		return res
+	}
+	return dfs(0, len(ops)-1)
 }

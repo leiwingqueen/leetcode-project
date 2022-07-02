@@ -48,6 +48,7 @@ PS：我曾经在给我的一个工作多年的同事讲时间复杂度的时候
 
 | #    | Title                                                        | Solution                                                     | Difficulty |
 | ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---------- |
+| 241  | [241. 为运算表达式设计优先级](https://leetcode.cn/problems/different-ways-to-add-parentheses/) | [GO](./algorithm/golang/backtrace/DiffWaysToCompute.go)      | Medium     |
 | 1175 | [1175. 质数排列](https://leetcode.cn/problems/prime-arrangements/) | [GO](./algorithm/golang/math/numPrimeArrangements.go),[C++](./algorithm/cpp/src/array/NumPrimeArrangements.cpp) | easy       |
 | 324  | [324. 摆动排序 II](https://leetcode.cn/problems/wiggle-sort-ii/) | [GO](./algorithm/golang/array/WiggleSort.go)                 | Medium     |
 | 522  | [522. 最长特殊序列 II](https://leetcode.cn/problems/longest-uncommon-subsequence-ii/) | [GO](./algorithm/golang/array/findLUSlength.go)              | Medium     |
