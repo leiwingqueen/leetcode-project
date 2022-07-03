@@ -26,6 +26,7 @@ import "math"
 //链接：https://leetcode.cn/problems/next-greater-element-iii
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+//TODO:写得太繁琐，思路不够清晰
 func nextGreaterElement(n int) int {
 	//转化成数组
 	size := 10
