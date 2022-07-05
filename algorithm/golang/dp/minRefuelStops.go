@@ -67,7 +67,7 @@ func minRefuelStops(target int, startFuel int, stations [][]int) int {
 	}
 	//dp迭代
 	for i := 1; i <= n; i++ {
-		for j := 1; j <= n; j++ {
+		for j := 1; j <= i; j++ {
 			dp[i][j] = -1
 			//距离上一个加油站的距离
 			d := 0
