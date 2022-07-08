@@ -84,4 +84,60 @@ func replaceWords2(dictionary []string, sentence string) string {
 	return strings.Join(words, " ")
 }
 
-//TODO:前缀树
+// 前缀树
+type TireNode struct {
+	child map[rune]*TireNode
+}
+
+func buildTrieNode() *TireNode {
+	return &TireNode{make(map[rune]*TireNode)}
+}
+
+type TireTree struct {
+	root *TireNode
+}
+
+func buildTire() *TireTree {
+	return &TireTree{buildTrieNode()}
+}
+
+func (t *TireTree) add(word string) {
+	cur := t.root
+	for _, ch := range word {
+		if node, exist := cur.child[ch]; exist {
+			cur = node
+		} else {
+			next := buildTrieNode()
+			cur.child[ch] = next
+			cur = next
+		}
+	}
+	//特殊标记位，标识结束节点
+	cur.child['#'] = buildTrieNode()
+}
+
+func (t *TireTree) find(word string) string {
+	cur := t.root
+	for i, ch := range word {
+		if cur.child['#'] != nil {
+			return word[:i]
+		}
+		if cur == nil || cur.child[ch] == nil {
+			return word
+		}
+		cur = cur.child[ch]
+	}
+	return word
+}
+
+func replaceWords3(dictionary []string, sentence string) string {
+	tireTree := buildTire()
+	for _, s := range dictionary {
+		tireTree.add(s)
+	}
+	words := strings.Split(sentence, " ")
+	for i, word := range words {
+		words[i] = tireTree.find(word)
+	}
+	return strings.Join(words, " ")
+}
