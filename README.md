@@ -48,6 +48,7 @@ PS：我曾经在给我的一个工作多年的同事讲时间复杂度的时候
 
 | #    | Title                                                        | Solution                                                     | Difficulty |
 | ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---------- |
+| 873  | [873. 最长的斐波那契子序列的长度](https://leetcode.cn/problems/length-of-longest-fibonacci-subsequence/) | [GO](./algorithm/golang/array/lenLongestFibSubseq.go)        | Medium     |
 | 556  | [556. 下一个更大元素 III](https://leetcode.cn/problems/next-greater-element-iii/) | [GO](./algorithm/golang/greedy/NextGreaterElement.go)        | Medium     |
 | 241  | [241. 为运算表达式设计优先级](https://leetcode.cn/problems/different-ways-to-add-parentheses/) | [GO](./algorithm/golang/backtrace/DiffWaysToCompute.go)      | Medium     |
 | 1175 | [1175. 质数排列](https://leetcode.cn/problems/prime-arrangements/) | [GO](./algorithm/golang/math/numPrimeArrangements.go),[C++](./algorithm/cpp/src/array/NumPrimeArrangements.cpp) | easy       |
