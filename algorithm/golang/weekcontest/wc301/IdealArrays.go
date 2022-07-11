@@ -96,3 +96,5 @@ func idealArrays2(n int, maxValue int) int {
 	}
 	return res
 }
+
+// TODO:数学解法
