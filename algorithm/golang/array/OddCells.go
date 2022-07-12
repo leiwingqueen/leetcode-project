@@ -72,4 +72,49 @@ func oddCells(m int, n int, indices [][]int) int {
 	return res
 }
 
-// TODO:优化解法
+//空间优化解法
+//时间复杂度O(m*n),空间复杂度O(m+n)
+func oddCells2(m int, n int, indices [][]int) int {
+	rows := make([]int, m)
+	cols := make([]int, n)
+	for _, indice := range indices {
+		r := indice[0]
+		c := indice[1]
+		rows[r]++
+		cols[c]++
+	}
+	res := 0
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if (rows[i]+cols[j])%2 == 1 {
+				res++
+			}
+		}
+	}
+	return res
+}
+
+//优化解法3，这个确实想不到
+func oddCells3(m int, n int, indices [][]int) int {
+	rows := make([]int, m)
+	cols := make([]int, n)
+	for _, indice := range indices {
+		r := indice[0]
+		c := indice[1]
+		rows[r]++
+		cols[c]++
+	}
+	oddRow := 0
+	for i := 0; i < m; i++ {
+		if rows[i]%2 == 1 {
+			oddRow++
+		}
+	}
+	oddCol := 0
+	for i := 0; i < n; i++ {
+		if cols[i]%2 == 1 {
+			oddCol++
+		}
+	}
+	return oddRow*(n-oddCol) + (m-oddRow)*oddCol
+}
