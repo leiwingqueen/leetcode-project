@@ -1,10 +1,6 @@
 # leetcode-project
 
-## 个人介绍
-
-躺平型程序员
-
-## leetcode个人页
+## leetcode主页
 [传送门](https://leetcode-cn.com/u/leiwingqueen/)
 
 ## why
