@@ -126,10 +126,10 @@ func intersect(quadTree1 *Node, quadTree2 *Node) *Node {
 	if node.TopLeft.IsLeaf && node.TopRight.IsLeaf && node.BottomLeft.IsLeaf && node.BottomRight.IsLeaf &&
 		node.TopLeft.Val == node.TopRight.Val && node.TopLeft.Val == node.BottomLeft.Val && node.TopLeft.Val == node.BottomRight.Val {
 		node.Val = node.TopLeft.Val
-		node.IsLeaf = true
+		return &Node{Val: node.TopLeft.Val, IsLeaf: true}
+	} else {
 		return node
 	}
-	return node
 }
 
 func buildGrid(node *Node) [][]int {
