@@ -99,28 +99,37 @@ func intersect(quadTree1 *Node, quadTree2 *Node) *Node {
 	if quadTree1.IsLeaf && quadTree2.IsLeaf {
 		return &Node{Val: quadTree1.Val || quadTree2.Val, IsLeaf: true}
 	}
+	node := &Node{Val: false, IsLeaf: false}
 	if quadTree1.IsLeaf {
-		node := &Node{Val: false, IsLeaf: false}
+		if quadTree1.Val {
+			return &Node{Val: quadTree1.Val, IsLeaf: true}
+		}
 		node.TopLeft = intersect(quadTree1, quadTree2.TopLeft)
 		node.TopRight = intersect(quadTree1, quadTree2.TopRight)
 		node.BottomLeft = intersect(quadTree1, quadTree2.BottomLeft)
 		node.BottomRight = intersect(quadTree1, quadTree2.BottomRight)
-		return node
 	} else if quadTree2.IsLeaf {
-		node := &Node{Val: false, IsLeaf: false}
+		if quadTree2.Val {
+			return &Node{Val: quadTree2.Val, IsLeaf: true}
+		}
 		node.TopLeft = intersect(quadTree1.TopLeft, quadTree2)
 		node.TopRight = intersect(quadTree1.TopRight, quadTree2)
 		node.BottomLeft = intersect(quadTree1.BottomLeft, quadTree2)
 		node.BottomRight = intersect(quadTree1.BottomRight, quadTree2)
-		return node
 	} else {
-		node := &Node{Val: false, IsLeaf: false}
 		node.TopLeft = intersect(quadTree1.TopLeft, quadTree2.TopLeft)
 		node.TopRight = intersect(quadTree1.TopRight, quadTree2.TopRight)
 		node.BottomLeft = intersect(quadTree1.BottomLeft, quadTree2.BottomLeft)
 		node.BottomRight = intersect(quadTree1.BottomRight, quadTree2.BottomRight)
+	}
+	//合并子节点
+	if node.TopLeft.IsLeaf && node.TopRight.IsLeaf && node.BottomLeft.IsLeaf && node.BottomRight.IsLeaf &&
+		node.TopLeft.Val == node.TopRight.Val && node.TopLeft.Val == node.BottomLeft.Val && node.TopLeft.Val == node.BottomRight.Val {
+		node.Val = node.TopLeft.Val
+		node.IsLeaf = true
 		return node
 	}
+	return node
 }
 
 func buildGrid(node *Node) [][]int {
