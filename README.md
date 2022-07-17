@@ -44,6 +44,7 @@ PS：我曾经在给我的一个工作多年的同事讲时间复杂度的时候
 
 | #    | Title                                                        | Solution                                                     | Difficulty |
 | ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---------- |
+| 565  | [565. 数组嵌套](https://leetcode.cn/problems/array-nesting/) | [GO](./algorithm/golang/graph/arrayNesting.go)               | Medium     |
 | 558  | [558. 四叉树交集](https://leetcode.cn/problems/logical-or-of-two-binary-grids-represented-as-quad-trees/) | [GO](./algorithm/golang/tree/intersect/Intersect.go)         | Medium     |
 | 745  | [745. 前缀和后缀搜索](https://leetcode.cn/problems/prefix-and-suffix-search/) | [GO](./algorithm/golang/tire/WordFilter/WordFilter.go)       | Medium     |
 | 735  | [735. 行星碰撞](https://leetcode.cn/problems/asteroid-collision/) | [GO](algorithm/golang/array/asteroidCollision.go)            | Medium     |
