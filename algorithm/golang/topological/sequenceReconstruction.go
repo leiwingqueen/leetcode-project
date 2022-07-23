@@ -52,6 +52,7 @@ package topological
 //链接：https://leetcode.cn/problems/sequence-reconstruction
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+//有点难，拓补排序对我而言理解还是不够深刻
 func sequenceReconstruction(nums []int, sequences [][]int) bool {
 	//入度
 	inDegree := make([]int, len(nums)+1)
@@ -70,7 +71,7 @@ func sequenceReconstruction(nums []int, sequences [][]int) bool {
 			to := seq[i]
 			if !(graph[from][to]) {
 				graph[from][to] = true
-				inDegree[from]++
+				inDegree[to]++
 			}
 			points[to] = true
 		}
