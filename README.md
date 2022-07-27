@@ -44,6 +44,7 @@ PS：我曾经在给我的一个工作多年的同事讲时间复杂度的时候
 
 | #    | Title                                                        | Solution                                                     | Difficulty |
 | ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---------- |
+| 592  | [592. 分数加减运算](https://leetcode.cn/problems/fraction-addition-and-subtraction/) | [GO](./algorithm/golang/stack/FractionAddition.go)           | Medium     |
 | 919  | [919. 完全二叉树插入器](https://leetcode.cn/problems/complete-binary-tree-inserter/) | [GO](./algorithm/golang/tree/CBTInserter.go)                 | Medium     |
 | 6127 | [6127. 优质数对的数目](https://leetcode.cn/problems/number-of-excellent-pairs/) | [JAVA](./algorithm/java/src/main/java/com/liyongquan/weeklycontest/wc303/CountExcellentPairs.java) | Hard       |
 | 444  | [444. 序列重建](https://leetcode.cn/problems/sequence-reconstruction/) | [GO](./algorithm/golang/topological/sequenceReconstruction.go) | Medium     |
