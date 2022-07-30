@@ -41,22 +41,25 @@ func validSquare(p1 []int, p2 []int, p3 []int, p4 []int) bool {
 	arr[3] = p4
 	check := func(g1 []int, g2 []int) bool {
 		d1 := distance(arr[g1[0]], arr[g2[0]])
-		d2 := distance(arr[g2[0]], arr[g2[1]])
-		if d1 != d2 {
+		d2 := distance(arr[g1[0]], arr[g2[1]])
+		if d1 == 0 || d1 != d2 {
 			return false
 		}
 		d3 := distance(arr[g1[1]], arr[g2[0]])
-		d4 := distance(arr[g2[1]], arr[g2[1]])
-		if d3 != d4 || d3 != d1 {
+		d4 := distance(arr[g1[1]], arr[g2[1]])
+		if d3 == 0 || d3 != d4 || d3 != d1 {
 			return false
 		}
 		//对角线，勾股定理
 		d5 := distance(arr[g2[0]], arr[g2[1]])
-		if d1+d2 == d5 {
-			return true
-		} else {
+		if d1+d2 != d5 {
 			return false
 		}
+		d6 := distance(arr[g1[0]], arr[g1[1]])
+		if d3+d4 != d6 {
+			return false
+		}
+		return true
 	}
 	for i := 0; i < 3; i++ {
 		for j := i + 1; j < 4; j++ {

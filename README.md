@@ -44,6 +44,7 @@ PS：我曾经在给我的一个工作多年的同事讲时间复杂度的时候
 
 | #    | Title                                                        | Solution                                                     | Difficulty |
 | ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---------- |
+| 593  | [593. 有效的正方形](https://leetcode.cn/problems/valid-square/) | [GO](./algorithm/golang/math/validSquare.go)                 | Medium     |
 | 1161 | [1161. 最大层内元素和](https://leetcode.cn/problems/maximum-level-sum-of-a-binary-tree/) | [GO](./algorithm/golang/tree/MaxLevelSum.go)                 | Medium     |
 | 1331 | [1331. 数组序号转换](https://leetcode.cn/problems/rank-transform-of-an-array/) | [GO](./algorithm/golang/array/arrayRankTransform.go)         | Easy       |
 | 2350 | [2350. 不可能得到的最短骰子序列](https://leetcode.cn/problems/shortest-impossible-sequence-of-rolls/) | [GO](./algorithm/golang/weekcontest/bwc83/shortestSequence.go) | Hard       |
