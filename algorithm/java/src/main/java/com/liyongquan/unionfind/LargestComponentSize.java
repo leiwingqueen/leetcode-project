@@ -66,7 +66,7 @@ public class LargestComponentSize {
 
     private void split(int idx) {
         int tmp = nums[idx];
-        for (int i = 2; i * i <= tmp; i++) {
+        for (int i = 2; i <= Math.sqrt(nums[idx]) + 1; i++) {
             if (tmp % i == 0) {
                 if (!map.containsKey(i)) {
                     map.put(i, new ArrayList<>());
