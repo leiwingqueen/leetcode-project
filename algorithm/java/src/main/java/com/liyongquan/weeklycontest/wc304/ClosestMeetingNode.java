@@ -1,9 +1,6 @@
 package com.liyongquan.weeklycontest.wc304;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ClosestMeetingNode {
     public int closestMeetingNode(int[] edges, int node1, int node2) {
@@ -41,5 +38,44 @@ public class ClosestMeetingNode {
             node1 = edges[node1];
         }
         return l;
+    }
+
+    /**
+     * 解法2
+     *
+     * @param edges
+     * @param node1
+     * @param node2
+     * @return
+     */
+    public int closestMeetingNode2(int[] edges, int node1, int node2) {
+        int n = edges.length;
+        int[] d1 = distance(edges, node1);
+        int[] d2 = distance(edges, node2);
+        int res = -1;
+        int dis = Integer.MAX_VALUE;
+        for (int i = 0; i < n; i++) {
+            if (d1[i] >= 0 && d2[i] >= 0) {
+                int d = Math.max(d1[i], d2[i]);
+                if (d < dis) {
+                    dis = d;
+                    res = i;
+                }
+            }
+        }
+        return res;
+    }
+
+    private int[] distance(int[] edges, int start) {
+        int n = edges.length;
+        int[] d = new int[n];
+        Arrays.fill(d, -1);
+        int clock = 0;
+        while (start >= 0 && d[start] < 0) {
+            d[start] = clock;
+            start = edges[start];
+            clock++;
+        }
+        return d;
     }
 }

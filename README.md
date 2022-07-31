@@ -69,3 +69,15 @@ PS：我曾经在给我的一个工作多年的同事讲时间复杂度的时候
 | 522  | [522. 最长特殊序列 II](https://leetcode.cn/problems/longest-uncommon-subsequence-ii/) | [GO](./algorithm/golang/array/findLUSlength.go)              | Medium     |
 | 091  | [剑指 Offer II 091. 粉刷房子](https://leetcode.cn/problems/JEj789/) | [GO](./algorithm/golang/dp/minCost.go)                       | Medium     |
 | 30   | [30. 串联所有单词的子串](https://leetcode.cn/problems/substring-with-concatenation-of-all-words/) | [GO](./algorithm/golang/string/FindSubstring.go)             | Medium     |
+
+
+
+---
+
+## 图论
+
+| #    | Title                                                        | Solution                                                     | Difficulty | 备注      |
+| ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---------- | --------- |
+| 6135 | [6135. 图中的最长环](https://leetcode.cn/problems/longest-cycle-in-a-graph/) | [JAVA](./algorithm/java/src/main/java/com/liyongquan/weeklycontest/wc304/LongestCycle.java) | Hard       | 304场周赛 |
+| 6134 | [6134. 找到离给定两个节点最近的节点](https://leetcode.cn/problems/find-closest-node-to-given-two-nodes/) | [JAVA](./algorithm/java/src/main/java/com/liyongquan/weeklycontest/wc304/ClosestMeetingNode.java) | Medium     | 304场周赛 |
+
