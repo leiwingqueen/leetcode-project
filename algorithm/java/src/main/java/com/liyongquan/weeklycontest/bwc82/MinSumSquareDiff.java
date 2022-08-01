@@ -1,5 +1,7 @@
 package com.liyongquan.weeklycontest.bwc82;
 
+import com.sun.org.apache.bcel.internal.generic.ATHROW;
+
 import java.util.Arrays;
 
 //给你两个下标从 0 开始的整数数组 nums1 和 nums2 ，长度为 n 。
@@ -47,52 +49,32 @@ import java.util.Arrays;
 public class MinSumSquareDiff {
     public long minSumSquareDiff(int[] nums1, int[] nums2, int k1, int k2) {
         int n = nums1.length;
-        int[] diff = new int[n];
+        int[] diff = new int[n + 1];
         int sum = 0;
         for (int i = 0; i < n; i++) {
-            diff[i] = Math.abs(nums1[i] - nums2[i]);
-            sum += diff[i];
+            diff[i + 1] = Math.abs(nums1[i] - nums2[i]);
+            sum += diff[i + 1];
         }
         Arrays.sort(diff);
         int k = k1 + k2;
         if (k >= sum) {
             return 0;
         }
-        int l = diff[0];
-        int r = diff[n - 1];
-        //二分查找
-        while (l < r) {
-            int mid = l + (r - l) / 2;
-            int s = 0;
-            for (int i = 0; i < n; i++) {
-                s += Math.min(mid, diff[i]);
-            }
-            if (sum - s == k) {
-                l = mid;
-                break;
-            } else if (sum - s < k) {
-                r = mid;
+        for (int i = n; i > 0; i--) {
+            int c = (n - i + 1) * (diff[i] - diff[i - 1]);
+            if (c <= k) {
+                k -= c;
             } else {
-                l = mid + 1;
+                int m1 = k / (n - i + 1);
+                int m2 = k % (n - i + 1);
+                long res = 0;
+                res += m2 * Math.pow(diff[i] - k / (n - i + 1) - 1, 2) + (n - i + 1 - m2) * Math.pow(diff[i] - k / (n - i + 1), 2);
+                for (int j = i + 1; j > 0; j--) {
+                    res += Math.pow(diff[j], 2);
+                }
+                return res;
             }
         }
-        for (int i = 0; i < n; i++) {
-            if (diff[i] > l) {
-                k -= diff[i] - l;
-                diff[i] = l;
-            }
-        }
-        for (int i = n - 1; i >= 0; i--) {
-            if (k == 0) {
-                break;
-            }
-            diff[i]--;
-            k--;
-        }
-        long res = 0;
-        for (int i = 0; i < n; i++) {
-            res += (long) Math.pow(diff[i], 2);
-        }
-        return res;
+        return -1;
     }
 }
