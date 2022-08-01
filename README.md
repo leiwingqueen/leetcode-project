@@ -76,8 +76,14 @@ PS：我曾经在给我的一个工作多年的同事讲时间复杂度的时候
 
 ## 图论
 
-| #    | Title                                                        | Solution                                                     | Difficulty | 备注      |
-| ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---------- | --------- |
-| 6135 | [6135. 图中的最长环](https://leetcode.cn/problems/longest-cycle-in-a-graph/) | [JAVA](./algorithm/java/src/main/java/com/liyongquan/weeklycontest/wc304/LongestCycle.java) | Hard       | 304场周赛 |
-| 6134 | [6134. 找到离给定两个节点最近的节点](https://leetcode.cn/problems/find-closest-node-to-given-two-nodes/) | [JAVA](./algorithm/java/src/main/java/com/liyongquan/weeklycontest/wc304/ClosestMeetingNode.java) | Medium     | 304场周赛 |
+| #    | Title                                                        | Solution                                                     | Difficulty |
+| ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---------- |
+| 6135 | [6135. 图中的最长环](https://leetcode.cn/problems/longest-cycle-in-a-graph/) | [JAVA](./algorithm/java/src/main/java/com/liyongquan/weeklycontest/wc304/LongestCycle.java) | Hard       |
+| 6134 | [6134. 找到离给定两个节点最近的节点](https://leetcode.cn/problems/find-closest-node-to-given-two-nodes/) | [JAVA](./algorithm/java/src/main/java/com/liyongquan/weeklycontest/wc304/ClosestMeetingNode.java) | Medium     |
+
+## 设计
+
+| #    | Title                                                        | Solution                                                     | Difficulty |
+| ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---------- |
+| 622  | [622. 设计循环队列](https://leetcode.cn/problems/design-circular-queue/) | [JAVA](./algorithm/java/src/main/java/com/liyongquan/design/MyCircularQueue.java) | Medium     |
 
