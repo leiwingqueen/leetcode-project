@@ -58,9 +58,41 @@ public class MinSumSquareDiff {
         if (k >= sum) {
             return 0;
         }
-        for (int i = n - 1; i < n; i++) {
-
+        int l = diff[0];
+        int r = diff[n - 1];
+        //二分查找
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            int s = 0;
+            for (int i = 0; i < n; i++) {
+                s += Math.min(mid, diff[i]);
+            }
+            if (sum - s == k) {
+                l = mid;
+                break;
+            } else if (sum - s < k) {
+                r = mid;
+            } else {
+                l = mid + 1;
+            }
         }
-        return 0;
+        for (int i = 0; i < n; i++) {
+            if (diff[i] > l) {
+                k -= diff[i] - l;
+                diff[i] = l;
+            }
+        }
+        for (int i = n - 1; i >= 0; i--) {
+            if (k == 0) {
+                break;
+            }
+            diff[i]--;
+            k--;
+        }
+        long res = 0;
+        for (int i = 0; i < n; i++) {
+            res += (long) Math.pow(diff[i], 2);
+        }
+        return res;
     }
 }
