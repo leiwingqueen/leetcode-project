@@ -87,3 +87,9 @@ PS：我曾经在给我的一个工作多年的同事讲时间复杂度的时候
 | ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---------- |
 | 622  | [622. 设计循环队列](https://leetcode.cn/problems/design-circular-queue/) | [JAVA](./algorithm/java/src/main/java/com/liyongquan/design/MyCircularQueue.java) | Medium     |
 
+## 数学
+
+| #    | Title                                                        | Solution                                      | Difficulty |
+| ---- | ------------------------------------------------------------ | --------------------------------------------- | ---------- |
+| 899  | [899. 有序队列](https://leetcode.cn/problems/orderly-queue/) | [GO](./algorithm/golang/math/OrderlyQueue.go) | Hard       |
+
