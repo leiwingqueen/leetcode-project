@@ -55,13 +55,20 @@ public class LatestTimeCatchTheBus {
         int l = 0, r = 0;
         while (p1 < m && r < n) {
             while (r < n) {
-                if (passengers[r] < buses[p1] || r - l + 1 > capacity) {
+                if (passengers[r] > buses[p1] || r - l + 1 > capacity) {
                     break;
                 }
                 r++;
             }
             p1++;
+            if (p1 >= m) {
+                break;
+            }
             l = r;
+        }
+        //检查最后一趟车是否满人
+        if (r == 0 || r - l < capacity && buses[m - 1] != passengers[r - 1]) {
+            return buses[m - 1];
         }
         //最后一个上车的乘客的下标
         int idx = r - 1;
