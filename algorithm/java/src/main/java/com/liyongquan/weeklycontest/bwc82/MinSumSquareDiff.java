@@ -1,7 +1,5 @@
 package com.liyongquan.weeklycontest.bwc82;
 
-import com.sun.org.apache.bcel.internal.generic.ATHROW;
-
 import java.util.Arrays;
 
 //给你两个下标从 0 开始的整数数组 nums1 和 nums2 ，长度为 n 。
