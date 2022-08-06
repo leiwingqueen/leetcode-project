@@ -56,6 +56,7 @@ func countPairs(n int, edges [][]int) int64 {
 		if visit[i] {
 			continue
 		}
+		visit[i] = true
 		queue := []int{i}
 		//这个连通块的节点数量
 		block := 1
