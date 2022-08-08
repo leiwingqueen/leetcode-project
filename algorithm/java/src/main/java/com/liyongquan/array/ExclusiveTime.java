@@ -1,6 +1,7 @@
 package com.liyongquan.array;
 
 import java.util.List;
+import java.util.Stack;
 
 //有一个 单线程 CPU 正在运行一个含有 n 道函数的程序。每道函数都有一个位于  0 和 n-1 之间的唯一标识符。
 //
@@ -70,6 +71,13 @@ import java.util.List;
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 public class ExclusiveTime {
+    /**
+     * 错误
+     *
+     * @param n
+     * @param logs
+     * @return
+     */
     public int[] exclusiveTime(int n, List<String> logs) {
         int[][] arr = new int[n][2];
         for (int i = 0; i < n; i++) {
@@ -102,6 +110,39 @@ public class ExclusiveTime {
                 }
             }
             res[i] = time;
+        }
+        return res;
+    }
+
+    /**
+     * 栈解法
+     *
+     * @param n
+     * @param logs
+     * @return
+     */
+    public int[] exclusiveTime2(int n, List<String> logs) {
+        int[] res = new int[n];
+        Stack<Integer> stack = new Stack<>();
+        int lastTime = 0;
+        for (String log : logs) {
+            String[] split = log.split(":");
+            int pid = Integer.parseInt(split[0]);
+            String type = split[1];
+            int t = Integer.parseInt(split[2]);
+            if (type.equals("start")) {
+                if (stack.size() > 0) {
+                    //中断上一个线程
+                    Integer lastPid = stack.peek();
+                    res[lastPid] += t - lastTime;
+                }
+                stack.add(pid);
+                lastTime = t;
+            } else {
+                stack.pop();
+                res[pid] += t + 1 - lastTime;
+                lastTime = t + 1;
+            }
         }
         return res;
     }
