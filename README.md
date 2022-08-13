@@ -44,6 +44,7 @@ PS：我曾经在给我的一个工作多年的同事讲时间复杂度的时候
 
 | #    | Title                                                        | Solution                                                     | Difficulty |
 | ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---------- |
+| 769  | [769.最多能完成排序的块](https://leetcode.cn/problems/max-chunks-to-make-sorted/) | [GO](./algorithm/golang/dp/maxChunksToSorted.go)             | Medium     |
 | 6135 | [6135. 图中的最长环](https://leetcode.cn/problems/longest-cycle-in-a-graph/) | [JAVA](./algorithm/java/src/main/java/com/liyongquan/weeklycontest/wc304/LongestCycle.java) | Hard       |
 | 593  | [593. 有效的正方形](https://leetcode.cn/problems/valid-square/) | [GO](./algorithm/golang/math/validSquare.go)                 | Medium     |
 | 1161 | [1161. 最大层内元素和](https://leetcode.cn/problems/maximum-level-sum-of-a-binary-tree/) | [GO](./algorithm/golang/tree/MaxLevelSum.go)                 | Medium     |
