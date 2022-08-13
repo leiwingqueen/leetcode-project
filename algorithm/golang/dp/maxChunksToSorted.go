@@ -62,3 +62,17 @@ func maxChunksToSorted(arr []int) int {
 	}
 	return dp[n]
 }
+
+func maxChunksToSorted2(arr []int) int {
+	res := 0
+	mx := -1
+	for i, v := range arr {
+		if mx < 0 || v > mx {
+			mx = v
+		}
+		if mx == i {
+			res++
+		}
+	}
+	return res
+}
