@@ -12,7 +12,7 @@ public class SmallestNumberTest {
 
     @Test
     public void smallestNumber() {
-        String res = smallestNumber.smallestNumber("IIIDIDDD");
+        String res = smallestNumber.smallestNumber2("IIIDIDDD");
         Assert.assertEquals("123549876", res);
     }
 }

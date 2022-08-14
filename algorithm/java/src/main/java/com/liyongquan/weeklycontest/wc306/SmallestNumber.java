@@ -1,6 +1,8 @@
 package com.liyongquan.weeklycontest.wc306;
 
-import java.util.TreeSet;
+import com.sun.corba.se.spi.ior.TaggedProfileTemplate;
+
+import java.util.*;
 
 // 这贪心的写法确实让我有点难受
 public class SmallestNumber {
@@ -56,6 +58,54 @@ public class SmallestNumber {
                         }
                     }
                 }
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i <= n; i++) {
+            sb.append(res[i]);
+        }
+        return sb.toString();
+    }
+
+    //https://leetcode.cn/problems/construct-smallest-number-from-di-string/solution/by-wangzhizhi-n03o/
+    // 拓补排序 这个解法可以
+    public String smallestNumber2(String pattern) {
+        int n = pattern.length();
+        int[] res = new int[n + 1];
+        List<Integer>[] graph = new List[n + 1];
+        for (int i = 0; i <= n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+        int[] degree = new int[n + 1];
+        for (int i = 0; i < pattern.length(); i++) {
+            char ch = pattern.charAt(i);
+            if (ch == 'I') {
+                graph[i].add(i + 1);
+                degree[i + 1]++;
+            } else {
+                graph[i + 1].add(i);
+                degree[i]++;
+            }
+        }
+        TreeSet<Integer> set = new TreeSet<>();
+        for (int i = 0; i <= n; i++) {
+            set.add(i);
+        }
+        int num = 1;
+        for (int i = 0; i <= n; i++) {
+            // find degree=0
+            int select = 0;
+            for (Integer idx : set) {
+                if (degree[idx] == 0) {
+                    select = idx;
+                    break;
+                }
+            }
+            res[select] = num++;
+            // update degree
+            set.remove(select);
+            for (Integer to : graph[select]) {
+                degree[to]--;
             }
         }
         StringBuilder sb = new StringBuilder();
