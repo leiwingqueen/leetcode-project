@@ -74,3 +74,53 @@ func maxEqualFreq(nums []int) int {
 	}
 	return l
 }
+
+func maxEqualFreq2(nums []int) int {
+	mp1 := make(map[int]int)
+	for _, num := range nums {
+		mp1[num]++
+	}
+	mp2 := make(map[int]int)
+	for _, v := range mp1 {
+		mp2[v]++
+	}
+	n := len(nums)
+	var check func(size int) bool
+	check = func(size int) bool {
+		if len(mp2) > 2 {
+			return false
+		}
+		var arr [][]int
+		for k, v := range mp2 {
+			arr = append(arr, []int{k, v})
+		}
+		if len(arr) == 1 {
+			return arr[0][0] == 1 || arr[0][1] == 1
+		}
+		if arr[0][1] != 1 && arr[1][1] != 1 {
+			return false
+		}
+		if arr[0][0] == 1 || arr[1][0] == 1 {
+			return true
+		}
+		//只能从数量唯一的进行处理
+		return arr[0][1] == 1 && arr[0][0]-1 == arr[1][0] || arr[1][1] == 1 && arr[1][0]-1 == arr[0][0]
+	}
+	for n > 0 {
+		if check(n) {
+			return n
+		}
+		n--
+		num := nums[n]
+		pre := mp1[num]
+		mp1[num]--
+		if mp1[num] > 0 {
+			mp2[mp1[num]]++
+		}
+		mp2[pre]--
+		if mp2[pre] == 0 {
+			delete(mp2, pre)
+		}
+	}
+	return 0
+}
