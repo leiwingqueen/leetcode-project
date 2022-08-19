@@ -75,6 +75,7 @@ func maxEqualFreq(nums []int) int {
 	return l
 }
 
+//通过，时间复杂度O(n)
 func maxEqualFreq2(nums []int) int {
 	mp1 := make(map[int]int)
 	for _, num := range nums {
@@ -100,11 +101,9 @@ func maxEqualFreq2(nums []int) int {
 		if arr[0][1] != 1 && arr[1][1] != 1 {
 			return false
 		}
-		if arr[0][0] == 1 || arr[1][0] == 1 {
-			return true
-		}
 		//只能从数量唯一的进行处理
-		return arr[0][1] == 1 && arr[0][0]-1 == arr[1][0] || arr[1][1] == 1 && arr[1][0]-1 == arr[0][0]
+		return arr[0][1] == 1 && arr[0][0] == 1 || arr[1][1] == 1 && arr[1][0] == 1 ||
+			(arr[0][1] == 1 && arr[0][0]-1 == arr[1][0]) || (arr[1][1] == 1 && arr[1][0]-1 == arr[0][0])
 	}
 	for n > 0 {
 		if check(n) {
