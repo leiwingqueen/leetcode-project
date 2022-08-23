@@ -58,7 +58,7 @@ public class PrintBinaryTree {
             }
             res.add(row);
         }
-        dfs(res, root, 0, (n - 1) / 2, n);
+        dfs(res, root, 0, (n - 1) / 2, m);
         return res;
     }
 
@@ -69,16 +69,17 @@ public class PrintBinaryTree {
         return Math.max(depth(root.left), depth(root.right)) + 1;
     }
 
-    private void dfs(List<List<String>> res, TreeNode root, int i, int j, int n) {
+    private void dfs(List<List<String>> res, TreeNode root, int i, int j, int m) {
         if (root == null) {
             return;
         }
         res.get(i).set(j, String.valueOf(root.val));
+        int diff = (int) Math.pow(2, (m - 1) - (i + 1));
         if (root.left != null) {
-            dfs(res, root.left, i + 1, j - (int) Math.pow(2, n - i - 2), n);
+            dfs(res, root.left, i + 1, j - diff, m);
         }
         if (root.right != null) {
-            dfs(res, root.right, i + 1, j + (int) Math.pow(2, n - i - 2), n);
+            dfs(res, root.right, i + 1, j + diff, m);
         }
     }
 }
