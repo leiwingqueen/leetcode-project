@@ -76,6 +76,7 @@ func widthOfBinaryTree(root *TreeNode) int {
 	return width
 }
 
+// bfs
 func widthOfBinaryTree2(root *TreeNode) int {
 	root.Val = 1
 	queue := []*TreeNode{root}
@@ -100,4 +101,20 @@ func widthOfBinaryTree2(root *TreeNode) int {
 		}
 	}
 	return width
+}
+
+// dfs
+func widthOfBinaryTree3(root *TreeNode) int {
+	leftMost := make(map[int]int)
+	var dfs func(node *TreeNode, depth int, id int) int
+	dfs = func(node *TreeNode, depth int, id int) int {
+		if node == nil {
+			return 0
+		}
+		if _, ok := leftMost[depth]; !ok {
+			leftMost[depth] = id
+		}
+		return max(max(id-leftMost[depth]+1, dfs(node.Left, depth+1, id*2)), dfs(node.Right, depth+1, id*2+1))
+	}
+	return dfs(root, 1, 1)
 }
