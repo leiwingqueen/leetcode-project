@@ -1,7 +1,5 @@
 package com.liyongquan.weeklycontest.wc308;
 
-import com.liyongquan.backtrack.GrayCode;
-
 public class GarbageCollection {
     public int garbageCollection(String[] garbage, int[] travel) {
         int n = garbage.length;
