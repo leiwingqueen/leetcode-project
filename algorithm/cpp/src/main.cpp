@@ -99,5 +99,7 @@ int main() {
     //tuple
     auto tuple = make_tuple("hello", "world", 1, 2);
     cout << get<0>(tuple) << endl;
+
+    const char *str = "hell";
     return 0;
 }
