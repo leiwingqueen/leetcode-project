@@ -17,16 +17,16 @@ func maximumRobots(chargeTimes []int, runningCosts []int, budget int64) int {
 	for r < n {
 		c := cal()
 		if c <= budget {
+			if r-l > res {
+				res = r - l
+			}
 			sum += int64(runningCosts[r])
-			for len(stack) > 0 && stack[len(stack)-1] < chargeTimes[r] {
+			for len(stack) > 0 && chargeTimes[stack[len(stack)-1]] < chargeTimes[r] {
 				stack = stack[:len(stack)-1]
 			}
 			stack = append(stack, r)
 			r++
 		} else {
-			if r-l > res {
-				res = r - l
-			}
 			sum -= int64(runningCosts[l])
 			if len(stack) > 0 && stack[0] == l {
 				stack = stack[1:]
