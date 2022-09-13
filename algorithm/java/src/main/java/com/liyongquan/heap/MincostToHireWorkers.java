@@ -47,27 +47,29 @@ public class MincostToHireWorkers {
         }
         Arrays.sort(arr, (o1, o2) -> {
             if (o1.getValue() > o2.getValue()) {
-                return -1;
+                return 1;
             } else if (o1.getValue() == o2.getValue()) {
                 return 0;
             } else {
-                return 1;
+                return -1;
             }
         });
         PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> o2 - o1);
         double res = Double.MAX_VALUE;
         int sum = 0;
-        for (int i = n - 1; i >= 0; i--) {
+        for (int i = 0; i < n; i++) {
             int q = quality[arr[i].getKey()];
-            pq.add(q);
-            sum += q;
-            if (n - i >= k) {
-                Integer poll = pq.poll();
-                sum -= poll;
-                double t = sum * (arr[i + k - 1].getValue());
+            if (i + 1 < k) {
+                pq.add(q);
+                sum += q;
+            } else {
+                double t = (sum + quality[arr[i].getKey()]) * (arr[i].getValue());
                 if (t < res) {
                     res = t;
                 }
+                pq.add(q);
+                sum += q;
+                sum -= pq.poll();
             }
         }
         return res;

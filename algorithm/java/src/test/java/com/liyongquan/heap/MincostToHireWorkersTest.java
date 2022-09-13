@@ -19,6 +19,6 @@ public class MincostToHireWorkersTest {
     @Test
     public void mincostToHireWorkers() {
         double res = days.mincostToHireWorkers(new int[]{10, 20, 5}, new int[]{70, 50, 30}, 2);
-        Assert.assertEquals(105D, res);
+        Assert.assertEquals(105D, res,0.0001);
     }
 }
