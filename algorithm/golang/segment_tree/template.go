@@ -6,8 +6,12 @@ import (
 
 // SegmentTree https://www.geeksforgeeks.org/segment-tree-set-1-sum-of-given-range/
 type SegmentTree struct {
+	// node of the segment tree
 	st []int
-	n  int
+	// the origin arr
+	arr []int
+	// the length of the origin tree
+	n int
 }
 
 // Construct
@@ -37,7 +41,7 @@ func Construct(arr []int) *SegmentTree {
 		return st[si]
 	}
 	constructSTUtil(arr, 0, n-1, 0)
-	return &SegmentTree{st: st, n: n}
+	return &SegmentTree{st: st, arr: arr, n: n}
 }
 
 func (tree *SegmentTree) getSum(qs int, qe int) int {
@@ -66,4 +70,25 @@ func (tree *SegmentTree) getSum(qs int, qe int) int {
 		return getSumUtil(ss, mid, qs, qe, 2*si+1) + getSumUtil(mid+1, se, qs, qe, 2*si+2)
 	}
 	return getSumUtil(0, tree.n-1, qs, qe, 0)
+}
+
+func (tree *SegmentTree) updateValue(idx int, value int) {
+	if idx < 0 || idx >= tree.n {
+		return
+	}
+	diff := value - tree.arr[idx]
+	tree.arr[idx] = value
+	var updateValueUtil func(ss int, se int, i int, diff int, si int)
+	updateValueUtil = func(ss int, se int, i int, diff int, si int) {
+		if i < ss || i > se {
+			return
+		}
+		tree.st[si] += diff
+		if se != ss {
+			mid := ss + (se-ss)/2
+			updateValueUtil(ss, mid, i, diff, 2*si+1)
+			updateValueUtil(mid+1, se, i, diff, 2*si+2)
+		}
+	}
+	updateValueUtil(0, tree.n-1, idx, diff, 0)
 }
