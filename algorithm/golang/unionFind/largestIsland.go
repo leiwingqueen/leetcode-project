@@ -134,7 +134,7 @@ func (uf *IslandUnionFind) tryMerge(pos []int) int {
 		x := pos[0] + dir[0]
 		y := pos[1] + dir[1]
 		if x >= 0 && x < uf.m && y >= 0 && y < uf.n && uf.grid[x][y] == 1 {
-			root := uf.parent[x*uf.n+y]
+			root := uf.find(x*uf.n + y)
 			set[root] = true
 		}
 	}
