@@ -36,16 +36,16 @@ func minimumReplacement(nums []int) int64 {
 		for p >= 0 && (p == n-1 || nums[p] <= nums[p+1]) {
 			p--
 		}
-		if p >= 0 {
-			k := (nums[p] + 1) / 2
-			// >=k &&<=nums[p+1]
-			if k <= nums[p+1] {
-				nums[p] -= k
-			} else {
-				nums[p] -= nums[p+1]
-			}
-			res++
+		if p < 0 {
+			return res
 		}
+		// 拆分成x个数字
+		x := nums[p] / nums[p+1]
+		if nums[p]%nums[p+1] != 0 {
+			x++
+		}
+		nums[p] = nums[p] / x
+		res += int64(x) - 1
 	}
 	return res
 }
