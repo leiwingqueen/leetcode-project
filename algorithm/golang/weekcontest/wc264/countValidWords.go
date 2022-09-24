@@ -1,10 +1,6 @@
 package wc264
 
-import "strings"
-
 func countValidWords(sentence string) int {
-	split := strings.Split(sentence, " ")
-	res := 0
 	var check func(s string) bool
 	check = func(s string) bool {
 		connect := 0
@@ -20,7 +16,7 @@ func countValidWords(sentence string) int {
 				if connect > 1 {
 					return false
 				}
-				if i == 0 || i == len(s) || s[i-1] < 'a' || s[i-1] > 'z' || s[i]+1 < 'a' || s[i+1] < 'z' {
+				if i == 0 || i == len(s)-1 || s[i-1] < 'a' || s[i-1] > 'z' || s[i+1] < 'a' || s[i+1] > 'z' {
 					return false
 				}
 			} else {
@@ -32,8 +28,21 @@ func countValidWords(sentence string) int {
 		}
 		return true
 	}
-	for _, s := range split {
-		if check(s) {
+	l := 0
+	r := 0
+	res := 0
+	for r < len(sentence) {
+		for r < len(sentence) && sentence[r] == ' ' {
+			r++
+		}
+		if r == len(sentence) {
+			return res
+		}
+		l = r
+		for r < len(sentence) && sentence[r] != ' ' {
+			r++
+		}
+		if check(sentence[l:r]) {
 			res++
 		}
 	}
