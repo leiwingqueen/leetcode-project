@@ -32,27 +32,12 @@ func missingTwo(nums []int) []int {
 	diff := (n+1)*n/2 - sum
 	c := diff / 2
 	// 找到第一个>c的下标
-	var search func(c int) int
-	search = func(c int) int {
-		l := 0
-		r := len(nums) - 1
-		for l < r {
-			mid := l + (r-l)/2
-			if nums[mid] > c {
-				r = mid
-			} else {
-				l = mid + 1
-			}
-		}
-		return l
-	}
-	split := search(c)
-	//[0,split),[split,n-2)
+	//[0,c),[c,n)
 	s1 := 0
-	for i := 0; i < split; i++ {
+	for i := 0; i < c-1; i++ {
 		s1 += nums[i]
 	}
-	nums1 := (split+1)*(split)/2 - s1
+	nums1 := (c+1)*c/2 - s1
 	nums2 := diff - nums1
 	return []int{nums1, nums2}
 }
