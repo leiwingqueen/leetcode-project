@@ -1,6 +1,9 @@
 package math
 
-import "sort"
+import (
+	"container/heap"
+	"sort"
+)
 
 // 有些数的素因子只有 3，5，7，请设计一个算法找出第 k 个数。注意，不是必须有这些素因子，而是必须不包含其他的素因子。例如，前几个数按顺序应该是 1，3，5，7，9，15，21。
 //
@@ -16,24 +19,29 @@ import "sort"
 
 func getKthMagicNumber(k int) int {
 	nums := []int{3, 5, 7}
-	queue := []int{1}
-	last := 1
-	first := 1
-	for last < k {
-		size := len(queue)
-		set := make(map[int]struct{})
-		for i := 0; i < size; i++ {
-			for _, num := range nums {
-				set[queue[i]*num] = struct{}{}
+	h := &hp{sort.IntSlice{1}}
+	visit := map[int]struct{}{1: {}}
+	for i := 1; ; i++ {
+		x := heap.Pop(h).(int)
+		if i == k {
+			return x
+		}
+		for _, num := range nums {
+			next := num * x
+			if _, has := visit[next]; !has {
+				heap.Push(h, next)
+				visit[next] = struct{}{}
 			}
 		}
-		last += len(set)
-		first += size
-		queue = queue[size:]
-		for num := range set {
-			queue = append(queue, num)
-		}
 	}
-	sort.Ints(queue)
-	return queue[k-first]
+}
+
+type hp struct{ sort.IntSlice }
+
+func (h *hp) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hp) Pop() interface{} {
+	a := h.IntSlice
+	v := a[len(a)-1]
+	h.IntSlice = a[:len(a)-1]
+	return v
 }
