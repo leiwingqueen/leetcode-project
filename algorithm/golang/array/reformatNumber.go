@@ -69,19 +69,18 @@ func reformatNumber(number string) string {
 		if number[i] >= '0' && number[i] <= '9' {
 			buffer = append(buffer, number[i])
 		}
-		if len(buffer) == 4 {
-			if i == len(number)-1 {
-				res = append(res, string(buffer[0:2]))
-				res = append(res, string(buffer[2:4]))
-				buffer = buffer[4:]
-			} else {
-				res = append(res, string(buffer[0:3]))
-				buffer = buffer[3:]
-			}
+		if len(buffer) > 4 {
+			res = append(res, string(buffer[0:3]))
+			buffer = buffer[3:]
 		}
 	}
 	if len(buffer) > 0 {
-		res = append(res, string(buffer))
+		if len(buffer) == 4 {
+			res = append(res, string(buffer[0:2]))
+			res = append(res, string(buffer[2:4]))
+		} else {
+			res = append(res, string(buffer))
+		}
 	}
 	return strings.Join(res, "-")
 }
