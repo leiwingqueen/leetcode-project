@@ -6,6 +6,7 @@ package wc314
 //删除字符串 t 的 最后一个 字符，并将该字符给机器人。机器人将该字符写到纸上。
 //请你返回纸上能写出的字典序最小的字符串。
 
+// 错误
 func robotWithString(s string) string {
 	stack := make([]int, 0)
 	for i := len(s) - 1; i >= 0; i-- {
@@ -28,29 +29,40 @@ func robotWithString(s string) string {
 }
 
 func robotWithString2(s string) string {
-	stack := make([]int, 0)
-	for i := len(s) - 1; i >= 0; i-- {
-		if len(stack) == 0 || s[i] < s[stack[len(stack)-1]] {
-			stack = append(stack, i)
+	n := len(s)
+	// 记录坐标下的最小值
+	min := make([]int, n)
+	min[n-1] = n - 1
+	for i := n - 2; i >= 0; i-- {
+		if s[i] <= s[min[i+1]] {
+			min[i] = i
+		} else {
+			min[i] = min[i+1]
 		}
 	}
-	n := len(s)
-	res := make([]byte, 0)
-	p1 := 0
+	res := make([]byte, n)
 	s2 := make([]int, 0)
+	p1 := 0
+	p2 := 0
 	for p1 < n || len(s2) > 0 {
-		cur := stack[len(stack)-1]
-		for p1 <= cur {
+		if p1 == n {
+			res[p2] = s[s2[len(s2)-1]]
+			p2++
+			s2 = s2[:len(s2)-1]
+		} else if len(s2) == 0 {
 			s2 = append(s2, p1)
 			p1++
-		}
-		stack = stack[:len(stack)-1]
-		if len(s2) == 0 || p1 <= stack[len(stack)-1] {
-
 		} else {
-			stack = stack[:len(stack)-1]
-			res = append(res, s[s2[len(s2)-1]])
-			s2 = s2[:len(s2)-1]
+			top := s2[len(s2)-1]
+			m := min[p1]
+			if s[m] < s[top] {
+				s2 = append(s2, p1)
+				p1++
+			} else {
+				res[p2] = s[top]
+				p2++
+				s2 = s2[:len(s2)-1]
+			}
 		}
 	}
 	return string(res)
