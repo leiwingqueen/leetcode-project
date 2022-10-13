@@ -43,6 +43,7 @@ package wc314
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 func numberOfPaths(grid [][]int, k int) int {
+	mod := 1_000_000_007
 	m := len(grid)
 	n := len(grid[0])
 	dp := make([][][]int, m)
@@ -56,20 +57,20 @@ func numberOfPaths(grid [][]int, k int) int {
 	for i := n - 2; i >= 0; i-- {
 		for j := 0; j < k; j++ {
 			l := (j + k - grid[m-1][i]%k) % k
-			dp[m-1][i][k] = dp[m-1][i+1][l]
+			dp[m-1][i][j] = dp[m-1][i+1][l]
 		}
 	}
 	for i := m - 2; i >= 0; i-- {
 		for j := 0; j < k; j++ {
 			l := (j + k - grid[i][n-1]%k) % k
-			dp[i][n-1][k] = dp[i+1][n-1][l]
+			dp[i][n-1][j] = dp[i+1][n-1][l]
 		}
 	}
 	for i := m - 2; i >= 0; i-- {
 		for j := n - 2; j >= 0; j-- {
 			for l := 0; l < k; l++ {
 				d := (l + k - grid[i][j]%k) % k
-				dp[i][j][l] = dp[i+1][j][d] + dp[i][j+1][d]
+				dp[i][j][l] = (dp[i+1][j][d] + dp[i][j+1][d]) % mod
 			}
 		}
 	}
