@@ -65,16 +65,30 @@ func distinctSubseqII(s string) int {
 			}
 		}
 	}
+	// 最后出现的位置
+	last := make([][]int, n)
+	for i := 0; i < n; i++ {
+		last[i] = make([]int, 26)
+		for j := 0; j < 26; j++ {
+			last[i][j] = -1
+		}
+	}
+	for i := 0; i < n; i++ {
+		for j := 0; j <= i; j++ {
+			last[i][s[j]-'a'] = j
+		}
+	}
 	for i := 1; i < n; i++ {
 		for j := 1; j < i; j++ {
 			for k := 0; k < 26; k++ {
 				// 找到前i+1个字符串中，最近一个字符为'a'+k的下标
-				l := i
+				/*l := i
 				for ; l >= j; l-- {
 					if s[l] == byte('a'+k) {
 						break
 					}
-				}
+				}*/
+				l := last[i][k]
 				if l >= j {
 					for m := 0; m < 26; m++ {
 						dp[i][j][k] = (dp[i][j][k] + dp[l-1][j-1][m]) % mod
