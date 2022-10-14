@@ -44,8 +44,13 @@ func distinctSubseqII(s string) int {
 			dp[i][j] = make([]int, 26)
 		}
 	}
+	dp2 := make([][]int, n)
+	for i := 0; i < n; i++ {
+		dp2[i] = make([]int, n)
+	}
 	for i := 0; i < n; i++ {
 		dp[i][i][s[i]-'a'] = 1
+		dp2[i][i] = 1
 	}
 	// 首次出现对应字母的下标
 	first := make([]int, 26)
@@ -62,6 +67,7 @@ func distinctSubseqII(s string) int {
 		for j := 0; j < 26; j++ {
 			if first[j] >= 0 && first[j] <= i {
 				dp[i][0][j] = 1
+				dp2[i][0]++
 			}
 		}
 	}
@@ -82,26 +88,20 @@ func distinctSubseqII(s string) int {
 		for j := 1; j < i; j++ {
 			for k := 0; k < 26; k++ {
 				// 找到前i+1个字符串中，最近一个字符为'a'+k的下标
-				/*l := i
-				for ; l >= j; l-- {
-					if s[l] == byte('a'+k) {
-						break
-					}
-				}*/
 				l := last[i][k]
 				if l >= j {
-					for m := 0; m < 26; m++ {
+					dp[i][j][k] = (dp[i][j][k] + dp2[l-1][j-1]) % mod
+					/*for m := 0; m < 26; m++ {
 						dp[i][j][k] = (dp[i][j][k] + dp[l-1][j-1][m]) % mod
-					}
+					}*/
 				}
+				dp2[i][j] = (dp2[i][j] + dp[i][j][k]) % mod
 			}
 		}
 	}
 	res := 0
 	for i := 0; i < n; i++ {
-		for j := 0; j < 26; j++ {
-			res = (res + dp[n-1][i][j]) % mod
-		}
+		res = (res + dp2[n-1][i]) % mod
 	}
 	return res
 }
