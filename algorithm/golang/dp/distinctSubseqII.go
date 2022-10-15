@@ -39,14 +39,14 @@ func distinctSubseqII(s string) int {
 	n := len(s)
 	dp := make([][][]int, n)
 	for i := 0; i < n; i++ {
-		dp[i] = make([][]int, n)
-		for j := 0; j < n; j++ {
+		dp[i] = make([][]int, i+1)
+		for j := 0; j <= i; j++ {
 			dp[i][j] = make([]int, 26)
 		}
 	}
 	dp2 := make([][]int, n)
 	for i := 0; i < n; i++ {
-		dp2[i] = make([]int, n)
+		dp2[i] = make([]int, i+1)
 	}
 	for i := 0; i < n; i++ {
 		dp[i][i][s[i]-'a'] = 1
@@ -63,7 +63,7 @@ func distinctSubseqII(s string) int {
 			first[idx] = i
 		}
 	}
-	for i := 0; i < n; i++ {
+	for i := 1; i < n; i++ {
 		for j := 0; j < 26; j++ {
 			if first[j] >= 0 && first[j] <= i {
 				dp[i][0][j] = 1
