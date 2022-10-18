@@ -46,6 +46,7 @@ import (
 //链接：https://leetcode.cn/problems/numbers-at-most-n-given-digit-set
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+// dfs解法
 func atMostNGivenDigitSet(digits []string, n int) int {
 	res := 0
 	var getSize func(n int) []int
@@ -63,6 +64,68 @@ func atMostNGivenDigitSet(digits []string, n int) int {
 	for i := 1; i < len(arr); i++ {
 		res += int(math.Pow(float64(len(digits)), float64(i)))
 	}
+	var dfs func(idx int, size int, eq bool) int
+	dfs = func(idx int, size int, eq bool) int {
+		if idx == size {
+			return 1
+		}
+		s1 := dfs(idx+1, size, true)
+		s2 := dfs(idx+1, size, false)
+		if !eq {
+			return len(digits) * s2
+		} else {
+			r := 0
+			for _, s := range digits {
+				num, _ := strconv.Atoi(s)
+				if num == arr[size-idx-1] {
+					r += s1
+				} else if num < arr[size-idx-1] {
+					r += s2
+				} else {
+					break
+				}
+			}
+			return r
+		}
+	}
+	res += dfs(0, len(arr), true)
+	return res
+}
+
+// dp解法
+func atMostNGivenDigitSet2(digits []string, n int) int {
+	res := 0
+	var getSize func(n int) []int
+	getSize = func(n int) []int {
+		i := 0
+		arr := make([]int, 0)
+		for n > 0 {
+			arr = append(arr, n%10)
+			i++
+			n /= 10
+		}
+		return arr
+	}
+	arr := getSize(n)
+	size := len(arr)
+	dp0 := make([]int, size)
+	dp0[0] = len(digits)
+	for i := 1; i < size; i++ {
+		dp0[i] = dp0[i-1] * len(digits)
+	}
+	for i := 0; i < size-1; i++ {
+		res += dp0[i]
+	}
+	dp1 := make([]int, size)
+	for _, s := range digits {
+		num, _ := strconv.Atoi(s)
+		if num <= arr[0] {
+			dp1[0]++
+		} else {
+			break
+		}
+	}
+	// TODO: 还没想好
 	var dfs func(idx int, size int, eq bool) int
 	dfs = func(idx int, size int, eq bool) int {
 		if idx == size {
