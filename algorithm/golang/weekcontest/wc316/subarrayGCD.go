@@ -1,5 +1,6 @@
 package wc316
 
+// 错误
 func subarrayGCD(nums []int, k int) int {
 	n := len(nums)
 	arr := make([]int, n)
@@ -22,6 +23,32 @@ func subarrayGCD(nums []int, k int) int {
 				r++
 			}
 			res += (i - l) * (r - i)
+		}
+	}
+	return res
+}
+
+func subarrayGCD2(nums []int, k int) int {
+	n := len(nums)
+	var gcd func(a int, b int) int
+	gcd = func(a int, b int) int {
+		if b == 0 {
+			return a
+		} else {
+			return gcd(b, a%b)
+		}
+	}
+	res := 0
+	for i := 0; i < n; i++ {
+		r := nums[i]
+		for j := i; j < n; j++ {
+			r = gcd(r, nums[j])
+			if r%k != 0 {
+				break
+			}
+			if r == k {
+				res++
+			}
 		}
 	}
 	return res
