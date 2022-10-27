@@ -38,6 +38,7 @@ import "leetcode-go/util"
 //链接：https://leetcode.cn/problems/shortest-bridge
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+// 居然能通过,O(n^2)的时间复杂度
 func shortestBridge(grid [][]int) int {
 	n := len(grid)
 	var DIRS = [][]int{
@@ -80,7 +81,7 @@ func shortestBridge(grid [][]int) int {
 				for k := 0; k < n; k++ {
 					for l := 0; l < n; l++ {
 						if grid[k][l] == 3 {
-							dis := util.Abs(i-k) - 1 + util.Abs(j-l) - 1
+							dis := util.Abs(i-k) - 1 + util.Abs(j-l)
 							if dis < res {
 								res = dis
 							}
@@ -91,4 +92,73 @@ func shortestBridge(grid [][]int) int {
 		}
 	}
 	return res
+}
+
+func shortestBridge2(grid [][]int) int {
+	n := len(grid)
+	var DIRS = [][]int{
+		{0, -1},
+		{0, 1},
+		{-1, 0},
+		{1, 0},
+	}
+	var findPos func() []int
+	findPos = func() []int {
+		for i := 0; i < n; i++ {
+			for j := 0; j < n; j++ {
+				if grid[i][j] == 1 {
+					return []int{i, j}
+				}
+			}
+		}
+		return nil
+	}
+	pos := findPos()
+
+	queue := [][]int{pos}
+	grid[pos[0]][pos[1]] = 2
+	queue2 := make([][]int, 0)
+	for len(queue) > 0 {
+		pop := queue[0]
+		queue = queue[1:]
+		for _, dir := range DIRS {
+			x := pop[0] + dir[0]
+			y := pop[1] + dir[1]
+			// 边缘节点判断
+			edge := false
+			if x >= 0 && x < n && y >= 0 && y < n {
+				if grid[x][y] == 1 {
+					queue = append(queue, []int{x, y})
+					grid[x][y] = 2
+				} else if grid[x][y] == 0 {
+					edge = true
+				}
+			}
+			if edge {
+				queue2 = append(queue2, pop)
+			}
+		}
+	}
+	depth := 0
+	for len(queue2) > 0 {
+		size := len(queue2)
+		for i := 0; i < size; i++ {
+			pop := queue2[i]
+			for _, dir := range DIRS {
+				x := pop[0] + dir[0]
+				y := pop[1] + dir[1]
+				if x >= 0 && x < n && y >= 0 && y < n {
+					if grid[x][y] == 0 {
+						queue = append(queue, []int{x, y})
+						grid[x][y] = 2
+					} else if grid[x][y] == 1 {
+						return depth
+					}
+				}
+			}
+		}
+		queue2 = queue2[size:]
+		depth++
+	}
+	return depth
 }
