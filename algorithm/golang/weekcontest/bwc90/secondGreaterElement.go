@@ -31,3 +31,39 @@ func secondGreaterElement(nums []int) []int {
 	}
 	return res
 }
+
+func secondGreaterElement2(nums []int) []int {
+	n := len(nums)
+	s := make([]int, 0)
+	right := make([]int, n)
+	for i := n - 1; i >= 0; i-- {
+		for len(s) > 0 && nums[s[len(s)-1]] <= nums[i] {
+			s = s[0 : len(s)-1]
+		}
+		right[i] = -1
+		if len(s) > 0 {
+			right[i] = s[len(s)-1]
+		}
+		s = append(s, i)
+	}
+	s = []int{}
+	res := make([]int, n)
+	for i := n - 1; i >= 0; i-- {
+		res[i] = -1
+		if right[i] >= 0 {
+			for len(s) > 0 && nums[s[len(s)-1]] <= nums[i] {
+				s = s[0 : len(s)-1]
+			}
+			if len(s) > 0 {
+				res[i] = s[len(s)-1]
+			}
+		}
+		s = append(s, i)
+	}
+	for i := 0; i < n; i++ {
+		if res[i] >= 0 {
+			res[i] = nums[res[i]]
+		}
+	}
+	return res
+}
