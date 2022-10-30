@@ -14,7 +14,7 @@ func mostPopularCreator(creators []string, ids []string, views []int) [][]string
 		if !exist {
 			mp2[creators[i]] = i
 		} else {
-			if views[i] > views[v] {
+			if views[i] > views[v] || views[i] == views[v] && ids[i] < ids[v] {
 				mp2[creators[i]] = i
 			}
 		}

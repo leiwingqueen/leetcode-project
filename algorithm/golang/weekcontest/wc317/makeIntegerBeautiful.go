@@ -18,15 +18,17 @@ func makeIntegerBeautiful(n int64, target int) int64 {
 		if diff <= 0 {
 			return res
 		}
-		if arr[i] > 1 {
+		if arr[i] >= 1 {
 			res += int64(10-arr[i]) * pow
 			diff -= arr[i]
+			arr[i+1]++
 			for j := i + 1; j < 13; j++ {
-				diff++
-				arr[j] += 1
+				// arr[j] += 1
 				if arr[j] < 10 {
+					diff++
 					break
 				}
+				diff -= 9
 				arr[j] = 0
 				arr[j+1]++
 			}

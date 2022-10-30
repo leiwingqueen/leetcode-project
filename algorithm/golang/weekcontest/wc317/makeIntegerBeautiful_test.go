@@ -14,6 +14,10 @@ func Test_makeIntegerBeautiful(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{"t1", args{467, 6}, 33},
+		{"t2", args{110, 1}, 890},
+		//94598
+		//6
+		{"t3", args{94598, 6}, 5402},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
