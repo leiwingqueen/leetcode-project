@@ -30,5 +30,29 @@ package array
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 func magicalString(n int) int {
-	return 0
+	if n <= 3 {
+		return 1
+	}
+	arr := make([]int, n+1)
+	arr[0] = 1
+	arr[1] = 2
+	arr[2] = 2
+	p1 := 3
+	p2 := 2
+	cnt := 1
+	for p1 < n {
+		v := 1
+		if arr[p1-1] == 1 {
+			v = 2
+		}
+		for i := 0; i < arr[p2]; i++ {
+			arr[p1] = v
+			if v == 1 && p1 < n {
+				cnt++
+			}
+			p1++
+		}
+		p2++
+	}
+	return cnt
 }
