@@ -1,4 +1,4 @@
-package bfs
+package math
 
 // 在一根无限长的数轴上，你站在0的位置。终点在target的位置。
 //
@@ -61,4 +61,18 @@ func reachNumber(target int) int {
 		depth++
 	}
 	return -1
+}
+
+// 代码虽然很短，但其实真的不容易想到
+func reachNumber2(target int) int {
+	if target < 0 {
+		target = -target
+	}
+	s := 0
+	i := 1
+	for s < target || (s-target)%2 != 0 {
+		s += i
+		i++
+	}
+	return i - 1
 }
