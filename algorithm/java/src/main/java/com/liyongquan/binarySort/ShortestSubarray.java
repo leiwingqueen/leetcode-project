@@ -39,10 +39,16 @@ package com.liyongquan.binarySort;
 // Related Topics 队列 数组 二分查找 前缀和 滑动窗口 单调队列 堆（优先队列）
 // 👍 287 👎 0
 
+import com.liyongquan.bit.HammingDistance;
+
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 public class ShortestSubarray {
     /**
      * 暴力。时间复杂度O(n^2)
-     *
+     * <p>
      * 必然超时
      *
      * @param nums
@@ -72,5 +78,26 @@ public class ShortestSubarray {
             }
         }
         return false;
+    }
+
+    public int shortestSubarray2(int[] nums, int k) {
+        int sum = 0;
+        int n = nums.length;
+        TreeMap<Integer, Integer> map = new TreeMap<>();
+        map.put(0, 0);
+        int res = -1;
+        for (int i = 0; i < n; i++) {
+            sum += nums[i];
+            SortedMap<Integer, Integer> sub = map.headMap(sum - k + 1);
+            int mx = -1;
+            for (Map.Entry<Integer, Integer> entry : sub.entrySet()) {
+                mx = Math.max(mx, entry.getValue());
+            }
+            if (mx >= 0 && (res < 0 || (i - mx + 1) < res)) {
+                res = i - mx + 1;
+            }
+            map.put(sum, i + 1);
+        }
+        return res;
     }
 }
