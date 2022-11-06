@@ -2,7 +2,7 @@ package wc318
 
 import "leetcode-go/util"
 
-// 贪心算法
+// 贪心算法，不通过
 func minimumTotalDistance(robot []int, factory [][]int) int64 {
 	m := len(robot)
 	n := len(factory)
@@ -45,3 +45,5 @@ func minimumTotalDistance(robot []int, factory [][]int) int64 {
 	}
 	return res
 }
+
+// 其实问题相当于n个物品，m个背包
