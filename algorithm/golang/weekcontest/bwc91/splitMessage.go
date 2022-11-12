@@ -1,6 +1,9 @@
 package bwc91
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 func splitMessage(message string, limit int) []string {
 	var getLen func(num int) int
@@ -33,6 +36,11 @@ func splitMessage(message string, limit int) []string {
 	}
 	l := 1
 	r := len(message)
+	// 关键是这一步处理
+	if getLen(r)*2+3 >= limit {
+		p := (limit - 4) / 2
+		r = int(math.Pow(10, float64(p))) - 1
+	}
 	if !check(r) {
 		return []string{}
 	}
