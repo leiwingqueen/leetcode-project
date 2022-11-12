@@ -31,18 +31,24 @@ package dp
 //链接：https://leetcode.cn/problems/domino-and-tromino-tiling
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+// f0(n)=f0(n-1)+f0(n-2)+f2(n-2)+f1(n-2)
+// f1(n)=f0(n-1)+f2(n-1)
+// f2(n)=f0(n-1)+f1(n-1)
 func numTilings(n int) int {
 	mod := 1_000_000_007
-	dp := make([]int, n+1)
-	dp[0] = 1
+	dp0 := make([]int, n+1)
+	dp1 := make([]int, n+1)
+	dp2 := make([]int, n+1)
+	dp0[0] = 1
+	dp1[0] = 0
+	dp2[0] = 0
 	for i := 1; i <= n; i++ {
-		dp[i] = dp[i-1]
+		dp0[i] = dp0[i-1]
 		if i >= 2 {
-			dp[i] = (dp[i] + dp[i-2]) % mod
+			dp0[i] = (dp0[i] + dp0[i-2] + dp1[i-2] + dp2[i-2]) % mod
 		}
-		if i >= 3 {
-			dp[i] = (dp[i] + 2*dp[i-3]) % mod
-		}
+		dp1[i] = (dp0[i-1] + dp2[i-1]) % mod
+		dp2[i] = (dp0[i-1] + dp1[i-1]) % mod
 	}
-	return dp[n]
+	return dp0[n]
 }
