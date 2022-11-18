@@ -43,9 +43,28 @@ func sumSubseqWidths(nums []int) int {
 	for i, num := range nums {
 		// 以num作为最大值的数量
 		c1 := int(math.Pow(2, float64(i)))
+		// 但是这里会有溢出的问题
 		c2 := int(math.Pow(2, float64(n-i-1)))
 		// 等价于这样的计算 res += (c1 - c2) * num
 		res = (res + ((c1%mod-c2%mod)*num)%mod) % mod
+	}
+	return res
+}
+
+// 溢出问题处理
+func sumSubseqWidths2(nums []int) int {
+	mod := 1_000_000_007
+	n := len(nums)
+	sort.Ints(nums)
+	p := make([]int, n)
+	p[0] = 1
+	for i := 1; i < n; i++ {
+		p[i] = (p[i-1] << 1) % mod
+	}
+	res := 0
+	for i, num := range nums {
+		// 等价于这样的计算 res += (c1 - c2) * num
+		res = (res + ((p[i]-p[n-i-1])*num)%mod) % mod
 	}
 	return res
 }
