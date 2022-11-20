@@ -48,6 +48,7 @@ func minimumFuelCost(roads [][]int, seats int) int64 {
 			curDepth++
 		}
 	}
+	// 这里还是有问题
 	for i := 1; i < n; i++ {
 		if nodeCnt[i]%seats == 0 {
 			res += int64(nodeCnt[i] / seats)
