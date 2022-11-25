@@ -32,6 +32,7 @@ package array
 //链接：https://leetcode.cn/problems/expressive-words
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+// 这道题太恶心了，不想浪费时间了
 func expressiveWords(s string, words []string) int {
 	var convert func(word string) ([]byte, []int)
 	convert = func(word string) ([]byte, []int) {
@@ -58,15 +59,18 @@ func expressiveWords(s string, words []string) int {
 		n := len(a1)
 		cnt := 0
 		for i := 0; i < n; i++ {
-			if a1[i] != a3[i] || a2[i] > a4[i] {
+			if a1[i] != a3[i] || a2[i] < a4[i] {
 				return false
 			}
 			if a4[i] == a2[i] {
 				continue
 			}
-			if a4[i]-a2[i] >= 3 {
+			if a2[i] >= 3 {
 				cnt++
+			} else {
+				return false
 			}
+			cnt++
 		}
 		return cnt >= 1
 	}
