@@ -15,7 +15,7 @@ func Construct(n int) *UnionFind {
 }
 
 func (uf *UnionFind) find(x int) int {
-	for uf.parent[x] != x {
+	for uf.parent[x] != uf.parent[uf.parent[x]] {
 		//路径压缩
 		uf.parent[x] = uf.parent[uf.parent[x]]
 	}

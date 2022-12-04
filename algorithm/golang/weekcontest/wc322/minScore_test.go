@@ -22,7 +22,7 @@ func Test_minScore(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := minScore(tt.args.n, tt.args.roads); got != tt.want {
+			if got := minScore2(tt.args.n, tt.args.roads); got != tt.want {
 				t.Errorf("minScore() = %v, want %v", got, tt.want)
 			}
 		})
