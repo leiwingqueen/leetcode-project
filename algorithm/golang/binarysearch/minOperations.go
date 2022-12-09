@@ -43,6 +43,7 @@ import "sort"
 //链接：https://leetcode.cn/problems/equal-sum-arrays-with-minimum-number-of-operations
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+// 贪心
 func minOperations(nums1 []int, nums2 []int) int {
 	n1 := len(nums1)
 	n2 := len(nums2)
