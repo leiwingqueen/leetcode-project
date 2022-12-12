@@ -48,7 +48,7 @@ import "sort"
 //链接：https://leetcode.cn/problems/maximum-height-by-stacking-cuboids
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-// 这解法有问题
+// 贪心解法
 func maxHeight(cuboids [][]int) int {
 	for _, cube := range cuboids {
 		sort.Ints(cube)
@@ -69,11 +69,17 @@ func maxHeight(cuboids [][]int) int {
 	for i := 1; i < n; i++ {
 		mx := 0
 		for j := 0; j < i; j++ {
-			if cuboids[j][0] < cuboids[i][0] && cuboids[j][1] < cuboids[i][1] && cuboids[j][2] < cuboids[i][2] && mx < cuboids[j][2] {
-				mx = cuboids[j][2]
+			if cuboids[j][0] <= cuboids[i][0] && cuboids[j][1] <= cuboids[i][1] && cuboids[j][2] <= cuboids[i][2] && mx < dp[j] {
+				mx = dp[j]
 			}
 		}
 		dp[i] = mx + cuboids[i][2]
 	}
-	return dp[n-1]
+	res := 0
+	for _, item := range dp {
+		if item > res {
+			res = item
+		}
+	}
+	return res
 }
