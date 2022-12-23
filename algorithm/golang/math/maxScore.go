@@ -1,6 +1,9 @@
 package math
 
-import "sort"
+import (
+	"math/bits"
+	"sort"
+)
 
 // 给你 nums ，它是一个大小为 2 * n 的正整数数组。你必须对这个数组执行 n 次操作。
 //
@@ -84,4 +87,51 @@ func maxScore(nums []int) int {
 	}
 	dfs(0)
 	return res
+}
+
+func maxScore2(nums []int) int {
+	n := len(nums)
+	var gcd func(a int, b int) int
+	gcd = func(a int, b int) int {
+		if b == 0 {
+			return a
+		} else {
+			return gcd(b, a%b)
+		}
+	}
+	// gcd预计算
+	preGCD := make([][]int, n)
+	for i := 0; i < n; i++ {
+		preGCD[i] = make([]int, n)
+	}
+	for i := 0; i < n-1; i++ {
+		for j := i + 1; j < n; j++ {
+			preGCD[i][j] = gcd(nums[i], nums[j])
+		}
+	}
+	k := 1 << n
+	dp := make([]int, k)
+	dp[0] = 0
+	for i := 1; i < k; i++ {
+		onesCount := bits.OnesCount(uint(i))
+		if onesCount%2 == 0 {
+			// 选择两位是1的
+			for a := 0; a < n-1; a++ {
+				if i&(1<<a) == 0 {
+					continue
+				}
+				for b := a + 1; b < n; b++ {
+					if i&(1<<b) == 0 {
+						continue
+					}
+					d := i ^ (1 << a) ^ (1 << b)
+					sub := dp[d] + onesCount/2*preGCD[a][b]
+					if sub > dp[i] {
+						dp[i] = sub
+					}
+				}
+			}
+		}
+	}
+	return dp[k-1]
 }
