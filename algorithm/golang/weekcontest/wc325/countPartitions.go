@@ -48,22 +48,23 @@ func countPartitions(nums []int, k int) int {
 	}
 	mod := 1_000_000_009
 	n := len(nums)
-	dp := make([][]int, n)
-	for i := 0; i < n; i++ {
+	dp := make([][]int, n+1)
+	for i := 0; i <= n; i++ {
 		dp[i] = make([]int, k+1)
 	}
-	for i := nums[0] + 1; i <= k; i++ {
+	// 不选也是一个方案
+	for i := 0; i <= k; i++ {
 		dp[0][i] = 1
 	}
-	total := 2
-	for i := 1; i < n; i++ {
+	total := 1
+	for i := 1; i <= n; i++ {
 		total = (total * 2) % mod
 		for j := 0; j <= k; j++ {
 			dp[i][j] = dp[i-1][j]
-			if nums[i] < j {
-				dp[i][j] = (dp[i][j] + dp[i-1][j-nums[i]]) % mod
+			if nums[i-1] <= j {
+				dp[i][j] = (dp[i][j] + dp[i-1][j-nums[i-1]]) % mod
 			}
 		}
 	}
-	return (total - (dp[n-1][k]*2)%mod + mod) % mod
+	return (total - (dp[n][k]*2)%mod + mod) % mod
 }
