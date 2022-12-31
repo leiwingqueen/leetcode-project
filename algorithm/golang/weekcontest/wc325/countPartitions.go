@@ -38,6 +38,8 @@ package wc325
 //链接：https://leetcode.cn/problems/number-of-great-partitions
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+// 通过了
+// 时间复杂度O(n*k)，空间复杂度O(n*k)，空间复杂度还能降一降
 func countPartitions(nums []int, k int) int {
 	sum := 0
 	for _, num := range nums {
@@ -46,14 +48,14 @@ func countPartitions(nums []int, k int) int {
 	if sum < 2*k {
 		return 0
 	}
-	mod := 1_000_000_009
+	mod := 1_000_000_007
 	n := len(nums)
 	dp := make([][]int, n+1)
 	for i := 0; i <= n; i++ {
 		dp[i] = make([]int, k+1)
 	}
 	// 不选也是一个方案
-	for i := 0; i <= k; i++ {
+	for i := 1; i <= k; i++ {
 		dp[0][i] = 1
 	}
 	total := 1
@@ -68,3 +70,5 @@ func countPartitions(nums []int, k int) int {
 	}
 	return (total - (dp[n][k]*2)%mod + mod) % mod
 }
+
+// TODO:空间优化的解决方案

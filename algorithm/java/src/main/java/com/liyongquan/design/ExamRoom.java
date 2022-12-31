@@ -35,6 +35,7 @@ package com.liyongquan.design;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+// 等价于男生上厕所问题，先来一个最简单的解法
 public class ExamRoom {
     private TreeSet<Integer> set;
     private int n;
@@ -44,11 +45,43 @@ public class ExamRoom {
         this.n = n;
     }
 
+    // 假设有n个区间，则每一次检查位置相当于O(n)，这里能否进行优化?
     public int seat() {
-        return -1;
+        if (set.size() == 0) {
+            set.add(0);
+            return 0;
+        }
+        int pre = -1;
+        int res = -1;
+        int mx = 0;
+        for (Integer num : set) {
+            if (pre >= 0) {
+                if ((num - pre) / 2 > mx) {
+                    mx = (num - pre) / 2;
+                    res = pre + (num - pre) / 2;
+                }
+            }
+            pre = num;
+        }
+        // 左右两个点特殊处理
+        if (!set.contains(0)) {
+            if (set.first() >= mx) {
+                mx = set.first();
+                res = 0;
+            }
+        }
+        if (!set.contains(n - 1)) {
+            if (n - 1 - set.last() > mx) {
+                res = n - 1;
+            }
+        }
+        if (res >= 0) {
+            set.add(res);
+        }
+        return res;
     }
 
     public void leave(int p) {
-
+        set.remove(p);
     }
 }
