@@ -52,7 +52,6 @@ package com.liyongquan.heap;
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 import javax.print.attribute.standard.SheetCollate;
-import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class NumberOfBacklogOrders {
@@ -73,16 +72,36 @@ public class NumberOfBacklogOrders {
         });
         for (int[] order : orders) {
             if (order[2] == 0) {
-                if (sell.size() > 0 && sell.peek()[0] <= order[0]) {
-                    sell.poll();
-                } else {
-                    buy.add(order);
+                while (order[1] > 0) {
+                    if (sell.size() > 0 && sell.peek()[0] <= order[0]) {
+                        int[] poll = sell.poll();
+                        int sub = Math.min(order[1], poll[1]);
+                        poll[1] -= sub;
+                        order[1] -= sub;
+                        if (poll[1] > 0) {
+                            sell.add(poll);
+                            break;
+                        }
+                    } else {
+                        buy.add(order);
+                        break;
+                    }
                 }
             } else {
-                if (buy.size() > 0 && buy.peek()[0] >= order[0]) {
-                    buy.poll();
-                } else {
-                    sell.add(order);
+                while (order[1] > 0) {
+                    if (buy.size() > 0 && buy.peek()[0] >= order[0]) {
+                        int[] poll = buy.poll();
+                        int sub = Math.min(order[1], poll[1]);
+                        poll[1] -= sub;
+                        order[1] -= sub;
+                        if (poll[1] > 0) {
+                            buy.add(poll);
+                            break;
+                        }
+                    } else {
+                        sell.add(order);
+                        break;
+                    }
                 }
             }
         }
