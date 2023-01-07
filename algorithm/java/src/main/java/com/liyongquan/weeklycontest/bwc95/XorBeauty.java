@@ -13,4 +13,12 @@ public class XorBeauty {
         }
         return xor;
     }
+
+    public int xorBeauty2(int[] nums) {
+        int xor=0;
+        for (int num : nums) {
+            xor^=num;
+        }
+        return xor;
+    }
 }

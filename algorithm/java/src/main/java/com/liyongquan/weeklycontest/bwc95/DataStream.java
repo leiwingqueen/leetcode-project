@@ -14,7 +14,7 @@ public class DataStream {
     public boolean consec(int num) {
         if (num == value) {
             cnt++;
-            if (cnt == k) {
+            if (cnt >= k) {
                 return true;
             }
         } else {
