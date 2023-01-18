@@ -114,21 +114,24 @@ public class MKAverage4 {
             } else {
                 s3.remove(removeNum, 1);
                 Integer transfer = s2.getMap().lastKey();
-                s3.remove(transfer, 1);
-                s1.add(transfer, 1);
+                s2.remove(transfer, 1);
+                s3.add(transfer, 1);
             }
         }
     }
 
 
     public int calculateMKAverage() {
-        return s2.sum / s2.cnt;
+        if (queue.size() < this.m) {
+            return -1;
+        }
+        return (int) (s2.sum / s2.cnt);
     }
 
     private static class TMap {
         private int cnt;
         private TreeMap<Integer, Integer> map;
-        private int sum;
+        private long sum;
 
         public TMap() {
             map = new TreeMap<>();
