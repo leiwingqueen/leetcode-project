@@ -73,8 +73,10 @@ public class MKAverage4 {
     public void addElement(int num) {
         queue.addLast(num);
         if (queue.size() < m) {
+            // 不足m个元素的场景，先统一放s2
             s2.add(num, 1);
         } else if (queue.size() == m) {
+            // 刚好满m个，s3分别分配k个元素到s1和s3
             s2.add(num, 1);
             while (s1.getCnt() < k) {
                 Map.Entry<Integer, Integer> first = s2.getMap().firstEntry();
@@ -89,12 +91,14 @@ public class MKAverage4 {
                 s2.remove(lastEntry.getKey(), move);
             }
         } else {
+            // >m的场景，优先尝试把num加入到s1和s3，其次才是s2。
+            // 如果加入到s1，那么s1需要pop一个元素到s2，s3的场景同理。最终s2的数量会是m-2*k+1。
             if (num < s1.getMap().lastKey()) {
                 Integer transferNum = s1.getMap().lastKey();
                 s1.remove(transferNum, 1);
                 s1.add(num, 1);
                 s2.add(transferNum, 1);
-            } else if (num > s3.getMap().lastKey()) {
+            } else if (num > s3.getMap().firstKey()) {
                 Integer transferNum = s3.getMap().firstKey();
                 s3.remove(transferNum, 1);
                 s3.add(num, 1);
@@ -102,7 +106,8 @@ public class MKAverage4 {
             } else {
                 s2.add(num, 1);
             }
-            // 移走左边的元素
+            // 窗口左移，需要移走removeNum，这里优先从s2从移除，否则从s1和s3中移除。
+            // s1和s3的先后顺序是否有区别？没有，首先假设s2不包含removeNum，removeNum必然不会同时在s1和s3中，不然s2中必然包含removeNum。
             Integer removeNum = queue.pollFirst();
             if (s2.contains(removeNum)) {
                 s2.remove(removeNum, 1);
@@ -128,6 +133,7 @@ public class MKAverage4 {
         return (int) (s2.sum / s2.cnt);
     }
 
+    // 统一维护treemap的总和和数量，简化下代码
     private static class TMap {
         private int cnt;
         private TreeMap<Integer, Integer> map;
