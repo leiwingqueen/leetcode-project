@@ -57,27 +57,28 @@ func maxOutput(n int, edges [][]int, price []int) int64 {
 		graph[y] = append(graph[y], x)
 	}
 	var res int64
-	var dfs func(cur int, parent int) []int64
-	dfs = func(cur int, parent int) []int64 {
+	var dfs func(cur int, parent int) (int64, int64)
+	dfs = func(cur int, parent int) (int64, int64) {
 		p := int64(price[cur])
 		var mx1 int64
 		var mx2 int64
-		mx1 = int64(price[0])
+		mx1 = int64(price[cur])
 		mx2 = 0
 		for _, next := range graph[cur] {
 			if next != parent {
-				sub := dfs(next, cur)
-				mx := Max(mx2+sub[0], mx1+sub[1])
+				s1, s2 := dfs(next, cur)
+				mx := Max(mx2+s1, mx1+s2)
 				if mx > res {
 					res = mx
 				}
-				mx1 = Max(mx1, sub[0]+p)
-				mx2 = Max(mx2, sub[1]+p)
+				mx1 = Max(mx1, s1+p)
+				mx2 = Max(mx2, s2+p)
 			}
 		}
-		return []int64{mx1, mx2}
+		return mx1, mx2
 	}
-	dfs(0, -1)
+	x, y := dfs(0, -1)
+	println(x, y)
 	return res
 }
 
