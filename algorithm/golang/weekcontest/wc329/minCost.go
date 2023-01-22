@@ -54,3 +54,39 @@ func minCost(nums []int, k int) int {
 	}
 	return res
 }
+
+// 擦，跟真相很接近了，真的就差一点点
+func minCost2(nums []int, k int) int {
+	n := len(nums)
+	// 统计[i,j]范围内的唯一出现的数字的数量
+	distinct := make([][]int, n)
+	for i := 0; i < n; i++ {
+		distinct[i] = make([]int, n)
+	}
+	for i := 0; i < n; i++ {
+		mp := make(map[int]int)
+		sum := 0
+		for j := i; j < n; j++ {
+			num := nums[j]
+			mp[num]++
+			if mp[num] == 1 {
+				sum += 1
+			} else if mp[num] == 2 {
+				sum -= 1
+			}
+			distinct[i][j] = sum
+		}
+	}
+	// dp 初始化
+	dp := make([]int, n+1)
+	for i := 1; i <= n; i++ {
+		dp[i] = math.MaxInt32
+		for j := 0; j < i; j++ {
+			sub := dp[j] + k + (i - j) - distinct[j][i-1]
+			if sub < dp[i] {
+				dp[i] = sub
+			}
+		}
+	}
+	return dp[n]
+}
