@@ -49,13 +49,11 @@ func shortestAlternatingPaths(n int, redEdges [][]int, blueEdges [][]int) []int 
 		x := edge[0]
 		y := edge[1]
 		redGraph[x] = append(redGraph[x], y)
-		redGraph[y] = append(redGraph[y], x)
 	}
 	for _, edge := range blueEdges {
 		x := edge[0]
 		y := edge[1]
 		blueGraph[x] = append(blueGraph[x], y)
-		blueGraph[y] = append(blueGraph[y], x)
 	}
 	bfs := func(color int) []int {
 		res := make([]int, n)
@@ -76,7 +74,7 @@ func shortestAlternatingPaths(n int, redEdges [][]int, blueEdges [][]int) []int 
 				if res[pop[0]] < 0 {
 					res[pop[0]] = depth
 				}
-				if res[1] == 0 {
+				if pop[1] == 0 {
 					for _, next := range blueGraph[pop[0]] {
 						if !visit[next][1] {
 							queue = append(queue, []int{next, 1})
@@ -84,7 +82,7 @@ func shortestAlternatingPaths(n int, redEdges [][]int, blueEdges [][]int) []int 
 						}
 					}
 				} else {
-					for _, next := range redGraph[pop[1]] {
+					for _, next := range redGraph[pop[0]] {
 						if !visit[next][0] {
 							queue = append(queue, []int{next, 0})
 							visit[next][0] = true
