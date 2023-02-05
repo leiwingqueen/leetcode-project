@@ -44,7 +44,7 @@ func isPossibleToCutPath(grid [][]int) bool {
 	}
 	m := len(grid)
 	n := len(grid[0])
-	if m == 1 || n == 1 {
+	if m == 1 && n == 1 {
 		return false
 	}
 	uf := Construct(m * n)
@@ -84,6 +84,9 @@ func isPossibleToCutPath(grid [][]int) bool {
 			}
 		}
 	}
+	if cnt == 0 {
+		return false
+	}
 	cnt += 2
 	c := 0
 	for i := 0; i < m; i++ {
@@ -93,7 +96,7 @@ func isPossibleToCutPath(grid [][]int) bool {
 			}
 		}
 	}
-	return c == cnt+1
+	return cnt >= c-1
 }
 
 type UnionFind struct {
