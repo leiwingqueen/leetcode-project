@@ -40,26 +40,30 @@ package com.liyongquan.weeklycontest.wc331;
 public class minCapability {
     public int minCapability(int[] nums, int k) {
         int n = nums.length;
-        int[][] dp = new int[n][k + 1];
-        dp[0][1] = nums[0];
-        for (int i = 2; i <= k; i++) {
+        int[][] dp = new int[n + 1][k + 1];
+        for (int i = 1; i <= k; i++) {
             dp[0][i] = -1;
         }
-        for (int i = 1; i < n; i++) {
-            for (int j = 1; j <= k; j++) {
-                if (j > (i + 2) / 2) {
-                    dp[i][j] = -1;
-                } else {
+        int min = nums[0];
+        for (int i = 1; i <= n; i++) {
+            min = Math.min(min, nums[i - 1]);
+            dp[i][1] = min;
+        }
+        for (int i = 1; i <= n; i++) {
+            for (int j = 2; j <= k; j++) {
+                if (j <= (i + 1) / 2) {
                     dp[i][j] = dp[i - 1][j];
-                    if (i - 2 >= 0 && dp[i - 2][j - 1] >= 0) {
-                        int sub = Math.max(nums[i], dp[i - 2][j - 1]);
+                    if (dp[i - 2][j - 1] >= 0) {
+                        int sub = Math.max(nums[i - 1], dp[i - 2][j - 1]);
                         if (dp[i][j] < 0 || sub < dp[i][j]) {
                             dp[i][j] = sub;
                         }
                     }
+                } else {
+                    dp[i][j] = -1;
                 }
             }
         }
-        return dp[n - 1][k];
+        return dp[n][k];
     }
 }
