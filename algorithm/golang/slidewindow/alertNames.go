@@ -73,7 +73,7 @@ func alertNames(keyName []string, keyTime []string) []string {
 		cnt := 0
 		for r < len(arr) {
 			d := diff(arr[l], arr[r])
-			if d <= 60 && d >= 0 {
+			if d <= 60 {
 				cnt++
 				r++
 				if cnt >= 3 {
@@ -88,12 +88,11 @@ func alertNames(keyName []string, keyTime []string) []string {
 	}
 	res := make([]string, 0)
 	for name, arr := range mp {
+		sort.Strings(arr)
 		if !check(arr) {
 			res = append(res, name)
 		}
 	}
-	sort.Slice(res, func(i, j int) bool {
-		return res[i] < res[j]
-	})
+	sort.Strings(res)
 	return res
 }
