@@ -69,20 +69,30 @@ func dieSimulator2(n int, rollMax []int) int {
 		dp[i] = make([]int, n+1)
 	}
 	for i := 0; i < 6; i++ {
-		dp[i][0] = 0
+		dp[i][0] = 1
 	}
 	// f(i,j)=f(k,j)
 	for i := 1; i <= n; i++ {
 		for j := 0; j < 6; j++ {
+			s := 0
 			for l := 0; l < 6; l++ {
 				if l == j {
-
+					continue
+				}
+				mxK := rollMax[j]
+				if i < mxK {
+					mxK = i
+				}
+				for k := 1; k <= mxK; k++ {
+					s += dp[l][i-k]
 				}
 			}
-			for k := 1; k <= 1; k++ {
-
-			}
+			dp[j][i] = s
 		}
 	}
-	return 0
+	res := 0
+	for i := 0; i < 6; i++ {
+		res += dp[i][n]
+	}
+	return res
 }
