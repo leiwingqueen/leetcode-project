@@ -63,7 +63,7 @@ func dieSimulator(n int, rollMax []int) int {
 }
 
 func dieSimulator2(n int, rollMax []int) int {
-	mod := 1_000_000_007
+	// mod := 1_000_000_007
 	dp := make([][]int, 6)
 	for i := 0; i < 6; i++ {
 		dp[i] = make([]int, n+1)
@@ -71,6 +71,7 @@ func dieSimulator2(n int, rollMax []int) int {
 	for i := 0; i < 6; i++ {
 		dp[i][0] = 0
 	}
+	// f(i,j)=f(k,j)
 	for i := 1; i <= n; i++ {
 		for j := 0; j < 6; j++ {
 			for l := 0; l < 6; l++ {
@@ -78,10 +79,10 @@ func dieSimulator2(n int, rollMax []int) int {
 
 				}
 			}
-			for k := 1; k <= rollMax[]; k++ {
+			for k := 1; k <= 1; k++ {
 
 			}
 		}
 	}
-	return res
+	return 0
 }
