@@ -52,7 +52,7 @@ func minimumScore(s string, t string) int {
 			p1++
 		}
 		if p1 == m {
-			pre[p2] = -1
+			pre[p2] = m
 		} else {
 			pre[p2] = p1
 			p1++
@@ -74,4 +74,32 @@ func minimumScore(s string, t string) int {
 		}
 		p2--
 	}
+	check := func(k int) bool {
+		for i := 0; i <= n-k; i++ {
+			//[i,i+k)判断是否满足，分别判断[0,i),[i+k,n)的前后缀匹配
+			l := -1
+			if i != 0 {
+				l = pre[i-1]
+			}
+			r := n
+			if i+k != n {
+				r = last[i+k]
+			}
+			if l < r {
+				return true
+			}
+		}
+		return false
+	}
+	l := 0
+	r := n
+	for l < r {
+		mid := l + (r-l)/2
+		if check(mid) {
+			r = mid
+		} else {
+			l = mid + 1
+		}
+	}
+	return l
 }
