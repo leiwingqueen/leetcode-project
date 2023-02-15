@@ -81,7 +81,7 @@ func minimumScore(s string, t string) int {
 			if i != 0 {
 				l = pre[i-1]
 			}
-			r := n
+			r := m
 			if i+k != n {
 				r = last[i+k]
 			}
