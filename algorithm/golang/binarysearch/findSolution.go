@@ -97,3 +97,22 @@ func findSolution2(customFunction func(int, int) int, z int) [][]int {
 	}
 	return res
 }
+
+// 双指针
+func findSolution3(customFunction func(int, int) int, z int) [][]int {
+	res := make([][]int, 0)
+	y := 1
+	for x := 1000; x >= 1; x-- {
+		for ; y <= 1000; y++ {
+			c := customFunction(x, y)
+			if c > z {
+				break
+			}
+			if c == z {
+				res = append(res, []int{x, y})
+				break
+			}
+		}
+	}
+	return res
+}
