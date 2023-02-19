@@ -66,6 +66,6 @@ public class MaxAverageRatio {
     }
 
     private double cal(int[] arr) {
-        return ((double) (arr[1] - arr[0])) / (arr[1] * (arr[1] + 1));
+        return ((double) (arr[1] - arr[0])) / ((long) arr[1] * (arr[1] + 1));
     }
 }
