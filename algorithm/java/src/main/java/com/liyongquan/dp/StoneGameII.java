@@ -39,6 +39,7 @@ public class StoneGameII {
         return res[0];
     }
 
+    // 从start开始，m的值
     private int[] dfs(int[] arr, int start, int m) {
         if (start == arr.length) {
             return new int[]{0, 0};
@@ -65,5 +66,42 @@ public class StoneGameII {
             }
         }
         return res;
+    }
+
+    // dp，既然能用回溯写，必然能改成DP，>_<。从上面的回溯翻译过来
+    public int stoneGameII2(int[] piles) {
+        int n = piles.length;
+        int[] preSum = new int[n + 1];
+        // 后缀和，为了简化后面的统计一段范围的石子总和
+        for (int i = 0; i < n; i++) {
+            preSum[i + 1] = preSum[i] + piles[n - i - 1];
+        }
+        // f(n,m,k)，n为后n堆石子，m是选择的范围因子M，k=0为先手，=1为后手分别取得的最大值
+        int[][][] dp = new int[n][n][2];
+        for (int i = 0; i < n; i++) {
+            dp[0][i][0] = piles[n - 1];
+            dp[0][i][1] = 0;
+        }
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                // 后i+1个元素,m为j+1选择，既然能一次性取完就直接取完
+                if (2 * (j + 1) >= i + 1) {
+                    dp[i][j][0] = preSum[i + 1];
+                    dp[i][j][1] = 0;
+                } else {
+                    // 否则遍历[1,2*(j+1)]的范围选最优值
+                    for (int k = 1; k <= 2 * (j + 1); k++) {
+                        // 下一次取的m值
+                        int j1 = Math.max(k - 1, j);
+                        int sub = dp[i - k][j1][1] + preSum[i + 1] - preSum[i + 1 - k];
+                        if (sub > dp[i][j][0]) {
+                            dp[i][j][0] = sub;
+                            dp[i][j][1] = dp[i - k][j1][0];
+                        }
+                    }
+                }
+            }
+        }
+        return dp[n - 1][0][0];
     }
 }
