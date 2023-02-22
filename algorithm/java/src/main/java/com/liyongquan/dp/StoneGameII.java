@@ -33,6 +33,7 @@ package com.liyongquan.dp;
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 public class StoneGameII {
+    // 回溯解法，超时
     public int stoneGameII(int[] piles) {
         int[] res = dfs(piles, 0, 1);
         return res[0];
