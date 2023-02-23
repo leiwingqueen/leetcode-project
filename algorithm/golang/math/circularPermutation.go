@@ -30,8 +30,13 @@ package math
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 func circularPermutation(n int, start int) []int {
-	res := []int{0}
+	res := []int{start}
 	for i := 1; i <= n; i++ {
-
+		k := len(res)
+		for j := k - 1; j >= 0; j-- {
+			num := ((res[j] ^ start) | (1 << (i - 1))) ^ start
+			res = append(res, num)
+		}
 	}
+	return res
 }
