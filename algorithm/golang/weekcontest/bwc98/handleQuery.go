@@ -61,27 +61,99 @@ func handleQuery(nums1 []int, nums2 []int, queries [][]int) []int64 {
 	return res
 }
 
-// 差分数组
+// 优化
 func handleQuery2(nums1 []int, nums2 []int, queries [][]int) []int64 {
 	var res []int64
 	n := len(nums1)
+	l := 0
+	r := 0
+	segment := build(0, n-1, 0)
+	for r < n {
+		for r < n && nums1[r] == nums1[l] {
+			r++
+		}
+		if nums1[l] == 1 {
+			segment.update(l, r-1)
+		}
+		l = r
+	}
+	var sum int64
+	for i := 0; i < n; i++ {
+		sum += int64(nums2[i])
+	}
 	for _, query := range queries {
 		if query[0] == 1 {
-			for i := query[1]; i <= query[2]; i++ {
-				nums1[i] ^= 1
-			}
+			segment.update(query[1], query[2])
 		} else if query[0] == 2 {
 			p := query[1]
-			for i := 0; i < n; i++ {
-				nums2[i] += nums1[i] * p
-			}
+			s := segment.sumRange(0, n-1)
+			sum += int64(s * p)
 		} else {
-			var r int64
-			for _, num := range nums2 {
-				r += int64(num)
-			}
-			res = append(res, r)
+			res = append(res, sum)
 		}
 	}
 	return res
+}
+
+//线段树
+type Segment struct {
+	left  int
+	right int
+	sum   int
+	lNode *Segment
+	rNode *Segment
+}
+
+func build(l int, r int, val int) *Segment {
+	return &Segment{l, r, val, nil, nil}
+}
+
+func (s *Segment) update(l int, r int) {
+	if r > l {
+		return
+	}
+	if s.left == s.right {
+		s.sum ^= 1
+		return
+	}
+	if s.left <= l && s.right >= r {
+		// 整个区间更新
+		s.sum = 0
+		if s.lNode != nil {
+			s.lNode.update(l, r)
+			s.sum += s.lNode.sum
+		}
+		if s.rNode != nil {
+			s.rNode.update(l, r)
+			s.sum += s.rNode.sum
+		}
+	} else {
+		mid := l + (r-l)/2
+		if s.lNode == nil {
+			// build new node
+			if s.sum == 1 {
+				s.lNode = build(s.left, mid, mid-s.left+1)
+				s.rNode = build(mid+1, s.right, s.right-mid)
+			} else {
+				s.lNode = build(s.left, mid, 0)
+				s.rNode = build(mid+1, s.right, 0)
+			}
+		}
+		s.lNode.update(l, mid)
+		s.rNode.update(mid+1, r)
+		s.sum = s.lNode.sum + s.rNode.sum
+	}
+}
+
+func (s *Segment) sumRange(l int, r int) int {
+	if s.left == l && s.right == r {
+		return s.sum
+	}
+	if s.lNode.right >= r {
+		return s.lNode.sumRange(l, r)
+	}
+	if s.rNode.left <= l {
+		return s.rNode.sumRange(l, r)
+	}
+	return s.lNode.sumRange(l, s.lNode.right) + s.rNode.sumRange(s.rNode.left, r)
 }
