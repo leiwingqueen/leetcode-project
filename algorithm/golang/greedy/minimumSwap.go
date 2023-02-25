@@ -125,7 +125,7 @@ func minimumSwap2(s1 string, s2 string) int {
 	return dfs(0)
 }
 
-// 解法3
+// 解法3？为什么还是错了？
 func minimumSwap3(s1 string, s2 string) int {
 	cnt1 := []int{0, 0}
 	cnt2 := []int{0, 0}
@@ -193,4 +193,34 @@ func minimumSwap3(s1 string, s2 string) int {
 		return min(sub1, sub2)
 	}
 	return dfs(0)
+}
+
+// 归纳总结
+func minimumSwap4(s1 string, s2 string) int {
+	n := len(s1)
+	p1 := 0
+	p2 := 0
+	for i := 0; i < n; i++ {
+		if s1[i] != s2[i] {
+			if s1[i] == 'x' {
+				p1++
+			} else {
+				p2++
+			}
+		}
+	}
+	cnt := 0
+	if p1 > 0 {
+		cnt += p1 / 2
+		p1 %= 2
+	}
+	if p2 > 0 {
+		cnt += p2 / 2
+		p2 %= 2
+	}
+	if (p1+p2)%2 != 0 {
+		return -1
+	}
+	cnt += p1 + p2
+	return cnt
 }
