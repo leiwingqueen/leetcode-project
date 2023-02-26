@@ -1,5 +1,7 @@
 package wc334
 
+import "sort"
+
 func minimumTime(grid [][]int) int {
 	dirs := [][]int{
 		{-1, 0},
@@ -162,10 +164,19 @@ func minimumTime4(grid [][]int) int {
 		for _, dir := range dirs {
 			nx := x + dir[0]
 			ny := y + dir[1]
+			// 启发式搜索，优先搜索能到的点
+			points := make([][]int, 0)
 			if nx >= 0 && nx < m && ny >= 0 && ny < n {
+				points = append(points, []int{nx, ny})
+			}
+			sort.Slice(points, func(i, j int) bool {
+				return grid[points[i][0]][grid[i][1]] < grid[points[j][0]][grid[j][1]]
+			})
+			for _, point := range points {
+				nx = point[0]
+				ny = point[1]
 				if grid[nx][ny] <= t+1 {
 					if mem[nx][ny] < 0 || mem[nx][ny] > t+1 {
-						mem[nx][ny] = t + 1
 						sub := dfs(nx, ny, t+1)
 						if res < 0 || sub < res {
 							res = sub
@@ -177,7 +188,6 @@ func minimumTime4(grid [][]int) int {
 						diff := grid[nx][ny] - t - 1
 						inc := (diff + 1) / 2
 						if mem[nx][ny] < 0 || mem[nx][ny] > t+inc*2+1 {
-							mem[nx][ny] = t + inc*2 + 1
 							sub := dfs(nx, ny, t+inc*2+1)
 							if res < 0 || sub < res {
 								res = sub
