@@ -36,7 +36,7 @@ import "math"
 // 既然递归能写，那么改成用迭代也应该没问题
 func movesToMakeZigzag(nums []int) int {
 	n := len(nums)
-	if n == 0 {
+	if n == 1 {
 		return 0
 	}
 	var dfs func(idx int) int
@@ -60,6 +60,37 @@ func movesToMakeZigzag(nums []int) int {
 	}
 	r1 := dfs(0)
 	r2 := dfs(1)
+	if r1 < r2 {
+		return r1
+	} else {
+		return r2
+	}
+}
+
+func movesToMakeZigzag2(nums []int) int {
+	n := len(nums)
+	if n == 1 {
+		return 0
+	}
+	cal := func(idx int) int {
+		res := 0
+		for idx < n {
+			neighbor := math.MaxInt
+			if idx-1 >= 0 && nums[idx-1] < neighbor {
+				neighbor = nums[idx-1]
+			}
+			if idx+1 < n && nums[idx+1] < neighbor {
+				neighbor = nums[idx+1]
+			}
+			if nums[idx] >= neighbor {
+				res += nums[idx] - neighbor + 1
+			}
+			idx += 2
+		}
+		return res
+	}
+	r1 := cal(0)
+	r2 := cal(1)
 	if r1 < r2 {
 		return r1
 	} else {
