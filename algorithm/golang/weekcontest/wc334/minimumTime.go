@@ -1,6 +1,6 @@
 package wc334
 
-import "sort"
+import "math"
 
 func minimumTime(grid [][]int) int {
 	dirs := [][]int{
@@ -134,6 +134,7 @@ func minimumTime3(grid [][]int) int {
 	return mem[m-1][n-1]
 }
 
+// 二分+逆向思维
 func minimumTime4(grid [][]int) int {
 	dirs := [][]int{
 		{-1, 0},
@@ -143,62 +144,47 @@ func minimumTime4(grid [][]int) int {
 	}
 	m := len(grid)
 	n := len(grid[0])
-	mem := make([][]int, m)
-	for i := 0; i < m; i++ {
-		mem[i] = make([]int, n)
-	}
-	for i := 0; i < m; i++ {
-		for j := 0; j < n; j++ {
-			mem[i][j] = -1
+	check := func(t int) bool {
+		visit := make([][]bool, m)
+		for i := 0; i < m; i++ {
+			visit[i] = make([]bool, n)
 		}
-	}
-	mem[0][0] = 0
-	var dfs func(x int, y int, t int) int
-	dfs = func(x int, y int, t int) int {
-		if x == m-1 && y == n-1 {
-			mem[x][y] = t
-			return t
+		visit[m-1][n-1] = false
+		queue := [][]int{
+			{m - 1, n - 1},
 		}
-		mem[x][y] = t
-		res := -1
-		for _, dir := range dirs {
-			nx := x + dir[0]
-			ny := y + dir[1]
-			// 启发式搜索，优先搜索能到的点
-			points := make([][]int, 0)
-			if nx >= 0 && nx < m && ny >= 0 && ny < n {
-				points = append(points, []int{nx, ny})
-			}
-			sort.Slice(points, func(i, j int) bool {
-				return grid[points[i][0]][grid[i][1]] < grid[points[j][0]][grid[j][1]]
-			})
-			for _, point := range points {
-				nx = point[0]
-				ny = point[1]
-				if grid[nx][ny] <= t+1 {
-					if mem[nx][ny] < 0 || mem[nx][ny] > t+1 {
-						sub := dfs(nx, ny, t+1)
-						if res < 0 || sub < res {
-							res = sub
-						}
-					}
-				} else {
-					if t > 0 {
-						// 存在回头路
-						diff := grid[nx][ny] - t - 1
-						inc := (diff + 1) / 2
-						if mem[nx][ny] < 0 || mem[nx][ny] > t+inc*2+1 {
-							sub := dfs(nx, ny, t+inc*2+1)
-							if res < 0 || sub < res {
-								res = sub
+		for len(queue) > 0 {
+			size := len(queue)
+			for i := 0; i < size; i++ {
+				node := queue[i]
+				for _, dir := range dirs {
+					x := dir[0] + node[0]
+					y := dir[1] + node[1]
+					if x >= 0 && x < m && y >= 0 && y < n && !visit[x][y] {
+						visit[x][y] = true
+						if grid[x][y] <= t-1 {
+							if x == 0 && y == 0 {
+								return true
 							}
+							queue = append(queue, []int{x, y})
 						}
 					}
 				}
 			}
+			queue = queue[size:]
+			t--
 		}
-		return res
+		return false
 	}
-	dfs(0, 0, 0)
-	return mem[m-1][n-1]
+	l := grid[m-1][n-1]
+	r := math.MaxInt
+	for l < r {
+		mid := l + (r-l)/2
+		if check(mid) {
+			r = mid
+		} else {
+			l = mid + 1
+		}
+	}
+	return l
 }
