@@ -1,7 +1,5 @@
 package wc334
 
-import "math"
-
 func minimumTime(grid [][]int) int {
 	dirs := [][]int{
 		{-1, 0},
@@ -136,6 +134,9 @@ func minimumTime3(grid [][]int) int {
 
 // 二分+逆向思维
 func minimumTime4(grid [][]int) int {
+	if grid[0][1] > 1 && grid[1][0] > 1 {
+		return -1
+	}
 	dirs := [][]int{
 		{-1, 0},
 		{1, 0},
@@ -149,7 +150,7 @@ func minimumTime4(grid [][]int) int {
 		for i := 0; i < m; i++ {
 			visit[i] = make([]bool, n)
 		}
-		visit[m-1][n-1] = false
+		visit[m-1][n-1] = true
 		queue := [][]int{
 			{m - 1, n - 1},
 		}
@@ -177,7 +178,15 @@ func minimumTime4(grid [][]int) int {
 		return false
 	}
 	l := grid[m-1][n-1]
-	r := math.MaxInt
+	r := 0
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if grid[i][j] > r {
+				r = grid[i][j]
+			}
+		}
+	}
+	r += m + n
 	for l < r {
 		mid := l + (r-l)/2
 		if check(mid) {
@@ -186,5 +195,12 @@ func minimumTime4(grid [][]int) int {
 			l = mid + 1
 		}
 	}
-	return l
+	// 这里的关键是要考虑奇偶性
+	// 到达始点的时间
+	start := l - m - n + 2
+	if start%2 == 0 {
+		return l
+	} else {
+		return l + 1
+	}
 }
