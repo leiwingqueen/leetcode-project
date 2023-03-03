@@ -55,6 +55,7 @@ import "fmt"
 //链接：https://leetcode.cn/problems/making-file-names-unique
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+// 超时
 func getFolderNames(names []string) []string {
 	mp := make(map[string]struct{})
 	n := len(names)
@@ -62,12 +63,43 @@ func getFolderNames(names []string) []string {
 	for i := 0; i < n; i++ {
 		name := names[i]
 		if _, exist := mp[name]; !exist {
+			mp[name] = struct{}{}
 			res[i] = name
 		} else {
+			// 这里会超时
 			k := 1
 			for {
 				s := fmt.Sprintf("%s(%d)", name, k)
-				if _, ex := mp[name]; !ex {
+				if _, ex := mp[s]; !ex {
+					mp[s] = struct{}{}
+					res[i] = s
+					break
+				}
+				k++
+			}
+		}
+	}
+	return res
+}
+
+// 稍微优化一下
+func getFolderNames2(names []string) []string {
+	mp1 := make(map[string]struct{})
+	mp2 := make(map[string]int)
+	n := len(names)
+	res := make([]string, n)
+	for i := 0; i < n; i++ {
+		name := names[i]
+		if _, exist := mp1[name]; !exist {
+			mp1[name] = struct{}{}
+			res[i] = name
+		} else {
+			k := mp2[name] + 1
+			for {
+				s := fmt.Sprintf("%s(%d)", name, k)
+				if _, ex := mp1[s]; !ex {
+					mp1[s] = struct{}{}
+					mp2[name] = k
 					res[i] = s
 					break
 				}
