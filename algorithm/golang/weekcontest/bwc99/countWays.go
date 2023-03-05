@@ -21,4 +21,5 @@ func countWays(ranges [][]int) int {
 
 		}
 	}
+	return cnt
 }
