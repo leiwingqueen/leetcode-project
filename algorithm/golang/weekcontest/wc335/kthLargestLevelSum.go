@@ -14,7 +14,7 @@ type TreeNode struct {
 
 func kthLargestLevelSum(root *TreeNode, k int) int64 {
 	queue := []*TreeNode{root}
-	arr := []int64{int64(root.Val)}
+	var arr []int64
 	for len(queue) > 0 {
 		size := len(queue)
 		var sum int64

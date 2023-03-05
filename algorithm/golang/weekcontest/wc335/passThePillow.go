@@ -11,10 +11,11 @@ func passThePillow(n int, time int) int {
 			}
 		} else {
 			k--
-			if k == 0 {
+			if k == 1 {
 				dir = 0
 			}
 		}
+		time--
 	}
 	return k
 }
