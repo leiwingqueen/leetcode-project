@@ -26,3 +26,29 @@ func minSubarray(nums []int, p int) int {
 	}
 	return -1
 }
+
+func minSubarray2(nums []int, p int) int {
+	n := len(nums)
+	sum := 0
+	for _, num := range nums {
+		sum += num
+	}
+	mod := sum % p
+	if mod == 0 {
+		return 0
+	}
+	mp := make(map[int]int)
+	mp[0] = 0
+	s := 0
+	res := -1
+	for i := 0; i < n; i++ {
+		s += nums[i]
+		if idx, exist := mp[s%p]; exist {
+			if res < 0 || i-idx < res {
+				res = i - idx
+			}
+		}
+		mp[s%p] = i + 1
+	}
+	return res
+}
