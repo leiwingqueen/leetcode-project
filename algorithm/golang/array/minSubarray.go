@@ -47,7 +47,7 @@ func minSubarray2(nums []int, p int) int {
 		return 0
 	}
 	mp := make(map[int]int)
-	mp[0] = 0
+	mp[0] = -1
 	s := 0
 	res := -1
 	for i := 0; i < n; i++ {
@@ -58,7 +58,11 @@ func minSubarray2(nums []int, p int) int {
 				res = i - idx
 			}
 		}
-		mp[s%p] = i + 1
+		mp[s%p] = i
 	}
-	return res
+	if res < n {
+		return res
+	} else {
+		return -1
+	}
 }
