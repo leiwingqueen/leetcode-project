@@ -22,6 +22,7 @@ package hash
 //链接：https://leetcode.cn/problems/find-longest-subarray-lcci
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+// hash
 func findLongestSubarray(array []string) []string {
 	n := len(array)
 	mp := make(map[int]int)
@@ -35,20 +36,19 @@ func findLongestSubarray(array []string) []string {
 		} else {
 			sum++
 		}
-		if idx, exist := mp[-sum]; exist {
-			if res < 0 || i-idx < res {
+		if idx, exist := mp[sum]; exist {
+			if res < 0 || i-idx > res {
 				res = i - idx
-				l = i
+				l = idx + 1
 			}
-		}
-		if _, exist := mp[sum]; !exist {
+		} else {
 			mp[sum] = i
 		}
 	}
 	if res > 0 {
 		r := make([]string, res)
 		for i := 0; i < res; i++ {
-			r[i+l] = array[i]
+			r[i] = array[i+l]
 		}
 		return r
 	} else {
