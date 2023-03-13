@@ -44,6 +44,7 @@ package bfs
 //链接：https://leetcode.cn/problems/count-subtrees-with-max-distance-between-cities
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+// 居然通过了，很艰难地通过了
 func countSubgraphsForEachDiameter(n int, edges [][]int) []int {
 	graph := make([][]int, n)
 	for _, edge := range edges {
@@ -51,32 +52,79 @@ func countSubgraphsForEachDiameter(n int, edges [][]int) []int {
 		graph[from-1] = append(graph[from-1], to-1)
 		graph[to-1] = append(graph[to-1], from-1)
 	}
+	// 计算任意两个节点的距离
+	dis := make([][]int, n)
+	for i := 0; i < n; i++ {
+		dis[i] = make([]int, n)
+	}
+	calDis := func(cur int) {
+		depth := 0
+		queue := []int{cur}
+		visit := make([]bool, n)
+		visit[cur] = true
+		for len(queue) > 0 {
+			size := len(queue)
+			for i := 0; i < size; i++ {
+				node := queue[i]
+				for _, next := range graph[node] {
+					if !(visit[next]) {
+						visit[next] = true
+						dis[cur][next] = depth + 1
+						queue = append(queue, next)
+					}
+				}
+			}
+			queue = queue[size:]
+			depth++
+		}
+	}
+	for i := 0; i < n; i++ {
+		calDis(i)
+	}
+	// 计算一个图的最大距离
+	calDis2 := func(node int) int {
+		r := 0
+		for i := 0; i < n; i++ {
+			if node&(1<<i) == 0 {
+				continue
+			}
+			for j := 0; j < n; j++ {
+				if node&(1<<j) == 0 {
+					continue
+				}
+				if dis[i][j] > r {
+					r = dis[i][j]
+				}
+			}
+		}
+		return r
+	}
 	queue := make([]int, 0)
+	visit := make(map[int]bool)
 	for i := 0; i < n; i++ {
 		queue = append(queue, 1<<i)
+		visit[1<<i] = true
 	}
 	res := make([]int, n-1)
-	idx := 0
 	for len(queue) > 0 {
 		size := len(queue)
-		sum := 0
 		for i := 0; i < size; i++ {
 			node := queue[i]
 			for j := 0; j < n; j++ {
 				if node&(1<<j) != 0 {
 					// 遍历j的周围的节点，尝试增加一个节点
 					for _, next := range graph[j] {
-						if node&(1<<next) == 0 {
-							sum++
-							queue = append(queue, node|(1<<next))
+						nextNode := node | (1 << next)
+						if !visit[nextNode] {
+							queue = append(queue, nextNode)
+							visit[nextNode] = true
+							res[calDis2(nextNode)-1]++
 						}
 					}
 				}
 			}
 		}
 		queue = queue[size:]
-		res[idx] = sum / 2
-		idx++
 	}
 	return res
 }
