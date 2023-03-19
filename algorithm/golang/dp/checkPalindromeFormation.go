@@ -27,25 +27,24 @@ func checkPalindromeFormation(a string, b string) bool {
 // 优化解法，双指针
 func checkPalindromeFormation2(a string, b string) bool {
 	n := len(a)
-	mid := (n - 1) / 2
 	l, r := 0, n-1
-	for l <= mid {
+	for l < r {
 		if a[l] != b[r] {
 			break
 		}
 		l++
 		r--
 	}
-	if l > mid {
+	if l >= r {
 		return true
 	}
 	l, r = 0, n-1
-	for l <= mid {
+	for l < r {
 		if b[l] != a[r] {
 			break
 		}
 		l++
 		r--
 	}
-	return l > mid
+	return l >= r
 }
