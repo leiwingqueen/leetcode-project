@@ -63,3 +63,28 @@ func numDupDigitsAtMostN(n int) int {
 	}
 	return n - cnt
 }
+
+// 优化解法
+func numDupDigitsAtMostN2(n int) int {
+	cal := func(size int) int {
+		res := 1
+		for i := 0; i < size; i++ {
+			if i == 0 {
+				res *= 9
+			} else {
+				res *= 10 - i
+			}
+		}
+		return res
+	}
+	cnt := 0
+	size, num := 0, n
+	for num > 0 {
+		num /= 10
+		size++
+	}
+	for i := 1; i <= size; i++ {
+		cnt += cal(size)
+	}
+	return n - cnt
+}
