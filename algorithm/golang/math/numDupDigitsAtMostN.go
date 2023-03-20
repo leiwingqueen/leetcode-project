@@ -83,8 +83,43 @@ func numDupDigitsAtMostN2(n int) int {
 		num /= 10
 		size++
 	}
-	for i := 1; i <= size; i++ {
-		cnt += cal(size)
+	arr := make([]int, size)
+	num = n
+	for i := size - 1; i >= 0; i-- {
+		arr[i] = num % 10
+		num /= 10
 	}
+	var dfs func(size int, used []bool, idx int, eq bool, free int) int
+	dfs = func(size int, used []bool, idx int, eq bool, free int) int {
+		if idx == size {
+			return 1
+		}
+		if !eq {
+			return free * dfs(size, used, idx+1, false, free-1)
+		} else {
+			res := 0
+			for i := 0; i < 10; i++ {
+				if i == 0 && idx == 0 {
+					continue
+				}
+				if !used[i] && i <= arr[idx] {
+					if i < arr[idx] {
+						eq = false
+					} else if i == arr[idx] {
+						eq = true
+					}
+					used[i] = true
+					res += dfs(size, used, idx+1, eq, free-1)
+					used[i] = false
+				}
+			}
+			return res
+		}
+	}
+
+	for i := 1; i < size; i++ {
+		cnt += cal(i)
+	}
+	cnt += dfs(size, make([]bool, 10), 0, true, 10)
 	return n - cnt
 }
