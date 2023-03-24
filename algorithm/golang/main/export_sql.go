@@ -35,7 +35,7 @@ func main() {
 		startTime := record[1]
 		endTime := record[2]
 
-		sqlQuery := fmt.Sprintf(`SELECT orderId, num, gameid, FROM_UNIXTIME(createTime/1000), stat
+		sqlQuery := fmt.Sprintf(`SELECT deviceid,orderId, num, gameid, FROM_UNIXTIME(createTime/1000), stat
 FROM t_freeze_order_202303
 WHERE createTime >= UNIX_TIMESTAMP('%s') * 1000
 AND createTime < UNIX_TIMESTAMP('%s') * 1000
