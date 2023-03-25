@@ -42,7 +42,7 @@ package binarysearch
 func findLengthOfShortestSubarray(arr []int) int {
 	n := len(arr)
 	check2 := func(k int, i int) bool {
-		// 检查[0,i)，[i+k-1,n)
+		// 检查[0,i)，[i+k,n)
 		for j := 1; j < i; j++ {
 			if arr[j] < arr[j-1] {
 				return false
@@ -54,10 +54,10 @@ func findLengthOfShortestSubarray(arr []int) int {
 				return false
 			}
 		}
-		if i-1 < 0 || i+k-1 >= n {
+		if i-1 < 0 || i+k >= n {
 			return true
 		} else {
-			return arr[i+k-1] >= arr[i-1]
+			return arr[i+k] >= arr[i-1]
 		}
 	}
 	check := func(k int) bool {
@@ -70,7 +70,7 @@ func findLengthOfShortestSubarray(arr []int) int {
 	}
 	l, r := 0, len(arr)-1
 	for l < r {
-		mid := l + (r-l)/2
+		mid := l + (r-l+1)/2
 		if check(mid) {
 			l = mid
 		} else {
