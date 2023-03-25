@@ -39,6 +39,7 @@ package binarysearch
 //链接：https://leetcode.cn/problems/shortest-subarray-to-be-removed-to-make-array-sorted
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+// 超时
 func findLengthOfShortestSubarray(arr []int) int {
 	n := len(arr)
 	check2 := func(k int, i int) bool {
@@ -48,7 +49,7 @@ func findLengthOfShortestSubarray(arr []int) int {
 				return false
 			}
 		}
-		for j := i + k; j < n; j++ {
+		for j := i + k + 1; j < n; j++ {
 			// 检查[0,i)，[i+k-1,n)
 			if arr[j] < arr[j-1] {
 				return false
@@ -70,12 +71,57 @@ func findLengthOfShortestSubarray(arr []int) int {
 	}
 	l, r := 0, len(arr)-1
 	for l < r {
-		mid := l + (r-l+1)/2
+		mid := l + (r-l)/2
 		if check(mid) {
-			l = mid
+			r = mid
 		} else {
-			r = mid - 1
+			l = mid + 1
 		}
 	}
 	return l
+}
+
+// 双指针
+func findLengthOfShortestSubarray2(arr []int) int {
+	n := len(arr)
+	if n <= 1 {
+		return 0
+	}
+	// 找到最长的前缀和后缀
+	p1 := 1
+	for ; p1 < n; p1++ {
+		if arr[p1] < arr[p1-1] {
+			break
+		}
+	}
+	if p1 == n {
+		return 0
+	}
+	p2 := n - 2
+	for ; p2 >= 0; p2-- {
+		if arr[p2] > arr[p2+1] {
+			break
+		}
+	}
+	// 前缀[0,p1),后缀[p2+1,n)
+	// corner case. 只保留前缀或者后缀
+	res := n - p1
+	if p2+1 < res {
+		res = p2 + 1
+	}
+	// 遍历所有的前缀尝试从l位置删除
+	l, r := 0, p2+1
+	for ; l < p1; l++ {
+		// 找到第一个arr[r]>=arr[l]
+		for ; r < n; r++ {
+			if arr[r] >= arr[l] {
+				break
+			}
+		}
+		// 删除的范围[l+1,r)
+		if r-l-1 < res {
+			res = r - l - 1
+		}
+	}
+	return res
 }
