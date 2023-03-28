@@ -1,6 +1,8 @@
 package dp
 
-import "strings"
+import (
+	"strings"
+)
 
 // 给出两个字符串 str1 和 str2，返回同时以 str1 和 str2 作为子序列的最短字符串。如果答案不止一个，则可以返回满足条件的任意一个答案。
 //
@@ -166,4 +168,63 @@ func shortestCommonSupersequence3(str1 string, str2 string) string {
 		}
 	}
 	return res
+}
+
+// dp
+// 假设f(i,j)为str1的前i个字符和str2的前j个字符组成的最短长度的长度
+// f(i,j)=f(i-1,j-1),str1[i-1]==str2[j-1]
+// f(i,j)=min{f(i-1,j),f(i,j-1)},str1[i-1]!=str2[j-1]
+func shortestCommonSupersequence4(str1 string, str2 string) string {
+	m, n := len(str1), len(str2)
+	dp := make([][]int, m+1)
+	// 记录整个DP的选择路径,1水平移动，2向左移动，3斜上方移动
+	path := make([][]int, m+1)
+	for i := 0; i <= m; i++ {
+		dp[i] = make([]int, n+1)
+		path[i] = make([]int, n+1)
+	}
+	// 初始化
+	for i := 1; i <= n; i++ {
+		dp[0][i] = i
+		path[0][i] = 1
+	}
+	for i := 1; i <= m; i++ {
+		dp[i][0] = i
+		path[i][0] = 2
+	}
+	// dp迭代
+	for i := 1; i <= m; i++ {
+		for j := 1; j <= n; j++ {
+			if str1[i-1] == str2[j-1] {
+				dp[i][j] = dp[i-1][j-1]
+				path[i][j] = 3
+			} else {
+				if dp[i][j-1] <= dp[i-1][j] {
+					dp[i][j] = dp[i][j-1]
+					path[i][j] = 1
+				} else {
+					dp[i][j] = dp[i][j-1]
+					path[i][j] = 2
+				}
+			}
+		}
+	}
+	var res []byte
+	i, j := m, n
+	for i != 0 || j != 0 {
+		if path[i][j] == 1 {
+			// add str2[j-1] to the head of res
+			res = append([]byte{str2[j-1]}, res...)
+			j--
+		} else if path[i][j] == 2 {
+			// add str1[i-1] to the head of res
+			res = append([]byte{str1[i-1]}, res...)
+			i--
+		} else {
+			res = append([]byte{str1[i-1]}, res...)
+			i--
+			j--
+		}
+	}
+	return string(res)
 }
