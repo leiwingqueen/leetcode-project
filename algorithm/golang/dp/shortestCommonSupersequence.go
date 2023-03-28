@@ -172,8 +172,8 @@ func shortestCommonSupersequence3(str1 string, str2 string) string {
 
 // dp
 // 假设f(i,j)为str1的前i个字符和str2的前j个字符组成的最短长度的长度
-// f(i,j)=f(i-1,j-1),str1[i-1]==str2[j-1]
-// f(i,j)=min{f(i-1,j),f(i,j-1)},str1[i-1]!=str2[j-1]
+// f(i,j)=f(i-1,j-1)+1,str1[i-1]==str2[j-1]
+// f(i,j)=min{f(i-1,j),f(i,j-1)}+1,str1[i-1]!=str2[j-1]
 func shortestCommonSupersequence4(str1 string, str2 string) string {
 	m, n := len(str1), len(str2)
 	dp := make([][]int, m+1)
@@ -196,14 +196,14 @@ func shortestCommonSupersequence4(str1 string, str2 string) string {
 	for i := 1; i <= m; i++ {
 		for j := 1; j <= n; j++ {
 			if str1[i-1] == str2[j-1] {
-				dp[i][j] = dp[i-1][j-1]
+				dp[i][j] = dp[i-1][j-1] + 1
 				path[i][j] = 3
 			} else {
 				if dp[i][j-1] <= dp[i-1][j] {
-					dp[i][j] = dp[i][j-1]
+					dp[i][j] = dp[i][j-1] + 1
 					path[i][j] = 1
 				} else {
-					dp[i][j] = dp[i][j-1]
+					dp[i][j] = dp[i-1][j] + 1
 					path[i][j] = 2
 				}
 			}

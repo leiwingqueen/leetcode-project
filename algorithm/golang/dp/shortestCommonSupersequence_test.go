@@ -17,10 +17,13 @@ func Test_shortestCommonSupersequence3(t *testing.T) {
 		//"aabbbbbbaa"
 		{"t1", args{"aabbabaa",
 			"aabbbbbbaa"}, "aabbabbbbaa"},
+		// "abac"
+		//"cab"
+		{"t2", args{"abac", "cab"}, "cabac"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := shortestCommonSupersequence3(tt.args.str1, tt.args.str2); got != tt.want {
+			if got := shortestCommonSupersequence4(tt.args.str1, tt.args.str2); got != tt.want {
 				t.Errorf("shortestCommonSupersequence3() = %v, want %v", got, tt.want)
 			}
 		})
