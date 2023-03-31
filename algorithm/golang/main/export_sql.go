@@ -23,7 +23,15 @@ func main() {
 		fmt.Println("Error reading file:", err)
 		return
 	}
+	sql := genSql1(records)
+	// sql := genSql2(records)
+	fmt.Println(sql)
 
+	// "SELECT gameid,deviceid,kugouId,score,costNum,FROM_UNIXTIME(createTime/1000) FROM `t_game_round_info_202303` limit 10"
+}
+
+// 查询扣费订单
+func genSql1(records [][]string) string {
 	var sqlQueries []string
 
 	for i, record := range records {
@@ -35,7 +43,7 @@ func main() {
 		startTime := record[1]
 		endTime := record[2]
 
-		sqlQuery := fmt.Sprintf(`SELECT deviceid,orderId, num, gameid, FROM_UNIXTIME(createTime/1000), stat
+		sqlQuery := fmt.Sprintf(`SELECT deviceid,orderId,kugouId, num, gameid, FROM_UNIXTIME(createTime/1000), stat
 FROM t_freeze_order_202303
 WHERE createTime >= UNIX_TIMESTAMP('%s') * 1000
 AND createTime < UNIX_TIMESTAMP('%s') * 1000
@@ -43,7 +51,29 @@ AND kugouid = %s`, startTime, endTime, kugouID)
 
 		sqlQueries = append(sqlQueries, sqlQuery)
 	}
+	return strings.Join(sqlQueries, "\nUNION ALL\n")
+}
 
+// 查询该场次对应的发奖
+func genSql2(records [][]string) string {
+	var sqlQueries []string
+	for i, record := range records {
+		if i == 0 {
+			continue // 跳过第一行，因为它是表头
+		}
+		kugouID := record[0]
+		startTime := record[1]
+		endTime := record[2]
+
+		sqlQuery := fmt.Sprintf(`SELECT gameid
+FROM t_freeze_order_202303
+WHERE createTime >= UNIX_TIMESTAMP('%s') * 1000
+AND createTime < UNIX_TIMESTAMP('%s') * 1000
+AND kugouid = %s`, startTime, endTime, kugouID)
+		sqlQueries = append(sqlQueries, sqlQuery)
+	}
 	finalSQL := strings.Join(sqlQueries, "\nUNION ALL\n")
-	fmt.Println(finalSQL)
+	return fmt.Sprintf("SELECT gameid,deviceid,kugouId,score,costNum,FROM_UNIXTIME(createTime/1000) "+
+		"FROM `t_game_round_info_202303` "+
+		"where gameid in (select distinct(t.gameid) from (%s) as t)", finalSQL)
 }
