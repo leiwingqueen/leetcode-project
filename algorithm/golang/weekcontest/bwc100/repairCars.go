@@ -65,6 +65,33 @@ func repairCars(ranks []int, cars int) int64 {
 	return dp[n-1][cars]
 }
 
+// 考虑用二分这道题就变得很简单了
+func repairCars2(ranks []int, cars int) int64 {
+	check := func(t int64) bool {
+		sum := 0
+		for _, rank := range ranks {
+			d := t / int64(rank)
+			sqrt := int(math.Sqrt(float64(d)))
+			sum += sqrt
+			if sum >= cars {
+				return true
+			}
+		}
+		return false
+	}
+	var l, r int64
+	l, r = 1, math.MaxInt64
+	for l < r {
+		mid := l + (r-l)/2
+		if check(mid) {
+			r = mid
+		} else {
+			l = mid + 1
+		}
+	}
+	return l
+}
+
 func Max(a int64, b int64) int64 {
 	if a > b {
 		return a

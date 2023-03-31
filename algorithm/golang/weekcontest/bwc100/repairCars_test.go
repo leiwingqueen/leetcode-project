@@ -19,7 +19,7 @@ func Test_repairCars(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := repairCars(tt.args.ranks, tt.args.cars); got != tt.want {
+			if got := repairCars2(tt.args.ranks, tt.args.cars); got != tt.want {
 				t.Errorf("repairCars() = %v, want %v", got, tt.want)
 			}
 		})
