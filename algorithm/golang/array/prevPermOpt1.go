@@ -75,3 +75,29 @@ func prevPermOpt2(arr []int) []int {
 	}
 	return arr
 }
+
+// 单调栈，但是扫描的顺序需要修改一下
+// 单调栈的思路还是很难写出来
+func prevPermOpt3(arr []int) []int {
+	n := len(arr)
+	var stack []int
+	p1 := 0
+	res := []int{-1, -1}
+	for p1 < n {
+		for len(stack) > 0 && arr[stack[len(stack)-1]] <= arr[p1] {
+			stack = stack[:len(stack)-1]
+		}
+		if len(stack) > 0 {
+			p2 := stack[len(stack)-1]
+			if res[0] < 0 || p2 > res[0] || (p2 == res[0] && arr[p1] > arr[res[1]]) {
+				res[0], res[1] = p2, p1
+			}
+		}
+		stack = append(stack, p1)
+		p1++
+	}
+	if res[0] >= 0 {
+		arr[res[0]], arr[res[1]] = arr[res[1]], arr[res[0]]
+	}
+	return arr
+}
