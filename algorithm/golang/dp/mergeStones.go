@@ -1,5 +1,7 @@
 package dp
 
+import "fmt"
+
 // 有 N 堆石头排成一排，第 i 堆中有 stones[i] 块石头。
 //
 //每次移动（move）需要将连续的 K 堆石头合并为一堆，而这个移动的成本为这 K 堆石头的总数。
@@ -51,13 +53,14 @@ func mergeStones(stones []int, k int) int {
 	dfs = func(idx int, cnt int, sum int) int {
 		if idx == n {
 			if cnt == 1 {
-				return sum
+				return 0
 			} else {
 				return -1
 			}
 		}
 		res := -1
 		for i := idx; i < n; i++ {
+			fmt.Println("选择:", stones[i])
 			stones[idx], stones[i] = stones[i], stones[idx]
 			sub := -1
 			if cnt == k-1 {
@@ -72,6 +75,7 @@ func mergeStones(stones []int, k int) int {
 				res = sub
 			}
 		}
+		fmt.Printf("idx:%d,cnt:%d,res:%d\n", idx, cnt, res)
 		return res
 	}
 	return dfs(0, 0, 0)
