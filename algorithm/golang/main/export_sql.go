@@ -10,7 +10,7 @@ import (
 // 推球机数据导出
 
 func main() {
-	file, err := os.Open("/Users/liyongquan/Desktop/龙珠3.16-30.csv") // 请将 "your_csv_file.csv" 替换为您的 CSV 文件路径
+	file, err := os.Open("/Users/liyongquan/Desktop/4月.csv") // 请将 "your_csv_file.csv" 替换为您的 CSV 文件路径
 	if err != nil {
 		fmt.Println("Error opening file:", err)
 		return
@@ -23,15 +23,16 @@ func main() {
 		fmt.Println("Error reading file:", err)
 		return
 	}
-	// sql := genSql1(records)
-	sql := genSql2(records)
+	month := "202304"
+	// sql := genSql1(records,month)
+	sql := genSql2(records, month)
 	fmt.Println(sql)
 
 	// "SELECT gameid,deviceid,kugouId,score,costNum,FROM_UNIXTIME(createTime/1000) FROM `t_game_round_info_202303` limit 10"
 }
 
 // 查询扣费订单
-func genSql1(records [][]string) string {
+func genSql1(records [][]string, month string) string {
 	var sqlQueries []string
 
 	for i, record := range records {
@@ -44,10 +45,10 @@ func genSql1(records [][]string) string {
 		endTime := record[2]
 
 		sqlQuery := fmt.Sprintf(`SELECT deviceid,orderId,kugouId, num, gameid, FROM_UNIXTIME(createTime/1000), stat
-FROM t_freeze_order_202303
+FROM t_freeze_order_%s
 WHERE createTime >= UNIX_TIMESTAMP('%s') * 1000
 AND createTime < UNIX_TIMESTAMP('%s') * 1000
-AND kugouid = %s`, startTime, endTime, kugouID)
+AND kugouid = %s`, month, startTime, endTime, kugouID)
 
 		sqlQueries = append(sqlQueries, sqlQuery)
 	}
@@ -55,7 +56,7 @@ AND kugouid = %s`, startTime, endTime, kugouID)
 }
 
 // 查询该场次对应的发奖
-func genSql2(records [][]string) string {
+func genSql2(records [][]string, month string) string {
 	var sqlQueries []string
 	for i, record := range records {
 		if i == 0 {
@@ -66,14 +67,14 @@ func genSql2(records [][]string) string {
 		endTime := record[2]
 
 		sqlQuery := fmt.Sprintf(`SELECT gameid
-FROM t_freeze_order_202303
+FROM t_freeze_order_%s
 WHERE createTime >= UNIX_TIMESTAMP('%s') * 1000
 AND createTime < UNIX_TIMESTAMP('%s') * 1000
-AND kugouid = %s`, startTime, endTime, kugouID)
+AND kugouid = %s`, month, startTime, endTime, kugouID)
 		sqlQueries = append(sqlQueries, sqlQuery)
 	}
 	finalSQL := strings.Join(sqlQueries, "\nUNION ALL\n")
 	return fmt.Sprintf("SELECT gameid,deviceid,kugouId,score,costNum,FROM_UNIXTIME(createTime/1000) "+
-		"FROM `t_game_round_info_202303` "+
-		"where gameid in (select distinct(t.gameid) from (%s) as t)", finalSQL)
+		"FROM `t_game_round_info_%s` "+
+		"where gameid in (select distinct(t.gameid) from (%s) as t)", month, finalSQL)
 }
