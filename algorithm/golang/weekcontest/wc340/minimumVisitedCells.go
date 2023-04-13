@@ -59,7 +59,7 @@ func minimumVisitedCells2(grid [][]int) int {
 				if len(st) > 0 {
 					idx := sort.SearchInts(st, r+1)
 					if idx > 0 {
-						dp[i][j] = dp[i][st[idx-1]]
+						dp[i][j] = dp[i][st[idx-1]] + 1
 					}
 				}
 				r2 := i + grid[i][j]
@@ -73,12 +73,12 @@ func minimumVisitedCells2(grid [][]int) int {
 						dp[i][j] = dp[st2[idx-1]][j] + 1
 					}
 				}
-				if dp[i][j] >= 0 {
-					for len(st) > 0 && dp[i][st[0]] <= dp[i][j] {
+				if dp[i][j] > 0 {
+					for len(st) > 0 && dp[i][st[0]] >= dp[i][j] {
 						st = st[1:]
 					}
 					st = append([]int{j}, st...)
-					for len(st2) > 0 && dp[st2[0]][j] <= dp[i][j] {
+					for len(st2) > 0 && dp[st2[0]][j] >= dp[i][j] {
 						st2 = st2[1:]
 					}
 					st2 = append([]int{i}, st2...)
