@@ -35,7 +35,7 @@ func minimumVisitedCells(grid [][]int) int {
 	return dp[0][0]
 }
 
-// 单调栈优化
+// 单调栈优化，终于通过了
 func minimumVisitedCells2(grid [][]int) int {
 	m, n := len(grid), len(grid[0])
 	dp := make([][]int, m)
@@ -57,9 +57,11 @@ func minimumVisitedCells2(grid [][]int) int {
 				}
 				dp[i][j] = -1
 				if len(st) > 0 {
-					idx := sort.SearchInts(st, r+1)
-					if idx > 0 {
-						dp[i][j] = dp[i][st[idx-1]] + 1
+					idx := sort.Search(len(st), func(i int) bool {
+						return st[i] <= r
+					})
+					if idx < len(st) {
+						dp[i][j] = dp[i][st[idx]] + 1
 					}
 				}
 				r2 := i + grid[i][j]
@@ -68,20 +70,22 @@ func minimumVisitedCells2(grid [][]int) int {
 				}
 				st2 := colSt[j]
 				if len(st2) > 0 {
-					idx := sort.SearchInts(st2, r2+1)
-					if idx > 0 && (dp[i][j] < 0 || dp[st2[idx-1]][j]+1 < dp[i][j]) {
-						dp[i][j] = dp[st2[idx-1]][j] + 1
+					idx := sort.Search(len(st2), func(i int) bool {
+						return st2[i] <= r2
+					})
+					if idx < len(st2) && (dp[i][j] < 0 || dp[st2[idx]][j]+1 < dp[i][j]) {
+						dp[i][j] = dp[st2[idx]][j] + 1
 					}
 				}
 				if dp[i][j] > 0 {
-					for len(st) > 0 && dp[i][st[0]] >= dp[i][j] {
-						st = st[1:]
+					for len(st) > 0 && dp[i][st[len(st)-1]] >= dp[i][j] {
+						st = st[:len(st)-1]
 					}
-					st = append([]int{j}, st...)
-					for len(st2) > 0 && dp[st2[0]][j] >= dp[i][j] {
-						st2 = st2[1:]
+					st = append(st, j)
+					for len(st2) > 0 && dp[st2[len(st2)-1]][j] >= dp[i][j] {
+						st2 = st2[:len(st2)-1]
 					}
-					st2 = append([]int{i}, st2...)
+					st2 = append(st2, i)
 					colSt[j] = st2
 				}
 			}
