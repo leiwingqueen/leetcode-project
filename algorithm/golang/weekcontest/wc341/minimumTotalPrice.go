@@ -181,7 +181,7 @@ func minimumTotalPrice2(n int, edges [][]int, price []int, trips [][]int) int {
 	return sum - dp[len(arr)]
 }
 
-// 还差一点点就能过了
+// 勉强通过
 func minimumTotalPrice3(n int, edges [][]int, price []int, trips [][]int) int {
 	graph := make([][]int, n)
 	for _, edge := range edges {
@@ -215,21 +215,29 @@ func minimumTotalPrice3(n int, edges [][]int, price []int, trips [][]int) int {
 	for k, v := range mp {
 		sum += price[k] * v
 	}
-	var dfs2 func(idx int, parentChoose bool, parentNode int) int
-	dfs2 = func(idx int, parentChoose bool, parentNode int) int {
+	// 增加cache，总算勉强通过了
+	cache := make([][]int, n)
+	for i := 0; i < n; i++ {
+		cache[i] = []int{-1, -1}
+	}
+	var dfs2 func(idx int, parentChoose int, parentNode int) int
+	dfs2 = func(idx int, parentChoose int, parentNode int) int {
+		if cache[idx][parentChoose] >= 0 {
+			return cache[idx][parentChoose]
+		}
 		// 不选
 		r1 := 0
 		for _, next := range graph[idx] {
 			if next != parentNode {
-				s1 := dfs2(next, false, idx)
+				s1 := dfs2(next, 0, idx)
 				r1 += s1
 			}
 		}
-		if !parentChoose {
+		if parentChoose == 0 {
 			r2 := 0
 			for _, next := range graph[idx] {
 				if next != parentNode {
-					s2 := dfs2(next, true, idx)
+					s2 := dfs2(next, 1, idx)
 					r2 += s2
 				}
 			}
@@ -238,8 +246,9 @@ func minimumTotalPrice3(n int, edges [][]int, price []int, trips [][]int) int {
 				r1 = r2
 			}
 		}
+		cache[idx][parentChoose] = r1
 		return r1
 	}
-	mx := dfs2(0, false, -1)
+	mx := dfs2(0, 0, -1)
 	return sum - mx
 }
