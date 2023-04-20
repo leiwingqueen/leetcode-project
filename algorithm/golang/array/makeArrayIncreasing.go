@@ -58,3 +58,52 @@ func makeArrayIncreasing(arr1 []int, arr2 []int) int {
 	}
 	return cnt
 }
+
+// 勉强通过
+func makeArrayIncreasing2(arr1 []int, arr2 []int) int {
+	sort.Ints(arr2)
+	n := len(arr1)
+	last := arr1[n-1]
+	if arr2[len(arr2)-1] > last {
+		last = arr2[len(arr2)-1]
+	}
+	cache := make(map[int]map[int]int)
+	var dfs func(k, mx int) int
+	dfs = func(k, mx int) int {
+		if k == 0 {
+			return 0
+		}
+		_, e1 := cache[k]
+		if e1 {
+			v2, e2 := cache[k][mx]
+			if e2 {
+				return v2
+			}
+		} else {
+			cache[k] = make(map[int]int)
+		}
+		res := -1
+		// 不修改
+		if arr1[k-1] <= mx {
+			sub := dfs(k-1, arr1[k-1]-1)
+			if sub >= 0 {
+				res = sub
+			}
+		}
+		// 找到第一个>mx的下标
+		idx := sort.Search(len(arr2), func(i int) bool {
+			return arr2[i] > mx
+		})
+		// 所有值都>mx，证明没有合适的更换
+		if idx == 0 {
+			return res
+		}
+		sub := dfs(k-1, arr2[idx-1]-1)
+		if sub >= 0 && (res < 0 || sub+1 < res) {
+			res = sub + 1
+		}
+		cache[k][mx] = res
+		return res
+	}
+	return dfs(n, last)
+}
