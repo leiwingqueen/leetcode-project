@@ -37,26 +37,75 @@ func lastSubstring(s string) string {
 	return s[idx:]
 }
 
+// 简单处理，但是超时
 func lastSubstring2(s string) string {
-	n := len(s)
-	var dfs func(mp map[int]struct{}) int
-	dfs = func(mp map[int]struct{}) int {
-		var mx uint8
-		mp2 := make(map[int]struct{})
-		for i := range mp {
-			var next uint8
-			if i+1 < n {
-				next = s[i+1]
-			}
-			if next > mx {
-				mp2 = make(map[int]struct{})
-				mp2[i+1] = struct{}{}
-				mx = next
-			} else if next == mx {
-				mp2[i+1] = struct{}{}
-			}
-		}
-		if mx == 0 {
+	mx := s[0]
+	for i := 1; i < len(s); i++ {
+		if s[i] > mx {
+			mx = s[i]
 		}
 	}
+	res := ""
+	for i := 0; i < len(s); i++ {
+		if s[i] == mx {
+			if s[i:] > res {
+				res = s[i:]
+			}
+		}
+	}
+	return res
+}
+
+// 还是超时
+func lastSubstring3(s string) string {
+	n := len(s)
+	mx := s[0]
+	for i := 1; i < n; i++ {
+		if s[i] > mx {
+			mx = s[i]
+		}
+	}
+	p1 := 0
+	for p1 < n && s[p1] != mx {
+		p1++
+	}
+	p2 := p1 + 1
+	for p2 < n && s[p2] != mx {
+		p2++
+	}
+	if p2 == n {
+		return s[p1:]
+	}
+	for p2 < n {
+		k := 0
+		for p2+k < n && s[p1+k] == s[p2+k] {
+			k++
+		}
+		if p2+k == n {
+			// 找下一个符合条件的下标
+			p2++
+			for p2 < n && s[p2] != mx {
+				p2++
+			}
+			if p2 == n {
+				return s[p1:]
+			}
+			continue
+		}
+		if s[p1+k] < s[p2+k] {
+			// p2较大的场景
+			p1 = p2 + 1
+			for p1 < n && s[p1] != mx {
+				p1++
+			}
+			p1, p2 = p2, p1
+		} else {
+			// p1较大
+			p2 = p2 + 1
+			for p2 < n && s[p2] != mx {
+				p2++
+			}
+		}
+	}
+	return s[p1:]
 }
