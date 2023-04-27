@@ -10,7 +10,7 @@ import (
 // 推球机数据导出
 
 func main() {
-	file, err := os.Open("/Users/liyongquan/Desktop/4.11-4.21.csv") // 请将 "your_csv_file.csv" 替换为您的 CSV 文件路径
+	file, err := os.Open("/Users/liyongquan/Desktop/4.22-4.24.csv") // 请将 "your_csv_file.csv" 替换为您的 CSV 文件路径
 	if err != nil {
 		fmt.Println("Error opening file:", err)
 		return
@@ -39,10 +39,12 @@ func genSql1(records [][]string, month string) string {
 		if i == 0 {
 			continue // 跳过第一行，因为它是表头
 		}
-
 		kugouID := record[0]
 		startTime := record[1]
 		endTime := record[2]
+		if kugouID == "" {
+			continue
+		}
 
 		sqlQuery := fmt.Sprintf(`SELECT deviceid,orderId,kugouId, num, gameid, FROM_UNIXTIME(createTime/1000), stat
 FROM t_freeze_order_%s
@@ -65,6 +67,9 @@ func genSql2(records [][]string, month string) string {
 		kugouID := record[0]
 		startTime := record[1]
 		endTime := record[2]
+		if kugouID == "" {
+			continue
+		}
 
 		sqlQuery := fmt.Sprintf(`SELECT gameid
 FROM t_freeze_order_%s
