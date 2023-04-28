@@ -71,12 +71,11 @@ type DinnerPlates struct {
 	stacks   [][]int
 	// firstNotFull int
 	// 单调栈
-	s1           []int
-	lastNotEmpty int
+	s1 []int
 }
 
 func Constructor(capacity int) DinnerPlates {
-	return DinnerPlates{capacity: capacity, lastNotEmpty: -1}
+	return DinnerPlates{capacity: capacity}
 }
 
 func (this *DinnerPlates) Push(val int) {
@@ -98,8 +97,7 @@ func (this *DinnerPlates) Push(val int) {
 		this.s1 = append(this.s1, len(this.stacks)-1)
 		choose = len(this.stacks) - 1
 	}
-	st := this.stacks[choose]
-	st = append(st, val)
+	this.stacks[choose] = append(this.stacks[choose], val)
 }
 
 func (this *DinnerPlates) Pop() int {
@@ -118,7 +116,7 @@ func (this *DinnerPlates) Pop() int {
 	}
 	st := this.stacks[choose]
 	r := st[len(st)-1]
-	st = st[0 : len(st)-1]
+	this.stacks[choose] = st[0 : len(st)-1]
 	return r
 }
 
@@ -131,23 +129,29 @@ func (this *DinnerPlates) PopAtStack(index int) int {
 		return -1
 	}
 	r := st[len(st)-1]
-	st = st[0 : len(st)-1]
+	this.stacks[index] = this.stacks[index][0 : len(st)-1]
 	// update s1,use binary search to find the index
 	searchIdx := sort.Search(len(this.s1), func(i int) bool {
 		return this.s1[i] >= index
 	})
-	if searchIdx == len(this.s1) {
-		for len(this.s1) > 0 {
-			last := this.s1[len(this.s1)-1]
-			if len(this.stacks[last]) > len(this.stacks[index]) {
-				break
-			}
-			// pop the bottom of stack.
-			this.s1 = this.s1[0 : len(this.s1)-1]
+	if searchIdx < len(this.s1) {
+		s3 := this.s1[:searchIdx]
+		idx := searchIdx
+		if this.s1[searchIdx] == index {
+			idx++
+		} else {
+			s3 = append(s3, index)
 		}
-		this.s1 = append(this.s1, index)
-	} else {
-
+		if idx < len(this.s1) {
+			s2 := this.s1[idx:]
+			for len(s2) > 0 {
+				if len(this.stacks[s2[0]]) < len(this.stacks[index]) {
+					break
+				}
+				s2 = s2[1:]
+			}
+			this.s1 = append(s3, s2...)
+		}
 	}
 	return r
 }
