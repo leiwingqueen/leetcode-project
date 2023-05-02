@@ -78,3 +78,25 @@ func powerfulIntegers(x int, y int, bound int) []int {
 	}
 	return res
 }
+
+// 写法上进行一些优化
+func powerfulIntegers2(x int, y int, bound int) []int {
+	mp := make(map[int]struct{})
+	xn, yn := 1, 1
+	for i := 0; i < 20 && xn+yn <= bound; i++ {
+		for j := 0; j < 20; j++ {
+			if xn+yn > bound {
+				break
+			}
+			mp[xn+yn] = struct{}{}
+			yn *= y
+		}
+		xn *= x
+		yn = 1
+	}
+	var res []int
+	for k := range mp {
+		res = append(res, k)
+	}
+	return res
+}
