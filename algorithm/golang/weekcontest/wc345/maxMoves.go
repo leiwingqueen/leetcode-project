@@ -32,5 +32,12 @@ func maxMoves(grid [][]int) int {
 		cache[x][y] = res
 		return res
 	}
-	return dfs(0, 0)
+	res := 0
+	for i := 0; i < m; i++ {
+		r := dfs(i, 0)
+		if r > res {
+			res = r
+		}
+	}
+	return res
 }
