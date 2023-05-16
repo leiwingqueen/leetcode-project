@@ -1,7 +1,6 @@
 package dp
 
 import (
-	"leetcode-go/util"
 	"math"
 )
 
@@ -55,7 +54,22 @@ import (
 //链接：https://leetcode.cn/problems/minimum-difficulty-of-a-job-schedule
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+// 啊，居然通过了
 func minDifficulty(jobDifficulty []int, d int) int {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		} else {
+			return b
+		}
+	}
+	max := func(a, b int) int {
+		if a > b {
+			return a
+		} else {
+			return b
+		}
+	}
 	n := len(jobDifficulty)
 	if d > n {
 		return -1
@@ -67,20 +81,26 @@ func minDifficulty(jobDifficulty []int, d int) int {
 	// 初始化
 	mx := 0
 	for i := 0; i < n; i++ {
-		dp[i][0] = util.Max(mx, jobDifficulty[i])
+		mx = max(mx, jobDifficulty[i])
+		dp[i][0] = mx
 	}
 	for i := 1; i < n; i++ {
-		// 这里反过来遍历，可以顺便计算对应[j,i]的最大值
 		mxArr := make([]int, i+1)
 		mx2 := 0
-		for j := util.Min(i, d-1); j > 0; j-- {
-			mxArr[j] = util.Max(mx2, jobDifficulty[j])
+		// 这里反过来遍历，可以顺便计算对应[j,i]的最大值
+		for j := i; j >= 0; j-- {
+			mx2 = max(mx2, jobDifficulty[j])
+			mxArr[j] = mx2
+		}
+		for j := min(i, d-1); j > 0; j-- {
 			// i-l>=j-1 ==> l<=i-j+1
 			dp[i][j] = math.MaxInt32
 			for l := 1; l <= i-j+1; l++ {
 				// 求[i-l+1,i]的最大值，由于l<=i-j+1,实际上i-l+1>=j
 				sub := dp[i-l][j-1] + mxArr[i-l+1]
-				dp[i][j] = util.Min(dp[i][j], sub)
+				if sub < dp[i][j] {
+					dp[i][j] = sub
+				}
 			}
 		}
 	}
