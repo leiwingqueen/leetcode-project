@@ -39,7 +39,7 @@ import "sort"
 //链接：https://leetcode.cn/problems/power-of-heroes
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-// 先不考虑溢出的场景
+// 先不考虑溢出的场景，基本正确，证明思路是OK的，可以做下一步处理了
 func sumOfPower(nums []int) int {
 	sort.Ints(nums)
 	n := len(nums)
@@ -51,7 +51,26 @@ func sumOfPower(nums []int) int {
 	dp2 := make([]int, n)
 	dp2[0] = nums[0] * nums[0] * nums[0]
 	for i := 1; i < n; i++ {
-		dp2[i] = dp2[i-1] + dp1[i-1]*nums[i]*nums[i]
+		dp2[i] = dp2[i-1] + dp1[i-1]*nums[i]*nums[i] + nums[i]*nums[i]*nums[i]
+	}
+	return dp2[n-1]
+}
+
+// 防止溢出处理
+func sumOfPower2(nums []int) int {
+	mod := 1_000_000_007
+	sort.Ints(nums)
+	n := len(nums)
+	dp1 := make([]int, n)
+	dp1[0] = nums[0]
+	for i := 1; i < n; i++ {
+		dp1[i] = ((dp1[i-1]<<1)%mod + nums[i]) % mod
+	}
+	dp2 := make([]int, n)
+	dp2[0] = ((nums[0] * nums[0]) % mod * nums[0]) % mod
+	for i := 1; i < n; i++ {
+		m := (nums[i] * nums[i]) % mod
+		dp2[i] = (dp2[i-1] + (dp1[i-1]*m)%mod + (m*nums[i])%mod) % mod
 	}
 	return dp2[n-1]
 }
