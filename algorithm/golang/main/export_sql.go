@@ -10,7 +10,7 @@ import (
 // 推球机数据导出
 
 func main() {
-	file, err := os.Open("/Users/liyongquan/Desktop/4.22-4.24.csv") // 请将 "your_csv_file.csv" 替换为您的 CSV 文件路径
+	file, err := os.Open("/Users/liyongquan/Desktop/5.csv") // 请将 "your_csv_file.csv" 替换为您的 CSV 文件路径
 	if err != nil {
 		fmt.Println("Error opening file:", err)
 		return
@@ -23,7 +23,7 @@ func main() {
 		fmt.Println("Error reading file:", err)
 		return
 	}
-	month := "202304"
+	month := "202305"
 	// sql := genSql1(records, month)
 	sql := genSql2(records, month)
 	fmt.Println(sql)
