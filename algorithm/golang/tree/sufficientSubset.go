@@ -1,5 +1,7 @@
 package tree
 
+import "math"
+
 // 给你二叉树的根节点 root 和一个整数 limit ，请你同时删除树中所有 不足节点 ，并返回最终二叉树的根节点。
 //
 //假如通过节点 node 的每种可能的 “根-叶” 路径上值的总和全都小于给定的 limit，则该节点被称之为 不足节点 ，需要被删除。
@@ -45,31 +47,50 @@ package tree
  * }
  */
 func sufficientSubset(root, parent *TreeNode, limit int) *TreeNode {
+	delNode := func(node, parent *TreeNode) {
+		if parent != nil {
+			if parent.Left == node {
+				parent.Left = nil
+			} else {
+				parent.Right = nil
+			}
+		}
+		node = nil
+	}
 	// 返回 以node节点为根的子树的路径最大值
 	var dfs func(node, parent *TreeNode, limit int) int
 	dfs = func(node, parent *TreeNode, limit int) int {
 		if node == nil {
 			return 0
 		}
-		l := dfs(node.Left, parent, limit-node.Val)
-		r := dfs(node.Left, parent, limit-node.Val)
-		if l+node.Val < limit && r+node.Val < limit {
-			// 删除节点
-			node = nil
-			if parent != nil {
-				if parent.Left == node {
-					parent.Left = nil
-				} else {
-					parent.Right = nil
-				}
+		cur := node.Val
+		// leaf node
+		if node.Left == nil && node.Right == nil {
+			if cur < limit {
+				delNode(node, parent)
+			}
+			return cur
+		}
+		mx := math.MinInt
+		if node.Left != nil {
+			l := dfs(node.Left, node, limit-cur)
+			if l+cur > mx {
+				mx = l + cur
 			}
 		}
-		if l > r {
-			return node.Val + l
-		} else {
-			return node.Val + r
+		if node.Right != nil {
+			r := dfs(node.Right, node, limit-cur)
+			if r+cur > mx {
+				mx = r + cur
+			}
 		}
+		if mx < limit {
+			delNode(node, parent)
+		}
+		return mx
 	}
-	dfs(root, nil, limit)
-	return root
+	// 构造一个dummy node，方便处理根节点删除的操作
+	dummy := &TreeNode{0, root, nil}
+	dfs(root, dummy, limit)
+	return dummy.Left
 }

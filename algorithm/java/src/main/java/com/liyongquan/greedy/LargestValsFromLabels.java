@@ -92,4 +92,31 @@ public class LargestValsFromLabels {
         }
         return res;
     }
+
+    // 优化写法
+    public int largestValsFromLabels2(int[] values, int[] labels, int numWanted, int useLimit) {
+        int n = values.length;
+        int[][] arr = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            arr[i][0] = values[i];
+            arr[i][1] = labels[i];
+        }
+        Arrays.sort(arr, (o1, o2) -> o2[0] - o1[0]);
+        int choose = 0;
+        int res = 0;
+        Map<Integer, Integer> mp = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            if (choose == numWanted) {
+                return res;
+            }
+            int value = arr[i][0];
+            int label = arr[i][1];
+            if (mp.getOrDefault(label, 0) < useLimit) {
+                res += value;
+                mp.put(label, mp.getOrDefault(label, 0) + 1);
+                choose++;
+            }
+        }
+        return res;
+    }
 }
