@@ -83,3 +83,51 @@ func frogPosition(n int, edges [][]int, t int, target int) float64 {
 	}
 	return dfs(0, 1)
 }
+
+// 没有考虑原地踏步的情况
+func frogPosition2(n int, edges [][]int, t int, target int) float64 {
+	graph := make([][]int, n)
+	for _, edge := range edges {
+		x, y := edge[0]-1, edge[1]-1
+		graph[x] = append(graph[x], y)
+		graph[y] = append(graph[y], x)
+	}
+	visit := make([]bool, n)
+	// node-当前节点,rate-到达node的概率，返回到达target的概率
+	var dfs func(node int, rate float64, ttl int) float64
+	dfs = func(node int, rate float64, ttl int) float64 {
+		if ttl < 0 {
+			return 0
+		}
+		visit[node] = true
+		// 子节点的数量
+		cnt := 0
+		for _, next := range graph[node] {
+			if !visit[next] {
+				cnt++
+			}
+		}
+		if node == target-1 {
+			if ttl == 0 || cnt == 0 {
+				// 叶子节点，剩下原地踏步，但没必要继续迭代
+				return rate
+			} else {
+				return 0
+			}
+		}
+		if cnt == 0 {
+			return 0
+		}
+		var res float64
+		for _, next := range graph[node] {
+			if !visit[next] {
+				sub := dfs(next, rate/float64(cnt), ttl-1)
+				if sub > res {
+					res = sub
+				}
+			}
+		}
+		return res
+	}
+	return dfs(0, 1, t)
+}
