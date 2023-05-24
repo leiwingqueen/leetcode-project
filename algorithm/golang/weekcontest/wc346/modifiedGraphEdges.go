@@ -1,5 +1,7 @@
 package wc346
 
+import "math"
+
 //给你一个 n 个节点的 无向带权连通 图，节点编号为 0 到 n - 1 ，再给你一个整数数组 edges ，其中 edges[i] = [ai, bi, wi] 表示节点 ai 和 bi 之间有一条边权为 wi 的边。
 //
 //部分边的边权为 -1（wi = -1），其他边的边权都为 正 数（wi > 0）。
@@ -46,4 +48,49 @@ func modifiedGraphEdges(n int, edges [][]int, source int, destination int, targe
 	}
 	cal(source, make([]int, n))
 	return [][]int{}
+}
+
+// Dijkstra
+func dijkstra(n int, graph [][][]int, start int) []int {
+	dis := make([]int, n)
+	for i := 0; i < n; i++ {
+		dis[i] = math.MaxInt
+	}
+	dis[start] = 0
+	for _, next := range graph[start] {
+		k, w := next[0], next[1]
+		dis[k] = w
+	}
+	// 未确定的集合，已确定的集合
+	process := make(map[int]struct{})
+	findMinNode := func() int {
+		min := math.MaxInt
+		choose := -1
+		for node := range process {
+			if dis[node] < min {
+				choose = node
+				min = dis[node]
+			}
+		}
+		return choose
+	}
+	for i := 0; i < n; i++ {
+		if i != start {
+			process[i] = struct{}{}
+		}
+	}
+	for len(process) > 0 {
+		node := findMinNode()
+		if node < 0 {
+			return dis
+		}
+		delete(process, node)
+		for _, next := range graph[node] {
+			k, w := next[0], next[1]
+			if dis[node]+w < dis[k] {
+				dis[k] = dis[node] + w
+			}
+		}
+	}
+	return dis
 }
