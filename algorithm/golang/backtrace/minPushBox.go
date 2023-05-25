@@ -96,37 +96,50 @@ func minPushBox(grid [][]byte) int {
 		return fmt.Sprintf("%d#%d#%d#%d", source[0], source[1], box[0], box[1])
 	}
 	cache := make(map[string]int)
-	var dfs func(source []int, box []int) int
-	dfs = func(source []int, box []int) int {
+	var dfs func(source []int, box []int, visit [][]bool) int
+	dfs = func(source []int, box []int, visit [][]bool) int {
+		fmt.Println(fmt.Sprintf("source:%v,box:%v", source, box))
 		if box[0] == target[0] && box[1] == target[1] {
 			return 0
 		}
-		if v, exist := cache[keyMap(source, box)]; exist {
+		key := keyMap(source, box)
+		if v, exist := cache[key]; exist {
 			return v
 		}
+		visit[source[0]][source[1]] = true
 		res := -1
 		for _, dir := range dirs {
 			x, y := source[0]+dir[0], source[1]+dir[1]
-			if x >= 0 && x < m && y >= 0 && y < n && !blocks[x][y] {
+			if x >= 0 && x < m && y >= 0 && y < n && !blocks[x][y] && !visit[x][y] {
 				// 如果对应的位置是箱子，则箱子也按对应方向移动一格
 				if box[0] == x && box[1] == y {
 					bx, by := box[0]+dir[0], box[1]+dir[1]
 					if bx >= 0 && bx < m && by >= 0 && by < n && !blocks[bx][by] {
-						sub := dfs([]int{x, y}, []int{bx, by})
+						// 一旦移动了箱子，允许走回头路
+						for i := 0; i < m; i++ {
+							for j := 0; j < n; j++ {
+								visit[i][j] = false
+							}
+						}
+						sub := dfs([]int{x, y}, []int{bx, by}, visit)
 						if sub >= 0 && (res < 0 || sub > res) {
 							res = sub + 1
 						}
 					}
 				} else {
-					sub := dfs([]int{x, y}, box)
+					sub := dfs([]int{x, y}, box, visit)
 					if sub >= 0 && (res < 0 || sub > res) {
 						res = sub
 					}
 				}
 			}
 		}
-		cache[keyMap(source, box)] = res
+		cache[key] = res
 		return res
 	}
-	return dfs(source, box)
+	visit := make([][]bool, m)
+	for i := 0; i < m; i++ {
+		visit[i] = make([]bool, n)
+	}
+	return dfs(source, box, visit)
 }
