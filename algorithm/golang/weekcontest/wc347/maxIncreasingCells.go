@@ -1,6 +1,9 @@
 package wc347
 
-import "sort"
+import (
+	"fmt"
+	"sort"
+)
 
 func maxIncreasingCells(mat [][]int) int {
 	m, n := len(mat), len(mat[0])
@@ -47,6 +50,7 @@ func maxIncreasingCells(mat [][]int) int {
 	}
 	var dfs func(x, y int) int
 	dfs = func(x, y int) int {
+		fmt.Println(fmt.Sprintf("[%d,%d]", x, y))
 		if cache[x][y] >= 0 {
 			return cache[x][y]
 		}
@@ -63,7 +67,7 @@ func maxIncreasingCells(mat [][]int) int {
 		if r == m-1 {
 			sub2 = 1
 		} else {
-			sub2 = dfs(y, cols[r+1][y]) + 1
+			sub2 = dfs(cols[y][r+1], y) + 1
 		}
 		if sub1 > sub2 {
 			cache[x][y] = sub1
