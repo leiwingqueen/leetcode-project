@@ -17,6 +17,10 @@ func Test_maxIncreasingCells(t *testing.T) {
 			{3, 1},
 			{3, 4},
 		}}, 2},
+		// [[7,6,3],[-7,-5,6],[-7,0,-4],[6,6,0],[-8,6,0]]
+		{"t2", args{[][]int{
+			{7, 6, 3}, {-7, -5, 6}, {-7, 0, -4}, {6, 6, 0}, {-8, 6, 0},
+		}}, 7},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
