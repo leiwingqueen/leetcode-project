@@ -1,5 +1,7 @@
 package bwc105
 
+import "sort"
+
 // 给你一个下标从 0 开始的整数数组 nums ，你可以在一些下标之间遍历。对于两个下标 i 和 j（i != j），当且仅当 gcd(nums[i], nums[j]) > 1 时，我们可以在两个下标之间通行，其中 gcd 是两个数的 最大公约数 。
 //
 //你需要判断 nums 数组中 任意 两个满足 i < j 的下标 i 和 j ，是否存在若干次通行可以从 i 遍历到 j 。
@@ -65,4 +67,123 @@ func canTraverseAllPairs(nums []int) bool {
 	}
 	c := dfs(0)
 	return c == n
+}
+
+// 题解
+func canTraverseAllPairs2(nums []int) bool {
+	sort.Ints(nums)
+	n := len(nums)
+	mx := nums[n-1]
+	// 预计算质数
+	var primes []int
+	flags := make([]bool, mx+1)
+	calPrime := func() {
+		for i := 2; i <= mx; i++ {
+			if !flags[i] {
+				primes = append(primes, i)
+				for j := i; j <= mx; j += i {
+					flags[j] = true
+				}
+			}
+		}
+	}
+	calPrime()
+	// 构建图，为每个质数和每个数字连线
+	graph := make([][]int, len(primes))
+	// 质数分解
+	for j, num := range nums {
+		i := 0
+		for num > 1 {
+			if num%primes[i] == 0 {
+				graph[i] = append(graph[i], j)
+				for num%primes[i] == 0 {
+					num /= primes[i]
+				}
+			}
+			i++
+		}
+	}
+	uf := Construct(n)
+	for _, g := range graph {
+		for i := 1; i < len(g); i++ {
+			uf.union(g[i-1], g[i])
+		}
+	}
+	return uf.count == 1
+}
+
+// 还是超时
+func canTraverseAllPairs3(nums []int) bool {
+	sort.Ints(nums)
+	n := len(nums)
+	mx := nums[n-1]
+	// 预计算质数
+	var primes []int
+	flags := make([]bool, mx+1)
+	calPrime := func() {
+		for i := 2; i <= mx; i++ {
+			if !flags[i] {
+				primes = append(primes, i)
+				for j := i; j <= mx; j += i {
+					flags[j] = true
+				}
+			}
+		}
+	}
+	calPrime()
+	// 构建图，为每个质数和每个数字连线
+	graph := make([][]int, len(primes))
+	// 质数分解
+	uf := Construct(n)
+	for j, num := range nums {
+		i := 0
+		for num > 1 {
+			if num%primes[i] == 0 {
+				if len(graph[i]) > 0 {
+					uf.union(graph[i][len(graph[i])-1], j)
+				}
+				graph[i] = append(graph[i], j)
+				for num%primes[i] == 0 {
+					num /= primes[i]
+				}
+			}
+			i++
+		}
+	}
+	return uf.count == 1
+}
+
+// 并查集模板
+type UnionFind struct {
+	parent []int
+	count  int
+}
+
+func Construct(n int) *UnionFind {
+	grid := make([]int, n)
+	for i := 0; i < n; i++ {
+		grid[i] = i
+	}
+	return &UnionFind{grid, n}
+}
+
+func (uf *UnionFind) find(x int) int {
+	for uf.parent[x] != uf.parent[uf.parent[x]] {
+		//路径压缩
+		uf.parent[x] = uf.parent[uf.parent[x]]
+	}
+	return uf.parent[x]
+}
+
+func (uf *UnionFind) union(x int, y int) {
+	rootX := uf.find(x)
+	rootY := uf.find(y)
+	if rootX != rootY {
+		uf.parent[rootX] = rootY
+		uf.count--
+	}
+}
+
+func (uf *UnionFind) getCount() int {
+	return uf.count
 }
