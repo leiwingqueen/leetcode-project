@@ -90,19 +90,28 @@ func canTraverseAllPairs2(nums []int) bool {
 	calPrime()
 	// 构建图，为每个质数和每个数字连线
 	graph := make([][]int, len(primes))
-	// 质数分解
-	for j, num := range nums {
-		i := 0
-		for num > 1 {
-			if num%primes[i] == 0 {
-				graph[i] = append(graph[i], j)
-				for num%primes[i] == 0 {
-					num /= primes[i]
+	dividePrime := func(num int) []int {
+		var res []int
+		for i, prime := range primes {
+			if num <= 1 || prime*prime > num {
+				break
+			}
+			if num%prime == 0 {
+				res = append(res, i)
+				for num%prime == 0 {
+					num /= prime
 				}
 			}
-			i++
+		}
+		return res
+	}
+	for i, num := range nums {
+		p := dividePrime(num)
+		for _, j := range p {
+			graph[j] = append(graph[j], i)
 		}
 	}
+	// 质数分解
 	uf := Construct(n)
 	for _, g := range graph {
 		for i := 1; i < len(g); i++ {
@@ -112,11 +121,26 @@ func canTraverseAllPairs2(nums []int) bool {
 	return uf.count == 1
 }
 
-// 还是超时
+// 勉强通过
 func canTraverseAllPairs3(nums []int) bool {
-	sort.Ints(nums)
-	n := len(nums)
-	mx := nums[n-1]
+	if len(nums) == 1 {
+		return true
+	}
+	// 过滤掉相同的数字
+	mp := make(map[int]struct{})
+	for _, num := range nums {
+		if num == 1 {
+			return false
+		}
+		mp[num] = struct{}{}
+	}
+	var arr []int
+	for i := range mp {
+		arr = append(arr, i)
+	}
+	sort.Ints(arr)
+	n := len(arr)
+	mx := arr[n-1]
 	// 预计算质数
 	var primes []int
 	flags := make([]bool, mx+1)
@@ -135,7 +159,7 @@ func canTraverseAllPairs3(nums []int) bool {
 	graph := make([][]int, len(primes))
 	// 质数分解
 	uf := Construct(n)
-	for j, num := range nums {
+	for j, num := range arr {
 		i := 0
 		for num > 1 {
 			if num%primes[i] == 0 {
