@@ -93,7 +93,7 @@ func canTraverseAllPairs2(nums []int) bool {
 	dividePrime := func(num int) []int {
 		var res []int
 		for i, prime := range primes {
-			if num <= 1 || prime*prime > num {
+			if num <= 1 || prime > num {
 				break
 			}
 			if num%prime == 0 {
