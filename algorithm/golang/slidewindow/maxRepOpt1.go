@@ -40,25 +40,33 @@ package slidewindow
 
 func maxRepOpt1(text string) int {
 	n := len(text)
+	// 预处理每个字符的出现次数
+	cnt := make([]int, 26)
+	for i := 0; i < n; i++ {
+		cnt[text[i]-'a']++
+	}
 	i, j := 0, 0
 	res := 0
 	for i < n {
 		for j < n && text[j] == text[i] {
 			j++
 		}
-		if j == n {
-			if j-i > res {
-				res = j - i
-			}
-			return res
+		if j-i > res {
+			res = j - i
 		}
 		// 替换一个字符
-		k := j + 1
-		for k < n && text[k] == text[i] {
-			k++
-		}
-		if k-i > res {
-			res = k - i
+		if cnt[text[i]-'a'] > j-i {
+			k := j + 1
+			for k < n && text[k] == text[i] {
+				k++
+			}
+			l := k - i
+			if cnt[text[i]-'a'] < k-i {
+				l = cnt[text[i]-'a']
+			}
+			if l > res {
+				res = l
+			}
 		}
 		i = j
 	}
