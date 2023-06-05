@@ -27,16 +27,29 @@ func matrixSumQueries(n int, queries [][]int) int64 {
 	return res
 }
 
+// 倒序想不出来啊
 func matrixSumQueries2(n int, queries [][]int) int64 {
-	// 记录每一行对应的行和列的最后修改
-	rows, cols := make([]int, n), make([]int, n)
-	for _, query := range queries {
+	rowVis := make([]bool, n)
+	colVis := make([]bool, n)
+	rowCnt, colCnt := 0, 0
+	m := len(queries)
+	var res int64
+	for i := m - 1; i >= 0; i-- {
+		query := queries[i]
 		t, index, v := query[0], query[1], query[2]
 		if t == 0 {
-			rows[index] = v
+			if !rowVis[index] {
+				rowVis[index] = true
+				res += int64(n-colCnt) * int64(v)
+				rowCnt++
+			}
 		} else {
-			cols[index] = v
+			if !colVis[index] {
+				colVis[index] = true
+				res += int64(n-rowCnt) * int64(v)
+				colCnt++
+			}
 		}
 	}
-	return 0
+	return res
 }
