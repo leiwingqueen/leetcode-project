@@ -19,7 +19,7 @@ func Test_tilingRectangle(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tilingRectangle(tt.args.n, tt.args.m); got != tt.want {
+			if got := tilingRectangle2(tt.args.n, tt.args.m); got != tt.want {
 				t.Errorf("tilingRectangle() = %v, want %v", got, tt.want)
 			}
 		})

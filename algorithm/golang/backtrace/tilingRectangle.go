@@ -127,3 +127,63 @@ func tilingRectangle(n int, m int) int {
 	}
 	return dfs(0, 0, 0)
 }
+
+func tilingRectangle2(n int, m int) int {
+	res := n
+	if m > n {
+		res = m
+	}
+	matrix := make([][]bool, n)
+	for i := 0; i < n; i++ {
+		matrix[i] = make([]bool, m)
+	}
+	canFill := func(x, y, k int) bool {
+		for i := x; i < x+k; i++ {
+			for j := y; j < y+k; j++ {
+				if matrix[i][j] {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	fillUp := func(x, y, k int, val bool) {
+		for i := 0; i < k; i++ {
+			for j := 0; j < k; j++ {
+				matrix[x+i][y+j] = val
+			}
+		}
+	}
+	var dfs func(x, y int, cnt int)
+	dfs = func(x, y int, cnt int) {
+		// 提前剪枝
+		if cnt >= res {
+			return
+		}
+		// 换行
+		if y >= m {
+			x++
+			y = 0
+		}
+		if x >= n {
+			res = cnt
+			return
+		}
+		if matrix[x][y] {
+			dfs(x, y+1, cnt)
+		} else {
+			for k := 1; x+k-1 < n && y+k-1 < m; k++ {
+				if !canFill(x, y, k) {
+					break
+				}
+				// 更新矩阵
+				fillUp(x, y, k, true)
+				dfs(x, y+k, cnt+1)
+				// 还原现场
+				fillUp(x, y, k, false)
+			}
+		}
+	}
+	dfs(0, 0, 0)
+	return res
+}
