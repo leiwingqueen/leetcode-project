@@ -1,7 +1,5 @@
 package wc348
 
-import "strconv"
-
 // 给你两个数字字符串 num1 和 num2 ，以及两个整数 max_sum 和 min_sum 。如果一个整数 x 满足以下条件，我们称它是一个好整数：
 //
 //num1 <= x <= num2
@@ -34,23 +32,5 @@ import "strconv"
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 func count(num1 string, num2 string, min_sum int, max_sum int) int {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		} else {
-			return b
-		}
-	}
-	var dfs func(num string, mxSum int, n int, ) int
-	dfs = func(num string, mxSum int, n int) int {
-		if n == 1 {
-			if len(num) > 1 {
-				return min(10, mxSum)
-			} else {
-				l, _ := strconv.Atoi(num)
-				return min(l+1, mxSum)
-			}
-		}
-
-	}
+	return 0
 }
