@@ -1,5 +1,7 @@
 package dp
 
+import "sort"
+
 //有两只老鼠和 n 块不同类型的奶酪，每块奶酪都只能被其中一只老鼠吃掉。
 //
 // 下标为 i 处的奶酪被吃掉的得分为：
@@ -73,4 +75,20 @@ func miceAndCheese(reward1 []int, reward2 []int, k int) int {
 		}
 	}
 	return dp[n][k]
+}
+
+// 贪心
+func miceAndCheese2(reward1 []int, reward2 []int, k int) int {
+	n := len(reward1)
+	diff := make([]int, n)
+	sum := 0
+	for i := 0; i < n; i++ {
+		diff[i] = reward2[i] - reward1[i]
+		sum += reward2[i]
+	}
+	sort.Ints(diff)
+	for i := 0; i < k; i++ {
+		sum -= diff[i]
+	}
+	return sum
 }
