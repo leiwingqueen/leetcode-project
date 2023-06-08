@@ -50,27 +50,27 @@ package dp
 // dp，但是必然超时，时间复杂度O(n*k)
 func miceAndCheese(reward1 []int, reward2 []int, k int) int {
 	n := len(reward1)
-	dp := make([][]int, n)
-	for i := 0; i < n; i++ {
+	dp := make([][]int, n+1)
+	for i := 0; i <= n; i++ {
 		dp[i] = make([]int, k+1)
 	}
 	sum := 0
-	for i := 0; i < n; i++ {
-		sum += reward2[i]
+	for i := 1; i <= n; i++ {
+		sum += reward2[i-1]
 		dp[i][0] = sum
 	}
-	for i := 1; i < n; i++ {
+	for i := 1; i <= n; i++ {
 		for j := 1; j <= i && j <= k; j++ {
 			// 选择
-			dp[i][j] = dp[i-1][j-1] + reward1[i]
+			dp[i][j] = dp[i-1][j-1] + reward1[i-1]
 			if j < i {
 				// 不选
-				sub := dp[i-1][j] + reward2[i]
+				sub := dp[i-1][j] + reward2[i-1]
 				if sub > dp[i][j] {
 					dp[i][j] = sub
 				}
 			}
 		}
 	}
-	return dp[n-1][k]
+	return dp[n][k]
 }
