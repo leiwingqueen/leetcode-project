@@ -1,5 +1,10 @@
 package backtrace
 
+import (
+	"strconv"
+	"strings"
+)
+
 //你是一位施工队的工长，根据设计师的要求准备为一套设计风格独特的房子进行室内装修。
 //
 // 房子的客厅大小为 n x m，为保持极简的风格，需要使用尽可能少的 正方形 瓷砖来铺盖地面。
@@ -53,31 +58,31 @@ func tilingRectangle(n int, m int) int {
 	for i := 0; i < n; i++ {
 		matrix[i] = make([]bool, m)
 	}
-	hash := func(arr [][]bool) int {
-		res := 0
-		idx := 0
+	genKey := func(arr [][]bool) string {
+		builder := strings.Builder{}
 		for i := 0; i < n; i++ {
+			num := 0
 			for j := 0; j < m; j++ {
 				if arr[i][j] {
-					res |= 1 << idx
+					num |= 1 << j
 				}
-				idx++
 			}
+			builder.WriteString(strconv.Itoa(num) + "#")
 		}
-		return res
+		return builder.String()
 	}
-	mem := make(map[int]int)
-	var dfs func(x, y int) int
-	dfs = func(x, y int) int {
-		key := hash(matrix)
+	mem := make(map[string]int)
+	var dfs func(x, y int, cnt int) int
+	dfs = func(x, y int, cnt int) int {
+		key := genKey(matrix)
 		if v, exist := mem[key]; exist {
 			return v
 		}
 		if x == n-1 && y == m-1 {
 			if !matrix[x][y] {
-				return 1
+				return cnt + 1
 			} else {
-				return 0
+				return cnt
 			}
 		}
 		if matrix[x][y] {
@@ -86,26 +91,26 @@ func tilingRectangle(n int, m int) int {
 				x++
 				y = 0
 			}
-			return dfs(x, y)
+			return dfs(x, y, cnt)
 		} else {
 			res := m * n
 			for k := 1; y+k-1 < m && x+k-1 < n; k++ {
 				if matrix[x+k-1][y+k-1] {
 					break
 				}
-				// 更细矩阵
+				// 更新矩阵
 				for i := x; i <= x+k-1; i++ {
 					for j := y; j <= y+k-1; j++ {
 						matrix[i][j] = true
 					}
 				}
-				ny := y + 1
 				nx := x
-				if y+1 == m {
+				ny := y + 1
+				if ny == m {
 					nx++
 					ny = 0
 				}
-				sub := dfs(nx, ny) + 1
+				sub := dfs(nx, ny, cnt+1)
 				// 还原现场
 				for i := x; i <= x+k-1; i++ {
 					for j := y; j <= y+k-1; j++ {
@@ -120,5 +125,5 @@ func tilingRectangle(n int, m int) int {
 			return res
 		}
 	}
-	return dfs(0, 0)
+	return dfs(0, 0, 0)
 }
