@@ -82,6 +82,7 @@ func maximumSumQueries2(nums1 []int, nums2 []int, queries [][]int) []int {
 	return res
 }
 
+// 过滤掉各种数据集之后就能过了
 func maximumSumQueries3(nums1 []int, nums2 []int, queries [][]int) []int {
 	n := len(nums1)
 	arr := make([][]int, n)
@@ -106,11 +107,11 @@ func maximumSumQueries3(nums1 []int, nums2 []int, queries [][]int) []int {
 		} else {
 			pre := arr2[len(arr2)-1]
 			if pre[0] != item[0] {
-				if pre[1] >= item[1] {
+				if pre[1] > item[1] {
 					arr2 = append(arr2, item)
 					l++
 				} else {
-					arr2 = arr2[:len(arr)-1]
+					arr2 = arr2[:len(arr2)-1]
 				}
 			} else {
 				// 相同跳过
