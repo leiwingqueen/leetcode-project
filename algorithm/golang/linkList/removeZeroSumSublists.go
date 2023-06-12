@@ -41,19 +41,18 @@ func removeZeroSumSublists(head *ListNode) *ListNode {
 	sum := 0
 	for cur := head; cur != nil; cur = cur.Next {
 		sum += cur.Val
-		st = append(st, cur.Val)
-		mp[sum]++
-		if _, exist := mp[sum]; exist {
-			s := 0
-			for {
+		if v, exist := mp[sum]; !exist || v <= 0 {
+			st = append(st, cur.Val)
+			mp[sum]++
+		} else {
+			s := cur.Val
+			sum -= cur.Val
+			for s != 0 {
 				top := st[len(st)-1]
 				st = st[:len(st)-1]
 				s += top
 				mp[sum]--
 				sum -= top
-				if s == 0 {
-					break
-				}
 			}
 		}
 	}
