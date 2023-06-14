@@ -1,4 +1,4 @@
-package bwc324
+package wc324
 
 func similarPairs(words []string) int {
 	n := len(words)

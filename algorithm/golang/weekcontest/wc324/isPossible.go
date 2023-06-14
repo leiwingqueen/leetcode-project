@@ -1,4 +1,4 @@
-package bwc324
+package wc324
 
 func isPossible(n int, edges [][]int) bool {
 	degree := make([]int, n)
