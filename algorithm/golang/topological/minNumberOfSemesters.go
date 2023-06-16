@@ -180,3 +180,84 @@ func minNumberOfSemesters2(n int, relations [][]int, k int) int {
 	}
 	return dfs(n)
 }
+
+// 增加记忆总算过了
+func minNumberOfSemesters3(n int, relations [][]int, k int) int {
+	graph := make([][]int, n)
+	degree := make([]int, n)
+	for _, r := range relations {
+		from, to := r[0]-1, r[1]-1
+		degree[to]++
+		graph[from] = append(graph[from], to)
+	}
+	var r []int
+	var choose func(n int, path int, idx int, c int)
+	choose = func(n int, path int, idx int, c int) {
+		if idx == n || c == 0 {
+			r = append(r, path)
+			return
+		}
+		// 选择
+		path |= 1 << idx
+		choose(n, path, idx+1, c-1)
+		if n-idx > c {
+			// 不选
+			path -= 1 << idx
+			choose(n, path, idx+1, c)
+		}
+	}
+	// visit := make([]bool, n)
+	visit := 0
+	update := func(arr []int, mask int, flag bool) {
+		for i := 0; i < len(arr); i++ {
+			if mask&(1<<i) != 0 {
+				for _, next := range graph[arr[i]] {
+					if flag {
+						degree[next]--
+					} else {
+						degree[next]++
+					}
+				}
+				if flag {
+					visit |= 1 << arr[i]
+				} else {
+					visit ^= 1 << arr[i]
+				}
+			}
+		}
+	}
+	mem := make(map[int]int)
+	var dfs func(cnt int) int
+	dfs = func(cnt int) int {
+		if cnt <= 0 {
+			return 0
+		}
+		if v, exist := mem[visit]; exist {
+			return v
+		}
+		var arr []int
+		for i, d := range degree {
+			if d == 0 && visit&(1<<i) == 0 {
+				arr = append(arr, i)
+			}
+		}
+		c := len(arr)
+		if k < c {
+			c = k
+		}
+		r = []int{}
+		choose(len(arr), 0, 0, k)
+		res := cnt
+		for _, mask := range r {
+			update(arr, mask, true)
+			sub := dfs(cnt-c) + 1
+			update(arr, mask, false)
+			if sub < res {
+				res = sub
+			}
+		}
+		mem[visit] = res
+		return res
+	}
+	return dfs(n)
+}

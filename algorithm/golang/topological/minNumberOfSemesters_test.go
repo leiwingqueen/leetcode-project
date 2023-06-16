@@ -34,7 +34,7 @@ func Test_minNumberOfSemesters(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := minNumberOfSemesters2(tt.args.n, tt.args.relations, tt.args.k); got != tt.want {
+			if got := minNumberOfSemesters3(tt.args.n, tt.args.relations, tt.args.k); got != tt.want {
 				t.Errorf("minNumberOfSemesters() = %v, want %v", got, tt.want)
 			}
 		})
