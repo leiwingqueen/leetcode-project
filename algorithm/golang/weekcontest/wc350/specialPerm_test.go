@@ -16,7 +16,7 @@ func Test_specialPerm2(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := specialPerm2(tt.args.nums); got != tt.want {
+			if got := specialPerm3(tt.args.nums); got != tt.want {
 				t.Errorf("specialPerm2() = %v, want %v", got, tt.want)
 			}
 		})
