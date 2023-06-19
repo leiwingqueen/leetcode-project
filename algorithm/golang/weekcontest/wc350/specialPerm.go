@@ -101,3 +101,41 @@ func specialPerm3(nums []int) int {
 	}
 	return dfs((1<<n)-1, 1)
 }
+
+// 去掉一个维度
+func specialPerm4(nums []int) int {
+	n := len(nums)
+	mod := 1_000_000_007
+	mem := make(map[int]int)
+	makeKey := func(state int, preIdx int) int {
+		return state | (preIdx << n)
+	}
+	var dfs func(state int, preIdx int) int
+	dfs = func(state int, preIdx int) int {
+		if state == 0 {
+			return 1
+		}
+		if preIdx >= 0 {
+			key := makeKey(state, preIdx)
+			if v, exist := mem[key]; exist {
+				return v
+			}
+		}
+		res := 0
+		pre := 1
+		if preIdx >= 0 {
+			pre = nums[preIdx]
+		}
+		for i := 0; i < n; i++ {
+			if state&(1<<i) != 0 && (nums[i]%pre == 0 || pre%nums[i] == 0) {
+				res = (res + dfs(state^(1<<i), i)) % mod
+			}
+		}
+		if preIdx >= 0 {
+			key := makeKey(state, preIdx)
+			mem[key] = res
+		}
+		return res
+	}
+	return dfs((1<<n)-1, -1)
+}
