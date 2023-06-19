@@ -57,7 +57,7 @@ func maxSumDivThree(nums []int) int {
 	return res
 }
 
-// dp解法
+// dp解法，通过
 func maxSumDivThree2(nums []int) int {
 	n := len(nums)
 	dp := make([][]int, n)
@@ -69,6 +69,10 @@ func maxSumDivThree2(nums []int) int {
 		for j := 0; j < 3; j++ {
 			// 不选
 			dp[i][j] = dp[i-1][j]
+			// 特殊场景，只选一个的场景
+			if nums[i]%3 == j && nums[i] > dp[i][j] {
+				dp[i][j] = nums[i]
+			}
 			// 选择
 			mod := (j + 3 - nums[i]%3) % 3
 			if dp[i-1][mod] > 0 && dp[i-1][mod]+nums[i] > dp[i][j] {
@@ -77,4 +81,33 @@ func maxSumDivThree2(nums []int) int {
 		}
 	}
 	return dp[n-1][0]
+}
+
+// dp优化，总算击败99%的用户
+func maxSumDivThree3(nums []int) int {
+	n := len(nums)
+	// dp := make([][]int, n)
+	p := make([]int, 3)
+	np := make([]int, 3)
+	p[nums[0]%3] = nums[0]
+	for i := 1; i < n; i++ {
+		for j := 0; j < 3; j++ {
+			// 不选
+			np[j] = p[j]
+			// dp[i][j] = dp[i-1][j]
+			// 特殊场景，只选一个的场景
+			if nums[i]%3 == j && nums[i] > np[j] {
+				np[j] = nums[i]
+			}
+			// 选择
+			mod := (j + 3 - nums[i]%3) % 3
+			if p[mod] > 0 && p[mod]+nums[i] > np[j] {
+				np[j] = p[mod] + nums[i]
+			}
+		}
+		for k := 0; k < 3; k++ {
+			p[k] = np[k]
+		}
+	}
+	return p[0]
 }
