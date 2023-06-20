@@ -110,6 +110,7 @@ func connectTwoGroups(cost [][]int) int {
 }
 
 // 在上面的基础上增加记忆，击败10%的用户
+// 这里基本等价于穷举，时间复杂度O(2^(m+n))，理论上是不能通过的，但是勉强通过了
 func connectTwoGroups2(cost [][]int) int {
 	m, n := len(cost), len(cost[0])
 	mem := make(map[int]int)
