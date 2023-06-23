@@ -122,3 +122,77 @@ func flipChess(chessboard []string) int {
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+// bfs，总算通过了
+func flipChess2(chessboard []string) int {
+	dirs := [][]int{
+		{-1, 0},
+		{1, 0},
+		{0, -1},
+		{0, 1},
+		{-1, -1},
+		{-1, 1},
+		{1, -1},
+		{1, 1},
+	}
+	m, n := len(chessboard), len(chessboard[0])
+	makeMatrix := func() [][]int {
+		matrix := make([][]int, m)
+		for i := 0; i < m; i++ {
+			matrix[i] = make([]int, n)
+			for j := 0; j < n; j++ {
+				if chessboard[i][j] == '.' {
+					matrix[i][j] = 0
+				} else if chessboard[i][j] == 'O' {
+					matrix[i][j] = 1
+				} else {
+					matrix[i][j] = 2
+				}
+			}
+		}
+		return matrix
+	}
+	var bfs func(matrix [][]int, x, y int) int
+	bfs = func(matrix [][]int, x, y int) int {
+		res := 0
+		var queue [][]int
+		queue = append(queue, []int{x, y})
+		for len(queue) > 0 {
+			node := queue[0]
+			queue = queue[1:]
+			for _, dir := range dirs {
+				nx, ny := node[0]+dir[0], node[1]+dir[1]
+				cnt := 0
+				for nx >= 0 && nx < m && ny >= 0 && ny < n && matrix[nx][ny] == 1 {
+					nx += dir[0]
+					ny += dir[1]
+					cnt++
+				}
+				if cnt > 0 && nx >= 0 && nx < m && ny >= 0 && ny < n && matrix[nx][ny] == 2 {
+					// 更新颜色
+					for i := 1; i <= cnt; i++ {
+						matrix[node[0]+i*dir[0]][node[1]+i*dir[1]] = 2
+					}
+					res += cnt
+					for i := 1; i <= cnt; i++ {
+						queue = append(queue, []int{node[0] + i*dir[0], node[1] + i*dir[1]})
+					}
+				}
+			}
+		}
+		return res
+	}
+	res := 0
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if chessboard[i][j] == '.' {
+				matrix := makeMatrix()
+				sub := bfs(matrix, i, j)
+				if sub > res {
+					res = sub
+				}
+			}
+		}
+	}
+	return res
+}
