@@ -1,5 +1,7 @@
 package backtrace
 
+import "fmt"
+
 // 给你四个整数 m、n、introvertsCount 和 extrovertsCount 。有一个 m x n 网格，和两种类型的人：内向的人和外向的人。总共有 introvertsCount 个内向的人和 extrovertsCount 个外向的人。
 //
 //请你决定网格中应当居住多少人，并为每个人分配一个网格单元。 注意，不必 让所有人都生活在网格中。
@@ -51,7 +53,7 @@ package backtrace
 //链接：https://leetcode.cn/problems/maximize-grid-happiness
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-// 先写个最直白的回溯
+// 先写个最直白的回溯，超时
 func getMaxGridHappiness(m int, n int, introvertsCount int, extrovertsCount int) int {
 	res := 0
 	dirs := [][]int{
@@ -72,43 +74,42 @@ func getMaxGridHappiness(m int, n int, introvertsCount int, extrovertsCount int)
 		}
 		for i := 0; i < m; i++ {
 			for j := 0; j < n; j++ {
-				if !s1[i][j] && !s2[i][j] {
-					if iCount > 0 {
-						s1[i][j] = true
-						// 处理相邻的格子
-						diff := 0
-						for _, dir := range dirs {
-							x, y := i+dir[0], j+dir[1]
-							cur += iHapply
-							if x >= 0 && x < m && y >= 0 && y < n {
-								if s1[x][y] {
-									diff -= iCnt * 2
-								} else if s2[x][y] {
-									diff += eCnt - iCnt
-								}
+				if s1[i][j] || s2[i][j] {
+					continue
+				}
+				if iCount > 0 {
+					s1[i][j] = true
+					// 处理相邻的格子
+					diff := iHapply
+					for _, dir := range dirs {
+						x, y := i+dir[0], j+dir[1]
+						if x >= 0 && x < m && y >= 0 && y < n {
+							if s1[x][y] {
+								diff -= iCnt * 2
+							} else if s2[x][y] {
+								diff += eCnt - iCnt
 							}
 						}
-						dfs(s1, s2, cur+diff, iCount-1, eCount)
-						s1[i][j] = false
 					}
-					if eCount > 0 {
-						s2[i][j] = true
-						// 处理相邻的格子
-						diff := 0
-						for _, dir := range dirs {
-							x, y := i+dir[0], j+dir[1]
-							cur += eHapply
-							if x >= 0 && x < m && y >= 0 && y < n {
-								if s1[x][y] {
-									diff += eCnt - iCnt
-								} else if s2[x][y] {
-									diff += eCnt * 2
-								}
+					dfs(s1, s2, cur+diff, iCount-1, eCount)
+					s1[i][j] = false
+				}
+				if eCount > 0 {
+					s2[i][j] = true
+					// 处理相邻的格子
+					diff := eHapply
+					for _, dir := range dirs {
+						x, y := i+dir[0], j+dir[1]
+						if x >= 0 && x < m && y >= 0 && y < n {
+							if s1[x][y] {
+								diff += eCnt - iCnt
+							} else if s2[x][y] {
+								diff += eCnt * 2
 							}
 						}
-						dfs(s1, s2, cur+diff, iCount, eCount-1)
-						s2[i][j] = false
 					}
+					dfs(s1, s2, cur+diff, iCount, eCount-1)
+					s2[i][j] = false
 				}
 			}
 		}
@@ -120,4 +121,97 @@ func getMaxGridHappiness(m int, n int, introvertsCount int, extrovertsCount int)
 	}
 	dfs(s1, s2, 0, introvertsCount, extrovertsCount)
 	return res
+}
+
+// 增加记忆
+func getMaxGridHappiness2(m int, n int, introvertsCount int, extrovertsCount int) int {
+	dirs := [][]int{
+		{-1, 0},
+		{1, 0},
+		{0, -1},
+		{0, 1},
+	}
+	iHapply, eHapply := 120, 40
+	iCnt, eCnt := 30, 20
+	mem := make(map[string]int)
+	makeKey := func(s1, s2 [][]bool) string {
+		k1, k2 := 0, 0
+		for i := 0; i < m; i++ {
+			for j := 0; j < n; j++ {
+				if s1[i][j] {
+					k1 |= 1 << (i*m + j)
+				}
+				if s2[i][j] {
+					k2 |= 1 << (i*m + j)
+				}
+			}
+		}
+		return fmt.Sprintf("%d#%d", k1, k2)
+	}
+	var dfs func(s1 [][]bool, s2 [][]bool, iCount, eCount int) int
+	dfs = func(s1 [][]bool, s2 [][]bool, iCount, eCount int) int {
+		if iCount <= 0 && eCount <= 0 {
+			return 0
+		}
+		key := makeKey(s1, s2)
+		if v, exist := mem[key]; exist {
+			return v
+		}
+		res := 0
+		for i := 0; i < m; i++ {
+			for j := 0; j < n; j++ {
+				if s1[i][j] || s2[i][j] {
+					continue
+				}
+				if iCount > 0 {
+					s1[i][j] = true
+					// 处理相邻的格子
+					diff := iHapply
+					for _, dir := range dirs {
+						x, y := i+dir[0], j+dir[1]
+						if x >= 0 && x < m && y >= 0 && y < n {
+							if s1[x][y] {
+								diff -= iCnt * 2
+							} else if s2[x][y] {
+								diff += eCnt - iCnt
+							}
+						}
+					}
+					sub := dfs(s1, s2, iCount-1, eCount) + diff
+					if sub > res {
+						res = sub
+					}
+					s1[i][j] = false
+				}
+				if eCount > 0 {
+					s2[i][j] = true
+					// 处理相邻的格子
+					diff := eHapply
+					for _, dir := range dirs {
+						x, y := i+dir[0], j+dir[1]
+						if x >= 0 && x < m && y >= 0 && y < n {
+							if s1[x][y] {
+								diff += eCnt - iCnt
+							} else if s2[x][y] {
+								diff += eCnt * 2
+							}
+						}
+					}
+					sub := dfs(s1, s2, iCount, eCount-1) + diff
+					if sub > res {
+						res = sub
+					}
+					s2[i][j] = false
+				}
+			}
+		}
+		mem[key] = res
+		return res
+	}
+	s1, s2 := make([][]bool, m), make([][]bool, m)
+	for i := 0; i < m; i++ {
+		s1[i] = make([]bool, n)
+		s2[i] = make([]bool, n)
+	}
+	return dfs(s1, s2, introvertsCount, extrovertsCount)
 }
