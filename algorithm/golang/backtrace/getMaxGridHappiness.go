@@ -1,7 +1,5 @@
 package backtrace
 
-import "fmt"
-
 // 给你四个整数 m、n、introvertsCount 和 extrovertsCount 。有一个 m x n 网格，和两种类型的人：内向的人和外向的人。总共有 introvertsCount 个内向的人和 extrovertsCount 个外向的人。
 //
 //请你决定网格中应当居住多少人，并为每个人分配一个网格单元。 注意，不必 让所有人都生活在网格中。
@@ -133,7 +131,7 @@ func getMaxGridHappiness2(m int, n int, introvertsCount int, extrovertsCount int
 	}
 	iHapply, eHapply := 120, 40
 	iCnt, eCnt := 30, 20
-	mem := make(map[string]int)
+	/*mem := make(map[string]int)
 	makeKey := func(s1, s2 [][]bool) string {
 		k1, k2 := 0, 0
 		for i := 0; i < m; i++ {
@@ -147,16 +145,16 @@ func getMaxGridHappiness2(m int, n int, introvertsCount int, extrovertsCount int
 			}
 		}
 		return fmt.Sprintf("%d#%d", k1, k2)
-	}
+	}*/
 	var dfs func(s1 [][]bool, s2 [][]bool, iCount, eCount int) int
 	dfs = func(s1 [][]bool, s2 [][]bool, iCount, eCount int) int {
 		if iCount <= 0 && eCount <= 0 {
 			return 0
 		}
-		key := makeKey(s1, s2)
+		/**key := makeKey(s1, s2)
 		if v, exist := mem[key]; exist {
 			return v
-		}
+		}*/
 		res := 0
 		for i := 0; i < m; i++ {
 			for j := 0; j < n; j++ {
@@ -205,7 +203,7 @@ func getMaxGridHappiness2(m int, n int, introvertsCount int, extrovertsCount int
 				}
 			}
 		}
-		mem[key] = res
+		// mem[key] = res
 		return res
 	}
 	s1, s2 := make([][]bool, m), make([][]bool, m)
@@ -214,4 +212,75 @@ func getMaxGridHappiness2(m int, n int, introvertsCount int, extrovertsCount int
 		s2[i] = make([]bool, n)
 	}
 	return dfs(s1, s2, introvertsCount, extrovertsCount)
+}
+
+// 回溯优化一下，还是超时
+func getMaxGridHappiness3(m int, n int, introvertsCount int, extrovertsCount int) int {
+	dirs := [][]int{
+		{-1, 0},
+		{1, 0},
+		{0, -1},
+		{0, 1},
+	}
+	iHapply, eHapply := 120, 40
+	iCnt, eCnt := 30, 20
+	var dfs func(s [][]int, x, y, iCount, eCount int) int
+	dfs = func(s [][]int, x, y, iCount, eCount int) int {
+		if y >= n {
+			x++
+			y = 0
+		}
+		if x >= m {
+			return 0
+		}
+		if iCount <= 0 && eCount <= 0 {
+			return 0
+		}
+		// 不选
+		res := dfs(s, x, y+1, iCount, eCount)
+		if iCount > 0 {
+			s[x][y] = 1
+			diff := iHapply
+			for _, dir := range dirs {
+				nx, ny := x+dir[0], y+dir[1]
+				if nx >= 0 && nx < m && ny >= 0 && ny < n {
+					if s[nx][ny] == 1 {
+						diff -= iCnt * 2
+					} else if s[nx][ny] == 2 {
+						diff += eCnt - iCnt
+					}
+				}
+			}
+			sub := dfs(s, x, y+1, iCount-1, eCount) + diff
+			s[x][y] = 0
+			if sub > res {
+				res = sub
+			}
+		}
+		if eCount > 0 {
+			s[x][y] = 2
+			diff := eHapply
+			for _, dir := range dirs {
+				nx, ny := x+dir[0], y+dir[1]
+				if nx >= 0 && nx < m && ny >= 0 && ny < n {
+					if s[nx][ny] == 1 {
+						diff += eCnt - iCnt
+					} else if s[nx][ny] == 2 {
+						diff += eCnt * 2
+					}
+				}
+			}
+			sub := dfs(s, x, y+1, iCount, eCount-1) + diff
+			s[x][y] = 0
+			if sub > res {
+				res = sub
+			}
+		}
+		return res
+	}
+	s := make([][]int, m)
+	for i := 0; i < m; i++ {
+		s[i] = make([]int, n)
+	}
+	return dfs(s, 0, 0, introvertsCount, extrovertsCount)
 }
