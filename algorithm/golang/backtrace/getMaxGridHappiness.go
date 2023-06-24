@@ -284,3 +284,63 @@ func getMaxGridHappiness3(m int, n int, introvertsCount int, extrovertsCount int
 	}
 	return dfs(s, 0, 0, introvertsCount, extrovertsCount)
 }
+
+// 实际上只跟上一行和当前行有关，所以我们可以简化状态存储
+func getMaxGridHappiness4(m int, n int, introvertsCount int, extrovertsCount int) int {
+	iHapply, eHapply := 120, 40
+	iCnt, eCnt := 30, 20
+	var dfs func(pre, cur int, x, y, iCount, eCount int) int
+	dfs = func(pre, cur int, x, y, iCount, eCount int) int {
+		if y >= n {
+			x++
+			y = 0
+			pre = cur
+			cur = 0
+		}
+		if x >= m {
+			return 0
+		}
+		if iCount <= 0 && eCount <= 0 {
+			return 0
+		}
+		// 不选
+		res := dfs(pre, cur, x, y+1, iCount, eCount)
+		if iCount > 0 {
+			cur |= 1 << (2 * y)
+			// s[x][y] = 1
+			diff := iHapply
+			// 上面格子
+			if pre&(1<<(2*y)) != 0 {
+				diff -= iCnt * 2
+			} else if pre&(1<<(2*y+1)) != 0 {
+				diff += eCnt - iCnt
+			}
+			sub := dfs(pre, cur, x, y+1, iCount-1, eCount) + diff
+			cur ^= 1 << (2 * y)
+			if sub > res {
+				res = sub
+			}
+		}
+		if eCount > 0 {
+			cur |= 1 << (2*y + 1)
+			diff := eHapply
+			// 上面格子
+			if pre&(1<<(2*y)) != 0 {
+				diff += eCnt - iCnt
+			} else if pre&(1<<(2*y+1)) != 0 {
+				diff += eCnt * 2
+			}
+			sub := dfs(pre, cur, x, y+1, iCount, eCount-1) + diff
+			cur ^= 1 << (2*y + 1)
+			if sub > res {
+				res = sub
+			}
+		}
+		return res
+	}
+	s := make([][]int, m)
+	for i := 0; i < m; i++ {
+		s[i] = make([]int, n)
+	}
+	return dfs(0, 0, 0, 0, introvertsCount, extrovertsCount)
+}
