@@ -1,5 +1,7 @@
 package wc351
 
+import "math/bits"
+
 // 2749. 得到整数零需要执行的最少操作数 显示英文描述
 //给你两个整数：num1 和 num2 。
 //
@@ -32,6 +34,15 @@ package wc351
 //1 <= num1 <= 109
 //-109 <= num2 <= 109
 
+// 这个真的想不到，后来看题解了
 func makeTheIntegerZero(num1 int, num2 int) int {
-	return 0
+	k := 0
+	for num1-k*num2 >= 0 {
+		x := num1 - k*num2
+		if bits.OnesCount(uint(x)) <= k && x >= k {
+			return k
+		}
+		k++
+	}
+	return -1
 }

@@ -33,5 +33,29 @@ package wc351
 
 // 双指针
 func numberOfGoodSubarraySplits(nums []int) int {
-	return 0
+	mod := 1_000_000_007
+	n := len(nums)
+	var arr []int
+	p := 0
+	for p < n {
+		for p < n && nums[p] == 0 {
+			p++
+		}
+		if p == n {
+			break
+		}
+		arr = append(arr, p)
+		p++
+	}
+	if len(arr) <= 0 {
+		return 0
+	} else if len(arr) == 1 {
+		return 1
+	} else {
+		res := 1
+		for i := 1; i < len(arr); i++ {
+			res = (res * (arr[i] - arr[i-1])) % mod
+		}
+		return res
+	}
 }
