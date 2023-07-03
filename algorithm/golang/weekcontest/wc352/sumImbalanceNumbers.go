@@ -46,7 +46,7 @@ package wc352
 //链接：https://leetcode.cn/problems/sum-of-imbalance-numbers-of-all-subarrays
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-// 逆向思维，统计平衡的数字
+// 逆向思维，统计平衡的数字，啊，居然过了
 func sumImbalanceNumbers(nums []int) int {
 	n := len(nums)
 	res := 0
@@ -67,7 +67,7 @@ func sumImbalanceNumbers(nums []int) int {
 					cnt++
 				}
 			}
-			res += j - i + 1 - cnt
+			res += j - i - cnt
 		}
 	}
 	return res
