@@ -39,57 +39,57 @@ package bwc107
 // f3(x,y,z)=max{f2(x,y,z-1),f3(x,y,z-1)}+2
 
 func longestString(x int, y int, z int) int {
+	max := func(a, b int) int {
+		if a > b {
+			return a
+		} else {
+			return b
+		}
+	}
+	mem := make([][][][]int, x+1)
+	for i := 0; i <= x; i++ {
+		mem[i] = make([][][]int, y+1)
+		for j := 0; j <= y; j++ {
+			mem[i][j] = make([][]int, z+1)
+			for l := 0; l <= z; l++ {
+				mem[i][j][l] = make([]int, 3)
+				for k := 0; k < 3; k++ {
+					mem[i][j][l][k] = -1
+				}
+			}
+		}
+	}
 	var dfs func(x, y, z, k int) int
 	dfs = func(x, y, z, k int) int {
 		if x == 0 && y == 0 && z == 0 {
 			return 0
 		}
-		if k == 0 {
-			if x <= 0 {
-				return -1
-			}
-			res := -1
-			f2 := dfs(x-1, y, z, 1)
-			if f2 >= 0 {
-				res = f2 + 2
-			}
-			f3 := dfs(x-1, y, z, 2)
-			if f3 >= 0 && (f3+2 > res || res < 0) {
-				res = f3 + 2
-			}
-			return res
-		} else if k == 1 {
-			if y <= 0 {
-				return -1
-			}
-			res := -1
-			f1 := dfs(x, y-1, z, 0)
-			if f1 >= 0 {
-				res = f1 + 2
-			}
-			return res
-		} else {
-			if z <= 0 {
-				return -1
-			}
-			res := -1
-			f2 := dfs(x, y, z-1, 1)
-			if f2 >= 0 {
-				res = f2 + 2
-			}
-			f3 := dfs(x, y, z-1, 2)
-			if f3 >= 0 && (f3+2 > res || res < 0) {
-				res = f3 + 2
-			}
-			return res
+		if mem[x][y][z][k] >= 0 {
+			return mem[x][y][z][k]
 		}
+		res := 0
+		if k == 0 {
+			if x > 0 {
+				res = max(dfs(x-1, y, z, 1), dfs(x-1, y, z, 2)) + 2
+			}
+		} else if k == 1 {
+			if y > 0 {
+				res = dfs(x, y-1, z, 0)
+			}
+		} else {
+			if z > 0 {
+				res = max(dfs(x, y, z-1, 1), dfs(x, y, z-1, 2)) + 2
+			}
+		}
+		mem[x][y][z][k] = res
+		return res
 	}
 	res := 0
 	for i := 0; i <= x; i++ {
 		for j := 0; j <= y; j++ {
 			for k := 0; k <= z; k++ {
 				for l := 0; l < 3; l++ {
-					r := dfs(i, j, k, 0)
+					r := dfs(i, j, k, l)
 					if r > res {
 						res = r
 					}
