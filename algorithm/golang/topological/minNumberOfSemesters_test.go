@@ -1,6 +1,9 @@
 package topological
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func Test_minNumberOfSemesters(t *testing.T) {
 	type args struct {
@@ -38,5 +41,20 @@ func Test_minNumberOfSemesters(t *testing.T) {
 				t.Errorf("minNumberOfSemesters() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+func Test(t *testing.T) {
+	foo := func() {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Println("Recovered from", r)
+			}
+		}()
+		panic("I am a panic")
+
+	}
+	for i := 0; i < 10; i++ {
+		foo()
 	}
 }
