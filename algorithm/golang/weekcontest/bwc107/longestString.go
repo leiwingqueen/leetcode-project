@@ -74,7 +74,7 @@ func longestString(x int, y int, z int) int {
 			}
 		} else if k == 1 {
 			if y > 0 {
-				res = dfs(x, y-1, z, 0)
+				res = dfs(x, y-1, z, 0) + 2
 			}
 		} else {
 			if z > 0 {
@@ -85,16 +85,10 @@ func longestString(x int, y int, z int) int {
 		return res
 	}
 	res := 0
-	for i := 0; i <= x; i++ {
-		for j := 0; j <= y; j++ {
-			for k := 0; k <= z; k++ {
-				for l := 0; l < 3; l++ {
-					r := dfs(i, j, k, l)
-					if r > res {
-						res = r
-					}
-				}
-			}
+	for i := 0; i < 3; i++ {
+		r := dfs(x, y, z, i)
+		if r > res {
+			res = r
 		}
 	}
 	return res
