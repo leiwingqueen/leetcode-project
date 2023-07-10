@@ -86,3 +86,28 @@ func threeSum2(nums []int) [][]int {
 	}
 	return res
 }
+
+// 先不考虑去重的问题
+func threeSum3(nums []int) [][]int {
+	n := len(nums)
+	if n < 3 {
+		return [][]int{}
+	}
+	sort.Ints(nums)
+	var res [][]int
+	dup := make(map[int64]bool)
+	for i := 0; i < n-2; i++ {
+		// [i+1,n)查找和为-nums[i]的二元组
+		// 转变成两数之和的问题
+		mp := make(map[int]bool)
+		for j := i + 1; j < n; j++ {
+			want := -nums[i] - nums[j]
+			if mp[want] && !dup[int64(nums[i])<<32|int64(nums[j])] {
+				res = append(res, []int{nums[i], want, nums[j]})
+				dup[int64(nums[i])<<32|int64(nums[j])] = true
+			}
+			mp[nums[j]] = true
+		}
+	}
+	return res
+}
