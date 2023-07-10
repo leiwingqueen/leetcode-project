@@ -10,7 +10,7 @@ import (
 // 推球机数据导出
 
 func main() {
-	file, err := os.Open("/Users/liyongquan/Desktop/5.1-5.31.csv") // 请将 "your_csv_file.csv" 替换为您的 CSV 文件路径
+	file, err := os.Open("/Users/liyongquan/Desktop/6.1-6.30(1).csv") // 请将 "your_csv_file.csv" 替换为您的 CSV 文件路径
 	if err != nil {
 		fmt.Println("Error opening file:", err)
 		return
@@ -23,9 +23,9 @@ func main() {
 		fmt.Println("Error reading file:", err)
 		return
 	}
-	month := "202305"
-	sql := genSql1(records, month)
-	// sql := genSql2(records, month)
+	month := "202306"
+	// sql := genSql1(records, month)
+	sql := genSql2(records, month)
 	fmt.Println(sql)
 
 	// "SELECT gameid,deviceid,kugouId,score,costNum,FROM_UNIXTIME(createTime/1000) FROM `t_game_round_info_202303` limit 10"
