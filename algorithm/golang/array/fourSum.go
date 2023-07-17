@@ -1,6 +1,9 @@
 package array
 
-import "sort"
+import (
+	"math"
+	"sort"
+)
 
 // 给你一个由 n 个整数组成的数组 nums ，和一个目标值 target 。请你找出并返回满足下述全部条件且不重复的四元组 [nums[a], nums[b], nums[c], nums[d]] （若两个四元组元素一一对应，则认为两个四元组重复）：
 //
@@ -125,4 +128,81 @@ func fourSum2(nums []int, target int) [][]int {
 		return r1
 	}
 	return dfs(4, n, target)
+}
+
+func fourSum3(nums []int, target int) [][]int {
+	sort.Ints(nums)
+	n := len(nums)
+	if n < 4 {
+		return [][]int{}
+	}
+	var res [][]int
+	// 不降原则
+	pre1 := math.MinInt
+	for i := 0; i <= n-4; i++ {
+		if nums[i] == pre1 {
+			continue
+		}
+		pre1 = nums[i]
+		pre2 := math.MinInt
+		for j := i + 1; j <= n-3; j++ {
+			if nums[j] == pre2 {
+				continue
+			}
+			pre2 = nums[j]
+			pre3 := math.MinInt
+			for k := j + 1; k <= n-2; k++ {
+				if nums[k] == pre3 {
+					continue
+				}
+				pre3 = nums[k]
+				for l := k + 1; l <= n-1; l++ {
+					if nums[i]+nums[j]+nums[k]+nums[l] == target {
+						res = append(res, []int{nums[i], nums[j], nums[k], nums[l]})
+					}
+				}
+			}
+		}
+	}
+	return res
+}
+
+// 勉强通过
+func fourSum4(nums []int, target int) [][]int {
+	sort.Ints(nums)
+	n := len(nums)
+	if n < 4 {
+		return [][]int{}
+	}
+	var res [][]int
+	// 不降原则
+	pre1 := math.MinInt
+	for i := 0; i <= n-4; i++ {
+		if nums[i] == pre1 {
+			continue
+		}
+		pre1 = nums[i]
+		pre2 := math.MinInt
+		for j := i + 1; j <= n-3; j++ {
+			if nums[j] == pre2 {
+				continue
+			}
+			pre2 = nums[j]
+			pre3 := math.MinInt
+			mp := make(map[int]bool)
+			mp[nums[n-1]] = true
+			for k := n - 2; k > j; k-- {
+				if nums[k] == pre3 {
+					continue
+				}
+				need := target - nums[i] - nums[j] - nums[k]
+				if mp[need] {
+					res = append(res, []int{nums[i], nums[j], nums[k], need})
+					pre3 = nums[k]
+				}
+				mp[nums[k]] = true
+			}
+		}
+	}
+	return res
 }
