@@ -1,5 +1,7 @@
 package array
 
+import "sort"
+
 // 给你一个由 n 个整数组成的数组 nums ，和一个目标值 target 。请你找出并返回满足下述全部条件且不重复的四元组 [nums[a], nums[b], nums[c], nums[d]] （若两个四元组元素一一对应，则认为两个四元组重复）：
 //
 //0 <= a, b, c, d < n
@@ -68,7 +70,7 @@ func fourSum(nums []int, target int) [][]int {
 	return dfs(4, n, target)
 }
 
-// 需要去重
+// 超时
 func fourSum2(nums []int, target int) [][]int {
 	mp := make(map[int]int)
 	for _, num := range nums {
@@ -80,6 +82,9 @@ func fourSum2(nums []int, target int) [][]int {
 		arr[idx] = []int{k, v}
 		idx++
 	}
+	sort.Slice(arr, func(i, j int) bool {
+		return arr[i][0] < arr[j][0]
+	})
 	n := len(arr)
 	mem := make([][]map[int][][]int, 5)
 	for i := 0; i < 5; i++ {
@@ -107,8 +112,8 @@ func fourSum2(nums []int, target int) [][]int {
 		// 不选择
 		r1 := dfs(i, j-1, k)
 		// 选择
-		for t := 1; t <= arr[j-1][1]; t++ {
-			r2 := dfs(i-1, j-1, k-t*arr[j-1][0])
+		for t := 1; t <= arr[j-1][1] && t <= i; t++ {
+			r2 := dfs(i-t, j-1, k-t*arr[j-1][0])
 			for _, l := range r2 {
 				for m := 0; m < t; m++ {
 					l = append(l, arr[j-1][0])
