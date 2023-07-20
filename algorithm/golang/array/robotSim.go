@@ -57,15 +57,18 @@ package array
 
 func robotSim(commands []int, obstacles [][]int) int {
 	dirs := [][]int{
-		{-1, 0},
 		{0, 1},
 		{1, 0},
 		{0, -1},
+		{-1, 0},
 	}
-	obstacleMap := make(map[int64]bool)
+	type pair struct {
+		x, y int
+	}
+	obstacleMap := make(map[pair]bool)
 	for _, ob := range obstacles {
 		x, y := ob[0], ob[1]
-		obstacleMap[int64(x)<<32|int64(y)] = true
+		obstacleMap[pair{x, y}] = true
 	}
 	x, y := 0, 0
 	d := 0
@@ -79,7 +82,7 @@ func robotSim(commands []int, obstacles [][]int) int {
 			for i := 0; i < cmd; i++ {
 				nx := x + dirs[d][0]
 				ny := y + dirs[d][1]
-				if obstacleMap[int64(nx)<<32|int64(ny)] {
+				if obstacleMap[pair{nx, ny}] {
 					break
 				}
 				x, y = nx, ny
