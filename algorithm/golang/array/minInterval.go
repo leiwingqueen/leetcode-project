@@ -43,9 +43,31 @@ import "sort"
 //链接：https://leetcode.cn/problems/minimum-interval-to-include-each-query
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
+// 先用最简单的二分，肯定超时
 func minInterval(intervals [][]int, queries []int) []int {
+	n := len(intervals)
 	sort.Slice(intervals, func(i, j int) bool {
-		return intervals[i][0] < intervals[j][0]
+		if intervals[i][0] != intervals[j][0] {
+			return intervals[i][0] < intervals[j][0]
+		} else {
+			return intervals[i][1] < intervals[j][1]
+		}
 	})
-	return nil
+	find := func(query int) int {
+		idx := sort.Search(n, func(i int) bool {
+			return intervals[i][0] > query
+		})
+		res := -1
+		for i := idx - 1; i >= 0; i-- {
+			if intervals[i][1] >= query && (res < 0 || intervals[i][1]-intervals[i][0]+1 < res) {
+				res = intervals[i][1] - intervals[i][0] + 1
+			}
+		}
+		return res
+	}
+	res := make([]int, len(queries))
+	for i, query := range queries {
+		res[i] = find(query)
+	}
+	return res
 }
