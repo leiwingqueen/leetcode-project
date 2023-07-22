@@ -21,8 +21,12 @@ func sortVowels(s string) string {
 		sort.Slice(arr, func(i, j int) bool {
 			return s[arr[i]] < s[arr[j]]
 		})
-		for i, j := range arr {
-			t[i] = s[j]
+		j := 0
+		for i := 0; i < n; i++ {
+			if mp[s[i]] {
+				t[i] = s[arr[j]]
+				j++
+			}
 		}
 	}
 	return string(t)
