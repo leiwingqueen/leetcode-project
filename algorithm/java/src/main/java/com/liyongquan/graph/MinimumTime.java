@@ -1,6 +1,9 @@
-package topological
+package com.liyongquan.graph;
 
-import "sort"
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.PriorityQueue;
 
 //给你一个整数 n ，表示有 n 节课，课程编号从 1 到 n 。同时给你一个二维整数数组 relations ，其中 relations[j] = [
 //prevCoursej, nextCoursej] ，表示课程 prevCoursej 必须在课程 nextCoursej 之前 完成（先修课的关系）。同时给你一个下
@@ -62,81 +65,38 @@ import "sort"
 //
 //
 
-//leetcode submit region begin(Prohibit modification and deletion)
-// 这个解法的问题在于不需要等所有都完成其实就可以马上进行下一层了
-func minimumTime(n int, relations [][]int, time []int) int {
-	graph := make([][]int, n)
-	degree := make([]int, n)
-	for _, relation := range relations {
-		from, to := relation[0]-1, relation[1]-1
-		graph[from] = append(graph[from], to)
-		degree[to]++
-	}
-	var queue []int
-	for i, d := range degree {
-		if d == 0 {
-			queue = append(queue, i)
-		}
-	}
-	res := 0
-	for len(queue) > 0 {
-		mx := 0
-		size := len(queue)
-		for i := 0; i < size; i++ {
-			node := queue[i]
-			if time[node] > mx {
-				mx = time[node]
-			}
-			for _, next := range graph[node] {
-				degree[next]--
-				if degree[next] == 0 {
-					queue = append(queue, next)
-				}
-			}
-		}
-		queue = queue[size:]
-		res += mx
-	}
-	return res
+public class MinimumTime {
+    // 感觉这个解法不难想到？
+    public int minimumTime(int n, int[][] relations, int[] time) {
+        // 构造图
+        int[] degree = new int[n];
+        List<Integer>[] graph = new List[n];
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+        for (int[] relation : relations) {
+            int from = relation[0] - 1, to = relation[1] - 1;
+            graph[from].add(to);
+            degree[to]++;
+        }
+        // 拓扑排序
+        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
+        for (int i = 0; i < n; i++) {
+            if (degree[i] == 0) {
+                pq.add(new int[]{i, time[i]});
+            }
+        }
+        int t = 0;
+        while (pq.size() > 0) {
+            int[] poll = pq.poll();
+            t = Math.max(t, poll[1]);
+            for (Integer to : graph[poll[0]]) {
+                degree[to]--;
+                if (degree[to] == 0) {
+                    pq.add(new int[]{to, poll[1] + time[to]});
+                }
+            }
+        }
+        return t;
+    }
 }
-
-// 在上面基础进行修改，勉强通过，这里如果用heap来维护这个队列就会快很多
-func minimumTime2(n int, relations [][]int, time []int) int {
-	graph := make([][]int, n)
-	degree := make([]int, n)
-	for _, relation := range relations {
-		from, to := relation[0]-1, relation[1]-1
-		graph[from] = append(graph[from], to)
-		degree[to]++
-	}
-	var queue [][]int
-	for i, d := range degree {
-		if d == 0 {
-			queue = append(queue, []int{i, time[i]})
-		}
-	}
-	sort.Slice(queue, func(i, j int) bool {
-		return queue[i][1] < queue[j][1]
-	})
-	t := 0
-	for len(queue) > 0 {
-		node := queue[0]
-		queue = queue[1:]
-		idx, endTime := node[0], node[1]
-		if endTime > t {
-			t = endTime
-		}
-		for _, next := range graph[idx] {
-			degree[next]--
-			if degree[next] == 0 {
-				queue = append(queue, []int{next, t + time[next]})
-				sort.Slice(queue, func(i, j int) bool {
-					return queue[i][1] < queue[j][1]
-				})
-			}
-		}
-	}
-	return t
-}
-
-//leetcode submit region end(Prohibit modification and deletion)

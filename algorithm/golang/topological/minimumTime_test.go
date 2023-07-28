@@ -23,7 +23,7 @@ func Test_minimumTime(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := minimumTime(tt.args.n, tt.args.relations, tt.args.time); got != tt.want {
+			if got := minimumTime2(tt.args.n, tt.args.relations, tt.args.time); got != tt.want {
 				t.Errorf("minimumTime() = %v, want %v", got, tt.want)
 			}
 		})
