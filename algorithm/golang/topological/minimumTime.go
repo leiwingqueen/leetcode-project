@@ -61,6 +61,7 @@ package topological
 //
 
 //leetcode submit region begin(Prohibit modification and deletion)
+// 这个解法的问题在于不需要等所有都完成其实就可以马上进行下一层了
 func minimumTime(n int, relations [][]int, time []int) int {
 	graph := make([][]int, n)
 	degree := make([]int, n)
