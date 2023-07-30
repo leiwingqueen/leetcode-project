@@ -12,20 +12,19 @@ func countCompleteSubarrays(nums []int) int {
 	mp2 := make([]int, 2001)
 	cnt := 0
 	for r < n {
-		if cnt == expect {
+		mp2[nums[r]]++
+		if mp2[nums[r]] == 1 {
+			cnt++
+		}
+		for cnt == expect {
 			res += n - r
 			mp2[nums[l]]--
 			if mp2[nums[l]] == 0 {
 				cnt--
 			}
 			l++
-		} else {
-			mp2[nums[r]]++
-			if mp2[nums[r]] == 1 {
-				cnt++
-			}
-			r++
 		}
+		r++
 	}
 	return res
 }
