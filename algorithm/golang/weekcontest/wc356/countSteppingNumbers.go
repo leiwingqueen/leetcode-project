@@ -38,6 +38,7 @@ package wc356
 // Related Topics 字符串 动态规划 👍 10 👎 0
 
 //leetcode submit region begin(Prohibit modification and deletion)
+// 先不考虑溢出的问题
 func countSteppingNumbers(low string, high string) int {
 	var dfs func(mx string, idx, pre, size int, lt bool) int
 	dfs = func(mx string, idx, pre, size int, lt bool) int {
@@ -63,7 +64,7 @@ func countSteppingNumbers(low string, high string) int {
 			res := 0
 			if idx == 0 {
 				for i := 1; i <= int(mx[0]-'0'); i++ {
-					res += dfs(mx, idx+1, i, size, i == int(mx[0]-'0'))
+					res += dfs(mx, idx+1, i, size, i != int(mx[0]-'0'))
 				}
 			} else {
 				if lt {
@@ -74,10 +75,16 @@ func countSteppingNumbers(low string, high string) int {
 						res += dfs(mx, idx+1, pre-1, size, true)
 					}
 				} else {
+					flag := false
 					if pre-1 >= 0 && pre-1 <= int(mx[idx]-'0') {
 						res += dfs(mx, idx+1, pre-1, size, pre-1 < int(mx[idx]-'0'))
-					} else {
-						// 不满足条件，退出
+						flag = true
+					}
+					if pre+1 <= 9 && pre+1 <= int(mx[idx]-'0') {
+						res += dfs(mx, idx+1, pre+1, size, pre+1 < int(mx[idx]-'0'))
+						flag = true
+					}
+					if !flag {
 						return 0
 					}
 				}
@@ -94,7 +101,7 @@ func countSteppingNumbers(low string, high string) int {
 	}
 	check := func(s string) bool {
 		for i := 1; i < len(s); i++ {
-			if s[i] != s[i-1]-1 && s[i] != s[i+1]-1 {
+			if s[i] != s[i-1]-1 && s[i] != s[i-1]+1 {
 				return false
 			}
 		}
@@ -108,3 +115,80 @@ func countSteppingNumbers(low string, high string) int {
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+// 超时
+func countSteppingNumbers2(low string, high string) int {
+	mod := 1_000_000_007
+	var dfs func(mx string, idx, pre, size int, lt bool) int
+	dfs = func(mx string, idx, pre, size int, lt bool) int {
+		if idx == size {
+			return 1
+		}
+		if len(mx) > size {
+			res := 0
+			if idx == 0 {
+				for i := 1; i <= 9; i++ {
+					res = (res + dfs(mx, idx+1, i, size, true)) % mod
+				}
+			} else {
+				if pre+1 <= 9 {
+					res = (res + dfs(mx, idx+1, pre+1, size, true)) % mod
+				}
+				if pre-1 >= 0 {
+					res = (res + dfs(mx, idx+1, pre-1, size, true)) % mod
+				}
+			}
+			return res
+		} else {
+			res := 0
+			if idx == 0 {
+				for i := 1; i <= int(mx[0]-'0'); i++ {
+					res = (res + dfs(mx, idx+1, i, size, i != int(mx[0]-'0'))) % mod
+				}
+			} else {
+				if lt {
+					if pre+1 <= 9 {
+						res = (res + dfs(mx, idx+1, pre+1, size, true)) % mod
+					}
+					if pre-1 >= 0 {
+						res = (res + dfs(mx, idx+1, pre-1, size, true)) % mod
+					}
+				} else {
+					flag := false
+					if pre-1 >= 0 && pre-1 <= int(mx[idx]-'0') {
+						res = (res + dfs(mx, idx+1, pre-1, size, pre-1 < int(mx[idx]-'0'))) % mod
+						flag = true
+					}
+					if pre+1 <= 9 && pre+1 <= int(mx[idx]-'0') {
+						res = (res + dfs(mx, idx+1, pre+1, size, pre+1 < int(mx[idx]-'0'))) % mod
+						flag = true
+					}
+					if !flag {
+						return 0
+					}
+				}
+			}
+			return res
+		}
+	}
+	cal := func(mx string) int {
+		res := 0
+		for i := 1; i <= len(mx); i++ {
+			res = (res + dfs(mx, 0, 0, i, false)) % mod
+		}
+		return res
+	}
+	check := func(s string) bool {
+		for i := 1; i < len(s); i++ {
+			if s[i] != s[i-1]-1 && s[i] != s[i-1]+1 {
+				return false
+			}
+		}
+		return true
+	}
+	res := (cal(high) + mod - cal(low)) % mod
+	if check(low) {
+		res = (res + 1) % mod
+	}
+	return res
+}
