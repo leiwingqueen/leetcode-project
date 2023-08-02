@@ -18,7 +18,7 @@ func Test_countSteppingNumbers(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := countSteppingNumbers(tt.args.low, tt.args.high); got != tt.want {
+			if got := countSteppingNumbers3(tt.args.low, tt.args.high); got != tt.want {
 				t.Errorf("countSteppingNumbers() = %v, want %v", got, tt.want)
 			}
 		})

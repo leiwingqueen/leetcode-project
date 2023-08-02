@@ -192,3 +192,172 @@ func countSteppingNumbers2(low string, high string) int {
 	}
 	return res
 }
+
+// dp解法
+func countSteppingNumbers3(low string, high string) int {
+	n := len(high)
+	// fn(k,i)为以i开头，长度为k的步进数字数量
+	fn := make([][]int, n)
+	for i := 0; i < n; i++ {
+		fn[i] = make([]int, 10)
+	}
+	// 初始化
+	for i := 0; i < 10; i++ {
+		fn[0][i] = 1
+	}
+	for i := 1; i < n; i++ {
+		for j := 0; j < 10; j++ {
+			if j > 0 {
+				fn[i][j] += fn[i-1][j-1]
+			}
+			if j < 9 {
+				fn[i][j] += fn[i-1][j+1]
+			}
+		}
+	}
+	var dfs func(mx string, idx, pre int) int
+	dfs = func(mx string, idx, pre int) int {
+		k := len(mx)
+		if idx == k {
+			return 1
+		}
+		res := 0
+		if idx == 0 {
+			for i := 1; i < int(mx[0]-'0'); i++ {
+				res += fn[k-idx-1][i]
+			}
+			res += dfs(mx, idx+1, int(mx[0]-'0'))
+		} else {
+			flag := false
+			cur := int(mx[idx] - '0')
+			if pre > 0 && pre-1 <= cur {
+				if pre-1 == cur {
+					res += dfs(mx, idx+1, pre-1)
+				} else {
+					res += fn[k-idx-1][pre-1]
+				}
+				flag = true
+			}
+			if pre < 9 && pre+1 <= cur {
+				if pre+1 == cur {
+					res += dfs(mx, idx+1, pre+1)
+				} else {
+					res += fn[k-idx-1][pre+1]
+				}
+				flag = true
+			}
+			if !flag {
+				return 0
+			}
+		}
+		return res
+	}
+	cal := func(mx string) int {
+		res := 0
+		for i := 1; i < len(mx); i++ {
+			for j := 1; j < 10; j++ {
+				res += fn[i-1][j]
+			}
+		}
+		res += dfs(mx, 0, 0)
+		return res
+	}
+	check := func(s string) bool {
+		for i := 1; i < len(s); i++ {
+			if s[i] != s[i-1]-1 && s[i] != s[i-1]+1 {
+				return false
+			}
+		}
+		return true
+	}
+	res := cal(high) - cal(low)
+	if check(low) {
+		res++
+	}
+	return res
+}
+
+// 在上面基础上再对结果进行取模
+func countSteppingNumbers4(low string, high string) int {
+	mod := 1_000_000_007
+	n := len(high)
+	// fn(k,i)为以i开头，长度为k的步进数字数量
+	fn := make([][]int, n)
+	for i := 0; i < n; i++ {
+		fn[i] = make([]int, 10)
+	}
+	// 初始化
+	for i := 0; i < 10; i++ {
+		fn[0][i] = 1
+	}
+	for i := 1; i < n; i++ {
+		for j := 0; j < 10; j++ {
+			if j > 0 {
+				fn[i][j] = (fn[i][j] + fn[i-1][j-1]) % mod
+			}
+			if j < 9 {
+				fn[i][j] = (fn[i][j] + fn[i-1][j+1]) % mod
+			}
+		}
+	}
+	var dfs func(mx string, idx, pre int) int
+	dfs = func(mx string, idx, pre int) int {
+		k := len(mx)
+		if idx == k {
+			return 1
+		}
+		res := 0
+		if idx == 0 {
+			for i := 1; i < int(mx[0]-'0'); i++ {
+				res = (res + fn[k-idx-1][i]) % mod
+			}
+			res = (res + dfs(mx, idx+1, int(mx[0]-'0'))) % mod
+		} else {
+			flag := false
+			cur := int(mx[idx] - '0')
+			if pre > 0 && pre-1 <= cur {
+				if pre-1 == cur {
+					res = (res + dfs(mx, idx+1, pre-1)) % mod
+				} else {
+					res = (res + fn[k-idx-1][pre-1]) % mod
+				}
+				flag = true
+			}
+			if pre < 9 && pre+1 <= cur {
+				if pre+1 == cur {
+					res = (res + dfs(mx, idx+1, pre+1)) % mod
+				} else {
+					res = (res + fn[k-idx-1][pre+1]) % mod
+				}
+				flag = true
+			}
+			if !flag {
+				return 0
+			}
+		}
+		return res
+	}
+	cal := func(mx string) int {
+		res := 0
+		for i := 1; i < len(mx); i++ {
+			for j := 1; j < 10; j++ {
+				res = (res + fn[i-1][j]) % mod
+			}
+		}
+		res = (res + dfs(mx, 0, 0)) % mod
+		return res
+	}
+	check := func(s string) bool {
+		for i := 1; i < len(s); i++ {
+			if s[i] != s[i-1]-1 && s[i] != s[i-1]+1 {
+				return false
+			}
+		}
+		return true
+	}
+	res := (cal(high) + mod - cal(low)) % mod
+	if check(low) {
+		res = (res + 1) % mod
+	}
+	return res
+}
