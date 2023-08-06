@@ -37,3 +37,35 @@ func minimumSeconds(nums []int) int {
 	}
 	return depth - 1
 }
+
+func minimumSeconds2(nums []int) int {
+	n := len(nums)
+	mp := make(map[int][]int)
+	for i, num := range nums {
+		mp[num] = append(mp[num], i)
+	}
+	res := n
+	for _, arr := range mp {
+		dis := 0
+		if len(arr) == 1 {
+			dis = n
+		} else {
+			for i, idx := range arr {
+				next := (i + 1) % len(arr)
+				d := 0
+				if arr[next] > idx {
+					d = arr[next] - idx
+				} else {
+					d = n - idx + arr[next]
+				}
+				if d > dis {
+					dis = d
+				}
+			}
+		}
+		if dis < res {
+			res = dis
+		}
+	}
+	return res / 2
+}
