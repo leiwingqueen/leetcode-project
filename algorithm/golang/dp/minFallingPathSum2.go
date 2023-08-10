@@ -62,3 +62,47 @@ func minFallingPathSum2(grid [][]int) int {
 	}
 	return res
 }
+
+// 上面基础上优化
+func minFallingPathSum3(grid [][]int) int {
+	m, n := len(grid), len(grid[0])
+	dp := make([][]int, m)
+	for i := 0; i < m; i++ {
+		dp[i] = make([]int, n)
+	}
+	// 初始化
+	p1, p2 := math.MaxInt, math.MaxInt
+	for i := 0; i < n; i++ {
+		dp[m-1][i] = grid[m-1][i]
+		if dp[m-1][i] < p1 {
+			p2 = p1
+			p1 = dp[m-1][i]
+		} else if dp[m-1][i] < p2 {
+			p2 = dp[m-1][i]
+		}
+	}
+	for i := m - 2; i >= 0; i-- {
+		p3, p4 := math.MaxInt, math.MaxInt32
+		for j := 0; j < n; j++ {
+			if dp[i+1][j] != p1 {
+				dp[i][j] = p1 + grid[i][j]
+			} else {
+				dp[i][j] = p2 + grid[i][j]
+			}
+			if dp[i][j] < p3 {
+				p4 = p3
+				p3 = dp[i][j]
+			} else if dp[i][j] < p4 {
+				p4 = dp[i][j]
+			}
+		}
+		p1, p2 = p3, p4
+	}
+	res := math.MaxInt
+	for i := 0; i < n; i++ {
+		if dp[0][i] < res {
+			res = dp[0][i]
+		}
+	}
+	return res
+}
