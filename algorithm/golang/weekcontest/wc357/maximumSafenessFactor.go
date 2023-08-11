@@ -66,6 +66,8 @@ import "math"
 //
 
 //leetcode submit region begin(Prohibit modification and deletion)
+
+// 这个写法有问题
 func maximumSafenessFactor(grid [][]int) int {
 	dirs := [][]int{
 		{-1, 0},
@@ -116,12 +118,12 @@ func maximumSafenessFactor(grid [][]int) int {
 		if mem[i][j] >= 0 {
 			return mem[i][j]
 		}
-		res := math.MaxInt
+		res := 0
 		for _, dir := range dirs {
 			x, y := i+dir[0], j+dir[1]
 			if x >= 0 && x < m && y >= 0 && y < n {
 				sub := dfs(x, y)
-				if sub < res {
+				if sub > res {
 					res = sub
 				}
 			}
@@ -133,7 +135,91 @@ func maximumSafenessFactor(grid [][]int) int {
 		mem[i][j] = res
 		return res
 	}
-	return dfs(0, 0)
+	return dfs(m-1, n-1)
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+// 超时
+func maximumSafenessFactor2(grid [][]int) int {
+	dirs := [][]int{
+		{-1, 0},
+		{1, 0},
+		{0, -1},
+		{0, 1},
+	}
+	m, n := len(grid), len(grid[0])
+	theft := make(map[int]struct{})
+	for i, row := range grid {
+		for j, num := range row {
+			if num == 1 {
+				theft[i*n+j] = struct{}{}
+			}
+		}
+	}
+	abs := func(a int) int {
+		if a < 0 {
+			return -a
+		} else {
+			return a
+		}
+	}
+	dis := func(i, j int) int {
+		r := math.MaxInt
+		for k := range theft {
+			d := abs(i-k/n) + abs(j-k%n)
+			if d < r {
+				r = d
+			}
+		}
+		return r
+	}
+	// 记录每个点到小偷节点的最短距离
+	matrix := make([][]int, m)
+	for i := 0; i < m; i++ {
+		matrix[i] = make([]int, n)
+	}
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			matrix[i][j] = dis(i, j)
+		}
+	}
+	bfs := func(d int) bool {
+		if matrix[0][0] < d {
+			return false
+		}
+		visit := make([][]bool, m)
+		for i := 0; i < m; i++ {
+			visit[i] = make([]bool, n)
+		}
+		var queue [][]int
+		queue = append(queue, []int{0, 0})
+		visit[0][0] = true
+		for len(queue) > 0 {
+			x, y := queue[0][0], queue[0][1]
+			queue = queue[1:]
+			for _, dir := range dirs {
+				nx, ny := x+dir[0], y+dir[1]
+				if nx >= 0 && nx < m && ny >= 0 && ny < n &&
+					!visit[nx][ny] && matrix[nx][ny] >= d {
+					if nx == m-1 && ny == n-1 {
+						return true
+					}
+					queue = append(queue, []int{nx, ny})
+					visit[nx][ny] = true
+				}
+			}
+		}
+		return false
+	}
+	l, r := 0, m+n
+	for l < r {
+		mid := l + (r-l+1)/2
+		if bfs(mid) {
+			l = mid
+		} else {
+			r = mid - 1
+		}
+	}
+	return l
+}
