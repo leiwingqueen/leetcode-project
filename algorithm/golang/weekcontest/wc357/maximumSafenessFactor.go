@@ -223,3 +223,98 @@ func maximumSafenessFactor2(grid [][]int) int {
 	}
 	return l
 }
+
+// 顶，还是通过不了
+func maximumSafenessFactor3(grid [][]int) int {
+	dirs := [][]int{
+		{-1, 0},
+		{1, 0},
+		{0, -1},
+		{0, 1},
+	}
+	m, n := len(grid), len(grid[0])
+	// 记录每个点到小偷节点的最短距离
+	matrix := make([][]int, m)
+	for i := 0; i < m; i++ {
+		matrix[i] = make([]int, n)
+	}
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			matrix[i][j] = m + n
+		}
+	}
+	dis := func(i, j int) {
+		var queue [][]int
+		visit := make([][]bool, m)
+		for k := 0; k < m; k++ {
+			visit[k] = make([]bool, n)
+		}
+		queue = append(queue, []int{i, j})
+		visit[i][j] = true
+		depth := 0
+		for len(queue) > 0 {
+			size := len(queue)
+			for k := 0; k < size; k++ {
+				x, y := queue[k][0], queue[k][1]
+				if depth < matrix[x][y] {
+					matrix[x][y] = depth
+				}
+				for _, dir := range dirs {
+					nx, ny := x+dir[0], y+dir[1]
+					if nx >= 0 && nx < m && ny >= 0 && ny < n && !visit[nx][ny] {
+						visit[nx][ny] = true
+						queue = append(queue, []int{nx, ny})
+					}
+				}
+			}
+			queue = queue[size:]
+			depth++
+		}
+	}
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if grid[i][j] == 1 {
+				dis(i, j)
+			}
+		}
+	}
+
+	bfs := func(d int) bool {
+		if matrix[0][0] < d {
+			return false
+		}
+		visit := make([][]bool, m)
+		for i := 0; i < m; i++ {
+			visit[i] = make([]bool, n)
+		}
+		var queue [][]int
+		queue = append(queue, []int{0, 0})
+		visit[0][0] = true
+		for len(queue) > 0 {
+			x, y := queue[0][0], queue[0][1]
+			queue = queue[1:]
+			for _, dir := range dirs {
+				nx, ny := x+dir[0], y+dir[1]
+				if nx >= 0 && nx < m && ny >= 0 && ny < n &&
+					!visit[nx][ny] && matrix[nx][ny] >= d {
+					if nx == m-1 && ny == n-1 {
+						return true
+					}
+					queue = append(queue, []int{nx, ny})
+					visit[nx][ny] = true
+				}
+			}
+		}
+		return false
+	}
+	l, r := 0, m+n
+	for l < r {
+		mid := l + (r-l+1)/2
+		if bfs(mid) {
+			l = mid
+		} else {
+			r = mid - 1
+		}
+	}
+	return l
+}
