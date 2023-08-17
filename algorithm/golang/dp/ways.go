@@ -34,6 +34,7 @@ package dp
 //pizza 只包含字符 'A' 和 '.' 。
 
 func ways(pizza []string, k int) int {
+	mod := 1_000_000_007
 	m, n := len(pizza), len(pizza[0])
 	// dp[k][m][n]
 	dp := make([][][]int, k)
@@ -79,7 +80,7 @@ func ways(pizza []string, k int) int {
 					}
 					if preSum[i][j]-preSum[r][j] > 0 {
 						// 至少要分一个
-						dp[l][i][j] += dp[l-1][r][j]
+						dp[l][i][j] = (dp[l][i][j] + dp[l-1][r][j]) % mod
 					}
 				}
 				// 竖切的场景
@@ -88,11 +89,11 @@ func ways(pizza []string, k int) int {
 						break
 					}
 					if preSum[i][j]-preSum[i][c] > 0 {
-						dp[l][i][j] += dp[l-1][i][c]
+						dp[l][i][j] = (dp[l][i][j] + dp[l-1][i][c]) % mod
 					}
 				}
 			}
 		}
 	}
-	return dp[k-1][m-1][n-1]
+	return dp[k-1][0][0]
 }
