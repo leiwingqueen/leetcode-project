@@ -4,19 +4,21 @@ func maxSizeSlices(slices []int) int {
 	n := len(slices)
 	k := n / 3
 	cal := func(arr []int, k int) int {
-		dp := make([][]int, len(arr))
-		for i := 0; i < len(arr); i++ {
+		m := len(arr)
+		dp := make([][]int, m+1)
+		for i := 0; i <= m; i++ {
 			dp[i] = make([]int, k+1)
 		}
-		for i := 1; i < len(arr); i++ {
-			for j := 1; j < k; j++ {
+		dp[1][1] = arr[0]
+		for i := 2; i <= m; i++ {
+			for j := 1; j <= k; j++ {
 				dp[i][j] = dp[i-1][j]
-				if i > 1 && dp[i-2][j-1]+arr[i] > dp[i][j] {
-					dp[i][j] = dp[i-2][j-1] + arr[i]
+				if dp[i-2][j-1]+arr[i-1] > dp[i][j] {
+					dp[i][j] = dp[i-2][j-1] + arr[i-1]
 				}
 			}
 		}
-		return dp[len(arr)-1][k]
+		return dp[m][k]
 	}
 	p1 := cal(slices[:n-1], k)
 	p2 := cal(slices[1:], k)
