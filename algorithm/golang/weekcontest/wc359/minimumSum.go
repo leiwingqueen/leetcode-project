@@ -32,6 +32,19 @@ package wc359
 //
 //1 <= n, k <= 50
 
+// 贪心？
 func minimumSum(n int, k int) int {
-
+	mp := make(map[int]bool)
+	mx := 0
+	res := 0
+	for i := 0; i < n; i++ {
+		num := mx + 1
+		for mp[k-num] {
+			num++
+		}
+		mp[num] = true
+		mx = num
+		res += num
+	}
+	return res
 }
