@@ -45,6 +45,7 @@ import "sort"
 //0 <= starti <= endi <= n - 1
 //1 <= goldi <= 103
 
+// f(n)=max(f(n-1),f(n-2)+offers[n])
 func maximizeTheProfit(n int, offers [][]int) int {
 	max := func(a, b int) int {
 		if a > b {
@@ -57,22 +58,50 @@ func maximizeTheProfit(n int, offers [][]int) int {
 		return offers[i][0] < offers[j][0]
 	})
 	k := len(offers)
-	dp := make([]int, k)
-	dp[0] = offers[0][2]
-	for i := 1; i < k; i++ {
+	dp := make([]int, k+1)
+	// dp[0] = offers[0][2]
+	for i := 1; i <= k; i++ {
 		dp[i] = dp[i-1]
-		start := offers[i][0]
-		j := i - 1
+		start := offers[i-1][0]
+		j := i - 2
 		for ; j >= 0; j-- {
 			if offers[j][1] < start {
 				break
 			}
 		}
-		if j >= 0 {
-			dp[i] = max(dp[i], dp[j]+offers[i][2])
+		dp[i] = max(dp[i], dp[j+1]+offers[i-1][2])
+	}
+	return dp[k]
+}
+
+func maximizeTheProfit2(n int, offers [][]int) int {
+	max := func(a, b int) int {
+		if a > b {
+			return a
 		} else {
-			dp[i] = max(dp[i], offers[i][2])
+			return b
 		}
 	}
-	return dp[k-1]
+	sort.Slice(offers, func(i, j int) bool {
+		return offers[i][1] < offers[j][1]
+	})
+	k := len(offers)
+	dp := make([]int, n+1)
+	for i := 1; i <= n; i++ {
+		// < i的最大下标
+		idx := sort.Search(k, func(j int) bool {
+			return offers[j][1] >= i
+		}) - 1
+		if idx < 0 {
+			dp[i] = 0
+		} else {
+			// 不选
+			dp[i] = dp[i-1]
+			// 选中
+			for j := idx; j >= 0 && offers[j][1] == offers[idx][1]; j-- {
+				dp[i] = max(dp[i], dp[offers[j][0]]+offers[j][2])
+			}
+		}
+	}
+	return dp[n]
 }
