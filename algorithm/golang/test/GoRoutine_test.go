@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"testing"
 	"time"
 )
@@ -14,4 +15,9 @@ func TestSearchInsert(t *testing.T) {
 		}
 	}()
 	time.Sleep(10 * time.Second)
+}
+
+func TestUuid(t *testing.T) {
+	s := uuid.New().String()
+	fmt.Printf("%s\n", s)
 }
