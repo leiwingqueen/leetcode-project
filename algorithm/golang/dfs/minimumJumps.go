@@ -68,7 +68,7 @@ func minimumJumps(forbidden []int, a int, b int, x int) int {
 			return v
 		}
 		res := -1
-		if pos+1 <= mx {
+		if pos+a <= mx {
 			res = dfs(pos+a, 0)
 		}
 		if c == 0 && pos > b {
