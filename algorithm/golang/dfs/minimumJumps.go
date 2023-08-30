@@ -1,5 +1,7 @@
 package dfs
 
+import "fmt"
+
 // 有一只跳蚤的家在数轴上的位置 x 处。请你帮助它从位置 0 出发，到达它的家。
 //
 //跳蚤跳跃的规则如下：
@@ -58,6 +60,7 @@ func minimumJumps(forbidden []int, a int, b int, x int) int {
 	mem := make(map[int]int)
 	var dfs func(pos, c int) int
 	dfs = func(pos, c int) int {
+		fmt.Println(fmt.Sprintf("pos:%d", pos))
 		if pos == x {
 			return 0
 		}

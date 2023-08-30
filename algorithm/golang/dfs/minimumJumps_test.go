@@ -16,7 +16,8 @@ func Test_minimumJumps(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		// [128,178,147,165,63,11,150,20,158,144,136]
-		{"t1", args{[]int{128, 178, 147, 165, 63, 11, 150, 20, 158, 144, 136}, 61, 70, 35}, 1},
+		{"t1", args{[]int{128, 178, 147, 165, 63, 11, 150, 20, 158, 144, 136},
+			61, 70, 35}, 1},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
