@@ -40,6 +40,7 @@ import "fmt"
 //forbidden 中所有位置互不相同。
 //位置 x 不在 forbidden 中。
 
+// 不行，这种写法可能会死循环
 func minimumJumps(forbidden []int, a int, b int, x int) int {
 	forbiddenMap := make(map[int]bool)
 	f := forbidden[0]
@@ -89,4 +90,49 @@ func minimumJumps(forbidden []int, a int, b int, x int) int {
 		}
 	}
 	return dfs(0, 0)
+}
+
+// 求最短路径就直接用BFS吧
+func minimumJumps2(forbidden []int, a int, b int, x int) int {
+	forbiddenMap := make(map[int]bool)
+	f := forbidden[0]
+	for _, idx := range forbidden {
+		forbiddenMap[idx] = true
+		if idx > f {
+			f = idx
+		}
+	}
+	mx := x
+	if a > b {
+		mx = x + b
+	} else {
+		if f+a+b > mx {
+			mx = f + a + b
+		}
+	}
+	arr := make([]int, mx+1)
+	for i := 1; i <= mx; i++ {
+		arr[i] = -1
+	}
+	queue := []int{0}
+	depth := 0
+	for len(queue) > 0 {
+		size := len(queue)
+		for i := 0; i < size; i++ {
+			pos := queue[i]
+			// 往前走
+			if !forbiddenMap[pos+a] && pos+a <= mx && arr[pos+a] < 0 {
+				queue = append(queue, pos+a)
+				arr[pos+a] = depth + 1
+			}
+			// 往后走
+			if !forbiddenMap[pos-b] && pos-b >= 0 && arr[pos-b] < 0 {
+				queue = append(queue, pos-b)
+				arr[pos-b] = depth + 1
+			}
+		}
+		queue = queue[size:]
+		depth++
+	}
+	return arr[x]
 }
