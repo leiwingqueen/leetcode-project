@@ -110,29 +110,44 @@ func minimumJumps2(forbidden []int, a int, b int, x int) int {
 			mx = f + a + b
 		}
 	}
-	arr := make([]int, mx+1)
+	arr := make([][]int, mx+1)
+	arr[0] = []int{0, 0}
 	for i := 1; i <= mx; i++ {
-		arr[i] = -1
+		arr[i] = []int{-1, -1}
 	}
-	queue := []int{0}
+	queue := [][]int{{0, 0}}
 	depth := 0
 	for len(queue) > 0 {
 		size := len(queue)
 		for i := 0; i < size; i++ {
-			pos := queue[i]
+			pos, forward := queue[i][0], queue[i][1]
 			// 往前走
-			if !forbiddenMap[pos+a] && pos+a <= mx && arr[pos+a] < 0 {
-				queue = append(queue, pos+a)
-				arr[pos+a] = depth + 1
+			if !forbiddenMap[pos+a] && pos+a <= mx && arr[pos+a][0] < 0 {
+				queue = append(queue, []int{pos + a, 0})
+				arr[pos+a][0] = depth + 1
 			}
 			// 往后走
-			if !forbiddenMap[pos-b] && pos-b >= 0 && arr[pos-b] < 0 {
-				queue = append(queue, pos-b)
-				arr[pos-b] = depth + 1
+			if forward == 0 {
+				if !forbiddenMap[pos-b] && pos-b >= 0 && arr[pos-b][1] < 0 {
+					queue = append(queue, []int{pos - b, 1})
+					arr[pos-b][1] = depth + 1
+				}
 			}
 		}
 		queue = queue[size:]
 		depth++
 	}
-	return arr[x]
+	if arr[x][0] < 0 && arr[x][1] < 0 {
+		return -1
+	} else if arr[x][0] < 0 {
+		return arr[x][1]
+	} else if arr[x][1] < 0 {
+		return arr[x][0]
+	} else {
+		if arr[x][0] < arr[x][1] {
+			return arr[x][0]
+		} else {
+			return arr[x][1]
+		}
+	}
 }
