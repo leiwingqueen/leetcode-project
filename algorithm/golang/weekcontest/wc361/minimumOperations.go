@@ -11,7 +11,7 @@ func minimumOperations(num string) int {
 		}
 		cnt += n - p - 1
 		if p <= 0 {
-			return 0
+			return n
 		}
 		// 找到第一个5或者0
 		p2 := p - 1
