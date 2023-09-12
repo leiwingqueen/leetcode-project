@@ -66,7 +66,9 @@ func checkIfPrerequisite(numCourses int, prerequisites [][]int, queries [][]int)
 			for _, next := range graph[node] {
 				if !visit[next] {
 					queue = append(queue, next)
+					// fmt.Println(fmt.Sprintf("start:%d,next:%d", start, next))
 					connect[start][next] = true
+					visit[next] = true
 				}
 			}
 		}
