@@ -87,9 +87,11 @@ int **queensAttacktheKing(int **queens, int queensSize, int *queensColSize, int 
         }
     }
     *returnSize = idx;
-    *returnColumnSizes = (int *) malloc(sizeof(int) * idx);
-    for (int i = 0; i < idx; ++i) {
-        (*returnColumnSizes)[i] = 2;
+    if (idx > 0) {
+        *returnColumnSizes = (int *) malloc(sizeof(int) * idx);
+        for (int i = 0; i < idx; ++i) {
+            (*returnColumnSizes)[i] = 2;
+        }
     }
     return ans;
 }
