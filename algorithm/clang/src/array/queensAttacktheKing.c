@@ -45,6 +45,7 @@
 //一个棋盘格上最多只能放置一枚棋子。
 
 #include <stdlib.h>
+#include "stdio.h"
 
 /**
  * Return an array of arrays of size *returnSize.
@@ -54,6 +55,11 @@
 int **queensAttacktheKing(int **queens, int queensSize, int *queensColSize, int *king, int kingSize, int *returnSize,
                           int **returnColumnSizes) {
     char queueMap[8][8];
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            queueMap[i][j] = 0;
+        }
+    }
     for (int i = 0; i < queensSize; ++i) {
         int x = queens[i][0];
         int y = queens[i][1];
@@ -74,11 +80,14 @@ int **queensAttacktheKing(int **queens, int queensSize, int *queensColSize, int 
     for (int i = 0; i < 8; ++i) {
         int x = king[0] + dirs[i][0];
         int y = king[1] + dirs[i][1];
+        // printf("start %d,[%d,%d]", i, x, y);
         while (x >= 0 && x < 8 && y >= 0 && y < 8) {
+            // printf("i:%d,x:%d,y:%d\n", i, x, y);
             if (queueMap[x][y] == 1) {
                 ans[idx] = (int *) malloc(sizeof(int) * 2);
                 ans[idx][0] = x;
                 ans[idx][1] = y;
+                // printf("add res:[%d,%d]", x, y);
                 idx++;
                 break;
             }
