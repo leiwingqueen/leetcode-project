@@ -39,15 +39,18 @@
 //1 <= nums[i] <= 109
 //1 <= k <= (nums.length + 1)/2
 
+
+#include <stdbool.h>
+
 int check(int *nums, int numsSize, int y) {
     int cnt = 0;
-    char pre = 0;
+    bool pre = 0;
     for (int i = 0; i < numsSize; ++i) {
         if (!pre && nums[i] <= y) {
             cnt++;
-            pre = 1;
+            pre = true;
         } else {
-            pre = 0;
+            pre = false;
         }
     }
     return cnt;
