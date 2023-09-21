@@ -61,6 +61,7 @@ public class T2 {
         return (year - 1900) * 12 + month;
     }
 
+    // 正确解法
     public int solution2(String[] A, String[] B, int[] C) {
         int n = A.length;
         int[][] times = new int[n][2];
