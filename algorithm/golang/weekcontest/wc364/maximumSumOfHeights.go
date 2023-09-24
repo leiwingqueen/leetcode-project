@@ -34,3 +34,42 @@ func maximumSumOfHeights(maxHeights []int) int64 {
 	}
 	return res
 }
+
+// 单调栈可以优化
+func maximumSumOfHeights2(maxHeights []int) int64 {
+	n := len(maxHeights)
+	left := make([]int64, n)
+	var stack []int
+	var sum int64
+	for i := 0; i < n; i++ {
+		for len(stack) > 0 && stack[len(stack)-1] > maxHeights[i] {
+			sum -= int64(stack[len(stack)-1])
+			sum += int64(maxHeights[i])
+			stack = stack[:len(stack)-1]
+		}
+		stack = append(stack, maxHeights[i])
+		sum += int64(maxHeights[i])
+		left[i] = sum
+	}
+	stack = stack[:0]
+	right := make([]int64, n)
+	sum = 0
+	for i := n - 1; i >= 0; i-- {
+		for len(stack) > 0 && stack[len(stack)-1] > maxHeights[i] {
+			sum -= int64(stack[len(stack)-1])
+			sum += int64(maxHeights[i])
+			stack = append(stack, maxHeights[i])
+		}
+		stack = append(stack, maxHeights[i])
+		sum += int64(maxHeights[i])
+		right[i] = sum
+	}
+	var res int64
+	for i := 0; i < n; i++ {
+		h := left[i] + right[i] - int64(maxHeights[i])
+		if h > res {
+			res = h
+		}
+	}
+	return res
+}
