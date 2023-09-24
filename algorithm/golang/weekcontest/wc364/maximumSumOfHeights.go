@@ -42,32 +42,46 @@ func maximumSumOfHeights2(maxHeights []int) int64 {
 	var stack []int
 	var sum int64
 	for i := 0; i < n; i++ {
-		for len(stack) > 0 && maxHeights[stack[len(stack)-1]] > maxHeights[i] {
+		for len(stack) > 0 && maxHeights[stack[len(stack)-1]] >= maxHeights[i] {
+			idx := stack[len(stack)-1]
 			stack = stack[:len(stack)-1]
+			next := -1
+			if len(stack) > 0 {
+				next = stack[len(stack)-1]
+			}
+			// [next+1,idx]
+			sum -= int64(maxHeights[idx]) * int64(idx-next)
 		}
-		cnt := i
+		top := -1
 		if len(stack) > 0 {
-			cnt = i - stack[len(stack)-1] - 1
+			top = stack[len(stack)-1]
 		}
-		sum += int64(cnt) * int64(maxHeights[i])
+		// [top+1,i]
+		sum += int64(i-top) * int64(maxHeights[i])
 		stack = append(stack, i)
-		sum += int64(maxHeights[i])
 		left[i] = sum
 	}
 	stack = stack[:0]
 	right := make([]int64, n)
 	sum = 0
 	for i := n - 1; i >= 0; i-- {
-		for len(stack) > 0 && maxHeights[stack[len(stack)-1]] > maxHeights[i] {
+		for len(stack) > 0 && maxHeights[stack[len(stack)-1]] >= maxHeights[i] {
+			idx := stack[len(stack)-1]
 			stack = stack[:len(stack)-1]
+			next := n
+			if len(stack) > 0 {
+				next = stack[len(stack)-1]
+			}
+			// [idx,next)
+			sum -= int64(maxHeights[idx]) * int64(next-idx)
 		}
-		cnt := i
+		top := n
 		if len(stack) > 0 {
-			cnt = stack[len(stack)-1] - i - 1
+			top = stack[len(stack)-1]
 		}
-		sum += int64(cnt) * int64(maxHeights[i])
+		//[i,top)
+		sum += int64(top-i) * int64(maxHeights[i])
 		stack = append(stack, i)
-		sum += int64(maxHeights[i])
 		right[i] = sum
 	}
 	var res int64
