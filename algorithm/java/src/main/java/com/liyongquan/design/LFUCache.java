@@ -2,7 +2,7 @@ package com.liyongquan.design;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.TreeMap;
 
 /**
  * 460. LFU 缓存
@@ -68,13 +68,16 @@ public class LFUCache {
     /**
      * 不通过，因为如果访问频数相同是以最后访问的时间排序，并不是以插入的时间顺序
      */
-    //数据存储
-    private Map<Integer, CounterValue> map;
+    // key-[cnt+time],value-key
+    private TreeMap<Long, Integer> map1;
+    private Map<Integer, CounterValue> map2;
+
     private int capacity;
     private int timestamp;
 
     public LFUCache(int capacity) {
-        this.map = new HashMap<>(capacity + 1);
+        this.map1 = new TreeMap<>();
+        this.map2 = new HashMap<>(capacity + 1);
         this.capacity = capacity;
         timestamp = 0;
     }
@@ -86,13 +89,15 @@ public class LFUCache {
      * @return
      */
     public int get(int key) {
-        if (!this.map.containsKey(key)) {
+        if (!this.map2.containsKey(key)) {
             return -1;
         }
-        CounterValue cv = map.get(key);
+        CounterValue cv = map2.get(key);
+        map1.remove(buildKey(cv.cnt, cv.time));
         timestamp++;
         cv.cnt += 1;
         cv.time = timestamp;
+        map1.put(buildKey(cv.cnt, cv.time), key);
         return cv.value;
     }
 
@@ -106,47 +111,42 @@ public class LFUCache {
         if (this.capacity == 0) {
             return;
         }
-        //过期检测
-        expire(key);
+        // expire(key);
         CounterValue cv;
         timestamp++;
-        if (this.map.containsKey(key)) {
-            cv = map.get(key);
+        if (this.map2.containsKey(key)) {
+            cv = map2.get(key);
+            map1.remove(buildKey(cv.cnt, cv.time));
+            cv.value = value;
+            cv.cnt += 1;
+            cv.time = timestamp;
         } else {
-            cv = new CounterValue(timestamp, value, 0);
+            cv = new CounterValue(key, value, 1, timestamp);
+            // 淘汰
+            if (this.map2.size() >= this.capacity) {
+                Map.Entry<Long, Integer> entry = map1.pollFirstEntry();
+                map2.remove(entry.getValue());
+            }
         }
-        cv.value = value;
-        cv.cnt += 1;
-        cv.time = timestamp;
-        map.put(key, cv);
+        map2.put(key, cv);
+        map1.put(buildKey(cv.cnt, cv.time), key);
     }
 
-    private void expire(int key) {
-        if (this.capacity == 0 || this.map.size() < this.capacity || this.map.containsKey(key)) {
-            return;
-        }
-        PriorityQueue<Map.Entry<Integer, CounterValue>> pq = new PriorityQueue<>(map.size(),
-                (o1, o2) -> o1.getValue().cnt != o2.getValue().cnt ?
-                        o1.getValue().cnt - o2.getValue().cnt : o1.getValue().time - o2.getValue().time);
-        for (Map.Entry<Integer, CounterValue> entry : map.entrySet()) {
-            pq.add(entry);
-        }
-        Map.Entry<Integer, CounterValue> peek = pq.peek();
-        this.map.remove(peek.getKey());
+    private long buildKey(int cnt, int time) {
+        return (((long) cnt) << 32) + time;
     }
 
     private static class CounterValue {
-        int time;
-        int value;
         int cnt;
+        int time;
+        int key;
+        int value;
 
-        public CounterValue(int time, int value, int cnt) {
+        public CounterValue(int key, int value, int cnt, int time) {
+            this.key = key;
             this.time = time;
             this.value = value;
             this.cnt = cnt;
         }
     }
-
-    //TODO:AVL树的解法
-
 }

@@ -76,8 +76,34 @@ public class LFUCacheTest {
         Assert.assertEquals(-1, res);
     }
 
-    /**
-     * ["LFUCache","put","put","get","put","put","get"]
-     * [[2],[2,1],[2,2],[2],[1,1],[4,1],[2]]
-     */
+
+    // ["LFUCache","put","put","get","put","get","get","put","get","get","get"]
+    // [[2],[1,1],[2,2],[1],[3,3],[2],[3],[4,4],[1],[3],[4]]
+    // [null,null,null,1,null,-1,3,null,-1,3,4]
+    @Test
+    public void test4() {
+        LFUCache cache = new LFUCache(2);
+        cache.put(1, 1);
+        cache.put(2, 2);
+        int res = cache.get(1);
+        log.info("{}", res);
+        Assert.assertEquals(1, res);
+        cache.put(3, 3);
+        res = cache.get(2);
+        log.info("{}", res);
+        Assert.assertEquals(-1, res);
+        res = cache.get(3);
+        log.info("{}", res);
+        Assert.assertEquals(3, res);
+        cache.put(4, 4);
+        res = cache.get(1);
+        log.info("{}", res);
+        Assert.assertEquals(-1, res);
+        res = cache.get(3);
+        log.info("{}", res);
+        Assert.assertEquals(3, res);
+        res = cache.get(4);
+        log.info("{}", res);
+        Assert.assertEquals(4, res);
+    }
 }
