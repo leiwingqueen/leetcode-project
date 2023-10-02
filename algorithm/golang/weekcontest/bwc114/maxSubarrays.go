@@ -9,5 +9,17 @@ func maxSubarrays(nums []int) int {
 	for _, num := range nums {
 		and &= num
 	}
-	return 0
+	if and > 0 {
+		return 0
+	}
+	and = -1
+	cnt := 0
+	for _, num := range nums {
+		and &= num
+		if and == 0 {
+			cnt++
+			and = -1
+		}
+	}
+	return cnt
 }
