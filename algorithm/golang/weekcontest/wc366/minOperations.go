@@ -28,3 +28,29 @@ func minOperations(s1 string, s2 string, x int) int {
 	}
 	return res
 }
+
+// 试试贪心2？
+func minOperations2(s1 string, s2 string, x int) int {
+	n := len(s1)
+	var arr []int
+	for i := 0; i < n; i++ {
+		if s1[i] != s2[i] {
+			arr = append(arr, i)
+		}
+	}
+	if len(arr)%2 == 1 {
+		return -1
+	}
+	// 先把相邻的数字去掉
+	var tmp []int
+	for i := 0; i < n-1; i++ {
+		if arr[i] == arr[i+1] {
+			i++
+		} else {
+			tmp = append(tmp, arr[i])
+		}
+	}
+	// 然后按贪心处理剩下的数字
+	// 不行 还是有问题
+	return 0
+}
