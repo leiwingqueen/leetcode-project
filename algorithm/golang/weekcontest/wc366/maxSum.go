@@ -77,4 +77,29 @@ func maxSum(nums []int, k int) int {
 	return res
 }
 
+// 这个还是难，只能看题解
+func maxSum2(nums []int, k int) int {
+	mod := 1_000_000_007
+	cnt := make([]int, 30)
+	for _, num := range nums {
+		for j := 0; j < 30; j++ {
+			if num&(1<<j) != 0 {
+				cnt[j]++
+			}
+		}
+	}
+	res := 0
+	for i := 0; i < k; i++ {
+		x := 0
+		for j := 0; j < 30; j++ {
+			if cnt[j] > 0 {
+				x |= 1 << j
+				cnt[j]--
+			}
+		}
+		res = (res + x*x) % mod
+	}
+	return res
+}
+
 //leetcode submit region end(Prohibit modification and deletion)
