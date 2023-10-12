@@ -1,5 +1,7 @@
 package wc366
 
+import "math"
+
 // 贪心，然而并不是最优解
 func minOperations(s1 string, s2 string, x int) int {
 	n := len(s1)
@@ -29,28 +31,53 @@ func minOperations(s1 string, s2 string, x int) int {
 	return res
 }
 
-// 试试贪心2？
 func minOperations2(s1 string, s2 string, x int) int {
 	n := len(s1)
-	var arr []int
+	oneCnt1, oneCnt2 := 0, 0
 	for i := 0; i < n; i++ {
-		if s1[i] != s2[i] {
-			arr = append(arr, i)
+		if s1[i] == '1' {
+			oneCnt1++
+		}
+		if s2[i] == '1' {
+			oneCnt2++
 		}
 	}
-	if len(arr)%2 == 1 {
+	if oneCnt1%2 != oneCnt2%2 {
 		return -1
 	}
-	// 先把相邻的数字去掉
-	var tmp []int
-	for i := 0; i < n-1; i++ {
-		if arr[i] == arr[i+1] {
-			i++
-		} else {
-			tmp = append(tmp, arr[i])
+	var dfs func(i, j int, reverse bool) int
+	dfs = func(i, j int, reverse bool) int {
+		b1, b2 := s1[1]-'0', s2[i]-'0'
+		if reverse {
+			b1 ^= 1
 		}
+		if i == 0 {
+			if (b1 == b2 && j == 0) || (b1 != b2 && j == 1) {
+				return 0
+			} else {
+				return math.MaxInt32
+			}
+		}
+		if b1 == b2 {
+			return dfs(i-1, j, false)
+		}
+		res := math.MaxInt32
+		if j > 0 {
+			// 方案1
+			sub := dfs(i-1, j-1, false)
+			if sub < res {
+				res = sub
+			}
+		}
+		sub1 := dfs(i-1, j+1, false) + x
+		if sub1 < res {
+			res = sub1
+		}
+		sub2 := dfs(i-1, j, true) + 1
+		if sub2 < res {
+			res = sub2
+		}
+		return res
 	}
-	// 然后按贪心处理剩下的数字
-	// 不行 还是有问题
-	return 0
+	return dfs(n-1, 0, false)
 }
