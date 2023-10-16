@@ -65,5 +65,24 @@ func findIndices(nums []int, indexDifference int, valueDifference int) []int {
 
 // 优化解法
 func findIndices2(nums []int, indexDifference int, valueDifference int) []int {
-
+	n := len(nums)
+	max, min := nums[0], nums[0]
+	maxIdx, minIdx := 0, 0
+	for i := indexDifference; i < n; i++ {
+		if nums[i-indexDifference] > max {
+			max = nums[i-indexDifference]
+			maxIdx = i - indexDifference
+		}
+		if nums[i-indexDifference] < min {
+			min = nums[i-indexDifference]
+			minIdx = i - indexDifference
+		}
+		if nums[i]-valueDifference >= min {
+			return []int{minIdx, i}
+		}
+		if nums[i]+valueDifference <= max {
+			return []int{maxIdx, i}
+		}
+	}
+	return []int{-1, -1}
 }
