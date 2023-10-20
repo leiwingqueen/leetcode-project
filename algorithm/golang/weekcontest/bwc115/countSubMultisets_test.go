@@ -21,7 +21,7 @@ func Test_countSubMultisets(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := countSubMultisets(tt.args.nums, tt.args.l, tt.args.r); got != tt.want {
+			if got := countSubMultisets2(tt.args.nums, tt.args.l, tt.args.r); got != tt.want {
 				t.Errorf("countSubMultisets() = %v, want %v", got, tt.want)
 			}
 		})

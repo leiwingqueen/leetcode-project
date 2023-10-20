@@ -60,3 +60,39 @@ func countSubMultisets(nums []int, l int, r int) int {
 		return dp[r]
 	}
 }
+
+// 解决重复集合的问题，但是超时了
+func countSubMultisets2(nums []int, l int, r int) int {
+	mod := 1_000_000_007
+	mp := make(map[int]int)
+	for _, num := range nums {
+		mp[num]++
+	}
+	arr, cnt := make([]int, len(mp)), make([]int, len(mp))
+	idx := 0
+	for num, c := range mp {
+		arr[idx] = num
+		cnt[idx] = c
+		idx++
+	}
+	n := len(mp)
+	dp := make([]int, r+1)
+	for i := 0; i <= r; i++ {
+		dp[i] = 1
+	}
+	for i := 1; i <= n; i++ {
+		tmp := make([]int, r+1)
+		for j := 0; j <= r; j++ {
+			tmp[j] = dp[j]
+			for k := 1; k <= cnt[i-1] && arr[i-1]*k <= j; k++ {
+				tmp[j] = (tmp[j] + dp[j-k*arr[i-1]]) % mod
+			}
+		}
+		dp = tmp
+	}
+	if l > 0 {
+		return (dp[r] - dp[l-1] + mod) % mod
+	} else {
+		return dp[r]
+	}
+}
