@@ -37,6 +37,7 @@ package wc368
 //1 <= k <= s.length / 2
 //s 只包含小写英文字母。
 
+// 低分飘过，虽然是过了
 func minimumChanges(s string, k int) int {
 	n := len(s)
 	// 变成一个半回文串需要改变的最小的字符数量
