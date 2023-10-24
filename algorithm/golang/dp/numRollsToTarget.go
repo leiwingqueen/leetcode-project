@@ -32,6 +32,7 @@ package dp
 //1 <= n, k <= 30
 //1 <= target <= 1000
 
+// dp解法
 func numRollsToTarget(n int, k int, target int) int {
 	mod := 1_000_000_007
 	dp := make([]int, target+1)
@@ -39,7 +40,7 @@ func numRollsToTarget(n int, k int, target int) int {
 		dp[i] = 1
 	}
 	// 摇i次得到总和为s，则s的范围[i,k*i]
-	for i := 1; i < n; i++ {
+	for i := 2; i <= n; i++ {
 		tmp := make([]int, target+1)
 		for j := i; j <= target && j <= k*i; j++ {
 			for l := 1; l <= k && l < j; l++ {
