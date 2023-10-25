@@ -125,11 +125,15 @@ func countSubMultisets3(nums []int, l int, r int) int {
 	for i := 1; i <= n; i++ {
 		tmp := make([]int, r+1)
 		for j := 0; j <= r; j++ {
-			tmp[j] = dp[j]
-			if j >= arr[i-1] {
-				tmp[j] = (tmp[j] + tmp[j-arr[i-1]]) % mod
-				if j >= (cnt[i-1]+1)*arr[i-1] {
-					tmp[j] = (tmp[j] - tmp[j-(cnt[i-1]+1)*arr[i-1]] + mod) % mod
+			if arr[i-1] == 0 {
+				tmp[j] = (cnt[i-1] + 1) * dp[j]
+			} else {
+				tmp[j] = dp[j]
+				if j >= arr[i-1] {
+					tmp[j] = (tmp[j] + dp[j-arr[i-1]]) % mod
+					if j >= (cnt[i-1]+1)*arr[i-1] {
+						tmp[j] = (tmp[j] + mod - dp[j-(cnt[i-1]+1)*arr[i-1]]) % mod
+					}
 				}
 			}
 		}
