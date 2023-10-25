@@ -75,6 +75,9 @@ func countSubMultisets2(nums []int, l int, r int) int {
 		cnt[idx] = c
 		idx++
 	}
+	// f(i,j)为前i种数字中的和<=j的数量
+	// f(i,j)=f(i-1,j)+f(i-1,j-arr[i-1])+...+f(i-1,j-k*arr[i-1])
+	// 其中k为i类数字出现的数量
 	n := len(mp)
 	dp := make([]int, r+1)
 	for i := 0; i <= r; i++ {
@@ -86,6 +89,48 @@ func countSubMultisets2(nums []int, l int, r int) int {
 			tmp[j] = dp[j]
 			for k := 1; k <= cnt[i-1] && arr[i-1]*k <= j; k++ {
 				tmp[j] = (tmp[j] + dp[j-k*arr[i-1]]) % mod
+			}
+		}
+		dp = tmp
+	}
+	if l > 0 {
+		return (dp[r] - dp[l-1] + mod) % mod
+	} else {
+		return dp[r]
+	}
+}
+
+// 增加滑动窗口
+func countSubMultisets3(nums []int, l int, r int) int {
+	mod := 1_000_000_007
+	mp := make(map[int]int)
+	for _, num := range nums {
+		mp[num]++
+	}
+	arr, cnt := make([]int, len(mp)), make([]int, len(mp))
+	idx := 0
+	for num, c := range mp {
+		arr[idx] = num
+		cnt[idx] = c
+		idx++
+	}
+	// f(i,j)为前i种数字中的和<=j的数量
+	// f(i,j)=f(i-1,j)+f(i-1,j-arr[i-1])+...+f(i-1,j-k*arr[i-1])
+	// 其中k为i类数字出现的数量
+	n := len(mp)
+	dp := make([]int, r+1)
+	for i := 0; i <= r; i++ {
+		dp[i] = 1
+	}
+	for i := 1; i <= n; i++ {
+		tmp := make([]int, r+1)
+		for j := 0; j <= r; j++ {
+			tmp[j] = dp[j]
+			if j >= arr[i-1] {
+				tmp[j] = (tmp[j] + tmp[j-arr[i-1]]) % mod
+				if j >= (cnt[i-1]+1)*arr[i-1] {
+					tmp[j] = (tmp[j] - tmp[j-(cnt[i-1]+1)*arr[i-1]] + mod) % mod
+				}
 			}
 		}
 		dp = tmp
