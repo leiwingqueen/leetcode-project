@@ -45,3 +45,18 @@ func countPairs(coordinates [][]int, k int) int {
 	}
 	return res
 }
+
+func countPairs2(coordinates [][]int, k int) int {
+	n := len(coordinates)
+	res := 0
+	mp := make(map[int64]int)
+	for i := 0; i < n; i++ {
+		x2, y2 := coordinates[i][0], coordinates[i][1]
+		for j := 0; j <= k; j++ {
+			x1, y1 := x2^j, y2^(k-j)
+			res += mp[(int64(x1)<<32)|int64(y1)]
+		}
+		mp[(int64(x2)<<32)|int64(y2)]++
+	}
+	return res
+}
