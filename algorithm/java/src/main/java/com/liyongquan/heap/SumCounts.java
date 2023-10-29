@@ -48,6 +48,7 @@ import java.util.Set;
 
 public class SumCounts {
     public int sumCounts(int[] nums) {
+        int mod = 1_000_000_007;
         int n = nums.length;
         Map<Integer, Integer> idxMap = new HashMap<>();
         int[] dp = new int[n];
@@ -55,22 +56,18 @@ public class SumCounts {
         idxMap.put(nums[0], 0);
         int[] preSum = new int[n];
         preSum[0] = 1;
-        Set<Integer> set = new HashSet<>();
-        set.add(nums[0]);
         for (int i = 1; i < n; i++) {
-            dp[i] = dp[i - 1] * 2;
+            dp[i] = 2 * dp[i - 1];
             if (idxMap.containsKey(nums[i])) {
                 Integer idx = idxMap.get(nums[i]);
-                dp[i] -= dp[idx];
-                preSum[i] = preSum[i - 1] + idx;
+                dp[i] = (dp[i] + i - idx + 2 * (preSum[i - 1] - preSum[idx])) % mod;
+                preSum[i] = preSum[i - 1] + i - idx;
             } else {
-                dp[i] += (i + 1) + 2 * preSum[i - 1];
-                preSum[i] = preSum[i - 1] + i;
+                dp[i] = (dp[i] + (i + 1) + 2 * preSum[i - 1]) % mod;
+                preSum[i] = preSum[i - 1] + i + 1;
             }
             idxMap.put(nums[i], i);
-            set.add(nums[i]);
-            // preSum[i] = preSum[i - 1] + set.size();
         }
-        return 0;
+        return dp[n - 1];
     }
 }
