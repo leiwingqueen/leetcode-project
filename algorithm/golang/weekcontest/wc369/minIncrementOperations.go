@@ -80,3 +80,56 @@ func minIncrementOperations(nums []int, k int) int64 {
 	}
 	return dp[n]
 }
+
+// 优化写法
+func minIncrementOperations2(nums []int, k int) int64 {
+	max := func(a, b int64) int64 {
+		if a > b {
+			return a
+		} else {
+			return b
+		}
+	}
+	min := func(a, b int64) int64 {
+		if a < b {
+			return a
+		} else {
+			return b
+		}
+	}
+	n := len(nums)
+	dp := make([]int64, n)
+	dp[2] = min(min(max(int64(k-nums[0]), 0), max(int64(k-nums[1]), 0)), max(int64(k-nums[2]), 0))
+	for i := 3; i < n; i++ {
+		dp[i] = min(min(dp[i-1]+max(int64(k-nums[i]), 0), dp[i-2]+max(int64(k-nums[i-1]), 0)),
+			dp[i-3]+max(int64(k-nums[i-2]), 0))
+	}
+	return dp[n-1]
+}
+
+func minIncrementOperations3(nums []int, k int) int64 {
+	max := func(a, b int64) int64 {
+		if a > b {
+			return a
+		} else {
+			return b
+		}
+	}
+	min := func(a, b int64) int64 {
+		if a < b {
+			return a
+		} else {
+			return b
+		}
+	}
+	n := len(nums)
+	f0, f1, f2 := int64(0), int64(0), min(min(max(int64(k-nums[0]), 0), max(int64(k-nums[1]), 0)), max(int64(k-nums[2]), 0))
+	for i := 3; i < n; i++ {
+		fn := min(min(f2+max(int64(k-nums[i]), 0), f1+max(int64(k-nums[i-1]), 0)),
+			f0+max(int64(k-nums[i-2]), 0))
+		f0 = f1
+		f1 = f2
+		f2 = fn
+	}
+	return f2
+}
