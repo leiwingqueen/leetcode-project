@@ -1,5 +1,7 @@
 package wc369
 
+import "math"
+
 // 给你一个下标从 0 开始、长度为 n 的整数数组 nums ，和一个整数 k 。
 //
 //你可以执行下述 递增 运算 任意 次（可以是 0 次）：
@@ -73,6 +75,7 @@ func minIncrementOperations(nums []int, k int) int64 {
 	dp[2] = min(dp[1], max(int64(k-nums[1]), 0))
 	dp[3] = min(dp[2], max(int64(k-nums[2]), 0))
 	for i := 4; i <= n; i++ {
+		dp[i] = math.MaxInt64
 		dp[i] = dp[i-3] + max(int64(k-nums[i-1]), 0)
 		if i-4 >= 0 {
 			dp[i] = min(dp[i], dp[i-4]+max(int64(k-nums[i-2]), 0))
