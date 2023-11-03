@@ -69,6 +69,7 @@ func connect(root *Node) *Node {
 	return root
 }
 
+// 这个思路可以
 func connect2(root *Node) *Node {
 	if root == nil {
 		return nil
