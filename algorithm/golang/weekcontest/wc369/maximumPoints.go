@@ -120,3 +120,51 @@ func maximumPoints2(edges [][]int, coins []int, k int) int {
 	}
 	return dfs(0, 1, -1)
 }
+
+// 记忆稍微优化一下
+func maximumPoints3(edges [][]int, coins []int, k int) int {
+	n := len(coins)
+	graph := make([][]int, n)
+	for _, edge := range edges {
+		x, y := edge[0], edge[1]
+		graph[x] = append(graph[x], y)
+		graph[y] = append(graph[y], x)
+	}
+	mem := make([][]int, n)
+	for i := 0; i < n; i++ {
+		mem[i] = make([]int, 14)
+		for j := 0; j < 14; j++ {
+			mem[i][j] = -1
+		}
+	}
+	var dfs func(node int, degree int, parent int) int
+	dfs = func(node int, degree int, parent int) int {
+		if degree >= 14 {
+			return 0
+		}
+		if mem[node][degree] >= 0 {
+			return mem[node][degree]
+		}
+		res := 0
+		defer func() {
+			mem[node][degree] = res
+		}()
+		// 方式1
+		r1 := (coins[node] >> degree) - k
+		// 方式2
+		r2 := coins[node] >> (degree + 1)
+		for _, next := range graph[node] {
+			if next != parent {
+				r1 += dfs(next, degree, node)
+				r2 += dfs(next, degree+1, node)
+			}
+		}
+		if r1 > r2 {
+			res = r1
+		} else {
+			res = r2
+		}
+		return res
+	}
+	return dfs(0, 0, -1)
+}
