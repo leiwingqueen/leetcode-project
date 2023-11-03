@@ -41,7 +41,7 @@ package wc369
 //0 <= edges[i][0], edges[i][1] < n
 //0 <= k <= 104
 
-// dfs
+// dfs，时间复杂度2^n，必然超时
 func maximumPoints(edges [][]int, coins []int, k int) int {
 	n := len(coins)
 	graph := make([][]int, n)
@@ -50,7 +50,6 @@ func maximumPoints(edges [][]int, coins []int, k int) int {
 		graph[x] = append(graph[x], y)
 		graph[y] = append(graph[y], x)
 	}
-
 	var dfs func(node int, degree int, parent int) int
 	dfs = func(node int, degree int, parent int) int {
 		// 方式1
@@ -61,7 +60,7 @@ func maximumPoints(edges [][]int, coins []int, k int) int {
 			}
 		}
 		// 方式2
-		r2 := coins[node] / degree
+		r2 := coins[node] / degree / 2
 		for _, next := range graph[node] {
 			if next != parent {
 				r2 += dfs(next, degree*2, node)
@@ -72,6 +71,52 @@ func maximumPoints(edges [][]int, coins []int, k int) int {
 		} else {
 			return r2
 		}
+	}
+	return dfs(0, 1, -1)
+}
+
+// 增加记忆，通过
+func maximumPoints2(edges [][]int, coins []int, k int) int {
+	n := len(coins)
+	graph := make([][]int, n)
+	for _, edge := range edges {
+		x, y := edge[0], edge[1]
+		graph[x] = append(graph[x], y)
+		graph[y] = append(graph[y], x)
+	}
+	mem := make(map[int64]int)
+	var dfs func(node int, degree int, parent int) int
+	dfs = func(node int, degree int, parent int) int {
+		if degree > 10_000 {
+			return 0
+		}
+		if v, ok := mem[(int64(node)<<32)|int64(degree)]; ok {
+			return v
+		}
+		res := 0
+		defer func() {
+			mem[(int64(node)<<32)|int64(degree)] = res
+		}()
+		// 方式1
+		r1 := coins[node]/degree - k
+		for _, next := range graph[node] {
+			if next != parent {
+				r1 += dfs(next, degree, node)
+			}
+		}
+		// 方式2
+		r2 := coins[node] / degree / 2
+		for _, next := range graph[node] {
+			if next != parent {
+				r2 += dfs(next, degree*2, node)
+			}
+		}
+		if r1 > r2 {
+			res = r1
+		} else {
+			res = r2
+		}
+		return res
 	}
 	return dfs(0, 1, -1)
 }
