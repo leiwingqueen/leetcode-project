@@ -34,3 +34,20 @@ func findMaximumXOR(nums []int) int {
 	}
 	return res
 }
+
+// 这道题确实有点难
+func findMaximumXOR2(nums []int) int {
+	mask := 0
+	res := 0
+	for i := 30; i >= 0; i-- {
+		mask |= 1 << i
+		mp := make(map[int]struct{})
+		for _, num := range nums {
+			if _, ok := mp[(num&mask)^(res|(1<<i))]; ok {
+				res |= 1 << i
+			}
+			mp[num&mask] = struct{}{}
+		}
+	}
+	return res
+}
