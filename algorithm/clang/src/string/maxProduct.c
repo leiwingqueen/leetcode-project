@@ -30,7 +30,6 @@
 //words[i] consists only of lowercase English letters.
 
 #include "string.h"
-#include "math.h"
 
 int maxProduct(char **words, int wordsSize) {
     int masks[wordsSize];
@@ -48,12 +47,14 @@ int maxProduct(char **words, int wordsSize) {
             mask |= 1 << offset;
         }
         masks[i] = mask;
+        // printf("%d,%d\n", i, mask);
     }
     int res = 0;
-    for (int i = 1; i < wordsSize - 1; ++i) {
+    for (int i = 0; i < wordsSize - 1; ++i) {
         for (int j = i + 1; j < wordsSize; ++j) {
             if ((masks[i] & masks[j]) == 0) {
                 int s = strlen(words[i]) * strlen(words[j]);
+                // printf("[%s,%s]:%d", words[i], words[j], s);
                 res = res > s ? res : s;
             }
         }

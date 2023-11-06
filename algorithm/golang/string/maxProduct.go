@@ -50,6 +50,32 @@ func maxProduct(words []string) int {
 	return res
 }
 
+func maxProduct3(words []string) int {
+	n := len(words)
+	convert := func(word string) int {
+		res := 0
+		for _, w := range word {
+			i := int(w - 'a')
+			res |= 1 << i
+		}
+		return res
+	}
+	masks := make([]int, n)
+	for i, word := range words {
+		masks[i] = convert(word)
+	}
+	res := 0
+	for i := 0; i < n-1; i++ {
+		for j := i + 1; j < n; j++ {
+			a1, a2 := masks[i], masks[j]
+			if a1&a2 == 0 && len(words[i])*len(words[j]) > res {
+				res = len(words[i]) * len(words[j])
+			}
+		}
+	}
+	return res
+}
+
 func maxProduct2(words []string) int {
 	max := func(a, b int) int {
 		if a > b {
