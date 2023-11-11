@@ -49,3 +49,21 @@ func distributeCandies2(n int, limit int) int64 {
 	}
 	return dfs(3, n)
 }
+
+func distributeCandies3(n int, limit int) int64 {
+	var res int64
+	for i := 0; i <= n && i <= limit; i++ {
+		left := n - i
+		if left > 2*limit {
+			res += 0
+		} else if left <= limit {
+			res += int64(left + 1)
+		} else {
+			// limit<n<=2*limit
+			sub := left - limit
+			// 能选择的范围是[sub,limit]
+			res += int64(limit - sub + 1)
+		}
+	}
+	return res
+}
