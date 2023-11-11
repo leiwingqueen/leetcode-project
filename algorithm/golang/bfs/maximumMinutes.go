@@ -115,15 +115,17 @@ func maximumMinutes(grid [][]int) int {
 			size := len(queue)
 			for i := 0; i < size; i++ {
 				x, y := queue[i][0], queue[i][1]
-				if x == m-1 && y == n-1 {
-					return true
-				}
 				for _, dir := range dirs {
 					nx, ny := x+dir[0], y+dir[1]
-					if nx >= 0 && nx < m && ny >= 0 && ny < n && !visit[nx][ny] &&
-						fireTime[nx][ny] > time+1 && grid[nx][ny] == 0 {
-						queue = append(queue, []int{nx, ny})
-						visit[nx][ny] = true
+					if nx >= 0 && nx < m && ny >= 0 && ny < n && !visit[nx][ny] && grid[nx][ny] == 0 {
+						if nx == m-1 && ny == n-1 {
+							return fireTime[nx][ny] >= time+1
+						} else {
+							if fireTime[nx][ny] > time+1 {
+								queue = append(queue, []int{nx, ny})
+								visit[nx][ny] = true
+							}
+						}
 					}
 				}
 			}
