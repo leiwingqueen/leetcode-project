@@ -52,7 +52,7 @@ package bwc117
 //1 <= values[i][j] <= 106
 //values[i] 按照非递增顺序排序。
 
-// 基本回溯
+// 基本回溯，超时
 func maxSpending(values [][]int) int64 {
 	m, n := len(values), len(values[0])
 	p := make([]int, m)
