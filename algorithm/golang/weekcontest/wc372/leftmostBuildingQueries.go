@@ -63,7 +63,7 @@ func leftmostBuildingQueries(heights []int, queries [][]int) []int {
 	return res
 }
 
-// 单调栈+二分
+// 单调栈+二分，总算通过了
 func leftmostBuildingQueries2(heights []int, queries [][]int) []int {
 	arr := make([][]int, len(queries))
 	for i, query := range queries {
@@ -80,11 +80,17 @@ func leftmostBuildingQueries2(heights []int, queries [][]int) []int {
 	for _, q := range arr {
 		i, x, y := q[0], q[1], q[2]
 		// 单调栈处理
-		if len(stack) > 0 && stack[len(stack)-1] != y {
-			for len(stack) > 0 && heights[stack[len(stack)-1]] < heights[y] {
-				stack = stack[:len(stack)-1]
+		if len(stack) == 0 || stack[len(stack)-1] != y {
+			last := len(heights)
+			if len(stack) > 0 {
+				last = stack[len(stack)-1]
 			}
-			stack = append(stack, y)
+			for j := last - 1; j >= y; j-- {
+				for len(stack) > 0 && heights[stack[len(stack)-1]] < heights[j] {
+					stack = stack[:len(stack)-1]
+				}
+				stack = append(stack, j)
+			}
 		}
 		if x == y || heights[y] > heights[x] {
 			res[i] = y
