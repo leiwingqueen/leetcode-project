@@ -72,6 +72,7 @@ func beautifulSubstrings(s string, k int) int {
 	return res
 }
 
+// 前缀和稍微优化一下，时间复杂度O(n^2)
 func beautifulSubstrings2(s string, k int) int {
 	n := len(s)
 	mp := make(map[byte]bool)
