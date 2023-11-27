@@ -1,5 +1,7 @@
 package wc373
 
+import "math"
+
 // 给你一个字符串 s 和一个正整数 k 。
 //
 //用 vowels 和 consonants 分别表示字符串中元音字母和辅音字母的数量。
@@ -125,6 +127,52 @@ func beautifulSubstrings3(s string, k int) int64 {
 		expect := 2*c - i - 1
 		res += mp[expect]
 		mp[expect]++
+	}
+	return res
+}
+
+func beautifulSubstrings4(s string, k int) int64 {
+	pSqrt := func(k int) int {
+		// 质因分解
+		res := 1
+		for i := 2; i*i <= k; i++ {
+			c := 0
+			for k%i == 0 {
+				k /= i
+				c++
+			}
+			if c > 0 {
+				res *= int(math.Pow(float64(i), float64((c+1)/2)))
+			}
+		}
+		if k > 1 {
+			res *= k
+		}
+		return res
+	}
+	k = pSqrt(4 * k)
+	n := len(s)
+	vowels := map[byte]bool{
+		'a': true,
+		'e': true,
+		'i': true,
+		'o': true,
+		'u': true,
+	}
+	mp := make(map[int64]int64)
+	mp[0] = 1
+	var res int64
+	c := 0
+	for i := 1; i <= n; i++ {
+		if vowels[s[i-1]] {
+			c++
+		} else {
+			c--
+		}
+		e1 := c
+		e2 := i % k
+		res += mp[int64(e1)<<32|int64(e2)]
+		mp[int64(e1)<<32|int64(e2)]++
 	}
 	return res
 }
