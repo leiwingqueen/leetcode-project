@@ -102,3 +102,29 @@ func beautifulSubstrings2(s string, k int) int {
 	}
 	return res
 }
+
+// 假设不考虑条件2
+func beautifulSubstrings3(s string, k int) int64 {
+	n := len(s)
+	vowels := map[byte]bool{
+		'a': true,
+		'e': true,
+		'i': true,
+		'o': true,
+		'u': true,
+	}
+	mp := make(map[int]int64)
+	mp[0] = 0
+	var res int64
+	// 元音字母数量
+	c := 0
+	for i := 0; i < n; i++ {
+		if vowels[s[i]] {
+			c++
+		}
+		expect := 2*c - i - 1
+		res += mp[expect]
+		mp[expect]++
+	}
+	return res
+}
