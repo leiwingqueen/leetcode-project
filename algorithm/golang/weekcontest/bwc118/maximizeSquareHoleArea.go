@@ -18,13 +18,14 @@ import "sort"
 //如果移除的是竖线段，它必须是 vBars 中的值。
 //请你返回移除一些线段后（可能不移除任何线段），剩余网格图中 最大正方形 空洞的面积，正方形空洞的意思是正方形 内部 不含有任何线段。
 
+// 这写起来好绕
 func maximizeSquareHoleArea(n int, m int, hBars []int, vBars []int) int {
 	sort.Ints(hBars)
 	sort.Ints(vBars)
 	l, r := hBars[0]-1, 0
 	rMax := 1
 	for r < len(hBars) {
-		if r == 0 || hBars[r]-hBars[r-1] <= 1 {
+		if r == 0 || hBars[r]-hBars[r-1] <= 1 || hBars[r]-l <= 1 {
 			r++
 		} else {
 			// [l,r)为连续的空间,h[r-1]-h[l]+1为空间大小
@@ -32,7 +33,7 @@ func maximizeSquareHoleArea(n int, m int, hBars []int, vBars []int) int {
 			if row > rMax {
 				rMax = row
 			}
-			l = hBars[r-1] + 1
+			l = hBars[r] - 1
 		}
 	}
 	// 右边界
@@ -43,14 +44,14 @@ func maximizeSquareHoleArea(n int, m int, hBars []int, vBars []int) int {
 	cMax := 1
 	l, r = vBars[0]-1, 0
 	for r < len(vBars) {
-		if r == 0 || vBars[r]-vBars[r-1] <= 1 {
+		if r == 0 || vBars[r]-vBars[r-1] <= 1 || vBars[r]-l <= 1 {
 			r++
 		} else {
 			col := vBars[r-1] - l + 1
 			if col > cMax {
 				cMax = col
 			}
-			l = vBars[r-1] + 1
+			l = vBars[r] - 1
 		}
 	}
 	col := vBars[r-1] - l + 1
@@ -58,8 +59,8 @@ func maximizeSquareHoleArea(n int, m int, hBars []int, vBars []int) int {
 		cMax = col
 	}
 	if rMax < cMax {
-		return cMax * cMax
-	} else {
 		return rMax * rMax
+	} else {
+		return cMax * cMax
 	}
 }
