@@ -43,6 +43,7 @@ import "sort"
 // 那么增加的范围为[x,s+x)
 // 假设x<=s，那么更新后的范围为 [0,s+x)
 // 否则需要增加一个数字s，让更新后的范围变为[0,2*s)
+
 func minimumAddedCoins(coins []int, target int) int {
 	sort.Ints(coins)
 	res := 0
