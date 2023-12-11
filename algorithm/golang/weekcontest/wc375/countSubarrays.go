@@ -57,3 +57,86 @@ func countSubarrays(nums []int, k int) int64 {
 	}
 	return res
 }
+
+// 单调栈，先不考虑k的情况
+func countSubarrays2(nums []int, k int) int64 {
+	n := len(nums)
+	// 计算左侧>=nums[i]的最近的数字
+	var st []int
+	left := make([]int, n)
+	for i, num := range nums {
+		for len(st) > 0 && nums[st[len(st)-1]] < num {
+			st = st[:len(st)-1]
+		}
+		if len(st) > 0 {
+			left[i] = st[len(st)-1]
+		} else {
+			left[i] = -1
+		}
+		st = append(st, i)
+	}
+	// 从右向左遍历，计算右侧>nums[i]的最近的数字
+	var res int64
+	st = st[:0]
+	for i := n - 1; i >= 0; i-- {
+		for len(st) > 0 && nums[st[len(st)-1]] <= nums[i] {
+			st = st[:len(st)-1]
+		}
+		right := n
+		if len(st) > 0 {
+			right = st[len(st)-1]
+		}
+		res += int64(i-left[i]) * int64(right-i)
+		st = append(st, i)
+	}
+	return res
+}
+
+// 题目理解错了，用滑窗就可以了
+func countSubarrays3(nums []int, k int) int64 {
+	n := len(nums)
+	mx := 0
+	for _, num := range nums {
+		if num > mx {
+			mx = num
+		}
+	}
+	l, r := 0, 0
+	cnt := 0
+	var res int64
+	for nums[l] != mx {
+		l++
+	}
+	r = l
+	for r < n && cnt < k {
+		if nums[r] == mx {
+			cnt++
+		}
+		r++
+	}
+	r--
+	if cnt < k {
+		return 0
+	}
+	res += int64(l+1) * int64(n-r)
+	l++
+	r++
+	for r < n {
+		for l < n && nums[l] != mx {
+			l++
+		}
+		if l == n {
+			break
+		}
+		for r < n && nums[r] != mx {
+			r++
+		}
+		if r == n {
+			break
+		}
+		res += int64(l+1) * int64(n-r)
+		l++
+		r++
+	}
+	return res
+}
