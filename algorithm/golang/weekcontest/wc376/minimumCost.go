@@ -1,5 +1,7 @@
 package wc376
 
+import "sort"
+
 // 给你一个长度为 n 下标从 0 开始的整数数组 nums 。
 //
 //你可以对 nums 执行特殊操作 任意次 （也可以 0 次）。每一次特殊操作中，你需要 按顺序 执行以下步骤：
@@ -41,5 +43,60 @@ package wc376
 //1 <= nums[i] <= 109
 
 func minimumCost(nums []int) int64 {
-	return 0
+	check := func(x int) bool {
+		var arr []int
+		for x > 0 {
+			arr = append(arr, x%10)
+			x /= 10
+		}
+		if len(arr) == 0 {
+			return true
+		}
+		p1, p2 := 0, len(arr)-1
+		for p1 < p2 {
+			if arr[p1] != arr[p2] {
+				return false
+			}
+			p1++
+			p2--
+		}
+		return true
+	}
+	abs := func(x int) int {
+		if x > 0 {
+			return x
+		} else {
+			return -x
+		}
+	}
+	cal := func(x int) int64 {
+		var res int64
+		for _, num := range nums {
+			res += int64(abs(x - num))
+		}
+		return res
+	}
+	sort.Ints(nums)
+	mid := len(nums) / 2
+	left := 0
+	for i := nums[mid]; i >= 1; i-- {
+		if check(i) {
+			left = i
+			break
+		}
+	}
+	right := 0
+	for i := nums[mid]; i <= 1_000_000_000; i++ {
+		if check(i) {
+			right = i
+			break
+		}
+	}
+	r1 := cal(left)
+	r2 := cal(right)
+	if r1 < r2 {
+		return r1
+	} else {
+		return r2
+	}
 }
