@@ -67,3 +67,29 @@ func findPeakGrid(mat [][]int) []int {
 	}
 	return []int{}
 }
+
+// 二分
+func findPeakGrid2(mat [][]int) []int {
+	m, n := len(mat), len(mat[0])
+	l, r := 0, m-1
+	for l <= r {
+		mid := l + (r-l)/2
+		// 找到最大的列
+		mx := 0
+		for i := 0; i < n; i++ {
+			if mat[mid][i] > mat[mid][mx] {
+				mx = i
+			}
+		}
+		if (mid == 0 || mat[mid][mx] > mat[mid-1][mx]) && (mid == m-1 || mat[mid][mx] > mat[mid+1][mx]) {
+			return []int{mid, mx}
+		}
+		if mid > 0 && mat[mid][mx] < mat[mid-1][mx] {
+			// 往上半部找
+			r = mid - 1
+		} else {
+			l = mid + 1
+		}
+	}
+	return []int{}
+}
