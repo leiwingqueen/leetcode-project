@@ -249,3 +249,69 @@ func maxStudents4(seats [][]byte) int {
 	v := dfs(0, 0)
 	return v
 }
+
+// 在上面基础上改写成DP，终于完美通过
+func maxStudents5(seats [][]byte) int {
+	m, n := len(seats), len(seats[0])
+	// 检测当前行是否满足
+	check1 := func(state int, x int) bool {
+		for i := 0; i < n; i++ {
+			if state&(1<<i) != 0 {
+				if seats[x][i] == '#' {
+					return false
+				}
+				if i > 0 && state&(1<<(i-1)) != 0 {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	// 检查两行是否有冲突
+	check2 := func(cur int, prev int) bool {
+		for i := 0; i < n; i++ {
+			if cur&(1<<i) != 0 {
+				if (i > 0 && prev&(1<<(i-1)) != 0) || (i+1 < n && prev&(1<<(i+1)) != 0) {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	dp := make([][]int, m)
+	col := 1 << n
+	for i := 0; i < m; i++ {
+		dp[i] = make([]int, col)
+	}
+	for i := 0; i < col; i++ {
+		if check1(i, 0) {
+			dp[0][i] = bits.OnesCount(uint(i))
+		} else {
+			dp[0][i] = -1
+		}
+	}
+	for i := 1; i < m; i++ {
+		for j := 0; j < col; j++ {
+			if !check1(j, i) {
+				dp[i][j] = -1
+			} else {
+				// 穷举上一行的状态
+				for l := 0; l < col; l++ {
+					if dp[i-1][l] >= 0 && check2(j, l) {
+						s := dp[i-1][l] + bits.OnesCount(uint(j))
+						if s > dp[i][j] {
+							dp[i][j] = s
+						}
+					}
+				}
+			}
+		}
+	}
+	res := 0
+	for i := 0; i < col; i++ {
+		if dp[m-1][i] > res {
+			res = dp[m-1][i]
+		}
+	}
+	return res
+}
