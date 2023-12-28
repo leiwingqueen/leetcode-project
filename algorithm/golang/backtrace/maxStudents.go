@@ -1,5 +1,9 @@
 package backtrace
 
+import (
+	"math/bits"
+)
+
 // 给你一个 m * n 的矩阵 seats 表示教室中的座位分布。如果座位是坏的（不可用），就用 '#' 表示；否则，用 '.' 表示。
 //
 //学生可以看到左侧、右侧、左上、右上这四个方向上紧邻他的学生的答卷，但是看不到直接坐在他前面或者后面的学生的答卷。请你计算并返回该考场可以容纳的同时参加考试且无法作弊的 最大 学生人数。
@@ -138,4 +142,110 @@ func maxStudents2(seats [][]byte) int {
 		return res
 	}
 	return dfs(0, 0, 0)
+}
+
+// 状态压缩，但是先不加记忆
+func maxStudents3(seats [][]byte) int {
+	m, n := len(seats), len(seats[0])
+	// 检测当前行是否满足
+	check1 := func(state int, x int) bool {
+		for i := 0; i < n; i++ {
+			if state&(1<<i) != 0 {
+				if seats[x][i] == '#' {
+					return false
+				}
+				if i > 0 && state&(1<<(i-1)) != 0 {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	// 检查两行是否有冲突
+	check2 := func(cur int, prev int) bool {
+		for i := 0; i < n; i++ {
+			if cur&(1<<i) != 0 {
+				if (i > 0 && prev&(1<<(i-1)) != 0) || (i+1 < n && prev&(1<<(i+1)) != 0) {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	var dfs func(state int, x int) int
+	dfs = func(state int, x int) int {
+		if x == m {
+			return 0
+		}
+		// 遍历所有情况
+		res := 0
+		for i := 0; i < (1 << n); i++ {
+			if check1(i, x) && check2(i, state) {
+				v := dfs(i, x+1)
+				s := v + bits.OnesCount(uint(i))
+				if s > res {
+					res = s
+				}
+			}
+		}
+		return res
+	}
+	v := dfs(0, 0)
+	return v
+}
+
+// 增加记忆
+func maxStudents4(seats [][]byte) int {
+	m, n := len(seats), len(seats[0])
+	// 检测当前行是否满足
+	check1 := func(state int, x int) bool {
+		for i := 0; i < n; i++ {
+			if state&(1<<i) != 0 {
+				if seats[x][i] == '#' {
+					return false
+				}
+				if i > 0 && state&(1<<(i-1)) != 0 {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	// 检查两行是否有冲突
+	check2 := func(cur int, prev int) bool {
+		for i := 0; i < n; i++ {
+			if cur&(1<<i) != 0 {
+				if (i > 0 && prev&(1<<(i-1)) != 0) || (i+1 < n && prev&(1<<(i+1)) != 0) {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	// state 8个bit足够，x的话3个bit足够，事实上这里可以改造成dp了
+	mem := make(map[int]int)
+	var dfs func(state int, x int) int
+	dfs = func(state int, x int) int {
+		if x == m {
+			return 0
+		}
+		if v, ok := mem[(x<<8)|state]; ok {
+			return v
+		}
+		// 遍历所有情况
+		res := 0
+		for i := 0; i < (1 << n); i++ {
+			if check1(i, x) && check2(i, state) {
+				v := dfs(i, x+1)
+				s := v + bits.OnesCount(uint(i))
+				if s > res {
+					res = s
+				}
+			}
+		}
+		mem[(x<<8)|state] = res
+		return res
+	}
+	v := dfs(0, 0)
+	return v
 }
