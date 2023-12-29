@@ -21,7 +21,7 @@ func Test_maximizeSquareArea(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := maximizeSquareArea(tt.args.m, tt.args.n, tt.args.hFences, tt.args.vFences); got != tt.want {
+			if got := maximizeSquareArea2(tt.args.m, tt.args.n, tt.args.hFences, tt.args.vFences); got != tt.want {
 				t.Errorf("maximizeSquareArea() = %v, want %v", got, tt.want)
 			}
 		})
