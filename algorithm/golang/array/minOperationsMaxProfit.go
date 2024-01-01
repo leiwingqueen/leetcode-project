@@ -60,26 +60,27 @@ package array
 
 // 这道题其实没什么意义
 func minOperationsMaxProfit(customers []int, boardingCost int, runningCost int) int {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		} else {
+			return b
+		}
+	}
 	in := 0
 	out := 0
 	waiting := 0
 	res := 0
 	for _, cus := range customers {
 		waiting += cus
-		board := waiting
-		if board > 4 {
-			board = 4
-		}
+		board := min(4, waiting)
 		waiting -= board
 		in += board * boardingCost
 		out += runningCost
 		res++
 	}
 	for waiting > 0 {
-		board := waiting
-		if board > 4 {
-			board = 4
-		}
+		board := min(4, waiting)
 		waiting -= board
 		in += board * boardingCost
 		out += runningCost
@@ -89,5 +90,47 @@ func minOperationsMaxProfit(customers []int, boardingCost int, runningCost int) 
 		return res
 	} else {
 		return -1
+	}
+}
+
+func minOperationsMaxProfit2(customers []int, boardingCost int, runningCost int) int {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		} else {
+			return b
+		}
+	}
+	in := 0
+	out := 0
+	waiting := 0
+	mx := 0
+	cnt := 0
+	res := 0
+	for _, cus := range customers {
+		waiting += cus
+		board := min(4, waiting)
+		waiting -= board
+		in += board * boardingCost
+		out += runningCost
+		cnt++
+		if in-out > mx {
+			res = cnt
+		}
+	}
+	for waiting > 0 {
+		board := min(4, waiting)
+		waiting -= board
+		in += board * boardingCost
+		out += runningCost
+		cnt++
+		if in-out > mx {
+			res = cnt
+		}
+	}
+	if res == 0 {
+		return -1
+	} else {
+		return res
 	}
 }
