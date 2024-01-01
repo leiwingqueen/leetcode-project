@@ -116,6 +116,7 @@ func minOperationsMaxProfit2(customers []int, boardingCost int, runningCost int)
 		cnt++
 		if in-out > mx {
 			res = cnt
+			mx = in - out
 		}
 	}
 	for waiting > 0 {
@@ -126,6 +127,7 @@ func minOperationsMaxProfit2(customers []int, boardingCost int, runningCost int)
 		cnt++
 		if in-out > mx {
 			res = cnt
+			mx = in - out
 		}
 	}
 	if res == 0 {
