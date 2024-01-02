@@ -75,3 +75,37 @@ func getMaxRepetitions(s1 string, n1 int, s2 string, n2 int) int {
 	}
 	return l
 }
+
+// 在上面基础上做下修改，还是会超时
+func getMaxRepetitions2(s1 string, n1 int, s2 string, n2 int) int {
+	check := func(m int) bool {
+		l1, l2 := len(s1)*n1, len(s2)*n2*m
+		if l1 < l2 {
+			return false
+		}
+		// 匹配
+		p1, p2 := 0, 0
+		for p2 < l2 {
+			for p1 < l1 && s2[p2%len(s2)] != s1[p1%len(s1)] {
+				p1++
+			}
+			if p1 == l1 {
+				return false
+			}
+			p1++
+			p2++
+		}
+		return true
+	}
+	mx := len(s1) * n1 / len(s2) / n2
+	l, r := 0, mx
+	for l < r {
+		mid := l + (r-l+1)/2
+		if check(mid) {
+			l = mid
+		} else {
+			r = mid - 1
+		}
+	}
+	return l
+}
