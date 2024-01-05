@@ -34,7 +34,7 @@ package array
 //1 <= heights[i] <= 105
 //heights 中所有数 互不相同 。
 
-// 暴力解法
+// 暴力解法，时间复杂度O(n^2)
 func canSeePersonsCount(heights []int) []int {
 	n := len(heights)
 	res := make([]int, n)
@@ -48,6 +48,23 @@ func canSeePersonsCount(heights []int) []int {
 				mx = heights[j]
 			}
 		}
+	}
+	return res
+}
+
+// 单调栈？
+// 统计一个范围的单调递增的栈的数量
+// 答案错误
+func canSeePersonsCount2(heights []int) []int {
+	n := len(heights)
+	res := make([]int, n)
+	var st []int
+	for i := n - 1; i >= 0; i-- {
+		res[i] = len(st)
+		for len(st) > 0 && st[len(st)-1] < heights[i] {
+			st = st[:len(st)-1]
+		}
+		st = append(st, heights[i])
 	}
 	return res
 }
