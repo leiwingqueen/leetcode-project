@@ -49,5 +49,33 @@ package bwc121
 //1 <= x, y <= 104
 
 func minimumOperationsToMakeEqual(x int, y int) int {
-	return 0
+	var dfs func(a, b int) int
+	dfs = func(a, b int) int {
+		if a == b {
+			return 0
+		}
+		if a < b {
+			a, b = b, a
+		}
+		res := 0
+		if a%11 == 0 {
+			res = dfs(a/11, b) + 1
+		}
+		if a%5 == 0 {
+			sub := dfs(a/5, b) + 1
+			if sub < res {
+				res = sub
+			}
+		}
+		s1 := dfs(a-1, b) + 1
+		s2 := dfs(a+1, b) + 1
+		if s1 < res {
+			res = s1
+		}
+		if s2 < res {
+			res = s2
+		}
+		return res
+	}
+	return dfs(x, y)
 }
