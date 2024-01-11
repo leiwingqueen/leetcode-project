@@ -19,3 +19,15 @@ func addMinimum(word string) int {
 	}
 	return cnt
 }
+
+func addMinimum2(word string) int {
+	expect := 0
+	res := 0
+	for _, ch := range word {
+		res += (int(ch-'a') + 3 - expect) % 3
+		expect = (int(ch-'a') + 1) % 3
+	}
+	expect = 2
+	res += (expect + 3 - int(word[len(word)-1]-'a')) % 3
+	return res
+}
