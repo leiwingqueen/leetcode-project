@@ -1,5 +1,7 @@
 package bwc121
 
+import "fmt"
+
 // 给你两个正整数 x 和 y 。
 //
 //一次操作中，你可以执行以下四种操作之一：
@@ -49,33 +51,39 @@ package bwc121
 //1 <= x, y <= 104
 
 func minimumOperationsToMakeEqual(x int, y int) int {
-	var dfs func(a, b int) int
-	dfs = func(a, b int) int {
-		if a == b {
-			return 0
-		}
+	if x <= y {
+		return y - x
+	}
+	min := func(a, b int) int {
 		if a < b {
-			a, b = b, a
+			return a
+		} else {
+			return b
 		}
-		res := 0
-		if a%11 == 0 {
-			res = dfs(a/11, b) + 1
+	}
+	mem := make(map[int]int)
+	var dfs func(num int, mx int) int
+	dfs = func(num int, mx int) int {
+		fmt.Println(fmt.Sprintf("%d", num))
+		if num <= y {
+			return y - num
 		}
-		if a%5 == 0 {
-			sub := dfs(a/5, b) + 1
-			if sub < res {
-				res = sub
-			}
+		if v, ok := mem[num]; ok {
+			return v
 		}
-		s1 := dfs(a-1, b) + 1
-		s2 := dfs(a+1, b) + 1
-		if s1 < res {
-			res = s1
+		res := num - y
+		defer func() {
+			mem[num] = res
+		}()
+		res = min(res, dfs(num+1, mx-1)+1)
+		res = min(res, dfs(num-1, mx-1)+1)
+		if num%11 == 0 && num != 0 {
+			res = min(res, dfs(num/11, mx-1)+1)
 		}
-		if s2 < res {
-			res = s2
+		if num%5 == 0 && num != 0 {
+			res = min(res, dfs(num/5, mx-1)+1)
 		}
 		return res
 	}
-	return dfs(x, y)
+	return dfs(x, x-y)
 }
