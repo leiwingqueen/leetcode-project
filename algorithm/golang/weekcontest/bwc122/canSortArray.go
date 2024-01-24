@@ -1,6 +1,7 @@
 package bwc122
 
 import (
+	"math"
 	"math/bits"
 	"sort"
 )
@@ -42,6 +43,7 @@ import (
 //1 <= nums.length <= 100
 //1 <= nums[i] <= 28
 
+// 理解错题目了，题目是相邻的元素
 func canSortArray(nums []int) bool {
 	mp := make(map[int][]int)
 	for i, num := range nums {
@@ -63,4 +65,31 @@ func canSortArray(nums []int) bool {
 		}
 	}
 	return true
+}
+
+func canSortArray2(nums []int) bool {
+	n := len(nums)
+	l, r := 0, 0
+	preMax := 0
+	curMin, curMax := math.MaxInt32, 0
+	for r < n {
+		if bits.OnesCount(uint(nums[r])) == bits.OnesCount(uint(nums[l])) {
+			if nums[r] < curMin {
+				curMin = nums[r]
+			}
+			if nums[r] > curMax {
+				curMax = nums[r]
+			}
+			r++
+		} else {
+			// 跟上一个区间判断
+			if curMin < preMax {
+				return false
+			}
+			preMax = curMax
+			l = r
+			curMin, curMax = nums[r], nums[r]
+		}
+	}
+	return curMin >= preMax
 }
