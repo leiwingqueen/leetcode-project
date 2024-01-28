@@ -30,7 +30,7 @@ package math
 //
 //1 <= jug1Capacity, jug2Capacity, targetCapacity <= 106
 
-// 先尝试BFS
+// 先尝试DFS
 func canMeasureWater(jug1Capacity int, jug2Capacity int, targetCapacity int) bool {
 	min := func(a, b int) int {
 		if a < b {
@@ -40,10 +40,10 @@ func canMeasureWater(jug1Capacity int, jug2Capacity int, targetCapacity int) boo
 		}
 	}
 	j1, j2, target := jug1Capacity, jug2Capacity, targetCapacity
-	if j1 < target && j2 < target {
+	if j1+j2 < target {
 		return false
 	}
-	if target == j1 || target == j2 || target == 0 {
+	if j1+j2 == target || target == 0 {
 		return true
 	}
 	hash := func(x, y int) int64 {
@@ -53,7 +53,7 @@ func canMeasureWater(jug1Capacity int, jug2Capacity int, targetCapacity int) boo
 	var dfs func(x, y int) bool
 	dfs = func(x, y int) bool {
 		// fmt.Println(fmt.Sprintf("%d,%d", x, y))
-		if x == target || y == target {
+		if x+y == target {
 			return true
 		}
 		mem[hash(x, y)] = true
