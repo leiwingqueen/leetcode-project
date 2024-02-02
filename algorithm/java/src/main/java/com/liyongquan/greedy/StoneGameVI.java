@@ -46,6 +46,11 @@ package com.liyongquan.greedy;
 //1 <= n <= 105
 //1 <= aliceValues[i], bobValues[i] <= 100
 
+import com.liyongquan.array.Sort;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class StoneGameVI {
@@ -93,5 +98,25 @@ public class StoneGameVI {
         } else {
             return 0;
         }
+    }
+
+    public int stoneGameVI2(int[] aliceValues, int[] bobValues) {
+        int n = aliceValues.length;
+        int[][] arr = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            arr[i] = new int[]{i, aliceValues[i] + bobValues[i]};
+        }
+        Arrays.sort(arr, (o1, o2) -> o2[1] - o1[1]);
+        int p = 0;
+        int res = 0;
+        while (p < n) {
+            res += aliceValues[arr[p][0]];
+            p++;
+            if (p < n) {
+                res -= bobValues[arr[p][0]];
+                p++;
+            }
+        }
+        return res > 0 ? 1 : (res == 0 ? 0 : -1);
     }
 }
