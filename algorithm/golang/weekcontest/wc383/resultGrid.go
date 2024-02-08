@@ -66,7 +66,7 @@ func resultGrid(image [][]int, threshold int) [][]int {
 		for i := 0; i < 3; i++ {
 			for j := 0; j < 3; j++ {
 				nx, ny := x+i, y+j
-				sum += image[i][j]
+				sum += image[nx][ny]
 				for _, dir := range dirs {
 					a, b := nx+dir[0], ny+dir[1]
 					if a >= x && a < x+3 && b >= y && b < y+3 &&
@@ -88,7 +88,7 @@ func resultGrid(image [][]int, threshold int) [][]int {
 			if ok, avg := check(i, j); ok {
 				for k := i; k < i+3; k++ {
 					for l := j; l < j+3; l++ {
-						tmp[i][j] = append(tmp[i][j], avg)
+						tmp[k][l] = append(tmp[k][l], avg)
 					}
 				}
 			}
