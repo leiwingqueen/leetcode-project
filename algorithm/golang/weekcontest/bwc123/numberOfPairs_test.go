@@ -15,6 +15,9 @@ func Test_numberOfPairs(t *testing.T) {
 		{"t1", args{[][]int{
 			{3, 1}, {1, 3}, {1, 1},
 		}}, 2},
+		{"t2", args{[][]int{
+			{0, 1}, {0, 2}, {0, 4},
+		}}, 2},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
