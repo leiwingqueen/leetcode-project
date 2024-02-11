@@ -55,30 +55,40 @@ func maxPalindromesAfterOperations(words []string) int {
 			return b
 		}
 	}
-	mp := make(map[byte]int)
-	arr := make([]int, n)
-	for i, word := range words {
-		arr[i] = len(words)
+	counter := make([]int, 26)
+	for _, word := range words {
 		for _, ch := range word {
-			mp[(byte)(ch)]++
+			counter[ch-'a']++
 		}
 	}
-	sort.Ints(arr)
-	res := 0
-	for _, l := range arr {
-		if l == 1 {
-			res++
-		} else {
-			for l > 1 {
-				for _, v := range mp {
-					p := min(v/2, l/2)
-					l -= 2 * p
-				}
-			}
-			if l <= 1 {
-				res++
-			}
+	// 先去掉出现奇数的字符
+	odd := 0
+	for i := 0; i < 26; i++ {
+		if counter[i]%2 == 1 {
+			odd++
 		}
+	}
+	if odd == 0 {
+		return n
+	}
+	arr := make([]int, n)
+	for i, word := range words {
+		if len(word)%2 == 1 {
+			odd--
+			arr[i] = len(word) - 1
+		} else {
+			arr[i] = len(word)
+		}
+	}
+	// 尽可能把奇数的数字往长的字符串上面放
+	res := n
+	sort.Slice(arr, func(i, j int) bool {
+		return arr[i] > arr[j]
+	})
+	for i := 0; i < n && odd > 0; i++ {
+		sub := min(odd, arr[i])
+		odd -= sub
+		res--
 	}
 	return res
 }
