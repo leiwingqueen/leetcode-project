@@ -10,6 +10,9 @@ type Node struct {
 
 // bfs
 func cloneGraph(node *Node) *Node {
+	if node == nil {
+		return nil
+	}
 	nodes := make([]*Node, 101)
 	var queue []*Node
 	queue = append(queue, node)
@@ -19,11 +22,13 @@ func cloneGraph(node *Node) *Node {
 		for _, cur := range queue[:size] {
 			for _, next := range cur.Neighbors {
 				if nodes[next.Val] == nil {
-					clone := &Node{Val: next.Val}
-					nodes[next.Val] = clone
-					nodes[cur.Val].Neighbors = append(nodes[cur.Val].Neighbors, clone)
+					nodes[next.Val] = &Node{Val: next.Val}
 					queue = append(queue, next)
 				}
+				clone := nodes[next.Val]
+				parent := nodes[cur.Val]
+				nodes[next.Val] = clone
+				parent.Neighbors = append(parent.Neighbors, clone)
 			}
 		}
 		queue = queue[size:]
