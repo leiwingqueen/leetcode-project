@@ -51,7 +51,7 @@ package tree
 func countPaths(n int, edges [][]int) int64 {
 	// 埃氏筛
 	isPrime := make([]bool, n+1)
-	for i := 0; i < n; i++ {
+	for i := 2; i <= n; i++ {
 		isPrime[i] = true
 	}
 	for i := 2; i*i <= n; i++ {
@@ -72,17 +72,18 @@ func countPaths(n int, edges [][]int) int64 {
 	dp := make([]int, n+1)
 	var dfs func(node int, parent int) int
 	dfs = func(node int, parent int) int {
-		if isPrime[node] {
-			return 0
-		}
-		cnt := 0
+		cnt := 1
 		for _, child := range graph[node] {
 			if child != parent {
 				cnt += dfs(child, node)
 			}
 		}
-		dp[node] = cnt
-		return cnt
+		if !isPrime[node] {
+			dp[node] = cnt
+			return cnt
+		} else {
+			return 0
+		}
 	}
 	dfs(1, 0)
 	// 最后再统计所有质数的点
@@ -93,6 +94,7 @@ func countPaths(n int, edges [][]int) int64 {
 			for _, next := range graph[i] {
 				res += int64(dp[next])
 				res += sum * int64(dp[next])
+				sum += int64(dp[next])
 			}
 		}
 	}
