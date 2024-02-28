@@ -38,7 +38,7 @@ import "leetcode-go/tree/connect"
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 func postorder(root *connect.Node) []int {
-	if root == nil {
+	/*if root == nil {
 		return []int{}
 	}
 	list := make([]int, 0)
@@ -46,5 +46,6 @@ func postorder(root *connect.Node) []int {
 		list = append(list, postorder(node)...)
 	}
 	list = append(list, root.Val)
-	return list
+	return list*/
+	return nil
 }
