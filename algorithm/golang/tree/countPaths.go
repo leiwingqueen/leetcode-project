@@ -70,22 +70,26 @@ func countPaths(n int, edges [][]int) int64 {
 	}
 	// 节点i的不为质数的子树的大小
 	dp := make([]int, n+1)
-	var dfs func(node int, parent int) int
-	dfs = func(node int, parent int) int {
-		cnt := 1
-		for _, child := range graph[node] {
-			if child != parent {
-				cnt += dfs(child, node)
+	var dfs func(node int, parent int, path *[]int)
+	dfs = func(node int, parent int, path *[]int) {
+		if isPrime[node] || dp[node] > 0 {
+			return
+		}
+		*path = append(*path, node)
+		for _, next := range graph[node] {
+			if next != parent && !isPrime[next] {
+				dfs(next, node, path)
 			}
 		}
-		if !isPrime[node] {
-			dp[node] = cnt
-			return cnt
-		} else {
-			return 0
+	}
+	for i := 1; i <= n; i++ {
+		var path []int
+		dfs(i, 0, &path)
+		size := len(path)
+		for _, j := range path {
+			dp[j] = size
 		}
 	}
-	dfs(1, 0)
 	// 最后再统计所有质数的点
 	var res int64
 	for i := 1; i <= n; i++ {
