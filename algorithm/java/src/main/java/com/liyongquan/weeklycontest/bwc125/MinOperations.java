@@ -1,8 +1,6 @@
 package com.liyongquan.weeklycontest.bwc125;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class MinOperations {
@@ -16,7 +14,11 @@ public class MinOperations {
         while (pq.size() > 1 && pq.peek() < k) {
             Integer num1 = pq.poll();
             Integer num2 = pq.poll();
-            pq.offer(num1 * 2 + num2);
+            if (num1 * 2 >= k || num2 >= k) {
+                pq.offer(k);
+            } else {
+                pq.offer(num1 * 2 + num2);
+            }
             res++;
         }
         return res;
