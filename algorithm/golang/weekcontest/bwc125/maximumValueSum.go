@@ -51,5 +51,5 @@ package bwc125
 //输入保证 edges 构成一棵合法的树。
 
 func maximumValueSum(nums []int, k int, edges [][]int) int64 {
-
+	return 0
 }
