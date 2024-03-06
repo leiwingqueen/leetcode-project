@@ -49,3 +49,12 @@ func rangeBitwiseAnd(left int, right int) int {
 	}
 	return res
 }
+
+// 在上面基础上可以写得更简洁，求最长公共前缀
+func rangeBitwiseAnd2(left int, right int) int {
+	res := 0
+	for i := 30; i >= 0 && left&(1<<i) == right&(1<<i); i-- {
+		res |= left & (1 << i)
+	}
+	return res
+}
