@@ -57,3 +57,25 @@ func minimumPossibleSum(n int, target int) int {
 	}
 	return sum
 }
+
+// 分场景
+// [1,target-2]的部分，一共target-2个数字
+// target-1这个数字需要跳过
+
+// 1匹配target-1,2匹配target-2,3匹配target-3，直到target/2,(target+1)/2
+// 所以前面只需要保留[1,target/2]，所以这足够n个数字，就直接返回结果
+// 否则就从target往后取
+func minimumPossibleSum2(n int, target int) int {
+	mod := 1_000_000_007
+	if target/2 >= n {
+		res := int64(1+n) * int64(n) / 2
+		return int(res % int64(mod))
+	}
+	k := target / 2
+	sum := int((int64(1+k) * int64(k) / 2) % int64(mod))
+	n -= k
+	// 计算[target,target+n-1]
+	t := int((int64(target+target+n-1) * int64(n) / 2) % int64(mod))
+	sum = (sum + t) % mod
+	return sum
+}
