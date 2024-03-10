@@ -1,5 +1,9 @@
 package wc388
 
+import (
+	"strings"
+)
+
 // 给你一个数组 arr ，数组中有 n 个 非空 字符串。
 //
 //请你求出一个长度为 n 的字符串 answer ，满足：
@@ -37,18 +41,42 @@ package wc388
 
 // 暴力
 func shortestSubstrings(arr []string) []string {
-	res := make([]string, len(arr))
-	for i, s1 := range arr {
-		// 构造tire tree
-		tire := buildTire()
-		for j, s2 := range arr {
-			if i == j {
+	n := len(arr)
+	res := make([]string, n)
+	// 字符串arr[i]，以j开头长度为k的子串，是否没出现过
+	check := func(i, j, k int) bool {
+		for l, s := range arr {
+			if l == i {
 				continue
 			}
-			tire.add(s2)
+			if strings.Contains(s, arr[i][j:j+k]) {
+				return false
+			}
 		}
-		// 检查每个字符开始的最短子串
-		for k := 0; k < len(s1); k++ {
+		return true
+	}
+	check2 := func(i, k int) bool {
+		for j := 0; j <= n-k; j++ {
+			if check(i, j, k) {
+				return true
+			}
+		}
+		return false
+	}
+	for i := 0; i < n; i++ {
+		l, r := 1, len(arr)
+		if !check2(i, r) {
+			res[i] = ""
+		} else {
+			for l < r {
+				mid := l + (r-l)/2
+				if check2(i, mid) {
+					r = mid
+				} else {
+					l = mid + 1
+				}
+			}
+			res[i] = ""
 		}
 	}
 	return res
