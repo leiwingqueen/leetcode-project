@@ -39,8 +39,8 @@ package linkList
 func reverseKGroup(head *ListNode, k int) *ListNode {
 	var revert func(node *ListNode) (*ListNode, *ListNode)
 	revert = func(node *ListNode) (*ListNode, *ListNode) {
-		if node == nil {
-			return nil, nil
+		if node == nil || node.Next == nil {
+			return node, node
 		}
 		head_, tail := revert(node.Next)
 		node.Next = nil
