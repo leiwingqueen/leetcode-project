@@ -56,3 +56,26 @@ func partitionLabels(s string) []int {
 	}
 	return res
 }
+
+func partitionLabels2(s string) []int {
+	n := len(s)
+	last := make([]int, 26)
+	for i := 0; i < n; i++ {
+		idx := int(s[i] - 'a')
+		last[idx] = i
+	}
+	l, r := 0, 0
+	var res []int
+	for r < n {
+		for i := 0; i <= r; i++ {
+			idx := int(s[i] - 'a')
+			if last[idx] > r {
+				r = last[idx]
+			}
+		}
+		res = append(res, r-l+1)
+		l = r + 1
+		r = l
+	}
+	return res
+}
