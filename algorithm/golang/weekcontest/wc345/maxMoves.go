@@ -138,10 +138,11 @@ func maxMoves3(grid [][]int) int {
 			for _, dir := range dirs {
 				x, y := i+dir[0], j+dir[1]
 				if x >= 0 && x < m && grid[i][j] < grid[x][y] {
-					cur[i] = max(cur[i], pre[i]+1)
+					cur[i] = max(cur[i], pre[x]+1)
 				}
 			}
 		}
+		// fmt.Printf("%v\n", cur)
 		copy(pre, cur)
 	}
 	res := 0
