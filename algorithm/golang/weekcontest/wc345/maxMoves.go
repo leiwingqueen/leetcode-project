@@ -129,16 +129,16 @@ func maxMoves3(grid [][]int) int {
 		{1, 1},
 	}
 	m, n := len(grid), len(grid[0])
-	pre := make([]int, n)
-	cur := make([]int, n)
+	pre := make([]int, m)
+	cur := make([]int, m)
 	// dp迭代
-	for i := n - 2; i >= 0; i-- {
-		for j := 0; j < m; j++ {
-			cur[j] = 0
+	for j := n - 2; j >= 0; j-- {
+		for i := 0; i < m; i++ {
+			cur[i] = 0
 			for _, dir := range dirs {
-				x, y := j+dir[0], i+dir[1]
-				if x >= 0 && x < m && grid[j][i] < grid[x][y] {
-					cur[j] = max(cur[j], pre[y]+1)
+				x, y := i+dir[0], j+dir[1]
+				if x >= 0 && x < m && grid[i][j] < grid[x][y] {
+					cur[i] = max(cur[i], pre[i]+1)
 				}
 			}
 		}
@@ -146,7 +146,7 @@ func maxMoves3(grid [][]int) int {
 	}
 	res := 0
 	for i := 0; i < m; i++ {
-		res = max(res, cur[i])
+		res = max(res, pre[i])
 	}
 	return res
 }
