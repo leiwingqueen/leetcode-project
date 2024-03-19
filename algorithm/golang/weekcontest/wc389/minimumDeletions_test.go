@@ -17,7 +17,7 @@ func Test_minimumDeletions(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := minimumDeletions(tt.args.word, tt.args.k); got != tt.want {
+			if got := minimumDeletions2(tt.args.word, tt.args.k); got != tt.want {
 				t.Errorf("minimumDeletions() = %v, want %v", got, tt.want)
 			}
 		})

@@ -69,3 +69,35 @@ func minimumDeletions(word string, k int) int {
 	}
 	return res
 }
+
+func minimumDeletions2(word string, k int) int {
+	cnt := make([]int, 26)
+	n := len(word)
+	for i := 0; i < n; i++ {
+		cnt[word[i]-'a']++
+	}
+	sort.Ints(cnt)
+	i := 0
+	for i < 26 && cnt[i] == 0 {
+		i++
+	}
+	if i == n {
+		return 0
+	}
+	preSum := 0
+	res := n + 1
+	for j := i; j < 26; j++ {
+		// 以j作为最小值
+		sum := preSum
+		preSum += cnt[j]
+		for l := i + 1; l < 26; l++ {
+			if cnt[l]-cnt[j] > k {
+				sum += cnt[l] - cnt[j] - k
+			}
+		}
+		if sum < res {
+			res = sum
+		}
+	}
+	return res
+}
