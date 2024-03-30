@@ -45,22 +45,32 @@ package com.liyongquan.weeklycontest.wc390;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.TreeMap;
 
 public class MostFrequentIDs {
     public long[] mostFrequentIDs(int[] nums, int[] freq) {
-        Map<Integer, Boolean> updateFlag = new HashMap<>();
-        Map<Integer, Integer> counter = new HashMap<>();
-        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> {
-            if (o1[1] != o2[1]) {
-                return o2[1] - o1[1];
-            } else {
-                return o1[0] - o2[0];
-            }
-        });
-        // TODO: 
+        // 频率计数器
+        Map<Integer, Long> map = new HashMap<>();
+        // key是出现的次数，value是针对每个出现次数对应的数字类型
+        TreeMap<Long, Integer> treeMap = new TreeMap<>();
         int n = nums.length;
         long[] res = new long[n];
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+            int f = freq[i];
+            long pre = map.getOrDefault(num, 0L);
+            long after = pre + f;
+            map.put(num, after);
+            treeMap.put(after, treeMap.getOrDefault(after, 0) + 1);
+            if (pre > 0) {
+                treeMap.put(pre, treeMap.get(pre) - 1);
+                if (treeMap.get(pre) == 0) {
+                    treeMap.remove(pre);
+                }
+            }
+            Long last = treeMap.lastKey();
+            res[i] = last == null ? 0 : last.longValue();
+        }
         return res;
     }
 }
