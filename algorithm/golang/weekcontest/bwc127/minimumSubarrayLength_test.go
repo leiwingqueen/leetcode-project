@@ -14,6 +14,8 @@ func Test_minimumSubarrayLength2(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{"t1", args{[]int{1, 2, 3}, 2}, 1},
+		{"t2", args{[]int{2, 1, 8}, 10}, 3},
+		{"t3", args{[]int{1, 2, 32, 21}, 55}, 3},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

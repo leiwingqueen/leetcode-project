@@ -71,38 +71,39 @@ func minimumSubarrayLength2(nums []int, k int) int {
 		cnt := make([]int, 32)
 		l, r := 0, 0
 		sum := 0
-		for r < n {
-			if r-l < size {
-				for i := 0; i < 32; i++ {
-					if nums[r]&(1<<i) != 0 {
-						cnt[i]++
-					}
+		for ; r < size; r++ {
+			for i := 0; i < 32; i++ {
+				if nums[r]&(1<<i) != 0 {
+					cnt[i]++
 				}
-				sum |= nums[r]
-				r++
-			} else {
-				if sum >= k {
-					return true
-				}
-				for i := 0; i < 32; i++ {
-					if nums[r]&(1<<i) != 0 {
-						cnt[i]++
-					}
-				}
-				sum |= nums[r]
-				r++
-				for i := 0; i < 32; i++ {
-					if nums[l]&(1<<i) != 0 {
-						cnt[i]--
-						if cnt[i] == 0 {
-							sum -= 1 << i
-						}
-					}
-				}
-				l--
 			}
+			sum |= nums[r]
 		}
-		return false
+		if sum >= k {
+			return true
+		}
+		for r < n {
+			if sum >= k {
+				return true
+			}
+			for i := 0; i < 32; i++ {
+				if nums[r]&(1<<i) != 0 {
+					cnt[i]++
+				}
+			}
+			sum |= nums[r]
+			for i := 0; i < 32; i++ {
+				if nums[l]&(1<<i) != 0 {
+					cnt[i]--
+					if cnt[i] == 0 {
+						sum -= 1 << i
+					}
+				}
+			}
+			l++
+			r++
+		}
+		return sum >= k
 	}
 	if !check(n) {
 		return -1
