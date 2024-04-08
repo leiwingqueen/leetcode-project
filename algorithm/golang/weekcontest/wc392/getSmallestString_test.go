@@ -13,7 +13,7 @@ func Test_getSmallestString(t *testing.T) {
 		want string
 	}{
 		// TODO: Add test cases.
-		{"t1", args{"zbbz", 3}, "abbz"},
+		{"t1", args{"zbbz", 3}, "aaaz"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

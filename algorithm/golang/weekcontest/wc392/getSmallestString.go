@@ -11,11 +11,17 @@ func getSmallestString(s string, k int) string {
 		ch := s[i]
 		move := 0
 		left := min(k, int(s[i]-'a'))
-		if s[i]-uint8(left) < ch {
+		// fmt.Printf("left:%d\n", left)
+		ch1 := s[i] - uint8(left)
+		if ch1 < ch {
+			ch = ch1
 			move = left
 		}
 		right := min(k, int('a'+26-s[i]))
-		if 'a'+(s[i]-'a'+uint8(right))%26 < ch {
+		// fmt.Printf("right:%d\n", right)
+		ch2 := 'a' + (s[i]-'a'+uint8(right))%26
+		if ch2 < ch || ch2 == ch && right < move {
+			ch = ch2
 			move = right
 		}
 		k -= move

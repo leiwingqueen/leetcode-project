@@ -34,7 +34,7 @@ func (bit *BitSet) reset(x int) {
 	k := x / 8
 	i := x % 8
 	mask := 0xFF ^ (1 << i)
-	bit._bits[k] &= mask
+	bit._bits[k] &= byte(mask)
 }
 
 func (bit *BitSet) test(x int) int {
