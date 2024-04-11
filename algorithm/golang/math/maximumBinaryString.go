@@ -82,6 +82,7 @@ func maximumBinaryString2(binary string) string {
 	return string(res)
 }
 
+// 在上面基础上进行优化
 func maximumBinaryString3(binary string) string {
 	n := len(binary)
 	res := []byte(binary)
