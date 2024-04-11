@@ -53,3 +53,58 @@ func maximumBinaryString(binary string) string {
 	}
 	return string(res)
 }
+
+// 超时
+func maximumBinaryString2(binary string) string {
+	n := len(binary)
+	res := []byte(binary)
+	p := 0
+	for ; p < n; p++ {
+		if res[p] == '0' {
+			if p+1 < n && res[p+1] == '0' {
+				res[p] = '1'
+			} else {
+				// 尝试把后面的0往前移动
+				i := p + 1
+				for i < n && res[i] == '1' {
+					i++
+				}
+				if i == n {
+					break
+				}
+				// 交换
+				res[p+1] = '0'
+				res[i] = '1'
+				res[p] = '1'
+			}
+		}
+	}
+	return string(res)
+}
+
+func maximumBinaryString3(binary string) string {
+	n := len(binary)
+	res := []byte(binary)
+	p, i := 0, 0
+	for ; p < n; p++ {
+		if res[p] == '0' {
+			if p+1 < n && res[p+1] == '0' {
+				res[p] = '1'
+			} else {
+				// 尝试把后面的0往前移动
+				i = max(p+1, i)
+				for i < n && res[i] == '1' {
+					i++
+				}
+				if i == n {
+					break
+				}
+				// 交换
+				res[p+1] = '0'
+				res[i] = '1'
+				res[p] = '1'
+			}
+		}
+	}
+	return string(res)
+}
