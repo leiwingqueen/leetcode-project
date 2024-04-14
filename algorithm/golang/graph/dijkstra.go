@@ -1,9 +1,9 @@
-package bwc128
+package graph
 
 import "container/heap"
 
-// dijkstra
-func minimumTime(n int, edges [][]int, disappear []int) []int {
+// dijkstra 迪克斯屈拉模板
+func dijkstra(n int, edges [][]int, start int) []int {
 	graph := make([]map[int]int, n)
 	for i := 0; i < n; i++ {
 		graph[i] = make(map[int]int)
@@ -20,8 +20,8 @@ func minimumTime(n int, edges [][]int, disappear []int) []int {
 	for i := 0; i < n; i++ {
 		res[i] = -1
 	}
-	res[0] = 0
-	queue := hp{{0, 0}}
+	res[start] = 0
+	queue := hp{{0, start}}
 	for len(queue) > 0 {
 		node := heap.Pop(&queue).(pair)
 		// node := queue.Pop().(pair)
@@ -29,10 +29,6 @@ func minimumTime(n int, edges [][]int, disappear []int) []int {
 			continue
 		}
 		flag[node.x] = true
-		if disappear[node.x] <= res[node.x] {
-			res[node.x] = -1
-			continue
-		}
 		for k, w := range graph[node.x] {
 			if flag[k] {
 				continue
