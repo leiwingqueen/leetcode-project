@@ -6,7 +6,7 @@ package dfs
 //如果 n 是奇数，则可以用 n + 1或n - 1替换 n 。
 //n 变为 1 所需的最小替换次数是多少？
 //
-// 
+//
 //
 //示例 1：
 //
@@ -23,7 +23,7 @@ package dfs
 //
 //输入：n = 4
 //输出：2
-// 
+//
 //
 //提示：
 //
@@ -47,7 +47,7 @@ func integerReplacement(n int) int {
 	}
 }
 
-//上面基础增加记忆
+// 上面基础增加记忆
 func integerReplacement2(n int) int {
 	var dfs func(n int) int
 	mp := make(map[int]int)
@@ -76,12 +76,4 @@ func integerReplacement2(n int) int {
 		return r
 	}
 	return dfs(n)
-}
-
-func min(a int, b int) int {
-	if a >= b {
-		return b
-	} else {
-		return a
-	}
 }

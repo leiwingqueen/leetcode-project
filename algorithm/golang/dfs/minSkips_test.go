@@ -17,7 +17,7 @@ func Test_minSkips(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := minSkips(tt.args.dist, tt.args.speed, tt.args.hoursBefore); got != tt.want {
+			if got := minSkips3(tt.args.dist, tt.args.speed, tt.args.hoursBefore); got != tt.want {
 				t.Errorf("minSkips() = %v, want %v", got, tt.want)
 			}
 		})

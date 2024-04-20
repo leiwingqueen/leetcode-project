@@ -103,18 +103,58 @@ func minSkips2(dist []int, speed int, hoursBefore int) int {
 			return v
 		}
 		res := -1
-		for i := 0; i < n; i++ {
+		for i := n - 1; i >= 0; i-- {
 			// [i,n)的时间，取下界即可
 			t := (preSum[n] - preSum[i] + speed - 1) / speed
-			if k >= t {
-				sub := dfs(i, k-t)
-				if sub >= 0 && (res < 0 || res > sub+n-i-1) {
-					res = sub + n - i - 1
-				}
+			// 提前剪枝
+			if k < t {
+				break
+			}
+			sub := dfs(i, k-t)
+			if sub >= 0 && (res < 0 || res > sub+n-i-1) {
+				res = sub + n - i - 1
 			}
 		}
 		mem[buildKey(n, k)] = res
 		return res
 	}
 	return dfs(n, hoursBefore)
+}
+
+// 由于hours的数据量大，我们换个思路做dp
+// f(i,j)为前i段路，跳过j次的最短的时间,其中j<i
+// if j==0,表示没有跳过，直接计算
+// if j>0. f(i,j)=min{f(i-k,j-1)+t[i-k:i]},其中j-1<i-k，则k<i-j+1
+func minSkips3(dist []int, speed int, hoursBefore int) int {
+	n := len(dist)
+	preSum := make([]int, n+1)
+	for i, d := range dist {
+		preSum[i+1] = preSum[i] + d
+	}
+	dp := make([][]float64, n+1)
+	for i := 0; i <= n; i++ {
+		dp[i] = make([]float64, n)
+	}
+	// dp初始化
+	for i := 1; i <= n; i++ {
+		dp[i][0] = float64(preSum[i]) / float64(speed)
+	}
+	// dp迭代
+	for i := 2; i <= n; i++ {
+		for j := 1; j < i; j++ {
+			// 跳过
+			dp[i][j] = dp[i-1][j-1] + float64(dist[i-1])/float64(speed)
+			// 不跳过
+			if j < i-1 {
+				dp[i][j] = min(dp[i][j], dp[i-1][j]+float64(dist[i-1]/speed))
+			}
+		}
+	}
+	// 检测所有满足条件的情况
+	for i := 0; i < n; i++ {
+		if dp[n][i] <= float64(hoursBefore) {
+			return i
+		}
+	}
+	return -1
 }
