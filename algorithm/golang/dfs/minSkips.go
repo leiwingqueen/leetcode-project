@@ -1,5 +1,7 @@
 package dfs
 
+import "math"
+
 // 给你一个整数 hoursBefore ，表示你要前往会议所剩下的可用小时数。要想成功抵达会议现场，你必须途经 n 条道路。道路的长度用一个长度为 n 的整数数组 dist 表示，其中 dist[i] 表示第 i 条道路的长度（单位：千米）。另给你一个整数 speed ，表示你在道路上前进的速度（单位：千米每小时）。
 //
 // 当你通过第 i 条路之后，就必须休息并等待，直到 下一个整数小时 才能开始继续通过下一条道路。注意：你不需要在通过最后一条道路后休息，因为那时你已经抵达会议现场。
@@ -126,6 +128,8 @@ func minSkips2(dist []int, speed int, hoursBefore int) int {
 // if j==0,表示没有跳过，直接计算
 // if j>0. f(i,j)=min{f(i-k,j-1)+t[i-k:i]},其中j-1<i-k，则k<i-j+1
 func minSkips3(dist []int, speed int, hoursBefore int) int {
+	// 可忽略误差,最难的应该是这个误差的处理
+	const EPS = 1e-7
 	n := len(dist)
 	preSum := make([]int, n+1)
 	for i, d := range dist {
@@ -137,16 +141,16 @@ func minSkips3(dist []int, speed int, hoursBefore int) int {
 	}
 	// dp初始化
 	for i := 1; i <= n; i++ {
-		dp[i][0] = float64(preSum[i]) / float64(speed)
+		dp[i][0] = math.Ceil(dp[i-1][0]) + float64(dist[i-1])/float64(speed) - EPS
 	}
 	// dp迭代
 	for i := 2; i <= n; i++ {
 		for j := 1; j < i; j++ {
 			// 跳过
-			dp[i][j] = dp[i-1][j-1] + float64(dist[i-1])/float64(speed)
+			dp[i][j] = dp[i-1][j-1] + float64(dist[i-1])/float64(speed) - EPS
 			// 不跳过
 			if j < i-1 {
-				dp[i][j] = min(dp[i][j], dp[i-1][j]+float64(dist[i-1]/speed))
+				dp[i][j] = min(dp[i][j], math.Ceil(dp[i-1][j])+float64(dist[i-1])/float64(speed)-EPS)
 			}
 		}
 	}

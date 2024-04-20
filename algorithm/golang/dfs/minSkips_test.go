@@ -14,6 +14,7 @@ func Test_minSkips(t *testing.T) {
 		want int
 	}{
 		{"t1", args{[]int{1, 3, 2}, 4, 2}, 1},
+		{"t2", args{[]int{7, 3, 5, 5}, 2, 10}, 2},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
