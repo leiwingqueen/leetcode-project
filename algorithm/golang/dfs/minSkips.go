@@ -75,6 +75,7 @@ func minSkips(dist []int, speed int, hoursBefore int) int {
 	return dfs(n, hoursBefore)
 }
 
+// 增加记忆，还是超时
 func minSkips2(dist []int, speed int, hoursBefore int) int {
 	n := len(dist)
 	preSum := make([]int, n+1)
@@ -82,6 +83,10 @@ func minSkips2(dist []int, speed int, hoursBefore int) int {
 		preSum[i+1] = preSum[i] + d
 	}
 	// 前n条路，需要在前k个小时完成
+	mem := make(map[int64]int)
+	buildKey := func(n, k int) int64 {
+		return int64(n)<<32 | int64(k)
+	}
 	var dfs func(n int, k int) int
 	dfs = func(n int, k int) int {
 		if n == 0 {
@@ -94,6 +99,9 @@ func minSkips2(dist []int, speed int, hoursBefore int) int {
 				return -1
 			}
 		}
+		if v, ok := mem[buildKey(n, k)]; ok {
+			return v
+		}
 		res := -1
 		for i := 0; i < n; i++ {
 			// [i,n)的时间，取下界即可
@@ -105,6 +113,7 @@ func minSkips2(dist []int, speed int, hoursBefore int) int {
 				}
 			}
 		}
+		mem[buildKey(n, k)] = res
 		return res
 	}
 	return dfs(n, hoursBefore)
