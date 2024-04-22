@@ -32,7 +32,7 @@ func minimumOperations(grid [][]int) int {
 		for j := 0; j < 10; j++ {
 			dp[i][j] = m * n
 			for l := 0; l < 10; l++ {
-				if i != l {
+				if j != l {
 					dp[i][j] = min(dp[i][j], dp[i-1][l]+m-counter[i][j])
 				}
 			}
