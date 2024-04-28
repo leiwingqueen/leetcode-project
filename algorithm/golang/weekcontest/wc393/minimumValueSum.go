@@ -93,6 +93,7 @@ func minimumValueSum(nums []int, andValues []int) int {
 	return dp[m-1][n-1]
 }
 
+// 简单优化，还是超时
 func minimumValueSum2(nums []int, andValues []int) int {
 	n, m := len(nums), len(andValues)
 	dp := make([][]int, m)
