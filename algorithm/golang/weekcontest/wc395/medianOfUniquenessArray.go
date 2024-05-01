@@ -51,6 +51,7 @@ package wc395
 //1 <= nums.length <= 105
 //1 <= nums[i] <= 105
 
+// 时间复杂度O(nlog(n))
 func medianOfUniquenessArray(nums []int) int {
 	n := len(nums)
 	// distinct<=x的子数组的数量
@@ -59,7 +60,7 @@ func medianOfUniquenessArray(nums []int) int {
 		mp := make(map[int]int)
 		var cnt int64
 		for l < n {
-			for r < n && len(mp) <= x {
+			for r < n && (len(mp) < x || len(mp) == x && mp[nums[r]] > 0) {
 				mp[nums[r]]++
 				r++
 			}
@@ -79,13 +80,14 @@ func medianOfUniquenessArray(nums []int) int {
 		mp[num] = struct{}{}
 	}
 	maxR := len(mp)
-	k := int64(n) * int64(n+1)
+	k := int64(n) * int64(n+1) / 2
 	// > target的第一个结果
 	target := (k - 1) / 2
 	l, r := 1, maxR
 	for l < r {
 		mid := l + (r-l)/2
-		if count(mid) > target {
+		cnt := count(mid)
+		if cnt > target {
 			r = mid
 		} else {
 			l = mid + 1
