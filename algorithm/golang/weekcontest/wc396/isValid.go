@@ -1,4 +1,4 @@
-package wc397
+package wc396
 
 func isValid(word string) bool {
 	mp := map[byte]bool{

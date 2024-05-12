@@ -1,4 +1,4 @@
-package wc397
+package wc396
 
 import "testing"
 

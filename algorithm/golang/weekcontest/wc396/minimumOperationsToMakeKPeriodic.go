@@ -1,4 +1,4 @@
-package wc397
+package wc396
 
 func minimumOperationsToMakeKPeriodic(word string, k int) int {
 	n := len(word)
