@@ -1,6 +1,8 @@
 package wc397
 
-import "math"
+import (
+	"math"
+)
 
 // 给你一个数组 nums ，它是 [0, 1, 2, ..., n - 1] 的一个
 //排列
@@ -45,7 +47,8 @@ import "math"
 //2 <= n == nums.length <= 14
 //nums 是 [0, 1, 2, ..., n - 1] 的一个排列。
 
-// 先枚举
+// 用14个bit表示前k个选择的集合,假设为s，且最后一个数字为k
+// f(s,k)=min{f(s^(1<<k),l)+|p[l]-a[p[k]]|}，其中l!=k，且1<<l&s!=0
 func findPermutation(nums []int) []int {
 	abs := func(num int) int {
 		if num > 0 {
@@ -55,23 +58,24 @@ func findPermutation(nums []int) []int {
 		}
 	}
 	n := len(nums)
-	var dfs func(path []int, idx int) int
-	dfs = func(path []int, idx int) int {
-		if idx == n {
+	var dfs func(state int, k int, cnt int) int
+	dfs = func(state int, k int, cnt int) int {
+		if cnt == 1 {
 			return 0
 		}
-		res := math.MaxInt
-		for i := idx; i < n; i++ {
-			// 选择path[i]的数字
-			path[idx], path[i] = path[i], path[idx]
-			d := dfs(path, idx+1) + abs(path[idx-1]-nums[path[idx]])
-			if idx == n-1 {
-				d += abs(path[0] - nums[path[idx]])
+		r := math.MaxInt32
+		// 第一个数字必然为0，从后面开始选
+		for i := 1; i < n; i++ {
+			if state&(1<<i) != 0 {
+				// 倒数第二个数字
+				d := dfs(state^(1<<k), i, cnt-1) + abs(i-nums[k])
+				if cnt == n {
+					d += abs(k - nums[0])
+				}
+				r = min(d, r)
 			}
-			path[idx], path[i] = path[i], path[idx]
-			res = min(res, d)
 		}
-		return res
+		return r
 	}
 	return nil
 }
