@@ -13,7 +13,7 @@ func maxPointsInsideSquare(points [][]int, s string) int {
 		cnt := 0
 		for i, p := range points {
 			x, y := p[0], p[1]
-			if abs(x) <= d || abs(y) <= d {
+			if abs(x) <= d && abs(y) <= d {
 				if mp[s[i]] {
 					return false, 0
 				}
@@ -26,7 +26,7 @@ func maxPointsInsideSquare(points [][]int, s string) int {
 	mx := 0
 	for _, p := range points {
 		x, y := p[0], p[1]
-		mx = max(mx, min(abs(x), abs(y)))
+		mx = max(mx, max(abs(x), abs(y)))
 	}
 	l, r := 0, mx
 	for l < r {
