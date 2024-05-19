@@ -58,17 +58,41 @@ func isArraySpecial2(nums []int, queries [][]int) []bool {
 }
 
 // 1,0,1,1,1,0,1
+// 前缀和
+// 奇数下标和偶数下标分别计算
 func isArraySpecial3(nums []int, queries [][]int) []bool {
+	n := len(nums)
+	// 分奇偶位置分别统计
+	prefix1, prefix2 := make([]int, n+1), make([]int, n+1)
+	for i, num := range nums {
+		prefix1[i+1] = prefix1[i]
+		prefix2[i+1] = prefix2[i]
+		if i%2 == 0 {
+			if num%2 == 1 {
+				prefix1[i+1]++
+			}
+		} else {
+			if num%2 == 1 {
+				prefix2[i+1]++
+			}
+		}
+	}
 	check := func(l, r int) bool {
 		if r-l+1 == 1 {
 			return true
 		}
-		for i := l + 1; i <= r; i++ {
-			if nums[i-1]%2 == nums[i]%2 {
-				return false
+		// 奇数的1和偶数的1分别计算
+		c1 := prefix1[r+1] - prefix1[l]
+		c2 := prefix2[r+1] - prefix2[l]
+		p1, p2 := (r-l+1)/2, (r-l+1)/2
+		if (r-l+1)%2 == 1 {
+			if l%2 == 0 {
+				p1++
+			} else {
+				p2++
 			}
 		}
-		return true
+		return c1 == p1 && c2 == 0 || c1 == 0 && c2 == p2
 	}
 	res := make([]bool, len(queries))
 	for i, query := range queries {
