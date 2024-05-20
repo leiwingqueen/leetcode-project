@@ -33,28 +33,15 @@ package hash
 //1 <= s.length <= 10^5
 //s 仅由数字组成
 
+// 二分是不成立的
 func longestAwesome(s string) int {
 	n := len(s)
 	check2 := func(odd, k int) bool {
 		if k%2 == 0 {
 			// 必须数字都是偶数
-			for i := 0; i < 10; i++ {
-				if odd > 0 {
-					return false
-				}
-			}
-			return true
+			return odd == 0
 		} else {
-			cnt := 0
-			for i := 0; i < 10; i++ {
-				if odd > 0 {
-					if cnt > 0 {
-						return false
-					}
-					cnt++
-				}
-			}
-			return true
+			return odd == 1
 		}
 	}
 	check := func(k int) bool {
@@ -63,26 +50,27 @@ func longestAwesome(s string) int {
 		l, r := 0, 0
 		for r < n {
 			if r-l < k {
-				mp[s[r]-'0']++
-				if mp[s[r]-'0']%2 == 1 {
+				if mp[s[r]-'0']%2 == 0 {
+					// 偶数变奇数
 					odd++
-				} else if mp[s[r]-'0'] > 1 {
+				} else if mp[s[r]-'0'] > 0 {
 					// 奇数变偶数
 					odd--
 				}
+				mp[s[r]-'0']++
 				r++
 			} else {
 				// 到达窗口大小
 				if check2(odd, k) {
 					return true
 				}
-				mp[s[l]-'0']--
 				if mp[s[l]-'0']%2 == 1 {
 					odd--
-				} else if mp[s[l]-'0'] > 1 {
+				} else if mp[s[l]-'0'] > 0 {
 					// 偶数变奇数
 					odd++
 				}
+				mp[s[l]-'0']--
 				l++
 			}
 		}
