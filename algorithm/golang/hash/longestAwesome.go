@@ -88,3 +88,34 @@ func longestAwesome(s string) int {
 	}
 	return l
 }
+
+func longestAwesome2(s string) int {
+	n := len(s)
+	prefix := make([]int, n+1)
+	for i := 0; i < n; i++ {
+		b := 1 << (s[i] - '0')
+		prefix[i+1] = prefix[i] ^ b
+	}
+	check := func(k int) bool {
+		for i := 0; i <= n-k; i++ {
+			// [i,i+k)
+			p := prefix[i+k] ^ prefix[i]
+			cnt := 0
+			for j := 0; j < 10; j++ {
+				if p&(1<<j) != 0 {
+					cnt++
+				}
+			}
+			if cnt <= 1 {
+				return true
+			}
+		}
+		return false
+	}
+	for i := n; i >= 1; i-- {
+		if check(i) {
+			return i
+		}
+	}
+	return -1
+}
