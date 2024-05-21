@@ -89,6 +89,7 @@ func longestAwesome(s string) int {
 	return l
 }
 
+// 不出意外的超时了
 func longestAwesome2(s string) int {
 	n := len(s)
 	prefix := make([]int, n+1)
@@ -118,4 +119,28 @@ func longestAwesome2(s string) int {
 		}
 	}
 	return -1
+}
+
+// 在上面基础上增加哈希表来统计
+func longestAwesome3(s string) int {
+	n := len(s)
+	res := 0
+	xor := 0
+	mp := make(map[int]int)
+	mp[0] = -1
+	for i := 0; i < n; i++ {
+		xor ^= 1 << (s[i] - '0')
+		if p, ok := mp[xor]; ok {
+			res = max(i-p, res)
+		}
+		for j := 0; j < 10; j++ {
+			if p, ok := mp[xor^(1<<j)]; ok {
+				res = max(i-p, res)
+			}
+		}
+		if _, ok := mp[xor]; !ok {
+			mp[xor] = i
+		}
+	}
+	return res
 }
