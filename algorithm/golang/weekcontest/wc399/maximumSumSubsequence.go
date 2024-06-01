@@ -69,3 +69,34 @@ func maximumSumSubsequence(nums []int, queries [][]int) int {
 	}
 	return res
 }
+
+// 错误
+func maximumSumSubsequence2(nums []int, queries [][]int) int {
+	n := len(nums)
+	dp := make([]int, n+1)
+	dp[0] = 0
+	dp[1] = max(nums[0], 0)
+	for i := 2; i <= n; i++ {
+		dp[i] = max(dp[i-1], dp[i-2]+nums[i-1])
+	}
+	mod := 1_000_000_007
+	res := 0
+	for _, query := range queries {
+		pos, x := query[0], query[1]
+		nums[pos] = x
+		if pos == 0 {
+			dp[1] = max(nums[0], 0)
+		}
+		// 只需要修改dp[pos+1]往后的元素
+		for j := max(pos+1, 2); j <= n; j++ {
+			tmp := max(dp[j-1], dp[j-2]+nums[j-1])
+			if tmp <= dp[j] {
+				dp[j] = tmp
+				break
+			}
+			dp[j] = tmp
+		}
+		res = (res + dp[n]) % mod
+	}
+	return res
+}
