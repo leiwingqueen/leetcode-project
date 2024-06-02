@@ -34,5 +34,38 @@ package wc400
 // 输入保证操作可以删除所有的 '*' 字符。
 
 func clearStars(s string) string {
-
+	n := len(s)
+	st := make([][]int, 26)
+	for i := 0; i < n; i++ {
+		if s[i] == '*' {
+			for j := 0; j < 26; j++ {
+				if len(st[j]) > 0 {
+					st[j] = st[j][:len(st[j])-1]
+					break
+				}
+			}
+		} else {
+			idx := s[i] - 'a'
+			st[idx] = append(st[idx], i)
+		}
+	}
+	// 类似归并排序
+	var res []byte
+	for {
+		choose := -1
+		for i := 0; i < 26; i++ {
+			t := st[i]
+			if len(t) > 0 {
+				if choose < 0 || t[0] < st[choose][0] {
+					choose = i
+				}
+			}
+		}
+		if choose < 0 {
+			break
+		}
+		st[choose] = st[choose][:len(st[choose])-1]
+		res = append(res, byte('a'+choose))
+	}
+	return string(res)
 }
