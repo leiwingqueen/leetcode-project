@@ -11,7 +11,7 @@ func countDays(days int, meetings [][]int) int {
 	for _, query := range meetings {
 		start, end := query[0], query[1]
 		res += max(start-pre-1, 0)
-		pre = end
+		pre = max(pre, end)
 	}
 	res += days - pre
 	return res

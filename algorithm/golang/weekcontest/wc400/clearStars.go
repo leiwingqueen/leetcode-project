@@ -64,7 +64,7 @@ func clearStars(s string) string {
 		if choose < 0 {
 			break
 		}
-		st[choose] = st[choose][:len(st[choose])-1]
+		st[choose] = st[choose][1:]
 		res = append(res, byte('a'+choose))
 	}
 	return string(res)
