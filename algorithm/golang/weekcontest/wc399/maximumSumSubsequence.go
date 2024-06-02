@@ -100,3 +100,5 @@ func maximumSumSubsequence2(nums []int, queries [][]int) int {
 	}
 	return res
 }
+
+// TODO: 线段树
