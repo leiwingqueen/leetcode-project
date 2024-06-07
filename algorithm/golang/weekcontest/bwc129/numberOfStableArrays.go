@@ -56,6 +56,8 @@ package bwc129
 //1 <= zero, one, limit <= 200
 
 // 这道题还是有点难
+// 先定义问题
+// f(n,k,l)为长度为n的数据中，有k个1，其中超过l长度的窗口都必然包含0和1（也就是连续0，或者连续1的最大长度为l）
 func numberOfStableArrays(zero int, one int, limit int) int {
 	dp0, dp1 := make([][][]int, zero+1), make([][][]int, zero+1)
 	for i := 0; i <= zero; i++ {
@@ -84,4 +86,34 @@ func numberOfStableArrays(zero int, one int, limit int) int {
 		}
 	}
 	return 0
+}
+
+// 先尝试dfs
+func numberOfStableArrays2(zero int, one int, limit int) int {
+	// 其中last=0/1
+	mod := 1_000_000_007
+	var dfs func(num0, num1 int, last int, lastNum int) int
+	dfs = func(num0, num1 int, last int, lastNum int) int {
+		if num0 == 0 && num1 == 0 {
+			return 1
+		}
+		res := 0
+		if last == 0 {
+			if num0 > 0 && lastNum < limit {
+				res = (res + dfs(num0-1, num1, 0, lastNum+1)) % mod
+			}
+			if num1 > 0 {
+				res = (res + dfs(num0, num1-1, 1, 1)) % mod
+			}
+		} else {
+			if num0 > 0 {
+				res = (res + dfs(num0-1, num1, 0, 1)) % mod
+			}
+			if num1 > 0 && lastNum < limit {
+				res = (res + dfs(num0, num1-1, 1, lastNum+1)) % mod
+			}
+		}
+		return res
+	}
+	return dfs(zero, one, 0, 0)
 }
