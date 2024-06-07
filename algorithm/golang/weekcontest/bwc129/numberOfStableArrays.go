@@ -117,3 +117,50 @@ func numberOfStableArrays2(zero int, one int, limit int) int {
 	}
 	return dfs(zero, one, 0, 0)
 }
+
+// 上面的解法必然超时，我们需要增加记忆
+// 由于zero和one的数据量<200，我们分别需需要8个bit来存储,last为一个bit,lastNum为8个bit
+func numberOfStableArrays3(zero int, one int, limit int) int {
+	// 其中last=0/1
+	mod := 1_000_000_007
+	makeKey := func(num0, num1 int, last int, lastNum int) int {
+		res := 0
+		res |= num0
+		res <<= 8
+		res |= num1
+		res <<= 1
+		res |= last
+		res <<= 8
+		res |= lastNum
+		return res
+	}
+	mem := make(map[int]int)
+	var dfs func(num0, num1 int, last int, lastNum int) int
+	dfs = func(num0, num1 int, last int, lastNum int) int {
+		if num0 == 0 && num1 == 0 {
+			return 1
+		}
+		if v, ok := mem[makeKey(num0, num1, last, lastNum)]; ok {
+			return v
+		}
+		res := 0
+		if last == 0 {
+			if num0 > 0 && lastNum < limit {
+				res = (res + dfs(num0-1, num1, 0, lastNum+1)) % mod
+			}
+			if num1 > 0 {
+				res = (res + dfs(num0, num1-1, 1, 1)) % mod
+			}
+		} else {
+			if num0 > 0 {
+				res = (res + dfs(num0-1, num1, 0, 1)) % mod
+			}
+			if num1 > 0 && lastNum < limit {
+				res = (res + dfs(num0, num1-1, 1, lastNum+1)) % mod
+			}
+		}
+		mem[makeKey(num0, num1, last, lastNum)] = res
+		return res
+	}
+	return dfs(zero, one, 0, 0)
+}
