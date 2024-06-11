@@ -67,3 +67,33 @@ func maxTotalReward3(rewardValues []int) int {
 	}
 	return dp[n][mx]
 }
+
+// 空间优化
+func maxTotalReward4(rewardValues []int) int {
+	sort.Ints(rewardValues)
+	n := len(rewardValues)
+	sum := 0
+	for _, v := range rewardValues {
+		sum += v
+	}
+	mx := max(sum, 2*rewardValues[n-1])
+	pre := make([]int, mx+1)
+	dp := make([]int, mx+1)
+	for i := 1; i <= n; i++ {
+		for j := 1; j <= mx; j++ {
+			dp[j] = pre[j]
+			// 找到最后一个下标k,k<rewardValues[i-1]
+			// 也就是k<rewardValues[i-1]
+			// 其中k<=j
+			if j-rewardValues[i-1] >= 0 {
+				if j-rewardValues[i-1] < rewardValues[i-1] {
+					dp[j] = max(dp[j], pre[j-rewardValues[i-1]]+rewardValues[i-1])
+				} else {
+					dp[j] = max(dp[j], pre[rewardValues[i-1]-1]+rewardValues[i-1])
+				}
+			}
+		}
+		copy(pre, dp)
+	}
+	return dp[mx]
+}
