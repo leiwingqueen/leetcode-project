@@ -56,26 +56,34 @@ package bwc132
 //1 <= skills[i] <= 106
 //skills 中的整数互不相同。
 
+// 这写法很奇怪
 func findWinningPlayer(skills []int, k int) int {
 	var s []int
 	n := len(skills)
 	for i := 0; i < n; i++ {
 		s = append(s, i)
 	}
+	cnt := 0
 	for {
-		cnt := 0
-		for i := 1; i < len(s); i++ {
+		i := 1
+		for ; i < len(s); i++ {
 			if skills[s[0]] > skills[s[i]] {
 				cnt++
 				if cnt == k {
 					return s[0]
 				}
 			} else {
-				// [0,i)移除数组
-				s = s[i:]
+				cnt = 1
+				break
 			}
 		}
-		for cnt < k {
+		if i == len(s) {
+			return s[0]
+		}
+		// [0,i)移除数组
+		s = s[i:]
+		if cnt == k {
+			return s[0]
 		}
 	}
 }
