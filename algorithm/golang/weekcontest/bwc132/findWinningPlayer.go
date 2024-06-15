@@ -87,3 +87,24 @@ func findWinningPlayer(skills []int, k int) int {
 		}
 	}
 }
+
+// 滑动窗口，通过
+func findWinningPlayer2(skills []int, k int) int {
+	n := len(skills)
+	p1, p2 := 0, 0
+	for p1 < n {
+		p2 = p1 + 1
+		for p2 < n && skills[p2] < skills[p1] {
+			p2++
+		}
+		cnt := p2 - p1 - 1
+		if p1 > 0 {
+			cnt++
+		}
+		if p2 == n || cnt >= k {
+			return p1
+		}
+		p1 = p2
+	}
+	return -1
+}

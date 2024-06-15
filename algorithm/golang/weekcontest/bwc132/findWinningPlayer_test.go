@@ -17,7 +17,7 @@ func Test_findWinningPlayer(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := findWinningPlayer(tt.args.skills, tt.args.k); got != tt.want {
+			if got := findWinningPlayer2(tt.args.skills, tt.args.k); got != tt.want {
 				t.Errorf("findWinningPlayer() = %v, want %v", got, tt.want)
 			}
 		})
