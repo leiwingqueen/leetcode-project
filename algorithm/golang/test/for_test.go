@@ -28,3 +28,13 @@ func forTest() {
 func Test_t1(t *testing.T) {
 	forTest()
 }
+
+func Test_t2(t *testing.T) {
+	var s []byte
+	s = append(s, "Hello,world"...)
+	fmt.Println(string(s))
+	s = s[:0]
+	fmt.Println(string(s))
+	s = append(s, "Hello,lyq"...)
+	fmt.Println(string(s))
+}
