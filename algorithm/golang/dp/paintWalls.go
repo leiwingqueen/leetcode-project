@@ -48,9 +48,11 @@ func paintWalls(cost []int, time []int) int {
 	}
 	dp[0][0] = 0
 	for i := 1; i <= n; i++ {
-		for j := 0; j <= i; j++ {
+		for j := 0; j <= n; j++ {
 			for k := 0; k <= n; k++ {
-				if k == 0 {
+				if j > i {
+					tmp[j][k] = mx
+				} else if k == 0 {
 					tmp[j][k] = 0
 				} else if j == 0 {
 					tmp[j][k] = mx
