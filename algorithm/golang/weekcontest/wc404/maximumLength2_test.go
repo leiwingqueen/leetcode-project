@@ -18,7 +18,7 @@ func Test_maximumLength2(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := maximumLength3(tt.args.nums, tt.args.k); got != tt.want {
+			if got := maximumLength5(tt.args.nums, tt.args.k); got != tt.want {
 				t.Errorf("maximumLength2() = %v, want %v", got, tt.want)
 			}
 		})
