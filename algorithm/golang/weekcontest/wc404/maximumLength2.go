@@ -103,6 +103,7 @@ func maximumLength5(nums []int, k int) int {
 			// 初始化，已nums[i]为第一个数字
 			next[j][nums[i]%k] = 1
 			for l := 0; l < k; l++ {
+				// TODO: 这个循环能否优化一下
 				next[j][l] = max(next[j][l], pre[j][l])
 				if nums[i]%k == l {
 					next[j][l] = max(next[j][l], pre[j][(j+k-l)%k]+1)
@@ -117,6 +118,42 @@ func maximumLength5(nums []int, k int) int {
 	for i := 0; i < k; i++ {
 		for j := 0; j < k; j++ {
 			res = max(res, next[i][j])
+		}
+	}
+	return res
+}
+
+// 不容易想，需要各种优化
+func maximumLength6(nums []int, k int) int {
+	n := len(nums)
+	dp := make([][]int, k)
+	for i := 0; i < k; i++ {
+		dp[i] = make([]int, k)
+	}
+	for i := 0; i < k; i++ {
+		dp[i][nums[0]%k] = 1
+	}
+	for i := 1; i < n; i++ {
+		for j := 0; j < k; j++ {
+			num := nums[i] % k
+			// 初始化，已nums[i]为第一个数字
+			dp[j][num] = max(1, dp[j][num], dp[j][(j+k-num)%k]+1)
+			/*for l := 0; l < k; l++ {
+				// 这个循环能否优化一下
+				next[j][l] = max(next[j][l], pre[j][l])
+				if num == l {
+					next[j][l] = max(next[j][l], pre[j][(j+k-l)%k]+1)
+				}
+			}*/
+		}
+		/*for j := 0; j < k; j++ {
+			copy(pre[j], next[j])
+		}*/
+	}
+	res := 0
+	for i := 0; i < k; i++ {
+		for j := 0; j < k; j++ {
+			res = max(res, dp[i][j])
 		}
 	}
 	return res
