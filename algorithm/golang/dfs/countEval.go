@@ -60,3 +60,51 @@ func countEval(s string, result int) int {
 	}
 	return dfs(0, n-1, result)
 }
+
+// 时间复杂度O(n^3)
+func countEval2(s string, result int) int {
+	n := len(s)
+	dp := make([][][]int, n)
+	for i := 0; i < n; i++ {
+		dp[i] = make([][]int, n)
+		for j := 0; j < n; j++ {
+			dp[i][j] = make([]int, 2)
+		}
+	}
+	for i := 0; i < n; i += 2 {
+		dp[i][i][s[i]-'0'] = 1
+	}
+	for i := n - 3; i >= 0; i -= 2 {
+		for j := i + 2; j < n; j += 2 {
+			for k := 0; k <= 1; k++ {
+				// 以l为分割点
+				for l := i + 1; l < j; l += 2 {
+					if k == 0 {
+						if s[l] == '&' {
+							dp[i][j][k] += dp[i][l-1][0] * dp[l+1][j][0]
+							dp[i][j][k] += dp[i][l-1][0] * dp[l+1][j][1]
+							dp[i][j][k] += dp[i][l-1][1] * dp[l+1][j][0]
+						} else if s[l] == '|' {
+							dp[i][j][k] += dp[i][l-1][0] * dp[l+1][j][0]
+						} else {
+							dp[i][j][k] += dp[i][l-1][0] * dp[l+1][j][0]
+							dp[i][j][k] += dp[i][l-1][1] * dp[l+1][j][1]
+						}
+					} else {
+						if s[l] == '&' {
+							dp[i][j][k] += dp[i][l-1][1] * dp[l+1][j][1]
+						} else if s[l] == '|' {
+							dp[i][j][k] += dp[i][l-1][1] * dp[l+1][j][0]
+							dp[i][j][k] += dp[i][l-1][0] * dp[l+1][j][1]
+							dp[i][j][k] += dp[i][l-1][1] * dp[l+1][j][1]
+						} else {
+							dp[i][j][k] += dp[i][l-1][0] * dp[l+1][j][1]
+							dp[i][j][k] += dp[i][l-1][1] * dp[l+1][j][0]
+						}
+					}
+				}
+			}
+		}
+	}
+	return dp[0][n-1][result]
+}

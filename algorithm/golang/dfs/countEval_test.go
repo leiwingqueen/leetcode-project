@@ -17,7 +17,7 @@ func Test_countEval(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := countEval(tt.args.s, tt.args.result); got != tt.want {
+			if got := countEval2(tt.args.s, tt.args.result); got != tt.want {
 				t.Errorf("countEval() = %v, want %v", got, tt.want)
 			}
 		})
