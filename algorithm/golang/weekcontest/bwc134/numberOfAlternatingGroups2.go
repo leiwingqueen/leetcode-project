@@ -60,26 +60,45 @@ package bwc134
 
 func numberOfAlternatingGroups2(colors []int, k int) int {
 	n := len(colors)
-	// prefixSum[i][0]为[0,i)的偶数位上的0的个数
-	// prefixSum[i][1]为[0,i)的奇数位上的0的个数
-	// 则[i,j)上的偶数位的0的个数为 prefixSum[j][0]-prefixSum[i][0]
-	// 则[i,j)上的奇数位的0的个数为 prefixSum[j][1]-prefixSum[i][1]
-	prefixSum := make([][]int, 2*n+1)
-	for i := 0; i <= 2*n+1; i++ {
-		prefixSum[i] = make([]int, 2)
+	// prefixSum0[i][0]为[0,i)的偶数位上的0的个数
+	// prefixSum0[i][1]为[0,i)的奇数位上的0的个数
+	// 则[i,j)上的偶数位的0的个数为 prefixSum0[j][0]-prefixSum0[i][0]
+	// 则[i,j)上的奇数位的0的个数为 prefixSum0[j][1]-prefixSum0[i][1]
+	prefixSum0 := make([][]int, 2*n+1)
+	prefixSum1 := make([][]int, 2*n+1)
+	for i := 0; i <= 2*n; i++ {
+		prefixSum0[i] = make([]int, 2)
+		prefixSum1[i] = make([]int, 2)
 	}
 	for i := 0; i < 2*n; i++ {
-		prefixSum[i+1][0] = prefixSum[i][0]
-		prefixSum[i+1][1] = prefixSum[i][1]
+		prefixSum0[i+1][0] = prefixSum0[i][0]
+		prefixSum0[i+1][1] = prefixSum0[i][1]
+		prefixSum1[i+1][0] = prefixSum1[i][0]
+		prefixSum1[i+1][1] = prefixSum1[i][1]
 		if i%2 == 0 {
 			if colors[i%n] == 0 {
-				prefixSum[i+1][0]++
+				prefixSum0[i+1][0]++
+			} else {
+				prefixSum0[i+1][1]++
 			}
 		} else {
 			if colors[i%n] == 0 {
-				prefixSum[i+1][1]++
+				prefixSum0[i+1][1]++
+			} else {
+				prefixSum1[i+1][1]++
 			}
 		}
 	}
-	return 0
+	res := 0
+	for i := 0; i < n; i++ {
+		// 分别是偶数位上的0和1的数量，奇数位上的0和1的数量
+		c0 := prefixSum0[i+k][0] - prefixSum0[i][0]
+		c1 := prefixSum1[i+k][0] - prefixSum1[i][0]
+		c2 := prefixSum0[i+k][1] - prefixSum0[i][1]
+		c3 := prefixSum1[i+k][1] - prefixSum1[i][1]
+		if c0 == 0 && c3 == 0 || c1 == 0 && c2 == 0 {
+			res++
+		}
+	}
+	return res
 }
