@@ -59,5 +59,27 @@ package bwc134
 //3 <= k <= colors.length
 
 func numberOfAlternatingGroups2(colors []int, k int) int {
+	n := len(colors)
+	// prefixSum[i][0]为[0,i)的偶数位上的0的个数
+	// prefixSum[i][1]为[0,i)的奇数位上的0的个数
+	// 则[i,j)上的偶数位的0的个数为 prefixSum[j][0]-prefixSum[i][0]
+	// 则[i,j)上的奇数位的0的个数为 prefixSum[j][1]-prefixSum[i][1]
+	prefixSum := make([][]int, 2*n+1)
+	for i := 0; i <= 2*n+1; i++ {
+		prefixSum[i] = make([]int, 2)
+	}
+	for i := 0; i < 2*n; i++ {
+		prefixSum[i+1][0] = prefixSum[i][0]
+		prefixSum[i+1][1] = prefixSum[i][1]
+		if i%2 == 0 {
+			if colors[i%n] == 0 {
+				prefixSum[i+1][0]++
+			}
+		} else {
+			if colors[i%n] == 0 {
+				prefixSum[i+1][1]++
+			}
+		}
+	}
 	return 0
 }
