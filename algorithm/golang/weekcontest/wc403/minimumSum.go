@@ -39,6 +39,7 @@ import "math"
 
 // f1(x1,y1,x2,y2)为下标从[x1,y1]到[x2,y2]使用1个三角形覆盖的最小面积
 // f2(x1,y1,x2,y2)=
+// 居然通过了，低空划过
 func minimumSum(grid [][]int) int {
 	m, n := len(grid), len(grid[0])
 	dp1, dp2, dp3 := make([][][][]int, m), make([][][][]int, m), make([][][][]int, m)
