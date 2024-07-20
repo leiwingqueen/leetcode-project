@@ -109,7 +109,7 @@ func minimumSum(grid [][]int) int {
 					}
 					// 用一个竖线分割
 					for x := j; x < l; x++ {
-						dp2[i][j][k][l] = min(dp3[i][j][k][l], dp1[i][j][k][x]+dp2[i][x+1][k][l])
+						dp3[i][j][k][l] = min(dp3[i][j][k][l], dp1[i][j][k][x]+dp2[i][x+1][k][l])
 					}
 				}
 			}
