@@ -15,6 +15,12 @@ func Test_minimumSum(t *testing.T) {
 		{"t1", args{[][]int{
 			{1, 0, 1}, {1, 1, 1},
 		}}, 5},
+		// [[1,0,0,1],[0,0,0,0],[1,0,0,0]]
+		{"t2", args{[][]int{
+			{1, 0, 0, 1},
+			{0, 0, 0, 0},
+			{1, 0, 0, 0},
+		}}, 3},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

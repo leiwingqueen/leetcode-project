@@ -60,6 +60,7 @@ func minimumSum(grid [][]int) int {
 	cal := func(x1, y1, x2, y2 int) int {
 		l, r := math.MaxInt, 0
 		d, u := math.MaxInt, 0
+		empty := true
 		for i := x1; i <= x2; i++ {
 			for j := y1; j <= y2; j++ {
 				if grid[i][j] == 1 {
@@ -67,8 +68,12 @@ func minimumSum(grid [][]int) int {
 					r = max(r, j)
 					d = min(d, i)
 					u = max(u, i)
+					empty = false
 				}
 			}
+		}
+		if empty {
+			return 0
 		}
 		return (r - l + 1) * (u - d + 1)
 	}
@@ -106,11 +111,14 @@ func minimumSum(grid [][]int) int {
 					// 用一个横线分割
 					for x := i; x < k; x++ {
 						dp3[i][j][k][l] = min(dp3[i][j][k][l], dp1[i][j][x][l]+dp2[x+1][j][k][l])
+						dp3[i][j][k][l] = min(dp3[i][j][k][l], dp2[i][j][x][l]+dp1[x+1][j][k][l])
 					}
 					// 用一个竖线分割
 					for x := j; x < l; x++ {
 						dp3[i][j][k][l] = min(dp3[i][j][k][l], dp1[i][j][k][x]+dp2[i][x+1][k][l])
+						dp3[i][j][k][l] = min(dp3[i][j][k][l], dp2[i][j][k][x]+dp1[i][x+1][k][l])
 					}
+
 				}
 			}
 		}
