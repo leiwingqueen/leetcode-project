@@ -72,7 +72,7 @@ func maxOperations2(s string) int {
 	return cnt
 }
 
-// 还是会超时，这里应该用双栈模拟会比较合适
+// 双栈模拟，还是会超时
 func maxOperations3(s string) int {
 	n := len(s)
 	var st1, st2 []int
@@ -104,7 +104,7 @@ func maxOperations3(s string) int {
 			} else {
 				if st1[idx1] < st1[idx1-1]-1 {
 					// 直接挪动栈顶的位置
-					st1[idx1] = st1[idx1] - 1
+					st1[idx1] = st1[idx1-1] - 1
 					return 1
 				} else {
 					// 否则把栈顶挪动到st2
