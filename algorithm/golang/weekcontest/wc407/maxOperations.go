@@ -72,31 +72,55 @@ func maxOperations2(s string) int {
 	return cnt
 }
 
+// 还是会超时，这里应该用双栈模拟会比较合适
 func maxOperations3(s string) int {
 	n := len(s)
-	var st []int
-	for i, ch := range s {
-		if ch == '1' {
-			st = append(st, i)
+	var st1, st2 []int
+	for i := n - 1; i >= 0; i-- {
+		if s[i] == '1' {
+			st1 = append(st1, i)
 		}
 	}
-	move := func() bool {
-		for i := 0; i < len(st); i++ {
-			if st[i] < n-1 && (i == len(st)-1 || st[i] > st[i+1]+1) {
-				// 最后一个数字或者中间有0
-				last := n - 1
-				if len(st) > 1 {
-					last = st[i+1] - 1
+	move := func() int {
+		if len(st1) == 0 {
+			return -1
+		}
+		idx1 := len(st1) - 1
+		idx2 := len(st2) - 1
+		if len(st2) > 0 && st2[idx2] < st1[idx1]-1 {
+			// 如果st2不为空，且st2的栈顶和当前st1的栈顶有空隙，那么st2的栈顶就挪到st1
+			st1 = append(st1, st1[idx1]-1)
+			st2 = st2[:len(st2)-1]
+			return 1
+		} else {
+			// 判断当前节点是否能否往后挪
+			if len(st1) == 1 {
+				if st1[idx1] == n-1 {
+					return -1
+				} else {
+					st1[idx1] = n - 1
+					return 1
 				}
-				st[i] = last
-				return true
+			} else {
+				if st1[idx1] < st1[idx1-1]-1 {
+					// 直接挪动栈顶的位置
+					st1[idx1] = st1[idx1] - 1
+					return 1
+				} else {
+					// 否则把栈顶挪动到st2
+					st2 = append(st2, st1[idx1])
+					st1 = st1[:len(st1)-1]
+					return 0
+				}
 			}
 		}
-		return false
 	}
 	cnt := 0
-	for move() {
-		cnt++
+	for {
+		k := move()
+		if k < 0 {
+			return cnt
+		}
+		cnt += k
 	}
-	return cnt
 }
