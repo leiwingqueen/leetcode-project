@@ -45,26 +45,26 @@ package bwc135
 //n 是偶数。
 //0 <= nums[i] <= k <= 105
 
-// 先计算每对数组的绝对值差
-// 假设差值在[0,k]之间，那么我们修改一个数字即可变成[0,k]之间的任何一个数字
+// 假设我们选择的差距为X，这里分场景考虑
+// d==X，那么我们不需要修改
+// d>X，那么我们必然可以通过修改某一个值得到最终的值
+// d<X，需要分场景考虑。
+// 假设 n-1-a>=X||b>=X，我们只需要修改一次，这里等价于d<max(n-1-a,b)，只要一次。否则需要修改两次
+// 否则 我们需要修改两次
+
+// [0,max(n-1-a,b)]只需要修改一次，(max(n-1-a,b),k)需要修改两次
 func minChanges(nums []int, k int) int {
-	abs := func(num int) int {
-		if num < 0 {
-			return -num
-		} else {
-			return num
-		}
-	}
 	counter := make([]int, k+1)
 	n := len(nums)
 	l, r := 0, n-1
-	maxCnt := 0
 	for l < r {
-		d := abs(nums[r] - nums[l])
+		if nums[r] < nums[l] {
+			nums[l], nums[r] = nums[r], nums[l]
+		}
+		d := nums[r] - nums[l]
 		counter[d]++
-		maxCnt = max(maxCnt, counter[d])
 		l++
 		r--
 	}
-	return n/2 - maxCnt
+	return 0
 }
