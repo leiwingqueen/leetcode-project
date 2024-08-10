@@ -92,3 +92,42 @@ func shortestDistanceAfterQueries(n int, queries [][]int) []int {
 	}
 	return res
 }
+
+// 还不如用BFS
+func shortestDistanceAfterQueries2(n int, queries [][]int) []int {
+	graph := make([][]int, n)
+	for i := 1; i < n; i++ {
+		graph[i-1] = append(graph[i-1], i)
+	}
+	bfs := func() int {
+		queue := []int{0}
+		visit := make([]bool, n)
+		visit[0] = true
+		depth := 0
+		for len(queue) > 0 {
+			size := len(queue)
+			for i := 0; i < size; i++ {
+				node := queue[i]
+				if node == n-1 {
+					return depth
+				}
+				for _, next := range graph[node] {
+					if !visit[next] {
+						visit[next] = true
+						queue = append(queue, next)
+					}
+				}
+			}
+			queue = queue[size:]
+			depth++
+		}
+		return -1
+	}
+	res := make([]int, len(queries))
+	for i, query := range queries {
+		x, y := query[0], query[1]
+		graph[x] = append(graph[x], y)
+		res[i] = bfs()
+	}
+	return res
+}
