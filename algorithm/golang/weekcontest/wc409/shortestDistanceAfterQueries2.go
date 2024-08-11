@@ -74,6 +74,7 @@ func shortestDistanceAfterQueries3(n int, queries [][]int) []int {
 	return res
 }
 
+// 终于过了
 func shortestDistanceAfterQueries4(n int, queries [][]int) []int {
 	uf := Construct(n - 1)
 	res := make([]int, len(queries))
@@ -85,9 +86,8 @@ func shortestDistanceAfterQueries4(n int, queries [][]int) []int {
 			if r1 <= x {
 				break
 			}
-			r2 := uf.find(r1 - 1)
-			uf.union(r1, r2)
-			j = r2
+			uf.union(r1, x)
+			j = r1 - 1
 		}
 		res[i] = uf.count
 	}
