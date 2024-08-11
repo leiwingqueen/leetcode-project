@@ -74,6 +74,26 @@ func shortestDistanceAfterQueries3(n int, queries [][]int) []int {
 	return res
 }
 
+func shortestDistanceAfterQueries4(n int, queries [][]int) []int {
+	uf := Construct(n - 1)
+	res := make([]int, len(queries))
+	for i := range queries {
+		x, y := queries[i][0], queries[i][1]
+		j := y - 1
+		for j >= x {
+			r1 := uf.find(j)
+			if r1 <= x {
+				break
+			}
+			r2 := uf.find(r1 - 1)
+			uf.union(r1, r2)
+			j = r2
+		}
+		res[i] = uf.count
+	}
+	return res
+}
+
 // 并查集模板
 type UnionFind struct {
 	parent []int
@@ -100,7 +120,11 @@ func (uf *UnionFind) union(x int, y int) {
 	rootX := uf.find(x)
 	rootY := uf.find(y)
 	if rootX != rootY {
-		uf.parent[rootX] = rootY
+		// 这里选择更小的节点当root
+		if rootX > rootY {
+			rootX, rootY = rootY, rootX
+		}
+		uf.parent[rootY] = rootX
 		uf.count--
 	}
 }
