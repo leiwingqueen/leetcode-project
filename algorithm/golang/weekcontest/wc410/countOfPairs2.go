@@ -78,5 +78,5 @@ func countOfPairs3(nums []int) int {
 		}
 		copy(pre, cur)
 	}
-	return pre[mx]
+	return pre[mx+1]
 }

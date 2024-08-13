@@ -13,6 +13,7 @@ func Test_countOfPairs3(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{"t1", args{[]int{2, 3, 2}}, 4},
+		{"t2", args{[]int{56, 390, 434, 527, 603, 627, 832, 988, 993, 1000}}, 980547738},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
