@@ -29,7 +29,7 @@ func minFlips2(grid [][]int) int {
 		return nodes
 	}
 	res := 0
-	total := 0
+	cnt01, cnt11 := 0, 0
 	for len(queue) > 0 {
 		node := queue[0]
 		queue = queue[1:]
@@ -47,8 +47,9 @@ func minFlips2(grid [][]int) int {
 			}
 			if cnt == 1 {
 				res++
+				cnt01++
 			} else if cnt == 2 {
-				total += 2
+				cnt11++
 			}
 		} else {
 			cnt := 0
@@ -61,7 +62,6 @@ func minFlips2(grid [][]int) int {
 				res++
 			} else if cnt == 2 {
 				res += 2
-				total += 2
 			}
 		}
 		for _, d := range nodes {
@@ -74,6 +74,9 @@ func minFlips2(grid [][]int) int {
 				visit[x][y] = true
 			}
 		}
+	}
+	if cnt11%2 == 1 && cnt01 == 0 {
+		res += 2
 	}
 	return res
 }
