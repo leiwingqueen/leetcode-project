@@ -115,6 +115,46 @@ func minimumValueSum2(nums []int, andValues []int) int {
 		for j := n - 1; j >= i; j-- {
 			and = nums[j]
 			dp[i][j] = -1
+			// 问题在于如果快速地找到and满足条件的
+			for k := j - 1; k >= i-1; k-- {
+				if and < andValues[i] {
+					break
+				} else if and == andValues[i] {
+					if dp[i-1][k] >= 0 && (dp[i][j] < 0 || dp[i-1][k]+nums[j] < dp[i][j]) {
+						dp[i][j] = dp[i-1][k] + nums[j]
+					}
+				}
+				and &= nums[k]
+			}
+		}
+	}
+	return dp[m-1][n-1]
+}
+
+// 简单优化，还是超时
+func minimumValueSum3(nums []int, andValues []int) int {
+	n, m := len(nums), len(andValues)
+	dp := make([][]int, m)
+	for i := 0; i < m; i++ {
+		dp[i] = make([]int, n)
+	}
+	// 初始化
+	and := nums[0]
+	for i := 0; i < n; i++ {
+		and &= nums[i]
+		if and == andValues[0] {
+			dp[0][i] = nums[i]
+		} else {
+			dp[0][i] = -1
+		}
+	}
+	// dp迭代
+	for i := 1; i < m; i++ {
+		for j := n - 1; j >= i; j-- {
+			and = nums[j]
+			dp[i][j] = -1
+			// 问题在于如果快速地找到and满足条件的，二分查找
+
 			for k := j - 1; k >= i-1; k-- {
 				if and < andValues[i] {
 					break
