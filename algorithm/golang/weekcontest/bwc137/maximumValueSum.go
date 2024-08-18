@@ -66,19 +66,21 @@ func maximumValueSum2(board [][]int) int64 {
 
 // Store the largest 3 values for each row.
 // Select any 3 rows and brute force all combinations.
+// 时间复杂度O(m^3)
 func maximumValueSum3(board [][]int) int64 {
-	m := len(board)
+	m, n := len(board), len(board[0])
 	matrix := make([][]int, m)
 	for i := 0; i < m; i++ {
-		matrix[i] = make([]int, 3)
+		matrix[i] = make([]int, n)
+		for j := 0; j < n; j++ {
+			matrix[i][j] = j
+		}
 	}
 	for i := 0; i < m; i++ {
-		sort.Slice(board[i], func(k, j int) bool {
-			return board[i][k] > board[i][j]
+		sort.Slice(matrix[i], func(k, j int) bool {
+			y1, y2 := matrix[i][k], matrix[i][j]
+			return board[i][y1] > board[i][y2]
 		})
-		for j := 0; j < 3; j++ {
-			matrix[i][j] = board[i][j]
-		}
 	}
 	var res int64
 	res = math.MinInt64
@@ -88,8 +90,9 @@ func maximumValueSum3(board [][]int) int64 {
 				for y2 := 0; y2 < 3; y2++ {
 					for x3 := x2 + 1; x3 < m; x3++ {
 						for y3 := 0; y3 < 3; y3++ {
-							if y1 != y2 && y1 != y3 && y2 != y3 {
-								res = max(res, int64(matrix[x1][y1])+int64(matrix[x2][y2])+int64(matrix[x3][y3]))
+							idx1, idx2, idx3 := matrix[x1][y1], matrix[x2][y2], matrix[x3][y3]
+							if idx1 != idx2 && idx1 != idx3 && idx2 != idx3 {
+								res = max(res, int64(board[x1][idx1])+int64(board[x2][idx2])+int64(board[x3][idx3]))
 							}
 						}
 					}

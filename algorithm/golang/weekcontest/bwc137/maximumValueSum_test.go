@@ -22,10 +22,14 @@ func Test_maximumValueSum(t *testing.T) {
 		{"t3", args{[][]int{
 			{1, 1, 1}, {1, 1, 1}, {1, 1, 1},
 		}}, 3},
+		// [[51,-15,-45],[-4,-32,85],[-10,4,-9]]
+		{"t4", args{[][]int{
+			{51, -15, -45}, {-4, -32, 85}, {-10, 4, -9},
+		}}, 140},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := maximumValueSum2(tt.args.board); got != tt.want {
+			if got := maximumValueSum3(tt.args.board); got != tt.want {
 				t.Errorf("maximumValueSum() = %v, want %v", got, tt.want)
 			}
 		})
