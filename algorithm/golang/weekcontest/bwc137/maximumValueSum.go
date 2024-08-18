@@ -2,8 +2,6 @@ package bwc137
 
 import "math"
 
-// f(x,y,k)为前x行y列有k个车的最大值
-// f(x,y,k)=max{f(x-1,y-1,k-1)+board[x-1][y-1],
 func maximumValueSum(board [][]int) int64 {
 	m, n := len(board), len(board[0])
 	var dfs func(x, y, k int) int64
@@ -22,4 +20,43 @@ func maximumValueSum(board [][]int) int64 {
 		return res
 	}
 	return dfs(m, n, 3)
+}
+
+// 增加记忆
+func maximumValueSum2(board [][]int) int64 {
+	m, n := len(board), len(board[0])
+	var dfs func(idx int) int64
+	dfs = func(idx int) int64 {
+		if idx == 3 {
+			return 0
+		}
+		var res int64
+		res = math.MinInt64
+		for i := idx; i < m; i++ {
+			for j := idx; j < n; j++ {
+				// 选择[i,j]
+				for l := 0; l < n; l++ {
+					// i 行和idx行交换
+					board[idx][l], board[i][l] = board[i][l], board[idx][l]
+				}
+				for l := 0; l < m; l++ {
+					// j 列和idx列交换
+					board[l][idx], board[l][j] = board[l][j], board[l][idx]
+				}
+				sub := dfs(idx+1) + int64(board[idx][idx])
+				// 还原现场
+				for l := 0; l < n; l++ {
+					// i 行和idx行交换
+					board[idx][l], board[i][l] = board[i][l], board[idx][l]
+				}
+				for l := 0; l < m; l++ {
+					// j 列和idx列交换
+					board[l][idx], board[l][j] = board[l][j], board[l][idx]
+				}
+				res = max(res, sub)
+			}
+		}
+		return res
+	}
+	return dfs(0)
 }
