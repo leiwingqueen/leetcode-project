@@ -16,12 +16,16 @@ func forTest() {
 	arr = append(arr, TestItem{"b", 2})
 	arr = append(arr, TestItem{"c", 3})
 	mp := make(map[string]*TestItem)
+	var arr2 []TestItem
 	for _, v := range arr {
-		tmp := v
-		mp[v.Name] = &tmp
+		mp[v.Name] = &v
+		arr2 = append(arr2, v)
 	}
 	for k, v := range mp {
 		fmt.Println(fmt.Sprintf("Name:%s,value:%v", k, v))
+	}
+	for _, v := range arr2 {
+		fmt.Println(v)
 	}
 }
 
