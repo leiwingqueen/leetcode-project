@@ -68,3 +68,25 @@ func findMaximumNumber(k int64, x int) int64 {
 	}
 	return l
 }
+
+func findMaximumNumber2(k int64, x int) int64 {
+	cal := func(num int64) int {
+		cnt := 0
+		for i := 0; i < 64; i++ {
+			if (i+1)%x == 0 && num&(1<<i) != 0 {
+				cnt++
+			}
+		}
+		return cnt
+	}
+	var num, sum int64
+	num, sum = 1, 0
+	for {
+		c := cal(num)
+		if int64(c)+sum > k {
+			return num - 1
+		}
+		sum += int64(c)
+		num++
+	}
+}
