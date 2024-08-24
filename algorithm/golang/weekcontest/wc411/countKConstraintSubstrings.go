@@ -2,6 +2,7 @@ package wc411
 
 // 只要0和1的数量均不大于k，那么可以理解为除非
 // 确定右边界，计算满足条件的左边界
+// 错误
 func countKConstraintSubstrings(s string, k int) int {
 	n := len(s)
 	l, r := 0, 0
@@ -54,6 +55,14 @@ func countKConstraintSubstrings2(s string, k int) int {
 			cnt0++
 		}
 		r++
+	}
+	for cnt0 > k && cnt1 > k {
+		if s[l] == '1' {
+			cnt1--
+		} else {
+			cnt0--
+		}
+		l++
 	}
 	res += r - l
 	return res
