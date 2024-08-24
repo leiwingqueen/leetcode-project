@@ -17,7 +17,7 @@ func Test_countKConstraintSubstrings(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := countKConstraintSubstrings(tt.args.s, tt.args.k); got != tt.want {
+			if got := countKConstraintSubstrings2(tt.args.s, tt.args.k); got != tt.want {
 				t.Errorf("countKConstraintSubstrings() = %v, want %v", got, tt.want)
 			}
 		})
