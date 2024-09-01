@@ -110,9 +110,9 @@ func maxScore3(grid [][]int) int {
 	sort.Slice(arr, func(i, j int) bool {
 		return arr[i][1] < arr[j][1]
 	})
-	mem := make(map[int64]int)
-	buildKey := func(mask int, last int) int64 {
-		return int64(mask)<<32 | int64(last)
+	mem := make(map[int]int)
+	buildKey := func(mask int, last int) int {
+		return mask<<10 | last
 	}
 	var dfs func(idx int, mask int, last int) int
 	dfs = func(idx int, mask int, last int) int {
