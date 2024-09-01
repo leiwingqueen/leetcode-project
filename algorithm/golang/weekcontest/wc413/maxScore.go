@@ -1,5 +1,7 @@
 package wc413
 
+import "sort"
+
 // 给你一个由正整数构成的二维矩阵 grid。
 //
 //你需要从矩阵中选择 一个或多个 单元格，选中的单元格应满足以下条件：
@@ -62,7 +64,72 @@ func maxScore(grid [][]int) int {
 			choose[num] = false
 			res = max(res, sum)
 		}
+		// 不选
+		res = max(res, dfs(choose, idx+1))
 		return res
 	}
 	return dfs(make([]bool, 101), 0)
+}
+
+func maxScore2(grid [][]int) int {
+	m, n := len(grid), len(grid[0])
+	arr := make([][]int, m*n)
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			arr[i*n+j] = []int{i, grid[i][j]}
+		}
+	}
+	sort.Slice(arr, func(i, j int) bool {
+		return arr[i][1] < arr[j][1]
+	})
+	var dfs func(idx int, mask int, last int) int
+	dfs = func(idx int, mask int, last int) int {
+		if idx == m*n {
+			return 0
+		}
+		row, value := arr[idx][0], arr[idx][1]
+		res := dfs(idx+1, mask, last)
+		if mask&(1<<row) == 0 && last != value {
+			sub := dfs(idx+1, mask|(1<<row), value) + value
+			res = max(res, sub)
+		}
+		return res
+	}
+	return dfs(0, 0, -1)
+}
+
+// 增加记忆，通过
+func maxScore3(grid [][]int) int {
+	m, n := len(grid), len(grid[0])
+	arr := make([][]int, m*n)
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			arr[i*n+j] = []int{i, grid[i][j]}
+		}
+	}
+	sort.Slice(arr, func(i, j int) bool {
+		return arr[i][1] < arr[j][1]
+	})
+	mem := make(map[int64]int)
+	buildKey := func(mask int, last int) int64 {
+		return int64(mask)<<32 | int64(last)
+	}
+	var dfs func(idx int, mask int, last int) int
+	dfs = func(idx int, mask int, last int) int {
+		if idx == m*n {
+			return 0
+		}
+		if v, ok := mem[buildKey(mask, last)]; ok {
+			return v
+		}
+		row, value := arr[idx][0], arr[idx][1]
+		res := dfs(idx+1, mask, last)
+		if mask&(1<<row) == 0 && last != value {
+			sub := dfs(idx+1, mask|(1<<row), value) + value
+			res = max(res, sub)
+		}
+		mem[buildKey(mask, last)] = res
+		return res
+	}
+	return dfs(0, 0, -1)
 }
