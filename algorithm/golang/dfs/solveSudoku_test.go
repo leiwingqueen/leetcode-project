@@ -26,7 +26,7 @@ func Test_solveSudoku(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			solveSudoku(tt.args.board)
+			solveSudoku2(tt.args.board)
 		})
 	}
 }

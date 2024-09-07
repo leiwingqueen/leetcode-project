@@ -52,6 +52,7 @@ package dfs
 // Related Topics 数组 哈希表 回溯 矩阵 👍 1855 👎 0
 
 // leetcode submit region begin(Prohibit modification and deletion)
+// 回溯特别难调试，这个还不确定是哪里的问题
 func solveSudoku(board [][]byte) {
 	n := 9
 	tmp := make([][]byte, n)
@@ -109,3 +110,60 @@ func solveSudoku(board [][]byte) {
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+// 啊？居然就这样？
+func solveSudoku2(board [][]byte) {
+	n := 9
+	tmp := make([][]byte, n)
+	rows, cols, grids := make([]int, n), make([]int, n), make([]int, n)
+	for i := 0; i < n; i++ {
+		tmp[i] = make([]byte, n)
+		for j := 0; j < n; j++ {
+			tmp[i][j] = board[i][j]
+			if board[i][j] != '.' {
+				num := board[i][j] - '1'
+				rows[i] |= 1 << num
+				cols[j] |= 1 << num
+				idx := i/3*3 + j/3
+				grids[idx] |= 1 << num
+			}
+		}
+	}
+	var dfs func(x, y int, rows []int, cols []int, grids []int) bool
+	dfs = func(x, y int, rows []int, cols []int, grids []int) bool {
+		if y == n {
+			y = 0
+			x++
+		}
+		if x >= n {
+			for i := 0; i < n; i++ {
+				copy(board[i], tmp[i])
+			}
+			return true
+		}
+		if tmp[x][y] != '.' {
+			return dfs(x, y+1, rows, cols, grids)
+		} else {
+			for i := 0; i < n; i++ {
+				// 每个数字都尝试一次
+				idx := x/3*3 + y/3
+				if rows[x]&(1<<i) == 0 && cols[y]&(1<<i) == 0 && grids[idx]&(1<<i) == 0 {
+					rows[x] |= 1 << i
+					cols[y] |= 1 << i
+					grids[idx] |= 1 << i
+					tmp[x][y] = byte(i) + '1'
+					b := dfs(x, y+1, rows, cols, grids)
+					if b {
+						return true
+					}
+					tmp[x][y] = '.'
+					rows[x] ^= 1 << i
+					cols[y] ^= 1 << i
+					grids[idx] ^= 1 << i
+				}
+			}
+			return false
+		}
+	}
+	dfs(0, 0, rows, cols, grids)
+}
