@@ -74,10 +74,14 @@ func solveSudoku(board [][]byte) {
 			return true
 		}
 		if tmp[x][y] != '.' {
-			rows[x] |= 1 << (tmp[x][y] - '1')
-			cols[y] |= 1 << (tmp[x][y] - '1')
+			i := tmp[x][y] - '1'
 			idx := x/3*3 + y/3
-			grids[idx] |= 1 << (tmp[x][y] - '1')
+			if rows[x]&(1<<i) != 0 || cols[y]&(1<<i) != 0 || grids[idx]&(1<<i) != 0 {
+				return false
+			}
+			rows[x] |= 1 << i
+			cols[y] |= 1 << i
+			grids[idx] |= 1 << i
 			return dfs(x, y+1, rows, cols, grids)
 		} else {
 			for i := 0; i < n; i++ {
@@ -87,10 +91,12 @@ func solveSudoku(board [][]byte) {
 					rows[x] |= 1 << i
 					cols[y] |= 1 << i
 					grids[idx] |= 1 << i
+					tmp[x][y] = byte(i) + '1'
 					b := dfs(x, y+1, rows, cols, grids)
 					if b {
 						return true
 					}
+					tmp[x][y] = '.'
 					rows[x] ^= 1 << i
 					cols[y] ^= 1 << i
 					grids[idx] ^= 1 << i
@@ -99,6 +105,7 @@ func solveSudoku(board [][]byte) {
 			return false
 		}
 	}
+	dfs(0, 0, make([]int, n), make([]int, n), make([]int, n))
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
