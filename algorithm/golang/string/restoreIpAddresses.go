@@ -1,5 +1,7 @@
 package string
 
+import "fmt"
+
 // 有效 IP 地址 正好由四个整数（每个整数位于 0 到 255 之间组成，且不能含有前导 0），整数之间用 '.' 分隔。
 //
 //例如："0.1.2.201" 和 "192.168.1.1" 是 有效 IP 地址，但是 "0.011.255.245"、"192.168.1.312" 和 "192.168@1.1" 是 无效 IP 地址。
@@ -52,5 +54,36 @@ func restoreIpAddresses(s string) []string {
 		}
 	}
 	dfs(0, 0, make([]byte, n+4))
+	return res
+}
+
+func restoreIpAddresses2(s string) []string {
+	n := len(s)
+	var res []string
+	var dfs func(i, j int, num int, nums []int)
+	dfs = func(i, j int, num int, nums []int) {
+		if i == n {
+			if j == 4 {
+				res = append(res, fmt.Sprintf("%d.%d.%d.%d", nums[0], nums[1], nums[2], nums[3]))
+			}
+			return
+		}
+		if j >= 4 || num > 255 {
+			return
+		}
+		k := int(s[i] - '0')
+		if num < 0 {
+			dfs(i+1, j, k, nums)
+		} else if num > 0 {
+			nums[j] = num
+			dfs(i+1, j+1, -1, nums)
+			dfs(i+1, j, num*10+k, nums)
+		} else {
+			// 前缀0
+			nums[j] = 0
+			dfs(i+1, j+1, -1, nums)
+		}
+	}
+	dfs(0, 0, -1, make([]int, 4))
 	return res
 }
