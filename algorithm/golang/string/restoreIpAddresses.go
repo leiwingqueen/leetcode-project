@@ -57,6 +57,7 @@ func restoreIpAddresses(s string) []string {
 	return res
 }
 
+// 总算通过
 func restoreIpAddresses2(s string) []string {
 	n := len(s)
 	var res []string
@@ -65,6 +66,11 @@ func restoreIpAddresses2(s string) []string {
 		if i == n {
 			if j == 4 {
 				res = append(res, fmt.Sprintf("%d.%d.%d.%d", nums[0], nums[1], nums[2], nums[3]))
+			} else if j == 3 {
+				if num >= 0 && num <= 255 {
+					nums[j] = num
+					dfs(i, j+1, -1, nums)
+				}
 			}
 			return
 		}
@@ -75,13 +81,15 @@ func restoreIpAddresses2(s string) []string {
 		if num < 0 {
 			dfs(i+1, j, k, nums)
 		} else if num > 0 {
+			// 加一个点
 			nums[j] = num
-			dfs(i+1, j+1, -1, nums)
+			dfs(i, j+1, -1, nums)
+			// 不加点
 			dfs(i+1, j, num*10+k, nums)
 		} else {
 			// 前缀0
 			nums[j] = 0
-			dfs(i+1, j+1, -1, nums)
+			dfs(i, j+1, -1, nums)
 		}
 	}
 	dfs(0, 0, -1, make([]int, 4))
