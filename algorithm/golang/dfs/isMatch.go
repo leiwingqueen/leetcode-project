@@ -136,3 +136,35 @@ func isMatch2(s string, p string) bool {
 	}
 	return dfs(0, 0)
 }
+
+// 改写成dp
+func isMatch3(s string, p string) bool {
+	n1, n2 := len(s), len(p)
+	dp := make([][]bool, n1+1)
+	for i := 0; i <= n1; i++ {
+		dp[i] = make([]bool, n2+1)
+	}
+	for i := 0; i <= n1; i++ {
+		for j := 0; j <= n2; j++ {
+			if i == 0 && j == 0 {
+				dp[0][0] = true
+			} else if i == 0 {
+				dp[i][j] = false
+				if p[j-1] == '*' {
+					dp[i][j] = dp[i][j-1]
+				}
+			} else if j == 0 {
+				dp[i][j] = false
+			} else {
+				if p[j-1] == '?' {
+					dp[i][j] = dp[i-1][j-1]
+				} else if p[j-1] == '*' {
+					dp[i][j] = dp[i-1][j] || dp[i][j-1]
+				} else {
+					dp[i][j] = dp[i-1][j-1] && s[i-1] == p[j-1]
+				}
+			}
+		}
+	}
+	return dp[n1][n2]
+}
