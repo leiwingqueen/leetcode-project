@@ -25,7 +25,7 @@ func findSafeWalk(grid [][]int, health int) bool {
 	for len(queue) > 0 {
 		k := len(queue)
 		for i := 0; i < k; i++ {
-			x, y := queue[k][0], queue[k][1]
+			x, y := queue[i][0], queue[i][1]
 			for _, dir := range dirs {
 				nx, ny := x+dir[0], y+dir[1]
 				if nx >= 0 && nx < m && ny >= 0 && ny < n &&
