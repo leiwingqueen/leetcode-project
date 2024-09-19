@@ -33,8 +33,79 @@ package bwc139
 // 1 <= nums[i] < 27
 // 1 <= k <= nums.length / 2
 
-// 某个位要为1，相当于前x个数字或为0，后x个数字至少有一个数字为1。或者反过来。也就是需要保证这一个bit不能全为0或者全为1
-// 也就是等价于该位的所有数字&=0,|=1
+// f(i,j,x)为[0,i)选择j个数字值为x是否可能
+// 超时，差点能过
 func maxValue(nums []int, k int) int {
-	return 0
+	n := len(nums)
+	mx := (1 << 7) - 1
+	pre := make([][][]bool, n+1)
+	for i := 0; i <= n; i++ {
+		pre[i] = make([][]bool, k+1)
+		for j := 0; j <= k; j++ {
+			pre[i][j] = make([]bool, mx+1)
+		}
+	}
+	pre[0][0][0] = true
+	for i := 1; i <= n; i++ {
+		pre[i][0][0] = true
+	}
+	for i := 1; i <= n; i++ {
+		for j := 1; j <= min(i, k); j++ {
+			for l := 1; l <= mx; l++ {
+				if pre[i-1][j][l] {
+					pre[i][j][l] = true
+				} else {
+					for t := 0; t <= mx; t++ {
+						if t|nums[i-1] == l && pre[i-1][j-1][t] {
+							pre[i][j][l] = true
+							break
+						}
+					}
+				}
+			}
+		}
+	}
+	suf := make([][][]bool, n+1)
+	for i := 0; i <= n; i++ {
+		suf[i] = make([][]bool, k+1)
+		for j := 0; j <= k; j++ {
+			suf[i][j] = make([]bool, mx+1)
+		}
+	}
+	suf[0][0][0] = true
+	for i := 1; i <= n; i++ {
+		suf[i][0][0] = true
+	}
+	for i := 1; i <= n; i++ {
+		for j := 1; j <= min(i, k); j++ {
+			for l := 1; l <= mx; l++ {
+				if suf[i-1][j][l] {
+					suf[i][j][l] = true
+				} else {
+					for t := 0; t <= mx; t++ {
+						if t|nums[n-i] == l && suf[i-1][j-1][t] {
+							suf[i][j][l] = true
+							break
+						}
+					}
+				}
+			}
+		}
+	}
+	// 尝试以i点为分割[0,i),[i,n)
+	res := 0
+	for i := k; i <= n-k; i++ {
+		for x := 1; x <= mx; x++ {
+			if !pre[i][k][x] {
+				continue
+			}
+			for y := 1; y <= mx; y++ {
+				if !suf[n-i][k][y] {
+					continue
+				}
+				res = max(x^y, res)
+			}
+		}
+	}
+	return res
 }
