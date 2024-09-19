@@ -109,3 +109,72 @@ func maxValue(nums []int, k int) int {
 	}
 	return res
 }
+
+// 通过了，真的难
+func maxValue2(nums []int, k int) int {
+	n := len(nums)
+	mx := (1 << 7) - 1
+	pre := make([][][]bool, n+1)
+	for i := 0; i <= n; i++ {
+		pre[i] = make([][]bool, k+1)
+		for j := 0; j <= k; j++ {
+			pre[i][j] = make([]bool, mx+1)
+		}
+	}
+	pre[0][0][0] = true
+	for i := 1; i <= n; i++ {
+		pre[i][0][0] = true
+	}
+	for i := 1; i <= n; i++ {
+		for j := 1; j <= min(i, k); j++ {
+			for l := 0; l <= mx; l++ {
+				if pre[i-1][j][l] {
+					pre[i][j][l] = true
+				}
+				// 推导下一个点
+				if pre[i-1][j-1][l] {
+					pre[i][j][l|nums[i-1]] = true
+				}
+			}
+		}
+	}
+	suf := make([][][]bool, n+1)
+	for i := 0; i <= n; i++ {
+		suf[i] = make([][]bool, k+1)
+		for j := 0; j <= k; j++ {
+			suf[i][j] = make([]bool, mx+1)
+		}
+	}
+	suf[0][0][0] = true
+	for i := 1; i <= n; i++ {
+		suf[i][0][0] = true
+	}
+	for i := 1; i <= n; i++ {
+		for j := 1; j <= min(i, k); j++ {
+			for l := 0; l <= mx; l++ {
+				if suf[i-1][j][l] {
+					suf[i][j][l] = true
+				}
+				if suf[i-1][j-1][l] {
+					suf[i][j][l|nums[n-i]] = true
+				}
+			}
+		}
+	}
+	// 尝试以i点为分割[0,i),[i,n)
+	res := 0
+	for i := k; i <= n-k; i++ {
+		for x := 1; x <= mx; x++ {
+			if !pre[i][k][x] {
+				continue
+			}
+			for y := 1; y <= mx; y++ {
+				if !suf[n-i][k][y] {
+					continue
+				}
+				res = max(x^y, res)
+			}
+		}
+	}
+	return res
+}
