@@ -76,8 +76,8 @@ func countSpecialNumbers2(n int) int {
 	arr := make([]int, 10)
 	for i := 0; i < 10; i++ {
 		pow := int(math.Pow10(9 - i))
-		arr[i] = n % pow
-		n -= n % pow * pow
+		arr[i] = n / pow
+		n -= arr[i] * pow
 	}
 	// idx的范围为[0,9],zero判断是否前面都是0，equalBefore判断是否需要判断当前位跟arr对应位的大小
 	var dfs func(choose int, idx int, zero bool, equalBefore bool) int
@@ -93,17 +93,11 @@ func countSpecialNumbers2(n int) int {
 		res := 0
 		for i := 0; i < 10; i++ {
 			// 尝试遍历每一个数字
-			if idx == 0 {
-				// 防止数字溢出
-				if i > 2 {
-					break
-				}
-			}
 			if choose&(1<<i) == 0 {
 				if equalBefore && i > arr[idx] {
 					break
 				}
-				equalBefore = equalBefore && i == arr[i]
+				equalBefore = equalBefore && i == arr[idx]
 				if i == 0 && zero {
 					// 前缀0的场景
 					res += dfs(choose, idx+1, true, equalBefore)
