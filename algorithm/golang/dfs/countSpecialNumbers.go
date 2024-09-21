@@ -70,7 +70,7 @@ func countSpecialNumbers(n int) int {
 	return dfs(0, 0, 0)
 }
 
-// 居然过了，只是简单的回溯，能不能加点记忆
+// 简化状态，为下面加记忆准备
 func countSpecialNumbers2(n int) int {
 	// 把数字的每一位记下来
 	arr := make([]int, 10)
@@ -97,15 +97,73 @@ func countSpecialNumbers2(n int) int {
 				if equalBefore && i > arr[idx] {
 					break
 				}
-				equalBefore = equalBefore && i == arr[idx]
+				eq := equalBefore && i == arr[idx]
 				if i == 0 && zero {
 					// 前缀0的场景
-					res += dfs(choose, idx+1, true, equalBefore)
+					res += dfs(choose, idx+1, true, eq)
 				} else {
-					res += dfs(choose|(1<<i), idx+1, false, equalBefore)
+					res += dfs(choose|(1<<i), idx+1, false, eq)
 				}
 			}
 		}
+		return res
+	}
+	return dfs(0, 0, true, true)
+}
+
+// 加了记忆后最多有65535个key
+func countSpecialNumbers3(n int) int {
+	// 把数字的每一位记下来
+	arr := make([]int, 10)
+	for i := 0; i < 10; i++ {
+		pow := int(math.Pow10(9 - i))
+		arr[i] = n / pow
+		n -= arr[i] * pow
+	}
+	// idx的范围为[0,9],zero判断是否前面都是0，equalBefore判断是否需要判断当前位跟arr对应位的大小
+	mem := make(map[int]int)
+	buildKey := func(choose int, idx int, zero bool, equalBefore bool) int {
+		// choose占用10个bit,idx占用4个bit,zero和equal分别占用一个bit
+		mask := (choose << 6) | (idx << 2)
+		if zero {
+			mask |= 2
+		}
+		if equalBefore {
+			mask |= 1
+		}
+		return mask
+	}
+	var dfs func(choose int, idx int, zero bool, equalBefore bool) int
+	dfs = func(choose int, idx int, zero bool, equalBefore bool) int {
+		if idx == 10 {
+			if zero {
+				// 0不能算有效答案
+				return 0
+			} else {
+				return 1
+			}
+		}
+		key := buildKey(choose, idx, zero, equalBefore)
+		if v, ok := mem[key]; ok {
+			return v
+		}
+		res := 0
+		for i := 0; i < 10; i++ {
+			// 尝试遍历每一个数字
+			if choose&(1<<i) == 0 {
+				if equalBefore && i > arr[idx] {
+					break
+				}
+				eq := equalBefore && i == arr[idx]
+				if i == 0 && zero {
+					// 前缀0的场景
+					res += dfs(choose, idx+1, true, eq)
+				} else {
+					res += dfs(choose|(1<<i), idx+1, false, eq)
+				}
+			}
+		}
+		mem[key] = res
 		return res
 	}
 	return dfs(0, 0, true, true)
