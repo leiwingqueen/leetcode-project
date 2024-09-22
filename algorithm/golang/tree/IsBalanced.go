@@ -3,7 +3,7 @@ package tree
 //剑指 Offer 55 - II. 平衡二叉树
 //输入一棵二叉树的根节点，判断该树是不是平衡二叉树。如果某二叉树中任意节点的左右子树的深度相差不超过1，那么它就是一棵平衡二叉树。
 //
-// 
+//
 //
 //示例 1:
 //
@@ -29,7 +29,7 @@ package tree
 // 4   4
 //返回 false 。
 //
-// 
+//
 //
 //限制：
 //
@@ -41,33 +41,25 @@ package tree
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 func isBalanced(root *TreeNode) bool {
+	var dfs func(node *TreeNode) (bool, int)
+	dfs = func(node *TreeNode) (bool, int) {
+		if node == nil {
+			return true, 0
+		}
+		b1, h1 := dfs(node.Left)
+		if !b1 {
+			return false, 0
+		}
+		b2, h2 := dfs(node.Right)
+		if !b2 {
+			return false, 0
+		}
+		if h1-h2 < -1 || h1-h2 > 1 {
+			return false, 0
+		} else {
+			return true, max(h1, h2) + 1
+		}
+	}
 	b, _ := dfs(root)
 	return b
-}
-
-func dfs(root *TreeNode) (bool, int) {
-	if root == nil {
-		return true, 0
-	}
-	b1, h1 := dfs(root.Left)
-	if !b1 {
-		return false, 0
-	}
-	b2, h2 := dfs(root.Right)
-	if !b2 {
-		return false, 0
-	}
-	if abs(h1-h2) <= 1 {
-		return false, 0
-	} else {
-		return true, max(h1, h2) + 1
-	}
-}
-
-func max(a int, b int) int {
-	if a > b {
-		return a
-	} else {
-		return b
-	}
 }
