@@ -1,7 +1,6 @@
 package wc417
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -21,27 +20,34 @@ func kthCharacter(k int) byte {
 	return word[k-1]
 }
 
+// 居然过了
 func kthCharacter2(k int64, operations []int) byte {
 	// 计算需要操作多少次
-	n := int(math.Log2(float64(k)))
-	n++
+	n := int(math.Log2(float64(k))) + 1
 	// 第i次迭代序号为idx的字符
 	var dfs func(i int, idx int64) byte
 	dfs = func(i int, idx int64) byte {
-		fmt.Printf("i:%d,idx:%d\n", i, idx)
+		// fmt.Printf("i:%d,idx:%d\n", i, idx)
 		if i == 0 {
 			return 'a'
 		}
-		op := operations[i-1]
-		idx -= 1 << (i - 1)
-		ch := dfs(i-1, idx)
-		if op == 1 {
-			ch++
-			if ch > 'z' {
-				ch = 'a'
+		// 判断数字是来源于前一半还是后一半
+		mid := int64(1 << (i - 1))
+		if idx >= mid {
+			// 后一半
+			ch := dfs(i-1, idx-mid)
+			op := operations[i-1]
+			if op == 1 {
+				ch++
+				if ch > 'z' {
+					ch = 'a'
+				}
 			}
+			return ch
+		} else {
+			// 前一半
+			return dfs(i-1, idx)
 		}
-		return ch
 	}
-	return dfs(n, k)
+	return dfs(n, k-1)
 }
