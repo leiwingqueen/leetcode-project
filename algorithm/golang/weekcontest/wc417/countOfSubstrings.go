@@ -141,3 +141,51 @@ func countOfSubstrings3(word string, k int) int64 {
 	}
 	return cal(k) - cal(k+1)
 }
+
+// 总算过了，极限优化
+func countOfSubstrings4(word string, k int) int64 {
+	n := len(word)
+	mp := map[byte]bool{
+		'a': true,
+		'e': true,
+		'i': true,
+		'o': true,
+		'u': true,
+	}
+	cal := func(k int) int64 {
+		var res int64
+		l, r := 0, 0
+		cnt1 := make(map[byte]int)
+		cnt2 := 0
+		cnt3 := 0
+		for l < n {
+			if cnt3 == 5 && cnt2 >= k {
+				res += int64(n - r + 1)
+				if mp[word[l]] {
+					cnt1[word[l]]--
+					if cnt1[word[l]] == 0 {
+						cnt3--
+					}
+				} else {
+					cnt2--
+				}
+				l++
+			} else {
+				if r >= n {
+					break
+				}
+				if mp[word[r]] {
+					cnt1[word[r]]++
+					if cnt1[word[r]] == 1 {
+						cnt3++
+					}
+				} else {
+					cnt2++
+				}
+				r++
+			}
+		}
+		return res
+	}
+	return cal(k) - cal(k+1)
+}
