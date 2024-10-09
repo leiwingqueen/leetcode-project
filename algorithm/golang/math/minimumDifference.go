@@ -84,16 +84,15 @@ func minimumDifference2(nums []int, k int) int {
 	mp := make(map[int]struct{})
 	res := math.MaxInt
 	for i := 0; i < n; i++ {
-		// i是右边界
-		or := 0
-		for j := i; j >= 0; j-- {
-			or |= nums[j]
-			if _, ok := mp[or]; ok {
-				break
-			}
-			res = min(res, abs(k-or))
-			mp[or] = struct{}{}
+		tmp := make(map[int]struct{})
+		for v := range mp {
+			v |= nums[i]
+			res = min(res, abs(k-v))
+			tmp[v] = struct{}{}
 		}
+		res = min(res, abs(k-nums[i]))
+		tmp[nums[i]] = struct{}{}
+		mp = tmp
 	}
 	return res
 }
