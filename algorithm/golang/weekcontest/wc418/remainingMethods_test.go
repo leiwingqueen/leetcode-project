@@ -1,4 +1,4 @@
-package bwc418
+package wc418
 
 import (
 	"reflect"

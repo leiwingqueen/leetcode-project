@@ -1,4 +1,4 @@
-package bwc418
+package wc418
 
 func maxGoodNumber(nums []int) int {
 	count := func(num int) int {

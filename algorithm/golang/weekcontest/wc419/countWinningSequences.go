@@ -48,6 +48,7 @@ package wc419
 //s[i] 是 'F'、'W' 或 'E' 中的一个。
 
 func countWinningSequences(s string) int {
+	mod := 1_000_000_007
 	// F,W,E分别用0,1,2表示
 	matrix := [][]int{
 		{0, -1, 1},
@@ -84,13 +85,13 @@ func countWinningSequences(s string) int {
 		for j := 0; j < 3; j++ {
 			// 这次的得分
 			score := matrix[j][t]
-			// 得分的可能范围[-i,i]，因为整体的坐标往右移动了n，所以是[n-i,n+i]
-			for k := n - i; k <= n+i; k++ {
+			// 得分的可能范围[-i-1,i+1]，因为整体的坐标往右移动了n，所以是[n-i-1,n+i+1]
+			for k := n - i - 1; k <= n+i+1; k++ {
 				// l是上一次的出招
 				for l := 0; l < 3; l++ {
 					// 不能连续出相同的
-					if l != j {
-						dp[i][j][k] += dp[i-1][l][k-score]
+					if l != j && k-score >= 0 && k-score <= 2*n {
+						dp[i][j][k] = (dp[i][j][k] + dp[i-1][l][k-score]) % mod
 					}
 				}
 			}
@@ -98,8 +99,9 @@ func countWinningSequences(s string) int {
 	}
 	res := 0
 	for i := 0; i < 3; i++ {
+		// [1,n]==>[n+1,2*n]
 		for j := n + 1; j <= 2*n; j++ {
-			res += dp[n-1][i][j]
+			res = (res + dp[n-1][i][j]) % mod
 		}
 	}
 	return res
