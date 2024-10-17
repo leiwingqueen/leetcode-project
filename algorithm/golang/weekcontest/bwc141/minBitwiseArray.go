@@ -44,7 +44,28 @@ package bwc141
 //2 <= nums[i] <= 1000
 //nums[i] 是一个质数。
 
-// 假设最后一个bit为0，那么
+// 假设最后一个bit为0，那么+1为这个数字 num | 0x01
+// 假设最后一个bit为1，那么+1为这个数组 num 与 第一个0位 做 或运算
+// 所以这个数字为选择一个为1的位，需要把这个位以及后面的所有1变成0。那么最后解就相当于找到最后一个连续的1
 func minBitwiseArray(nums []int) []int {
-	return []int{}
+	cal := func(num int) int {
+		i := 0
+		for i < 31 && num&(1<<i) != 0 {
+			i++
+		}
+		if i == 0 {
+			return -1
+		}
+		// 需要[0,i)全部变成0
+		for j := 0; j < i; j++ {
+			num ^= 1 << j
+		}
+		return num
+	}
+	n := len(nums)
+	res := make([]int, n)
+	for i := 0; i < n; i++ {
+		res[i] = cal(nums[i])
+	}
+	return res
 }
