@@ -56,10 +56,7 @@ func minBitwiseArray(nums []int) []int {
 		if i == 0 {
 			return -1
 		}
-		// 需要[0,i)全部变成0
-		for j := 0; j < i; j++ {
-			num ^= 1 << j
-		}
+		num ^= 1 << (i - 1)
 		return num
 	}
 	n := len(nums)
