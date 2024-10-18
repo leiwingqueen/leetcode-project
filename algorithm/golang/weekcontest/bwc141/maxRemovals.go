@@ -171,6 +171,7 @@ func maxRemovals2(source string, pattern string, targetIndices []int) int {
 	return dfs(0, 0)
 }
 
+// 增加记忆后过了
 func maxRemovals3(source string, pattern string, targetIndices []int) int {
 	n, m := len(source), len(pattern)
 	l := len(targetIndices)
@@ -236,4 +237,45 @@ func maxRemovals3(source string, pattern string, targetIndices []int) int {
 		return res
 	}
 	return dfs(0, 0)
+}
+
+// 改写成dp
+func maxRemovals4(source string, pattern string, targetIndices []int) int {
+	n, m := len(source), len(pattern)
+	target := make(map[int]struct{})
+	for _, idx := range targetIndices {
+		target[idx] = struct{}{}
+	}
+	// dp[i][j]表示前i个字符，要满足模式pattern的前j个字符，最多能删多少个
+	dp := make([][]int, n+1)
+	for i := 0; i <= n; i++ {
+		dp[i] = make([]int, m+1)
+	}
+	// 初始化
+	for i := 1; i <= m; i++ {
+		dp[0][i] = -1
+	}
+	for i := 1; i <= n; i++ {
+		dp[i][0] = dp[i-1][0]
+		if _, ok := target[i-1]; ok {
+			dp[i][0]++
+		}
+	}
+	for i := 1; i <= n; i++ {
+		for j := 1; j <= m; j++ {
+			// 不删的场景
+			if source[i-1] == pattern[j-1] {
+				dp[i][j] = dp[i-1][j-1]
+			} else {
+				dp[i][j] = dp[i-1][j]
+			}
+			// 如果该下标能删，考虑删除的场景
+			if _, ok := target[i-1]; ok {
+				if dp[i-1][j] >= 0 {
+					dp[i][j] = max(dp[i][j], dp[i-1][j]+1)
+				}
+			}
+		}
+	}
+	return dp[n][m]
 }
