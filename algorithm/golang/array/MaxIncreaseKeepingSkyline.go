@@ -8,7 +8,7 @@ package array
 //
 //在 不改变 从任何主要方向观测到的城市 天际线 的前提下，返回建筑物可以增加的 最大高度增量总和 。
 //
-// 
+//
 //
 //示例 1：
 //
@@ -27,7 +27,7 @@ package array
 //输入：grid = [[0,0,0],[0,0,0],[0,0,0]]
 //输出：0
 //解释：增加任何建筑物的高度都会导致天际线的变化。
-// 
+//
 //
 //提示：
 //
@@ -69,12 +69,4 @@ func maxIncreaseKeepingSkyline(grid [][]int) int {
 		}
 	}
 	return cnt
-}
-
-func min(a int, b int) int {
-	if a > b {
-		return b
-	} else {
-		return a
-	}
 }
