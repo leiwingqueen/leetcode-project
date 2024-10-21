@@ -1,5 +1,7 @@
 package array
 
+import "sort"
+
 // 给你一个整数数组 nums，和一个整数 k 。
 //
 //对于每个下标 i（0 <= i < nums.length），将 nums[i] 变成 nums[i] + k 或 nums[i] - k 。
@@ -33,18 +35,18 @@ package array
 //0 <= nums[i] <= 104
 //0 <= k <= 104
 
+// 最大数和最小数的范围为[min-k,max+k]
+// 假设一个数字可能成为最小值，那么仅当这个数组num<min+k，不然最小值至少应该是min+k
+// 同理，一个数字可能成为最大值，仅当num>max-k
+// 因为我们考虑的数据范围为[min,min+k)，(max-k,max]
 func smallestRangeII(nums []int, k int) int {
-	n1, n2 := nums[0], nums[0]
-	for _, num := range nums {
-		n1 = min(n1, num)
-		n2 = max(n2, num)
+	n := len(nums)
+	sort.Ints(nums)
+	res := nums[n-1] - nums[0]
+	for i := 0; i < n-1; i++ {
+		minNum := min(nums[0]+k, nums[i+1]-k)
+		maxNum := max(nums[i]+k, nums[n-1]-k)
+		res = min(res, maxNum-minNum)
 	}
-	abs := func(num int) int {
-		if num > 0 {
-			return num
-		} else {
-			return -num
-		}
-	}
-	return min(n2-n1, abs(n2-n1-2*k))
+	return res
 }
