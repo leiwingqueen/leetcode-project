@@ -22,11 +22,3 @@ func maxProfit(k int, prices []int) int {
 	}
 	return dp0[len-1][k]
 }
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	} else {
-		return b
-	}
-}
