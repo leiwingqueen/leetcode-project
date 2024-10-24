@@ -38,11 +38,19 @@ package dp
 
 func wiggleMaxLength(nums []int) int {
 	n := len(nums)
+	if n == 1 {
+		return 1
+	}
 	dp0, dp1 := make([]int, n), make([]int, n)
 	dp0[0] = 1
-	dp0[1] = 2
+	dp0[1] = 1
 	dp1[0] = 1
-	dp1[1] = 2
+	dp1[1] = 1
+	if nums[1] < nums[0] {
+		dp0[1] = 2
+	} else if nums[1] > nums[0] {
+		dp1[1] = 2
+	}
 	for i := 2; i < n; i++ {
 		for j := i - 1; j >= 0; j-- {
 			if nums[j] > nums[i] {
