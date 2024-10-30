@@ -1,5 +1,7 @@
 package wc421
 
+import "sort"
+
 // 给你一个整数数组 nums。
 //
 //请你统计所有满足一下条件的 非空
@@ -88,6 +90,41 @@ func subsequencePairCount(nums []int) int {
 	// 统计
 	res := 0
 	for _, v := range mp {
+		res = (res + v*(v-1)) % mod
+	}
+	return res
+}
+
+// 不去重的场景
+func subsequencePairCount2(nums []int) int {
+	sort.Ints(nums)
+	mx := nums[len(nums)-1]
+	mod := 1_000_000_007
+	n := len(nums)
+	var gcd func(a int, b int) int
+	gcd = func(a int, b int) int {
+		if b == 0 {
+			return a
+		} else {
+			return gcd(b, a%b)
+		}
+	}
+	pre := make([]int, mx+1)
+	cur := make([]int, mx+1)
+	pre[nums[0]] = 1
+	for i := 1; i < n; i++ {
+		for j := 1; j <= mx; j++ {
+			// 不选的场景
+			cur[j] = pre[j]
+			// 选的场景
+			g := gcd(j, nums[i])
+			cur[g] = (cur[g] + pre[j]) % mod
+		}
+		copy(pre, cur)
+	}
+	// 统计
+	res := 0
+	for _, v := range pre {
 		res = (res + v*(v-1)) % mod
 	}
 	return res
