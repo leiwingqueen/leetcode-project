@@ -1,6 +1,9 @@
 package wc380
 
-import "math"
+import (
+	"math"
+	"math/bits"
+)
 
 // 给你一个整数 k 和一个整数 x 。
 //
@@ -89,4 +92,40 @@ func findMaximumNumber2(k int64, x int) int64 {
 		sum += int64(c)
 		num++
 	}
+}
+
+// 真的难
+func findMaximumNumber3(k int64, x int) int64 {
+	calBit := func(num int64, bit int) int64 {
+		period := int64(1) << bit
+		round := num / period
+		res := round * (period / 2)
+		if num%period >= period/2 {
+			res += num%period - (period / 2) + 1
+		}
+		return res
+	}
+	// 计算<=num的价值
+	cal := func(num int64) int64 {
+		if num == 0 {
+			return 0
+		}
+		var res int64
+		size := 64 - bits.LeadingZeros64(uint64(num))
+		for i := x; i <= size; i += x {
+			res += calBit(num, i)
+		}
+		return res
+	}
+	// 二分查找
+	l, r := int64(1), (k+1)<<x
+	for l < r {
+		mid := l + (r-l+1)/2
+		if cal(mid) <= k {
+			l = mid
+		} else {
+			r = mid - 1
+		}
+	}
+	return l
 }

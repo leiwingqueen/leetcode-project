@@ -18,7 +18,7 @@ func Test_findMaximumNumber2(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := findMaximumNumber2(tt.args.k, tt.args.x); got != tt.want {
+			if got := findMaximumNumber3(tt.args.k, tt.args.x); got != tt.want {
 				t.Errorf("findMaximumNumber2() = %v, want %v", got, tt.want)
 			}
 		})
