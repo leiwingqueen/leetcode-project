@@ -62,6 +62,7 @@ func findSubtreeSizes(parent []int, s string) []int {
 			graph[j] = append(graph[j], i)
 		}
 	}
+	// 重新构造树的结构
 	visit := make([]bool, n)
 	var dfs func(last []int, node int, p int)
 	dfs = func(last []int, node int, p int) {
@@ -83,13 +84,16 @@ func findSubtreeSizes(parent []int, s string) []int {
 		// 还原
 		last[w-'a'] = tmp
 	}
-	last := make([]int, n)
-	for i := 0; i < n; i++ {
+	last := make([]int, 26)
+	for i := 0; i < 26; i++ {
 		last[i] = -1
 	}
 	dfs(last, 0, -1)
+	// 然后遍历树的大小
 	for i := 0; i < n; i++ {
 		graph[i] = graph[i][:0]
+	}
+	for i := 0; i < n; i++ {
 		j := parent[i]
 		if j >= 0 {
 			graph[i] = append(graph[i], j)
