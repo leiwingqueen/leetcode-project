@@ -17,7 +17,7 @@ func Test_sumOfGoodSubsequences(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := sumOfGoodSubsequences(tt.args.nums); got != tt.want {
+			if got := sumOfGoodSubsequences2(tt.args.nums); got != tt.want {
 				t.Errorf("sumOfGoodSubsequences() = %v, want %v", got, tt.want)
 			}
 		})
