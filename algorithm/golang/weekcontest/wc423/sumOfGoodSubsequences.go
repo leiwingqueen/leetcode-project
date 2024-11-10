@@ -49,15 +49,15 @@ func sumOfGoodSubsequences2(nums []int) int {
 		dp1 := nums[i]
 		k1 := nums[i] - 1
 		if v, ok := mp1[k1]; ok {
-			dp0 += mp1[k1]
+			dp0 = (dp0 + mp1[k1]) % mod
 			dp1 = (dp1 + mp2[k1] + v*nums[i]) % mod
 		}
 		k2 := nums[i] + 1
 		if v, ok := mp1[k2]; ok {
-			dp0 += mp1[k2]
+			dp0 = (dp0 + mp1[k2]) % mod
 			dp1 = (dp1 + mp2[k2] + v*nums[i]) % mod
 		}
-		mp1[nums[i]] += dp0
+		mp1[nums[i]] = (mp1[nums[i]] + dp0) % mod
 		mp2[nums[i]] = (mp2[nums[i]] + dp1) % mod
 	}
 	res := 0
