@@ -100,13 +100,15 @@ func countKConstraintSubstrings2(s string, k int, queries [][]int) []int64 {
 		if cnt0 <= k || cnt1 <= k {
 			left[r-1] = l
 		} else {
-			// 只要左移一位必然减少一个0或者1，必然能满足条件
-			if s[l] == '0' {
-				cnt0--
-			} else {
-				cnt1--
+			// 左边窗口移动
+			for cnt0 > k && cnt1 > k {
+				if s[l] == '0' {
+					cnt0--
+				} else {
+					cnt1--
+				}
+				l++
 			}
-			l++
 			left[r-1] = l
 		}
 	}
