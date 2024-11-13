@@ -1,5 +1,7 @@
 package dp
 
+import "sort"
+
 // 给你一个 二进制 字符串 s 和一个整数 k。
 //
 //另给你一个二维整数数组 queries ，其中 queries[i] = [li, ri] 。
@@ -73,6 +75,60 @@ func countKConstraintSubstrings(s string, k int, queries [][]int) []int64 {
 				l++
 			}
 		}
+		return res
+	}
+	res := make([]int64, len(queries))
+	for i, query := range queries {
+		res[i] = cal(query)
+	}
+	return res
+}
+
+func countKConstraintSubstrings2(s string, k int, queries [][]int) []int64 {
+	// 计算每个下标的合法的左边界
+	n := len(s)
+	left := make([]int, n)
+	l, r := 0, 0
+	cnt0, cnt1 := 0, 0
+	for r < n {
+		if s[r] == '0' {
+			cnt0++
+		} else {
+			cnt1++
+		}
+		r++
+		if cnt0 <= k || cnt1 <= k {
+			left[r-1] = l
+		} else {
+			// 只要左移一位必然减少一个0或者1，必然能满足条件
+			if s[l] == '0' {
+				cnt0--
+			} else {
+				cnt1--
+			}
+			l++
+			left[r-1] = l
+		}
+	}
+	prefix := make([]int64, n+1)
+	for i := 0; i < n; i++ {
+		prefix[i+1] = prefix[i] + int64(i-left[i]+1)
+	}
+	cal := func(query []int) int64 {
+		p1, p2 := query[0], query[1]
+		// 假设p2的左边界<=p1，那么所有的子数组均满足条件
+		if left[p2] <= p1 {
+			return int64(p2-p1+2) * int64(p2-p1+1) / 2
+		}
+		// 否则就得分两种情况考虑，先找到最后一个的下标的左边界<=p1(等价于找到第一个左边界>p1)
+		idx := sort.Search(n, func(i int) bool {
+			return left[i] > p1
+		})
+		idx--
+		// [p1,idx]的所有子串都能满足条件
+		res := int64(idx-p1+2) * int64(idx-p1+1) / 2
+		// 另外需要计算所有下标为[idx+1,p2]的前缀和
+		res += prefix[p2+1] - prefix[idx+1]
 		return res
 	}
 	res := make([]int64, len(queries))
