@@ -108,3 +108,31 @@ func maxFrequency2(nums []int, k int, numOperations int) int {
 	}
 	return res
 }
+
+func maxFrequency3(nums []int, k int, numOperations int) int {
+	n := len(nums)
+	sort.Ints(nums)
+	counter := make(map[int]int)
+	for _, num := range nums {
+		counter[num]++
+	}
+	cal := func(num int) int {
+		// 二分找到左边界
+		l := sort.Search(n, func(i int) bool {
+			return nums[i]+k >= num
+		})
+		if l == n || nums[l]-k > num {
+			return 0
+		}
+		// 二分找到对应的右边界
+		r := sort.Search(n, func(i int) bool {
+			return nums[i]-k > num
+		})
+		return counter[num] + min(r-l-counter[num], numOperations)
+	}
+	res := 0
+	for i := 0; i < n; i++ {
+		res = max(res, cal(nums[i-k]), cal(nums[i]), cal(nums[i+k]))
+	}
+	return res
+}
