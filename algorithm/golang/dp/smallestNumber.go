@@ -1,5 +1,7 @@
 package dp
 
+import "bytes"
+
 // 给你一个字符串 num ，表示一个 正 整数，同时给你一个整数 t 。
 //
 //如果一个整数 没有 任何数位是 0 ，那么我们称这个整数是 无零 数字。
@@ -49,6 +51,14 @@ package dp
 //1 <= t <= 1014
 
 func smallestNumber(num string, t int64) string {
+	var gcd func(a int64, b int64) int64
+	gcd = func(a int64, b int64) int64 {
+		if b == 0 {
+			return a
+		} else {
+			return gcd(b, a%b)
+		}
+	}
 	tmp := t
 	// 计算质因子个数
 	cnt := 0
@@ -76,42 +86,49 @@ func smallestNumber(num string, t int64) string {
 		copy(dest[1:], num)
 	}
 	// 递归,idx是选择的下标，zero表示是否有前缀0,limit表示是否需要>当前位的数字
+	type pair struct {
+		idx   int
+		limit bool
+		zero  bool
+		t     int64
+	}
 	n := len(dest)
-	var dfs func(idx int, limit bool, zero bool) ([]byte, bool)
-	dfs = func(idx int, limit bool, zero bool) ([]byte, bool) {
+	res := make([]byte, len(dest))
+	var dfs func(idx int, limit bool, zero bool, t int64) bool
+	dfs = func(idx int, limit bool, zero bool, t int64) bool {
 		if idx == n {
-			return []byte{}, true
+			return t == 1
 		}
 		if zero && dest[idx] == '0' {
 			// 判断是否选0
-			res, b := dfs(idx+1, true, true)
-			if b {
-				return res, true
+			if dfs(idx+1, true, true, t) {
+				res[idx] = '0'
+				return true
 			}
 		}
 		if limit {
-			for i := dest[idx]; i <= '9'; i++ {
-				res, b := dfs(idx+1, dest[idx] == i, false)
-				if b {
-					res = append([]byte{i}, res...)
-					return res, true
+			for i := max(dest[idx], byte('1')); i <= '9'; i++ {
+				g := gcd(t, int64(i-'0'))
+				if dfs(idx+1, dest[idx] == i, false, t/g) {
+					res[idx] = i
+					return true
 				}
 			}
-			return []byte{}, false
+			return false
 		} else {
 			for i := byte('1'); i <= '9'; i++ {
-				res, b := dfs(idx+1, false, false)
-				if b {
-					res = append([]byte{i}, res...)
-					return res, true
+				g := gcd(t, int64(i-'0'))
+				if dfs(idx+1, false, false, t/g) {
+					res[idx] = i
+					return true
 				}
 			}
-			return []byte{}, false
+			return false
 		}
 	}
-	res, b := dfs(0, true, true)
-	if b {
-		return string(res)
+	if dfs(0, true, true, t) {
+		i := bytes.LastIndexByte(res, '0')
+		return string(res[i+1:])
 	} else {
 		return "-1"
 	}
