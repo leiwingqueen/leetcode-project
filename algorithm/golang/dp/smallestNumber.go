@@ -50,6 +50,7 @@ import "bytes"
 //num 不包含前导 0 。
 //1 <= t <= 1014
 
+// 勉强通过
 func smallestNumber(num string, t int64) string {
 	var gcd func(a int64, b int64) int64
 	gcd = func(a int64, b int64) int64 {
@@ -92,6 +93,7 @@ func smallestNumber(num string, t int64) string {
 		zero  bool
 		t     int64
 	}
+	mem := make(map[pair]bool)
 	n := len(dest)
 	res := make([]byte, len(dest))
 	var dfs func(idx int, limit bool, zero bool, t int64) bool
@@ -99,10 +101,15 @@ func smallestNumber(num string, t int64) string {
 		if idx == n {
 			return t == 1
 		}
+		p := pair{idx, limit, zero, t}
+		if v, ok := mem[p]; ok {
+			return v
+		}
 		if zero && dest[idx] == '0' {
 			// 判断是否选0
 			if dfs(idx+1, true, true, t) {
 				res[idx] = '0'
+				mem[p] = true
 				return true
 			}
 		}
@@ -111,9 +118,11 @@ func smallestNumber(num string, t int64) string {
 				g := gcd(t, int64(i-'0'))
 				if dfs(idx+1, dest[idx] == i, false, t/g) {
 					res[idx] = i
+					mem[p] = true
 					return true
 				}
 			}
+			mem[p] = false
 			return false
 		} else {
 			for i := byte('1'); i <= '9'; i++ {
@@ -123,6 +132,7 @@ func smallestNumber(num string, t int64) string {
 					return true
 				}
 			}
+			mem[p] = false
 			return false
 		}
 	}
