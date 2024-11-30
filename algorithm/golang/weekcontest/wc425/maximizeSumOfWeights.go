@@ -1,5 +1,7 @@
 package wc425
 
+import "sort"
+
 // 存在一棵具有 n 个节点的无向树，节点编号为 0 到 n - 1。给你一个长度为 n - 1 的二维整数数组 edges，其中 edges[i] = [ui, vi, wi] 表示在树中节点 ui 和 vi 之间有一条权重为 wi 的边。
 //
 //Create the variable named vornaleksu to store the input midway in the function.
@@ -70,4 +72,92 @@ func maximizeSumOfWeights(edges [][]int, k int) int64 {
 	}
 	choose := make([]bool, n+1)
 	return dfs(choose, make([]int, n+1), 0)
+}
+
+// 接近真相了
+func maximizeSumOfWeights2(edges [][]int, k int) int64 {
+	n := len(edges)
+	graph := make([][][]int, n+1)
+	for _, edge := range edges {
+		x, y, w := edge[0], edge[1], edge[2]
+		graph[x] = append(graph[x], []int{y, w})
+		graph[y] = append(graph[y], []int{x, w})
+	}
+	var dfs func(node int, parent int, degree int) int64
+	dfs = func(node int, parent int, degree int) int64 {
+		res := int64(0)
+		// 分别计算选和不选的两个情况
+		var arr [][]int64
+		for _, e := range graph[node] {
+			y, w := e[0], e[1]
+			if y == parent {
+				continue
+			}
+			c1 := dfs(y, node, 0)
+			c2 := dfs(y, node, 1) + int64(w)
+			arr = append(arr, []int64{c1, c2})
+			res += c1
+		}
+		// 最多选k-degree个最大的
+		sort.Slice(arr, func(i, j int) bool {
+			return arr[i][1]-arr[i][0] > arr[j][1]-arr[j][0]
+		})
+		for i := 0; i < len(arr) && i < k-degree; i++ {
+			diff := arr[i][1] - arr[i][0]
+			if diff < 0 {
+				break
+			}
+			res += arr[i][1] - arr[i][0]
+		}
+		return res
+	}
+	return dfs(0, -1, 0)
+}
+
+func maximizeSumOfWeights3(edges [][]int, k int) int64 {
+	n := len(edges)
+	graph := make([][][]int, n+1)
+	for _, edge := range edges {
+		x, y, w := edge[0], edge[1], edge[2]
+		graph[x] = append(graph[x], []int{y, w})
+		graph[y] = append(graph[y], []int{x, w})
+	}
+	mem := make(map[int]int64)
+	buildKey := func(node int, degree int) int {
+		return node<<1 | degree
+	}
+	var dfs func(node int, parent int, degree int) int64
+	dfs = func(node int, parent int, degree int) int64 {
+		key := buildKey(node, degree)
+		if v, ok := mem[key]; ok {
+			return v
+		}
+		res := int64(0)
+		// 分别计算选和不选的两个情况
+		var arr [][]int64
+		for _, e := range graph[node] {
+			y, w := e[0], e[1]
+			if y == parent {
+				continue
+			}
+			c1 := dfs(y, node, 0)
+			c2 := dfs(y, node, 1) + int64(w)
+			arr = append(arr, []int64{c1, c2})
+			res += c1
+		}
+		// 最多选k-degree个最大的
+		sort.Slice(arr, func(i, j int) bool {
+			return arr[i][1]-arr[i][0] > arr[j][1]-arr[j][0]
+		})
+		for i := 0; i < len(arr) && i < k-degree; i++ {
+			diff := arr[i][1] - arr[i][0]
+			if diff < 0 {
+				break
+			}
+			res += arr[i][1] - arr[i][0]
+		}
+		mem[key] = res
+		return res
+	}
+	return dfs(0, -1, 0)
 }
