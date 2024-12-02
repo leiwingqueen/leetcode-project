@@ -25,7 +25,7 @@ func shiftDistance(s string, t string, nextCost []int, previousCost []int) int64
 			l := (i - j + 26) % 26
 			// 计算f(i,l)
 			pre := (l + 1) % 26
-			dis2[i][l] = dis1[i][pre] + previousCost[pre]
+			dis2[i][l] = dis2[i][pre] + previousCost[pre]
 		}
 	}
 	n := len(s)
