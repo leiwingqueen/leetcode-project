@@ -1,7 +1,7 @@
 package wc426
 
 func maxTargetNodes(edges1 [][]int, edges2 [][]int, k int) []int {
-	n, m := len(edges1)+1, len(edges2)+2
+	n, m := len(edges1)+1, len(edges2)+1
 	graph1, graph2 := make([][]int, n), make([][]int, m)
 	for _, edge := range edges1 {
 		x, y := edge[0], edge[1]
