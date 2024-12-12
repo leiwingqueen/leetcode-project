@@ -51,3 +51,7 @@ func maxRectangleArea(points [][]int) int {
 	}
 	return res
 }
+
+func maxRectangleArea2(xCoord []int, yCoord []int) int64 {
+	return 0
+}
