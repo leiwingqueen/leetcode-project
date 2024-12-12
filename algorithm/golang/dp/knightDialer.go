@@ -43,6 +43,7 @@ package dp
 // f(t,n)=f(p,n-1),p为下一次跳跃的数字位置
 // f(p,1)=1
 func knightDialer(n int) int {
+	mod := 1_000_000_007
 	dirs := [][]int{
 		{-2, 1},
 		{-2, -1},
@@ -60,7 +61,7 @@ func knightDialer(n int) int {
 		{-1, 0, -1},
 	}
 	pos := make([][]int, 10)
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 4; i++ {
 		for j := 0; j < 3; j++ {
 			if matrix[i][j] >= 0 {
 				pos[matrix[i][j]] = []int{i, j}
@@ -81,14 +82,14 @@ func knightDialer(n int) int {
 			for _, dir := range dirs {
 				nx, ny := x+dir[0], y+dir[1]
 				if nx >= 0 && nx < 4 && ny >= 0 && ny < 3 && matrix[nx][ny] >= 0 {
-					dp[i][j] += dp[i-1][matrix[nx][ny]]
+					dp[i][j] = (dp[i][j] + dp[i-1][matrix[nx][ny]]) % mod
 				}
 			}
 		}
 	}
 	res := 0
 	for i := 0; i < 10; i++ {
-		res += dp[n][i]
+		res = (res + dp[n-1][i]) % mod
 	}
 	return res
 }
