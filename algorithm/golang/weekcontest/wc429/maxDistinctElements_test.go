@@ -15,6 +15,7 @@ func Test_maxDistinctElements(t *testing.T) {
 		// TODO: Add test cases.
 		{"t1", args{[]int{1, 2, 2, 3, 3, 4}, 2}, 6},
 		{"t2", args{[]int{4, 4, 4, 4}, 1}, 3},
+		{"t3", args{[]int{10, 8, 10, 8, 10}, 0}, 2},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

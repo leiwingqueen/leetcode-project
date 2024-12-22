@@ -14,11 +14,8 @@ func maxDistinctElements(nums []int, k int) int {
 			break
 		}
 		// 左边界处理
-		if nums[l]-k >= minVal {
-			minVal = nums[l] - k + 1
-			cnt++
-		} else if nums[l]+k >= minVal {
-			minVal++
+		if nums[l]+k >= minVal && nums[l]-k <= maxVal {
+			minVal = max(nums[l]-k, minVal) + 1
 			cnt++
 		}
 		l++
@@ -27,11 +24,8 @@ func maxDistinctElements(nums []int, k int) int {
 		}
 		// 右边界处理
 		// [nums[r]-k,nums[r]+k]
-		if nums[r]+k <= maxVal {
-			maxVal = nums[r] + k - 1
-			cnt++
-		} else if nums[r]-k <= maxVal {
-			maxVal--
+		if nums[r]+k >= minVal && nums[r]-k <= maxVal {
+			maxVal = min(nums[r]+k, maxVal) - 1
 			cnt++
 		}
 		r--
