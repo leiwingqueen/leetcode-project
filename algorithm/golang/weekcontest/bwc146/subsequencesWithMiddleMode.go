@@ -27,37 +27,39 @@ func subsequencesWithMiddleMode(nums []int) int {
 	prefix := make(map[int]int)
 	// 不合法的数量
 	cnt := 0
-	for i := 0; i < n; i++ {
-		num := nums[i]
-		suffix[num]--
+	for i := 0; i < n-2; i++ {
+		x := nums[i]
+		suffix[x]--
 		// 假设这个数字只出现一次（两边都没有出现）
-		cnt += comb(i-1-prefix[num]) * comb(n-i-1-suffix[num])
+		if i >= 2 {
+			cnt += comb(i-1-prefix[x]) * comb(n-i-1-suffix[x])
+		}
 		// 假设这个数字出现2次，这里的场景会比较复杂
 		// 1. 左边出现1次，右边没有出现。存在一个数字y，y左边出现1次，右边出现一次
 		// 2. 左边出现1次，右边没有出现。存在一个数字y，右边出现两次
-		if prefix[num] > 0 {
-			for _, y := range suffix {
-				if y != num {
-					cnt += prefix[num] * prefix[y] * (n - i - 1 - suffix[num]) * suffix[y]
+		if prefix[x] > 0 {
+			for y := range suffix {
+				if y != x && suffix[y] > 0 {
+					cnt += prefix[x] * prefix[y] * (n - i - 1 - suffix[x]) * suffix[y]
 					if suffix[y] >= 2 {
-						cnt += prefix[num] * (i - prefix[num]) * comb(suffix[y])
+						cnt += prefix[x] * (i - prefix[x]) * comb(suffix[y])
 					}
 				}
 			}
 		}
 		// 3. 左边出现0次，右边出现一次。存在一个数字y，y左边出现一次，右边出现一次
 		// 4. 左边出现0次，右边出现一次。存在一个数字y，y左边出现两次
-		if suffix[num] > 0 {
-			for _, y := range prefix {
-				if y != num {
-					cnt += suffix[num] * suffix[y] * (i - 1 - prefix[num]) * prefix[y]
+		if suffix[x] > 0 {
+			for y := range prefix {
+				if y != x && prefix[y] > 0 {
+					cnt += suffix[x] * suffix[y] * (i - 1 - prefix[x]) * prefix[y]
 					if prefix[y] >= 2 {
-						cnt += suffix[num] * (n - i - 1 - suffix[num]) * comb(prefix[y])
+						cnt += suffix[x] * (n - i - 1 - suffix[x]) * comb(prefix[y])
 					}
 				}
 			}
 		}
-		prefix[num]++
+		prefix[x]++
 	}
 	return comb2(n, 5) - cnt
 }
