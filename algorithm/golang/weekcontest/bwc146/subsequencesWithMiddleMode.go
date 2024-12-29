@@ -2,8 +2,9 @@ package bwc146
 
 // 遍历每个元素，以该元素为中间元素，分别计算左右两边的子序列个数
 // 左右两边的子序列个数分别为：左边的子序列个数 * 右边的子序列个数
-// 一共有几个场景：
+// 这种分场景讨论好难
 func subsequencesWithMiddleMode(nums []int) int {
+	mod := 1_000_000_007
 	comb := func(x int) int {
 		return x * (x - 1) / 2
 	}
@@ -26,13 +27,14 @@ func subsequencesWithMiddleMode(nums []int) int {
 	}
 	prefix := make(map[int]int)
 	// 不合法的数量
-	cnt := 0
+	res := comb2(n, 5)
 	for i := 0; i < n-2; i++ {
+		right := n - i - 1
 		x := nums[i]
 		suffix[x]--
 		// 假设这个数字只出现一次（两边都没有出现）
 		if i >= 2 {
-			cnt += comb(i-1-prefix[x]) * comb(n-i-1-suffix[x])
+			res -= comb(i-prefix[x]) * comb(right-suffix[x])
 		}
 		// 假设这个数字出现2次，这里的场景会比较复杂
 		// 1. 左边出现1次，右边没有出现。存在一个数字y，y左边出现1次，右边出现一次
@@ -40,9 +42,9 @@ func subsequencesWithMiddleMode(nums []int) int {
 		if prefix[x] > 0 {
 			for y := range suffix {
 				if y != x && suffix[y] > 0 {
-					cnt += prefix[x] * prefix[y] * (n - i - 1 - suffix[x]) * suffix[y]
+					res -= prefix[x] * prefix[y] * (right - suffix[y] - suffix[x]) * suffix[y]
 					if suffix[y] >= 2 {
-						cnt += prefix[x] * (i - prefix[x]) * comb(suffix[y])
+						res -= prefix[x] * (i - prefix[x]) * comb(suffix[y])
 					}
 				}
 			}
@@ -52,14 +54,14 @@ func subsequencesWithMiddleMode(nums []int) int {
 		if suffix[x] > 0 {
 			for y := range prefix {
 				if y != x && prefix[y] > 0 {
-					cnt += suffix[x] * suffix[y] * (i - 1 - prefix[x]) * prefix[y]
+					res -= suffix[x] * suffix[y] * (i - prefix[x] - prefix[y]) * prefix[y]
 					if prefix[y] >= 2 {
-						cnt += suffix[x] * (n - i - 1 - suffix[x]) * comb(prefix[y])
+						res -= suffix[x] * (right - suffix[x]) * comb(prefix[y])
 					}
 				}
 			}
 		}
 		prefix[x]++
 	}
-	return comb2(n, 5) - cnt
+	return res % mod
 }
