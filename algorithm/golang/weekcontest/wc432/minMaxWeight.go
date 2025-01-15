@@ -67,7 +67,7 @@ import "sort"
 //1 <= Wi <= 106
 //一对节点之间 可能 会有多条边，但它们的权值互不相同。
 
-// 先尝试无脑暴力
+// 先尝试无脑暴力,必然超时
 func minMaxWeight(n int, edges [][]int, threshold int) int {
 	// 先过滤掉没必要的边
 	sort.Slice(edges, func(i, j int) bool {
@@ -97,8 +97,29 @@ func minMaxWeight(n int, edges [][]int, threshold int) int {
 		x, y, w := edge[0], edge[1], edge[2]
 		graph[y] = append(graph[y], []int{x, w})
 	}
-	// 尝试删除t条有向边后能否满足条件
-	check := func(t int) bool {
-
+	// 剩下改为dfs解决
+	var dfs func(node int, visit []bool, unreached int) int
+	dfs = func(node int, visit []bool, unreached int) int {
+		if unreached == 0 {
+			return 0
+		}
+		res := -1
+		for _, edge := range graph[node] {
+			to, w := edge[0], edge[1]
+			if !visit[to] {
+				visit[to] = true
+				r := dfs(to, visit, unreached-1)
+				if r >= 0 {
+					if res < 0 || max(r, w) < res {
+						res = max(r, w)
+					}
+				}
+				visit[to] = false
+			}
+		}
+		return res
 	}
+	visit := make([]bool, n)
+	visit[0] = true
+	return dfs(0, visit, n-1)
 }
