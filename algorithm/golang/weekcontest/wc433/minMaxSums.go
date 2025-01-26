@@ -102,3 +102,46 @@ func minMaxSums(nums []int, k int) int {
 	}
 	return res
 }
+
+// 先改成朴素的写法
+// f(n,k,0)表示前n个数字取k个数字的最小值,f(n,k,0)对应为最大值
+// f(n,k,0)=f(n-1,k,0)+f(n-1,k-1,0)
+// f(n,k,1)=f(n-1,k,1)+C(n-1,k-1)*nums[n-1]
+func minMaxSums2(nums []int, k int) int {
+	mod := 1_000_000_007
+	combine := func(n, k int) int {
+		res := 1
+		for i := 0; i < k; i++ {
+			res *= n - i
+			res %= mod
+		}
+		return res
+	}
+	n := len(nums)
+	// 先排序
+	sort.Ints(nums)
+	dp := make([][][]int, n)
+	for i := 0; i < n; i++ {
+		dp[i] = make([][]int, k)
+		for j := 0; j < k; j++ {
+			dp[i][j] = make([]int, 2)
+		}
+	}
+	// 初始化
+	res := 0
+	dp[0][0][0] = nums[0]
+	dp[0][0][1] = nums[1]
+	for i := 1; i < n; i++ {
+		dp[i][0][0] = dp[i-1][0][0] + nums[i]
+		dp[i][0][1] = dp[i-1][0][1] + nums[i]
+		res += dp[i][0][0] + dp[i][0][1]
+	}
+	for i := 1; i < n; i++ {
+		for j := 1; j <= min(i, k-1); j++ {
+			dp[i][j][0] = dp[i-1][j][0] + dp[i-1][j-1][0]
+			dp[i][j][1] = dp[i-1][j][1] + combine(i+1, j)*nums[i]
+			res += dp[i][j][0] + dp[i][j][1]
+		}
+	}
+	return res
+}
