@@ -1,5 +1,7 @@
 package wc433
 
+import "sort"
+
 // 给你一个整数数组 nums 和一个正整数 k，返回所有长度最多为 k 的 子序列 中 最大值 与 最小值 之和的总和。
 //
 //非空子序列 是指从另一个数组中删除一些或不删除任何元素（且不改变剩余元素的顺序）得到的数组。
@@ -70,22 +72,27 @@ func minMaxSums(nums []int, k int) int {
 		return res
 	}
 	n := len(nums)
+	// 先排序
+	sort.Ints(nums)
 	dp, tmp := make([][]int, k), make([][]int, k)
 	for i := 0; i < k; i++ {
 		dp[i] = make([]int, 2)
 		tmp[i] = make([]int, 2)
 	}
 	// 初始化
-	res := nums[0]
+	res := 0
 	dp[0][0] = nums[0]
 	dp[0][1] = nums[0]
+	res += dp[0][0] + dp[0][1]
 	for i := 1; i < n; i++ {
-		tmp[0][0] = dp[0][0] + nums[i]
-		tmp[0][1] = dp[0][1] + nums[i]
-		res += tmp[0][0] + tmp[0][1]
-		for j := 1; j <= min(i, k-1); j++ {
-			tmp[j][0] = dp[j][0] + dp[j-1][0]
-			tmp[j][1] = dp[j][1] + combine(i+1, j)*nums[i]
+		for j := 0; j <= min(i, k-1); j++ {
+			// 选择j+1个数字
+			tmp[j][0] = dp[j][0]
+			if j > 0 {
+				tmp[j][0] += dp[j-1][0]
+			}
+			tmp[j][1] = dp[j][1]
+			tmp[j][1] += combine(i+1, j) * nums[i]
 			res += tmp[j][0] + tmp[j][1]
 		}
 		for j := 0; j < k; j++ {
