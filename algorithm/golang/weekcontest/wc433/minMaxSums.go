@@ -110,10 +110,13 @@ func minMaxSums(nums []int, k int) int {
 func minMaxSums2(nums []int, k int) int {
 	mod := 1_000_000_007
 	combine := func(n, k int) int {
+		// TODO:这里如何保证不溢出
 		res := 1
 		for i := 0; i < k; i++ {
-			res *= n - i
-			res %= mod
+			res = res * (n - i)
+		}
+		for i := 1; i <= k; i++ {
+			res /= i
 		}
 		return res
 	}
@@ -128,20 +131,21 @@ func minMaxSums2(nums []int, k int) int {
 		}
 	}
 	// 初始化
-	res := 2 * nums[0]
 	dp[0][0][0] = nums[0]
 	dp[0][0][1] = nums[0]
 	for i := 1; i < n; i++ {
-		dp[i][0][0] = dp[i-1][0][0] + nums[i]
-		dp[i][0][1] = dp[i-1][0][1] + nums[i]
-		res += dp[i][0][0] + dp[i][0][1]
+		dp[i][0][0] = (dp[i-1][0][0] + nums[i]) % mod
+		dp[i][0][1] = (dp[i-1][0][1] + nums[i]) % mod
 	}
 	for i := 1; i < n; i++ {
 		for j := 1; j <= min(i, k-1); j++ {
-			dp[i][j][0] = dp[i-1][j][0] + dp[i-1][j-1][0]
-			dp[i][j][1] = dp[i-1][j][1] + combine(i+1, j)*nums[i]
-			res += dp[i][j][0] + dp[i][j][1]
+			dp[i][j][0] = (dp[i-1][j][0] + dp[i-1][j-1][0]) % mod
+			dp[i][j][1] = (dp[i-1][j][1] + combine(i, j)*nums[i]) % mod
 		}
+	}
+	res := 0
+	for i := 0; i < k; i++ {
+		res = (res + dp[n-1][i][0] + dp[n-1][i][1]) % mod
 	}
 	return res
 }
