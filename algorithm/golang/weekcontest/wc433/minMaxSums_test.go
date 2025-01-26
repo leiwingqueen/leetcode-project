@@ -17,7 +17,7 @@ func Test_minMaxSums(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := minMaxSums(tt.args.nums, tt.args.k); got != tt.want {
+			if got := minMaxSums2(tt.args.nums, tt.args.k); got != tt.want {
 				t.Errorf("minMaxSums() = %v, want %v", got, tt.want)
 			}
 		})

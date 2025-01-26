@@ -128,9 +128,9 @@ func minMaxSums2(nums []int, k int) int {
 		}
 	}
 	// 初始化
-	res := 0
+	res := 2 * nums[0]
 	dp[0][0][0] = nums[0]
-	dp[0][0][1] = nums[1]
+	dp[0][0][1] = nums[0]
 	for i := 1; i < n; i++ {
 		dp[i][0][0] = dp[i-1][0][0] + nums[i]
 		dp[i][0][1] = dp[i-1][0][1] + nums[i]
