@@ -1,6 +1,6 @@
 package wc435
 
-// 先来个无脑暴力
+// 先来个无脑暴力，超时
 func maxDistance(s string, k int) int {
 	n := len(s)
 	dirs := [][]int{
@@ -41,7 +41,7 @@ func maxDistance(s string, k int) int {
 		// 修改的场景
 		if k > 0 {
 			for _, t := range dirs {
-				res = max(dfs(x+t[0], y+t[1], idx+1, k-1), dis(x, y))
+				res = max(dfs(x+t[0], y+t[1], idx+1, k-1), dis(x, y), res)
 			}
 		}
 		return res
