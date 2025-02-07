@@ -32,7 +32,7 @@ func generateMatrix(n int) [][]int {
 		matrix[x][y] = num
 		// 移动到下一个位置
 		nx, ny := x+dirs[idx][0], y+dirs[idx][1]
-		if nx >= 0 && nx < n && ny >= 0 && ny < n {
+		if nx >= 0 && nx < n && ny >= 0 && ny < n && matrix[nx][ny] == 0 {
 			x = nx
 			y = ny
 		} else {
