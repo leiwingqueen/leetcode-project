@@ -48,7 +48,9 @@ func maxDistance(position []int, m int) int {
 			if i > j {
 				dp[i][j] = dp[i-1][j]
 			}
-			dp[i][j] = max(dp[i][j], min(dp[i-1][j-1], position[i-1]-position[i-2]))
+			for l := i - 1; l >= j-1; l-- {
+				dp[i][j] = max(dp[i][j], min(dp[l][j-1], position[i-1]-position[l-1]))
+			}
 		}
 	}
 	return dp[n-1][m-1]
