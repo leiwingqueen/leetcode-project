@@ -58,3 +58,34 @@ func maxDistance(position []int, m int) int {
 	}
 	return dp[n-1][m-1]
 }
+
+// 二分查找
+func maxDistance2(position []int, m int) int {
+	n := len(position)
+	sort.Ints(position)
+	// 假设x是最长的距离
+	check := func(x int) bool {
+		pre := position[0]
+		cnt := 1
+		for i := 1; i < n; i++ {
+			if position[i]-pre >= x {
+				pre = position[i]
+				cnt++
+				if cnt >= m {
+					return true
+				}
+			}
+		}
+		return false
+	}
+	l, r := 0, position[n-1]-position[0]
+	for l < r {
+		mid := l + (r-l+1)/2
+		if check(mid) {
+			l = mid
+		} else {
+			r = mid - 1
+		}
+	}
+	return l
+}
