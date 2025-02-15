@@ -32,6 +32,7 @@ import "sort"
 //所有 position 中的整数 互不相同 。
 //2 <= m <= position.length
 
+// 超时
 func maxDistance(position []int, m int) int {
 	n := len(position)
 	sort.Ints(position)
@@ -41,15 +42,17 @@ func maxDistance(position []int, m int) int {
 	}
 	// dp[n][m]=max(dp[n-1][m],min(dp[n-1][m-1],pos[n-1]-pos[n-2]))
 	for i := 1; i < n; i++ {
-		dp[i][1] = position[i-1] - position[0]
+		dp[i][1] = position[i] - position[0]
 	}
 	for i := 2; i < n; i++ {
 		for j := 2; j <= i && j < m; j++ {
-			if i > j {
+			if i == j {
+				dp[i][j] = min(dp[i-1][j-1], position[i]-position[i-1])
+			} else {
 				dp[i][j] = dp[i-1][j]
-			}
-			for l := i - 1; l >= j-1; l-- {
-				dp[i][j] = max(dp[i][j], min(dp[l][j-1], position[i-1]-position[l-1]))
+				for l := i - 1; l >= j-1; l-- {
+					dp[i][j] = max(dp[i][j], min(dp[l][j-1], position[i]-position[l]))
+				}
 			}
 		}
 	}
