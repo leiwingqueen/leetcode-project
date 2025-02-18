@@ -1,7 +1,5 @@
 package RangeFreqQuery
 
-import "sort"
-
 // 请你设计一个数据结构，它能求出给定子数组内一个给定值的 频率 。
 //
 //子数组中一个值的 频率 指的是这个子数组中这个值的出现次数。
@@ -35,34 +33,47 @@ import "sort"
 //0 <= left <= right < arr.length
 //调用 query 不超过 105 次。
 
+// 内存溢出
 type RangeFreqQuery struct {
-	mp map[int][]int
+	mp     map[int]int
+	prefix [][]int
 }
 
 func Constructor(arr []int) RangeFreqQuery {
-	mp := make(map[int][]int)
-	for i, num := range arr {
-		mp[num] = append(mp[num], i)
+	mp := make(map[int]int)
+	for _, v := range arr {
+		mp[v]++
 	}
-	return RangeFreqQuery{mp: mp}
+	var meta []int
+	for num := range mp {
+		meta = append(meta, num)
+	}
+	mp2 := make(map[int]int)
+	for i, num := range meta {
+		mp2[num] = i
+	}
+	prefix := make([][]int, len(meta))
+	for i := 0; i < len(meta); i++ {
+		prefix[i] = make([]int, len(arr)+1)
+	}
+	for i := 0; i < len(arr); i++ {
+		for j := 0; j < len(meta); j++ {
+			prefix[j][i+1] = prefix[j][i]
+		}
+		prefix[mp2[arr[i]]][i+1]++
+	}
+	return RangeFreqQuery{
+		mp:     mp2,
+		prefix: prefix,
+	}
 }
 
 func (this *RangeFreqQuery) Query(left int, right int, value int) int {
-	v, ok := this.mp[value]
+	idx, ok := this.mp[value]
 	if !ok {
 		return 0
 	}
-	n := len(v)
-	idx1 := sort.Search(n, func(i int) bool {
-		return v[i] >= left
-	})
-	if idx1 == n {
-		return 0
-	}
-	idx2 := sort.Search(n, func(i int) bool {
-		return v[i] > right
-	})
-	return idx2 - idx1
+	return this.prefix[idx][right+1] - this.prefix[idx][left]
 }
 
 /**
