@@ -26,7 +26,7 @@ package array
 // arrays[i] 以 升序 排序。
 // 所有数组中最多有 105 个整数。
 
-// 贪心
+// 贪心，超时是必然的
 func maxDistance3(arrays [][]int) int {
 	abs := func(num int) int {
 		if num < 0 {
@@ -43,6 +43,26 @@ func maxDistance3(arrays [][]int) int {
 			dis := max(abs(arr2[len(arr2)-1]-arr1[0]), abs(arr1[len(arr1)-1]-arr2[0]))
 			res = max(res, dis)
 		}
+	}
+	return res
+}
+
+func maxDistance4(arrays [][]int) int {
+	abs := func(num int) int {
+		if num < 0 {
+			return -num
+		} else {
+			return num
+		}
+	}
+	m := len(arrays)
+	res := 0
+	minVal, maxVal := arrays[0][0], arrays[0][len(arrays[0])-1]
+	for i := 1; i < m; i++ {
+		arr := arrays[i]
+		res = max(res, max(abs(arr[len(arr)-1]-minVal), abs(maxVal-arr[0])))
+		minVal = min(minVal, arr[0])
+		maxVal = max(maxVal, arr[len(arr)-1])
 	}
 	return res
 }
