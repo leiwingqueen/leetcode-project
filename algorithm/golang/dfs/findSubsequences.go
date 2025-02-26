@@ -103,14 +103,15 @@ func (t *TireTree) getAll() [][]int {
 		if node == nil {
 			return
 		}
-		if node.end == true {
+		path[idx] = node.value
+		idx++
+		if node.end {
 			tmp := make([]int, idx)
-			copy(tmp, path)
+			copy(tmp, path[:idx])
 			res = append(res, tmp)
 		}
-		path[idx] = node.value
 		for _, child := range node.child {
-			dfs(child, idx+1, path)
+			dfs(child, idx, path)
 		}
 	}
 	for _, node := range t.root.child {
