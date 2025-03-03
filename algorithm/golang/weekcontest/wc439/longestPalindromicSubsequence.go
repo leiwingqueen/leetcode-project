@@ -51,28 +51,28 @@ func longestPalindromicSubsequence(s string, k int) int {
 	for i := 0; i < k; i++ {
 		dp[i] = make([][]int, n)
 		for j := 0; j < n; j++ {
-			dp[i][j] = make([]int, n)
+			dp[i][j] = make([]int, n+1)
 		}
 	}
 	res := 0
 	for p := 0; p < k; p++ {
 		for i := n - 1; i >= 0; i-- {
-			for j := i; j < n; j++ {
-				if i == j {
+			for j := i + 1; j <= n; j++ {
+				if j == i+1 {
 					dp[p][i][j] = 1
 				} else {
 					dp[p][i][j] = max(dp[p][i+1][j], dp[p][i][j-1])
-					if s[i] == s[j] {
+					if s[i] == s[j-1] {
 						dp[p][i][j] = max(dp[p][i][j], dp[p][i+1][j-1]+2)
 					}
 					// 改变的情况
-					if p > 0 && int(s[i]-s[j]) == -1 && int(s[i]-s[j]) == 1 {
+					if p > 0 && (int(s[i]-s[j-1]) == -1 || int(s[i]-s[j-1]) == 1) {
 						dp[p][i][j] = max(dp[p][i][j], dp[p-1][i+1][j-1]+2)
 					}
 				}
 			}
 		}
-		res = max(res, dp[p][0][n-1])
+		res = max(res, dp[p][0][n])
 	}
 	return res
 }
