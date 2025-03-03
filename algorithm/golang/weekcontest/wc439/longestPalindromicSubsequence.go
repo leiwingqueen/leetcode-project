@@ -45,17 +45,18 @@ package wc439
 //1 <= k <= 200
 //s 仅由小写英文字母组成。
 
+// 错误
 func longestPalindromicSubsequence(s string, k int) int {
 	n := len(s)
-	dp := make([][][]int, k)
-	for i := 0; i < k; i++ {
+	dp := make([][][]int, k+1)
+	for i := 0; i <= k; i++ {
 		dp[i] = make([][]int, n)
 		for j := 0; j < n; j++ {
 			dp[i][j] = make([]int, n+1)
 		}
 	}
 	res := 0
-	for p := 0; p < k; p++ {
+	for p := 0; p <= k; p++ {
 		for i := n - 1; i >= 0; i-- {
 			for j := i + 1; j <= n; j++ {
 				if j == i+1 {
