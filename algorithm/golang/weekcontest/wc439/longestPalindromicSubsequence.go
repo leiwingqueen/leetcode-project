@@ -45,9 +45,15 @@ package wc439
 //1 <= k <= 200
 //s 仅由小写英文字母组成。
 
-// 错误
+// 还是挺难的
 func longestPalindromicSubsequence(s string, k int) int {
 	n := len(s)
+	dis := func(a, b byte) int {
+		if a > b {
+			a, b = b, a
+		}
+		return min(int(b-a), int(a+26-b))
+	}
 	dp := make([][][]int, k+1)
 	for i := 0; i <= k; i++ {
 		dp[i] = make([][]int, n)
@@ -67,8 +73,9 @@ func longestPalindromicSubsequence(s string, k int) int {
 						dp[p][i][j] = max(dp[p][i][j], dp[p][i+1][j-1]+2)
 					}
 					// 改变的情况
-					if p > 0 && (int(s[i]-s[j-1]) == -1 || int(s[i]-s[j-1]) == 1) {
-						dp[p][i][j] = max(dp[p][i][j], dp[p-1][i+1][j-1]+2)
+					d := dis(s[i], s[j-1])
+					if p > 0 && d <= p {
+						dp[p][i][j] = max(dp[p][i][j], dp[p-d][i+1][j-1]+2)
 					}
 				}
 			}
