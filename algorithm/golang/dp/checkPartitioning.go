@@ -76,3 +76,35 @@ func checkPartitioning(s string) bool {
 	}
 	return dp2[0][n-1]
 }
+
+func checkPartitioning2(s string) bool {
+	n := len(s)
+	// 先预计算[i,j]之间的子串是否回文串
+	dp := make([][]bool, n)
+	for i := n - 1; i >= 0; i-- {
+		dp[i] = make([]bool, n)
+		for j := i; j < n; j++ {
+			if i == j {
+				dp[i][j] = true
+			} else {
+				if s[i] != s[j] {
+					dp[i][j] = false
+				} else {
+					dp[i][j] = i+1 >= j-1 || dp[i+1][j-1]
+				}
+			}
+		}
+	}
+	//[0,i],[i+1,j],[j+1,n-1]
+	for i := 0; i < n-2; i++ {
+		if !dp[0][i] {
+			continue
+		}
+		for j := i + 1; j < n-1; j++ {
+			if dp[i+1][j] && dp[j+1][n-1] {
+				return true
+			}
+		}
+	}
+	return false
+}
