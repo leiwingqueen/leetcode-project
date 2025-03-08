@@ -1,7 +1,5 @@
 package wc439
 
-import "math"
-
 // 给你一个长度为 n 的数组 original 和一个长度为 n x 2 的二维数组 bounds，其中 bounds[i] = [ui, vi]。
 //
 //你需要找到长度为 n 且满足以下条件的 可能的 数组 copy 的数量：
@@ -65,14 +63,6 @@ import "math"
 // 由于查找这两个具有单调性，我们可以使用二分查找来找
 func countArrays(original []int, bounds [][]int) int {
 	n := len(original)
-	lu, ru := math.MaxInt, 0
-	lv, rv := math.MaxInt, 0
-	for _, uv := range bounds {
-		lu = min(lu, uv[0])
-		ru = max(ru, uv[0])
-		lv = min(lv, uv[1])
-		rv = max(rv, uv[1])
-	}
 	check1 := func(num int) bool {
 		for i := 0; i < n; i++ {
 			u := bounds[i][0]
@@ -85,7 +75,10 @@ func countArrays(original []int, bounds [][]int) int {
 		}
 		return true
 	}
-	l, r := lu, ru
+	if !check1(bounds[0][1]) {
+		return 0
+	}
+	l, r := bounds[0][0], bounds[0][1]
 	for l < r {
 		mid := l + (r-l)/2
 		if check1(mid) {
@@ -107,7 +100,10 @@ func countArrays(original []int, bounds [][]int) int {
 		}
 		return true
 	}
-	l, r = lv, rv
+	if !check2(bounds[0][0]) {
+		return 0
+	}
+	l, r = bounds[0][0], bounds[0][1]
 	for l < r {
 		mid := l + (r-l+1)/2
 		if check2(mid) {
