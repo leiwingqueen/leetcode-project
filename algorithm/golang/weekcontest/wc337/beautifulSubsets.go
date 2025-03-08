@@ -99,7 +99,7 @@ func beautifulSubsets3(nums []int, k int) int {
 	sort.Ints(nums)
 	n := len(nums)
 	res := 0
-	mp := make([]bool, 1001)
+	mp := make([]int, 1001)
 	var dfs func(idx int)
 	dfs = func(idx int) {
 		if idx == n {
@@ -107,10 +107,36 @@ func beautifulSubsets3(nums []int, k int) int {
 			return
 		}
 		// 选择当前元素
-		if nums[idx]-k < 0 || !mp[nums[idx]-k] {
-			mp[nums[idx]] = true
+		if nums[idx]-k < 0 || mp[nums[idx]-k] <= 0 {
+			mp[nums[idx]]++
 			dfs(idx + 1)
-			mp[nums[idx]] = false
+			mp[nums[idx]]--
+		}
+		// 不选择当前元素
+		dfs(idx + 1)
+	}
+	dfs(0)
+	// 除去空集
+	return res - 1
+}
+
+func beautifulSubsets4(nums []int, k int) int {
+	// 排除掉非美丽子集的数量
+	sort.Ints(nums)
+	n := len(nums)
+	res := 0
+	mp := make([]int, 1001)
+	var dfs func(idx int)
+	dfs = func(idx int) {
+		if idx == n {
+			res++
+			return
+		}
+		// 选择当前元素
+		if nums[idx]-k < 0 || mp[nums[idx]-k] <= 0 {
+			mp[nums[idx]]++
+			dfs(idx + 1)
+			mp[nums[idx]]--
 		}
 		// 不选择当前元素
 		dfs(idx + 1)
