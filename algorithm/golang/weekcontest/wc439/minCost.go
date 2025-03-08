@@ -46,18 +46,15 @@ import "math"
 //1 <= nums.length <= 1000
 //1 <= nums[i] <= 106
 
-// 先尝试写最简单的dfs
+// 先尝试写最简单的dfs，超时
 func minCost(nums []int) int {
 	n := len(nums)
-	if n == 1 {
-		return nums[0]
-	}
-	if n == 2 {
-		return max(nums[0], nums[1])
-	}
 	var dfs func(idx int) int
 	dfs = func(idx int) int {
-		if idx <= n-2 {
+		if idx == n-1 {
+			return nums[idx]
+		}
+		if idx == n-2 {
 			return max(nums[idx], nums[idx+1])
 		}
 		// 只有三种情况
@@ -71,4 +68,31 @@ func minCost(nums []int) int {
 		return res
 	}
 	return dfs(0)
+}
+
+func minCost2(nums []int) int {
+	n := len(nums)
+	mp := make([]map[int]int, n)
+	for i := 0; i < n; i++ {
+		mp[i] = make(map[int]int)
+	}
+	var dfs func(idx int, num int) int
+	dfs = func(idx int, num int) int {
+		if v, ok := mp[idx][num]; ok {
+			return v
+		}
+		if idx == n-1 {
+			return num
+		}
+		if idx == n-2 {
+			return max(num, nums[idx+1])
+		}
+		// 只有三种情况
+		res := min(dfs(idx+2, nums[idx])+max(nums[idx+1], nums[idx+2]),
+			dfs(idx+2, nums[idx+1])+max(nums[idx], nums[idx+2]), dfs(idx+2,
+				nums[idx+2])+max(nums[idx], nums[idx+1]))
+		mp[idx][num] = res
+		return res
+	}
+	return dfs(0, nums[0])
 }
