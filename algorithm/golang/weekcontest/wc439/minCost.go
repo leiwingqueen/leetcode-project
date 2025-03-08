@@ -89,8 +89,8 @@ func minCost2(nums []int) int {
 		}
 		// 只有三种情况
 		res := min(dfs(idx+2, nums[idx])+max(nums[idx+1], nums[idx+2]),
-			dfs(idx+2, nums[idx+1])+max(nums[idx], nums[idx+2]), dfs(idx+2,
-				nums[idx+2])+max(nums[idx], nums[idx+1]))
+			dfs(idx+2, nums[idx+1])+max(num, nums[idx+2]),
+			dfs(idx+2, nums[idx+2])+max(num, nums[idx+1]))
 		mp[idx][num] = res
 		return res
 	}
