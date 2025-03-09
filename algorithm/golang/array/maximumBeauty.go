@@ -49,16 +49,19 @@ import "sort"
 // 然后我们只需要使用二分查找即可
 func maximumBeauty(items [][]int, queries []int) []int {
 	sort.Slice(items, func(i, j int) bool {
-		return items[i][0] < items[j][0]
+		if items[i][0] != items[j][0] {
+			return items[i][0] < items[j][0]
+		} else {
+			return items[i][1] > items[j][1]
+		}
 	})
 	var arr [][]int
 	arr = append(arr, items[0])
-	pre := items[0][1]
 	for _, item := range items[1:] {
 		price, beauty := item[0], item[1]
-		if beauty >= beauty {
+		pre := arr[len(arr)-1]
+		if beauty > pre[1] {
 			arr = append(arr, []int{price, beauty})
-			pre = beauty
 		}
 	}
 	k := len(queries)
