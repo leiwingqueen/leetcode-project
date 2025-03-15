@@ -57,12 +57,12 @@ func findMaxSum(nums1 []int, nums2 []int, k int) []int64 {
 	h := &MinHeap{}
 	heap.Init(h) // 建堆
 	res := make([]int64, n)
-	res[arr[n-1]] = 0
-	heap.Push(h, nums2[arr[n-1]])
-	sum := int64(nums2[arr[n-1]])
-	for i := n - 2; i >= 0; i-- {
+	res[arr[0]] = 0
+	heap.Push(h, nums2[arr[0]])
+	sum := int64(nums2[arr[0]])
+	for i := 1; i < n; i++ {
 		cur := arr[i]
-		pre := arr[i+1]
+		pre := arr[i-1]
 		if nums1[cur] == nums1[pre] {
 			res[cur] = res[pre]
 		} else {
