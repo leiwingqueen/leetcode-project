@@ -76,6 +76,7 @@ package wc441
 //0 <= li <= ri < nums.length
 //1 <= vali <= 10
 
+// 勉强通过
 func minZeroArray(nums []int, queries [][]int) int {
 	n := len(nums)
 	k := len(queries)
@@ -103,11 +104,16 @@ func minZeroArray(nums []int, queries [][]int) int {
 	for j := 0; j < k; j++ {
 		l, r, v := queries[j][0], queries[j][1], queries[j][2]
 		for i := 0; i < n; i++ {
+			mp := make(map[int]bool)
+			for p := range dp[i] {
+				mp[p] = true
+			}
 			if i >= l && i <= r {
 				for p := range dp[i] {
-					dp[i][p-v] = true
+					mp[p-v] = true
 				}
 			}
+			dp[i] = mp
 		}
 		if check() {
 			return j + 1
