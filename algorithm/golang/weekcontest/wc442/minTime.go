@@ -103,6 +103,7 @@ func minTime(skill []int, mana []int) int64 {
 	return end
 }
 
+// 通过
 func minTime2(skill []int, mana []int) int64 {
 	// 计算前缀和
 	n, m := len(skill), len(mana)
@@ -120,9 +121,9 @@ func minTime2(skill []int, mana []int) int64 {
 		var t int64
 		for j := 0; j < n; j++ {
 			// 计算上一个步骤的完成时间
-			p1 := prefix[i-1][n] - prefix[i-1][j+1]
+			p1 := lastTime - (prefix[i-1][n] - prefix[i-1][j+1])
 			cost := mana[i] * skill[j]
-			t = max(t+int64(cost), p1)
+			t = max(t, p1) + int64(cost)
 		}
 		lastTime = t
 	}
