@@ -102,3 +102,29 @@ func minTime(skill []int, mana []int) int64 {
 	}
 	return end
 }
+
+func minTime2(skill []int, mana []int) int64 {
+	// 计算前缀和
+	n, m := len(skill), len(mana)
+	prefix := make([][]int64, m)
+	for i := 0; i < m; i++ {
+		prefix[i] = make([]int64, n+1)
+		for j := 0; j < n; j++ {
+			cost := mana[i] * skill[j]
+			prefix[i][j+1] = prefix[i][j] + int64(cost)
+		}
+	}
+	// 先计算第一瓶药水的时间
+	lastTime := prefix[0][n]
+	for i := 1; i < m; i++ {
+		var t int64
+		for j := 0; j < n; j++ {
+			// 计算上一个步骤的完成时间
+			p1 := prefix[i-1][n] - prefix[i-1][j+1]
+			cost := mana[i] * skill[j]
+			t = max(t+int64(cost), p1)
+		}
+		lastTime = t
+	}
+	return lastTime
+}
