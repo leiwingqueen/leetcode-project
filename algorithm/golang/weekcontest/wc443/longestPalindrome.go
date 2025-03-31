@@ -73,7 +73,7 @@ func longestPalindrome(s string, t string) int {
 		}
 	}
 	dp2 := make([][]bool, n)
-	for i := 0; i < m; i++ {
+	for i := 0; i < n; i++ {
 		dp2[i] = make([]bool, n)
 		dp2[i][i] = true
 	}
@@ -108,16 +108,20 @@ func longestPalindrome(s string, t string) int {
 			size := 0
 			for {
 				// 这里再选择s[p1:]的最大回文串，或者t[:p2]的最大回文串
-				res = max(res, size+max(t1[p1], t2[p2]))
-				if s[p1] != t[p2] {
+				k := 0
+				if p1 < m {
+					k = max(k, t1[p1])
+				}
+				if p2 >= 0 {
+					k = max(k, t2[p2])
+				}
+				res = max(res, size+k)
+				if p1 >= m || p2 < 0 || s[p1] != t[p2] {
 					break
 				}
 				p1++
 				p2--
 				size += 2
-				if p1 >= m || p2 < 0 {
-					break
-				}
 			}
 		}
 	}
