@@ -68,18 +68,36 @@ func longestPalindrome(s string, t string) int {
 		dp1[i][i] = true
 	}
 	for i := m - 1; i >= 0; i-- {
-		for j := i + 1; j >= 0; j++ {
+		for j := i + 1; j < m; j++ {
 			dp1[i][j] = s[i] == s[j] && (i+1 > j-1 || dp1[i+1][j-1])
 		}
 	}
-	dp2 := make([][]bool, m)
+	dp2 := make([][]bool, n)
 	for i := 0; i < m; i++ {
-		dp2[i] = make([]bool, m)
+		dp2[i] = make([]bool, n)
 		dp2[i][i] = true
 	}
 	for i := m - 1; i >= 0; i-- {
-		for j := i + 1; j >= 0; j++ {
-			dp2[i][j] = s[i] == s[j] && (i+1 > j-1 || dp2[i+1][j-1])
+		for j := i + 1; j < n; j++ {
+			dp2[i][j] = t[i] == t[j] && (i+1 > j-1 || dp2[i+1][j-1])
+		}
+	}
+	t1 := make([]int, m)
+	for i := 0; i < m; i++ {
+		for j := m - 1; j >= i; j-- {
+			if dp1[i][j] {
+				t1[i] = j - i + 1
+				break
+			}
+		}
+	}
+	t2 := make([]int, n)
+	for i := n - 1; i >= 0; i-- {
+		for j := 0; j <= i; j++ {
+			if dp2[j][i] {
+				t2[i] = i - j + 1
+				break
+			}
 		}
 	}
 	// l,r分别作为s和t的左右边界
@@ -88,11 +106,18 @@ func longestPalindrome(s string, t string) int {
 		for r := 0; r < n; r++ {
 			p1, p2 := l, r
 			size := 0
-			for p1 < m && p2 >= 0 && s[p1] == t[p2] {
+			for {
+				// 这里再选择s[p1:]的最大回文串，或者t[:p2]的最大回文串
+				res = max(res, size+max(t1[p1], t2[p2]))
+				if s[p1] != t[p2] {
+					break
+				}
 				p1++
 				p2--
 				size += 2
-				// 这里再选择s[p1:]的最大回文串，或者t[:p2]的最大回文串
+				if p1 >= m || p2 < 0 {
+					break
+				}
 			}
 		}
 	}
