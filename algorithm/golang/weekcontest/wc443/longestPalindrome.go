@@ -187,16 +187,20 @@ func longestPalindrome2(s string, t string) int {
 	for i := 0; i < m; i++ {
 		dp3[i] = make([]int, n)
 	}
+	if s[m-1] == t[0] {
+		dp3[m-1][0] = 2
+		res = max(res, 2)
+	}
 	// 初始化
-	for i := 0; i < n; i++ {
+	for i := 1; i < n; i++ {
 		if s[m-1] == t[i] {
-			dp3[m-1][i] = 2
+			dp3[m-1][i] = t2[i-1] + 2
 			res = max(res, dp3[m-1][i])
 		}
 	}
-	for i := 0; i < m; i++ {
+	for i := 0; i < m-1; i++ {
 		if s[i] == t[0] {
-			dp3[i][0] = 2
+			dp3[i][0] = t1[i+1] + 2
 			res = max(res, dp3[i][0])
 		}
 	}

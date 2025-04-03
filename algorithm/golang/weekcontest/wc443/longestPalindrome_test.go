@@ -16,6 +16,7 @@ func Test_longestPalindrome(t *testing.T) {
 		// "b"
 		//"aaaa"
 		{"t1", args{"b", "aaaa"}, 4},
+		{"t2", args{"mrb", "r"}, 3},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
