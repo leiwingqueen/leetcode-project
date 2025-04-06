@@ -45,6 +45,7 @@ import "math"
 // 1 <= nums[i], cost[i] <= 1000
 // 1 <= k <= 1000
 
+// 超时，还差一点。看了答案，太难想了>_<
 func minimumCost(nums []int, cost []int, k int) int64 {
 	n := len(nums)
 	preSum1, preSum2 := make([]int, n+1), make([]int, n+1)
