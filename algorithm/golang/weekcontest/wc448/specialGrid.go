@@ -21,7 +21,7 @@ func specialGrid(n int) [][]int {
 		// 右下角
 		dfs(x+d, y+d, d, startNum+d*d)
 		// 左下角
-		dfs(x, y+d, d, startNum+2*d*d)
+		dfs(x+d, y, d, startNum+2*d*d)
 		// 左上角
 		dfs(x, y, d, startNum+3*d*d)
 	}
