@@ -29,8 +29,12 @@ import "sort"
 //0 <= nums[i] <= 109
 //0 <= p <= (nums.length)/2
 
+// 内存溢出
 // f(n,k)=min(f(n-1,k),max(f(n-2,k-1),nums[n-1]-nums[n-2]))
 func minimizeMax(nums []int, p int) int {
+	if p == 0 {
+		return 0
+	}
 	n := len(nums)
 	sort.Ints(nums)
 	dp := make([][]int, n+1)
@@ -41,10 +45,65 @@ func minimizeMax(nums []int, p int) int {
 	for i := 3; i <= n; i++ {
 		for j := 1; j <= p && j <= i/2; j++ {
 			dp[i][j] = max(dp[i-2][j-1], nums[i-1]-nums[i-2])
-			if j >= (i-1)/2 {
+			if j <= (i-1)/2 {
 				dp[i][j] = min(dp[i-1][j], dp[i][j])
 			}
 		}
 	}
 	return dp[n][p]
+}
+
+// 空间优化后还是超时
+func minimizeMax2(nums []int, p int) int {
+	if p == 0 {
+		return 0
+	}
+	n := len(nums)
+	sort.Ints(nums)
+	dp0, dp1 := make([]int, p+1), make([]int, p+1)
+	dp1[1] = nums[1] - nums[0]
+	for i := 3; i <= n; i++ {
+		tmp := make([]int, p+1)
+		for j := 1; j <= p && j <= i/2; j++ {
+			tmp[j] = max(dp0[j-1], nums[i-1]-nums[i-2])
+			if j <= (i-1)/2 {
+				tmp[j] = min(dp1[j], tmp[j])
+			}
+		}
+		copy(dp0, dp1)
+		copy(dp1, tmp)
+	}
+	return dp1[p]
+}
+
+// 二分+dp，这个是真没想到
+func minimizeMax3(nums []int, p int) int {
+	if p == 0 {
+		return 0
+	}
+	n := len(nums)
+	sort.Ints(nums)
+	// f(n)=max(f(n-1),f(n-2)+1)
+	check := func(mx int) int {
+		dp0, dp1 := 0, 0
+		for i := 2; i <= n; i++ {
+			tmp := dp1
+			if nums[i-1]-nums[i-2] <= mx {
+				tmp = max(tmp, dp0+1)
+			}
+			dp0 = dp1
+			dp1 = tmp
+		}
+		return dp1
+	}
+	l, r := 0, nums[n-1]-nums[0]
+	for l < r {
+		mid := l + (r-l)/2
+		if check(mid) >= p {
+			r = mid
+		} else {
+			l = mid + 1
+		}
+	}
+	return l
 }
