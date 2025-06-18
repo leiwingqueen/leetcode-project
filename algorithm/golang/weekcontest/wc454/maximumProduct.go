@@ -69,3 +69,28 @@ func maximumProduct(nums []int, m int) int64 {
 		return res
 	}
 }
+
+// 上面忽略了子序列的收尾需要保证的距离，这里完善
+func maximumProduct2(nums []int, m int) int64 {
+	n := len(nums)
+	if m == 1 {
+		res := int64(math.MinInt64)
+		for i := 0; i < n; i++ {
+			res = max(res, int64(nums[i])*int64(nums[i]))
+		}
+		return res
+	} else {
+		res := int64(math.MinInt64)
+		maxArr, minArr := make([]int, n), make([]int, n)
+		maxArr[n-1] = nums[n-1]
+		minArr[n-1] = nums[n-1]
+		for i := n - 2; i >= 0; i-- {
+			maxArr[i] = max(maxArr[i+1], nums[i])
+			minArr[i] = min(minArr[i+1], nums[i])
+		}
+		for i := n - m; i >= 0; i-- {
+			res = max(res, int64(nums[i])*int64(maxArr[i+m-1]), int64(nums[i])*int64(minArr[i+m-1]))
+		}
+		return res
+	}
+}
