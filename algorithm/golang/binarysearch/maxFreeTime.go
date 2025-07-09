@@ -84,8 +84,8 @@ func maxFreeTime(eventTime int, k int, startTime []int, endTime []int) int {
 				left = arr[l-1][1]
 			}
 			right := eventTime
-			if r < n-1 {
-				right = arr[r+1][0]
+			if r < n {
+				right = arr[r][0]
 			}
 			t := right - left - total
 			res = max(res, t)
