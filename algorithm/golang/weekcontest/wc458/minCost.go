@@ -46,6 +46,8 @@ package wc458
 //1 <= k <= n
 //输入图是连通图。
 
+// 这道题是一个典型的二分查找的题目
+// 首先我们需要看到单调性，如果t越大，那么连通分量的数量就可以越少（删除的边越少）
 func minCost(n int, edges [][]int, k int) int {
 	maxWight := 0
 	for _, edge := range edges {
