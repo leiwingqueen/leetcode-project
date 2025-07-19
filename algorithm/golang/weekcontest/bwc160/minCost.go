@@ -85,10 +85,10 @@ func minCost(m int, n int, waitCost [][]int) int64 {
 	dp[0][0] = 1
 	// 初始化
 	for i := 1; i < n; i++ {
-		dp[0][i] = dp[0][i-1] + int64(i+1) + int64(waitCost[0][i-1])
+		dp[0][i] = dp[0][i-1] + int64(i+1) + int64(waitCost[0][i])
 	}
 	for i := 1; i < m; i++ {
-		dp[i][0] = dp[i-1][0] + int64(i+1) + int64(waitCost[i-1][0])
+		dp[i][0] = dp[i-1][0] + int64(i+1) + int64(waitCost[i][0])
 	}
 	// 迭代
 	for i := 1; i < m; i++ {
