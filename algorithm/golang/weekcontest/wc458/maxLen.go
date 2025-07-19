@@ -70,19 +70,37 @@ func maxLen(n int, edges [][]int, label string) int {
 		graph[x] = append(graph[x], y)
 		graph[y] = append(graph[y], x)
 	}
+	buildKey := func(x, y, set int) int {
+		if x > y {
+			x, y = y, x
+		}
+		key := (x << 4) | y
+		key <<= 14
+		key |= set
+		return key
+	}
+	mem := make(map[int]int)
 	var dfs func(x, y int, set int, size int) int
 	dfs = func(x, y int, set int, size int) int {
+		if x > y {
+			x, y = y, x
+		}
+		key := buildKey(x, y, set)
+		if v, ok := mem[key]; ok {
+			return v
+		}
 		res := size
 		for _, next1 := range graph[x] {
 			if set&(1<<next1) == 0 {
 				for _, next2 := range graph[y] {
 					if next1 != next2 && set&(1<<next2) == 0 && label[next1] == label[next2] {
-						sub := dfs(next1, next1, set|(1<<next1)|(1<<next2), size+2)
+						sub := dfs(next1, next2, set|(1<<next1)|(1<<next2), size+2)
 						res = max(res, sub)
 					}
 				}
 			}
 		}
+		mem[key] = res
 		return res
 	}
 	res := 1
