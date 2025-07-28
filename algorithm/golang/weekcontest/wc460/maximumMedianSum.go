@@ -44,6 +44,7 @@ import "sort"
 //nums.length % 3 == 0
 //1 <= nums[i] <= 109
 
+// 其实难点在于证明
 func maximumMedianSum(nums []int) int64 {
 	sort.Ints(nums)
 	n := len(nums)
