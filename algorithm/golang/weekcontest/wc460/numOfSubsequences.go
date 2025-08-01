@@ -47,5 +47,37 @@ package wc460
 // L一定是加在前面,T一定是加在后面
 // C有点复杂，需要尝试每一个下标的情况
 func numOfSubsequences(s string) int64 {
-	return 0
+	// 先尝试插入L在头部
+	n := len(s)
+	suffixT, suffixCT := make([]int64, n+1), make([]int64, n+1)
+	var total int64
+	for i := n - 1; i >= 0; i-- {
+		suffixT[i] = suffixT[i+1]
+		suffixCT[i] = suffixCT[i+1]
+		if s[i] == 'T' {
+			suffixT[i]++
+		} else if s[i] == 'C' {
+			suffixCT[i] += suffixT[i+1]
+		} else if s[i] == 'L' {
+			total += suffixCT[i+1]
+		}
+	}
+	// 尝试插入T在尾部
+	prefixL, prefixLC := make([]int64, n+1), make([]int64, n+1)
+	for i := 0; i < n; i++ {
+		prefixL[i+1] = prefixL[i]
+		prefixLC[i+1] = prefixLC[i]
+		if s[i] == 'L' {
+			prefixL[i+1]++
+		} else if s[i] == 'C' {
+			prefixLC[i+1] += prefixL[i]
+		}
+	}
+	// 尝试在中间插入C
+	var extra int64
+	for i := 0; i < n; i++ {
+		extra = max(extra, prefixL[i]*suffixT[i])
+	}
+	extra = max(extra, suffixCT[0], prefixLC[n])
+	return total + extra
 }
