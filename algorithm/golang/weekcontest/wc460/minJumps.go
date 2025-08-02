@@ -61,9 +61,10 @@ package wc460
 
 const mx = 1_000_001
 
-func minJumps(nums []int) int {
+var primes [mx][]int
+
+func init() {
 	// 埃氏筛，第一个下标为对应的数字，第二维的数组是对应的因子
-	primes := make([][]int, mx)
 	for i := 2; i < mx; i++ {
 		if len(primes[i]) == 0 {
 			// 质数
@@ -72,6 +73,9 @@ func minJumps(nums []int) int {
 			}
 		}
 	}
+}
+
+func minJumps(nums []int) int {
 	// 分组,key是对应的值，第二维数组是对应能跳的下标
 	n := len(nums)
 	group := make(map[int][]int)
@@ -85,10 +89,6 @@ func minJumps(nums []int) int {
 	var queue []int
 	queue = append(queue, 0)
 	visit[0] = true
-	for _, i := range group[nums[0]] {
-		visit[i] = true
-		queue = append(queue, i)
-	}
 	depth := 0
 	dirs := []int{-1, 1}
 	for len(queue) > 0 {
@@ -103,15 +103,15 @@ func minJumps(nums []int) int {
 				if cur+dir >= 0 && cur+dir < n && !visit[cur+dir] {
 					queue = append(queue, cur+dir)
 					visit[cur+dir] = true
-					// 能跳的位置也一并写入
-					for _, next := range group[nums[cur+dir]] {
-						if !visit[next] {
-							queue = append(queue, next)
-							visit[next] = true
-						}
-					}
 				}
 			}
+			for _, next := range group[nums[cur]] {
+				if !visit[next] {
+					queue = append(queue, next)
+					visit[next] = true
+				}
+			}
+			delete(group, nums[cur]) // 避免重复访问下标列表,关键，过不过看这一行
 		}
 		queue = queue[size:]
 		depth++
