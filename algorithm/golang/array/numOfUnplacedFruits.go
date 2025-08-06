@@ -48,7 +48,7 @@ import "sort"
 //1 <= n <= 105
 //1 <= fruits[i], baskets[i] <= 109
 
-// 先排序，然后做二分查找
+// 先排序，然后做二分查找。但是思路有问题，其实是错误的
 func numOfUnplacedFruits(fruits []int, baskets []int) int {
 	n := len(fruits)
 	basketIdx := make([]int, n)
@@ -78,3 +78,5 @@ func numOfUnplacedFruits(fruits []int, baskets []int) int {
 	}
 	return res
 }
+
+// TODO: 最终还是得用线段树解决
