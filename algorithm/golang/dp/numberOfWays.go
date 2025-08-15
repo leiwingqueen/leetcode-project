@@ -1,5 +1,7 @@
 package dp
 
+import "math"
+
 // 给你两个 正 整数 n 和 x 。
 //
 //请你返回将 n 表示成一些 互不相同 正整数的 x 次幂之和的方案数。换句话说，你需要返回互不相同整数 [n1, n2, ..., nk] 的集合数目，满足 n = n1x + n2x + ... + nkx 。
@@ -120,4 +122,43 @@ func numberOfWays3(n int, x int) int {
 		return res
 	}
 	return dfs(n, n)
+}
+
+// 改成dp的写法
+func numberOfWays4(n int, x int) int {
+	mod := 1_000_000_007
+	// 快速幂
+	var pow func(i, j int) int
+	pow = func(i, j int) int {
+		if j == 0 {
+			return 1
+		}
+		if j%2 == 0 {
+			num := pow(i, j/2)
+			return num * num
+		} else {
+			num := pow(i, (j-1)/2)
+			return num * num * i
+		}
+	}
+	// 计算最大的底数，减少运算量
+	base := int(math.Pow(float64(n), 1/float64(x))) + 1
+	dp := make([][]int, n+1)
+	for i := 0; i <= n; i++ {
+		dp[i] = make([]int, base+1)
+	}
+	// dp初始化
+	for i := 0; i <= base; i++ {
+		dp[0][i] = 1
+	}
+	for i := 1; i <= n; i++ {
+		for j := 1; j <= base; j++ {
+			dp[i][j] = dp[i][j-1]
+			p := pow(j, x)
+			if p <= i {
+				dp[i][j] = (dp[i][j] + dp[i-p][j-1]) % mod
+			}
+		}
+	}
+	return dp[n][base]
 }
