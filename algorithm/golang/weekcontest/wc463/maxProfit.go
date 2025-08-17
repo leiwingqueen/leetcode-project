@@ -70,19 +70,26 @@ func maxProfit(prices []int, strategy []int, k int) int64 {
 	}
 	l, r := 0, 0
 	var diff, maxDiff int64
+	// 先初始化窗口
+	for i := 0; i < k/2; i++ {
+		diff += int64(0-strategy[i]) * int64(prices[i])
+	}
+	for i := k / 2; i < k; i++ {
+		diff += int64(1-strategy[i]) * int64(prices[i])
+	}
+	maxDiff = max(0, diff)
+	r = k
+	// 窗口滑动
 	for r < n {
-		if r-l < k {
-			// 拓展右边界
-			diff += int64(1-strategy[r]) * int64(prices[r])
-			r++
-		} else {
-			// 拓展窗口
-			diff += int64(1-strategy[r]) * int64(prices[r])
-			r++
-			diff -= int64(0-strategy[l]) * int64(prices[l])
-			l++
-			maxDiff = max(maxDiff, diff)
-		}
+		// 拓展窗口
+		diff += int64(1-strategy[r]) * int64(prices[r])
+		r++
+		diff -= int64(0-strategy[l]) * int64(prices[l])
+		l++
+		mid := l + k/2 - 1
+		// 从1变成0
+		diff += int64(-1) * int64(prices[mid])
+		maxDiff = max(maxDiff, diff)
 	}
 	return total + maxDiff
 }
