@@ -56,3 +56,139 @@ func new21Game(n int, k int, maxPts int) float64 {
 	}
 	return res
 }
+
+// 结果是对了，但是超时
+func new21Game2(n int, k int, maxPts int) float64 {
+	if k > n {
+		return 0
+	}
+	if k+maxPts-1 <= n {
+		return 1
+	}
+	dp := make([]float64, n+1)
+	dp[0] = 1
+	for i := 1; i < k; i++ {
+		// 最后一次选择的分数
+		// TODO: 其实我们这里只需要维护一个窗口的总和
+		for j := 1; j <= min(maxPts, i); j++ {
+			dp[i] += dp[i-j] / float64(maxPts)
+		}
+	}
+	for i := k; i <= n; i++ {
+		for j := i - k + 1; j <= min(maxPts, i); j++ {
+			dp[i] += dp[i-j] / float64(maxPts)
+		}
+	}
+	var res float64
+	for i := k; i <= n; i++ {
+		res += dp[i]
+	}
+	return res
+}
+
+// 继续优化，通过了，但其实还能继续优化下
+func new21Game3(n int, k int, maxPts int) float64 {
+	if k > n {
+		return 0
+	}
+	if k+maxPts-1 <= n {
+		return 1
+	}
+	dp := make([]float64, n+1)
+	dp[0] = 1
+	// 维护窗口的总和
+	var sum float64
+	sum = 1.0
+	for i := 1; i < k; i++ {
+		// 最后一次选择的分数
+		dp[i] = sum / float64(maxPts)
+		// 更新窗口
+		sum += dp[i]
+		if i >= maxPts {
+			sum -= dp[i-maxPts]
+		}
+	}
+	// TODO: 这里还能继续优化
+	for i := k; i <= n; i++ {
+		for j := i - k + 1; j <= min(maxPts, i); j++ {
+			dp[i] += dp[i-j] / float64(maxPts)
+		}
+	}
+	var res float64
+	for i := k; i <= n; i++ {
+		res += dp[i]
+	}
+	return res
+}
+
+// 继续优化，通过了，但其实还能继续优化下
+func new21Game4(n int, k int, maxPts int) float64 {
+	if k > n {
+		return 0
+	}
+	if k+maxPts-1 <= n {
+		return 1
+	}
+	if n <= 0 || k <= 0 {
+		return 1
+	}
+	dp := make([]float64, n+1)
+	dp[0] = 1
+	// 维护窗口的总和
+	var sum float64
+	sum = 1.0
+	for i := 1; i < k; i++ {
+		// 最后一次选择的分数
+		dp[i] = sum / float64(maxPts)
+		// 更新窗口
+		sum += dp[i]
+		if i >= maxPts {
+			sum -= dp[i-maxPts]
+		}
+	}
+	for i := k; i <= n; i++ {
+		dp[i] = sum / float64(maxPts)
+		// 右边的窗口不需要扩展了
+		if i >= maxPts {
+			sum -= dp[i-maxPts]
+		}
+	}
+	var res float64
+	for i := k; i <= n; i++ {
+		res += dp[i]
+	}
+	return res
+}
+
+// 上面的写法还是累赘，继续优化
+func new21Game5(n int, k int, maxPts int) float64 {
+	if k > n {
+		return 0
+	}
+	if k+maxPts-1 <= n {
+		return 1
+	}
+	if n <= 0 || k <= 0 {
+		return 1
+	}
+	dp := make([]float64, n+1)
+	dp[0] = 1
+	// 维护窗口的总和
+	var sum float64
+	sum = 1.0
+	var res float64
+	for i := 1; i <= n; i++ {
+		// 最后一次选择的分数
+		dp[i] = sum / float64(maxPts)
+		// 更新窗口
+		if i < k {
+			sum += dp[i]
+		} else {
+			res += dp[i]
+		}
+		if i >= maxPts {
+			sum -= dp[i-maxPts]
+		}
+	}
+	return res
+}

@@ -18,7 +18,7 @@ func Test_new21Game(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := new21Game(tt.args.n, tt.args.k, tt.args.maxPts); got != tt.want {
+			if got := new21Game2(tt.args.n, tt.args.k, tt.args.maxPts); got != tt.want {
 				t.Errorf("new21Game() = %v, want %v", got, tt.want)
 			}
 		})
