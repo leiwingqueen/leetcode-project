@@ -90,6 +90,7 @@ func maxProfit(prices []int, strategy []int, k int) int64 {
 		// 从1变成0
 		diff += int64(-1) * int64(prices[mid])
 		maxDiff = max(maxDiff, diff)
+
 	}
 	return total + maxDiff
 }
