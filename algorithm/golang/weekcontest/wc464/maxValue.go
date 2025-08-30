@@ -70,3 +70,28 @@ func maxValue(nums []int) []int {
 	}
 	return res
 }
+
+// 其实用单调栈更合适？计算每个节点能移动的最左的点和最右的点
+func maxValue2(nums []int) []int {
+	n := len(nums)
+	left, right := make([]int, n), make([]int, n)
+	left[0] = 0
+	for i := 1; i < n; i++ {
+		left[i] = left[i-1]
+		if nums[i] >= nums[left[i]] {
+			left[i] = i
+		}
+	}
+	right[n-1] = n - 1
+	for i := n - 2; i >= 0; i-- {
+		right[i] = right[i+1]
+		if nums[i] <= nums[right[i]] {
+			right[i] = i
+		}
+	}
+	res := make([]int, n)
+	for i := 0; i < n; i++ {
+		res[i] = nums[left[right[i]]]
+	}
+	return res
+}
