@@ -67,3 +67,69 @@ func score(cards []string, x byte) int {
 	}
 	return cnt / 2
 }
+
+// 错误，两个卡牌完全相同的情况要去掉
+func score2(cards []string, x byte) int {
+	cnt1, cnt2, cnt3 := 0, 0, 0
+	for _, card := range cards {
+		if card[0] == x && card[1] == x {
+			cnt3++
+		} else if card[0] == x {
+			cnt1++
+		} else if card[1] == x {
+			cnt2++
+		}
+	}
+	res := 0
+	res += cnt1 / 2
+	if cnt1%2 == 1 && cnt3 > 0 {
+		res++
+		cnt3--
+	}
+	res += cnt2 / 2
+	if cnt2%2 == 1 && cnt3 > 0 {
+		res++
+	}
+	return res
+}
+
+// 枚举，但是还是真的有点恶心
+func score3(cards []string, x byte) int {
+	cnt1, cnt2 := make([]int, 10), make([]int, 10)
+	for _, card := range cards {
+		if card[0] == x {
+			cnt1[card[1]-'a']++
+		}
+		if card[1] == x {
+			cnt2[card[0]-'a']++
+		}
+	}
+	cal := func(cnt []int) int {
+		var st []int
+		res := 0
+		for _, c := range cnt {
+			if c > 0 {
+				st = append(st, c)
+			}
+			if len(st) >= 2 {
+				p := min(st[0], st[1])
+				q := max(st[0], st[1]) - p
+				res += p
+				st = st[:0]
+				if q > 0 {
+					st = append(st, q)
+				}
+			}
+		}
+		return res
+	}
+	// 枚举xx的场景
+	k := cnt1[x-'a']
+	res := 0
+	for i := 0; i <= k; i++ {
+		cnt1[x-'a'] = i
+		cnt2[x-'a'] = k - i
+		res = max(res, cal(cnt1)+cal(cnt2))
+	}
+	return res
+}
