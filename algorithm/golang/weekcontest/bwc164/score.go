@@ -133,3 +133,34 @@ func score3(cards []string, x byte) int {
 	}
 	return res
 }
+
+func score4(cards []string, x byte) int {
+	cnt1, cnt2 := make([]int, 10), make([]int, 10)
+	for _, card := range cards {
+		if card[0] == x {
+			cnt1[card[1]-'a']++
+		}
+		if card[1] == x {
+			cnt2[card[0]-'a']++
+		}
+	}
+	cal := func(cnt []int) int {
+		// https://zhuanlan.zhihu.com/p/1945782212176909162
+		total := 0
+		m := 0
+		for _, c := range cnt {
+			total += c
+			m = max(m, c)
+		}
+		return min(total/2, total-m)
+	}
+	// 枚举xx的场景
+	k := cnt1[x-'a']
+	res := 0
+	for i := 0; i <= k; i++ {
+		cnt1[x-'a'] = i
+		cnt2[x-'a'] = k - i
+		res = max(res, cal(cnt1)+cal(cnt2))
+	}
+	return res
+}
