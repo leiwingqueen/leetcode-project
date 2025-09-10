@@ -34,7 +34,7 @@ package array
 // 所有的好友关系 (u​​​​​i, v​​​​​​i) 都是唯一的。
 // languages[i] 中包含的值互不相同。
 
-// 先简单写一个枚举
+// 先简单写一个枚举，写起来还是有点难受
 func minimumTeachings(n int, languages [][]int, friendships [][]int) int {
 	m := len(languages)
 	arr1 := make([]map[int]bool, m)
@@ -67,13 +67,16 @@ func minimumTeachings(n int, languages [][]int, friendships [][]int) int {
 	res := m
 	for i := 1; i <= n; i++ {
 		r := 0
+		visit := make([]bool, m)
 		for _, item := range arr2 {
 			x, y := item[0], item[1]
-			if !arr1[x-1][i] {
+			if !arr1[x-1][i] && !visit[x-1] {
 				r++
+				visit[x-1] = true
 			}
-			if !arr1[y-1][i] {
+			if !arr1[y-1][i] && !visit[y-1] {
 				r++
+				visit[y-1] = true
 			}
 		}
 		res = min(res, r)
