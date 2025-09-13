@@ -59,6 +59,7 @@ func bowlSubarrays(nums []int) int64 {
 	for i := 2; i < n; i++ {
 		mx := 0
 		dp[i] = dp[i-1]
+		// 这里的扫描是否可以用单调栈解决
 		for j := i - 1; j > 0; j-- {
 			if nums[j] >= nums[i] {
 				break
@@ -70,4 +71,39 @@ func bowlSubarrays(nums []int) int64 {
 		}
 	}
 	return dp[n-1]
+}
+
+func bowlSubarrays2(nums []int) int64 {
+	n := len(nums)
+	var st []int
+	var res int64
+	// 这里是计算nums[r]>nums[l]的场景
+	for i := 0; i < n; i++ {
+		if len(st) == 0 || nums[i] < nums[st[len(st)-1]] {
+			st = append(st, i)
+		} else {
+			// pop元素出来
+			for len(st) > 0 && nums[i] > nums[st[len(st)-1]] {
+				if i-st[len(st)-1] >= 2 {
+					res++
+				}
+				st = st[:len(st)-1]
+			}
+		}
+	}
+	// 反方向再扫一遍，计算nums[r]<nums[l]的场景
+	st = st[:0]
+	for i := n - 1; i >= 0; i-- {
+		if len(st) == 0 || nums[i] < nums[st[len(st)-1]] {
+			st = append(st, i)
+		} else {
+			for len(st) > 0 && nums[i] > nums[st[len(st)-1]] {
+				if st[len(st)-1]-i >= 2 {
+					res++
+				}
+				st = st[:len(st)-1]
+			}
+		}
+	}
+	return res
 }
