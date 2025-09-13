@@ -73,37 +73,32 @@ func bowlSubarrays(nums []int) int64 {
 	return dp[n-1]
 }
 
+// 勉强过了，单调栈真的不是特别好梳理
 func bowlSubarrays2(nums []int) int64 {
 	n := len(nums)
 	var st []int
 	var res int64
 	// 这里是计算nums[r]>nums[l]的场景
 	for i := 0; i < n; i++ {
-		if len(st) == 0 || nums[i] < nums[st[len(st)-1]] {
-			st = append(st, i)
-		} else {
-			// pop元素出来
-			for len(st) > 0 && nums[i] > nums[st[len(st)-1]] {
-				if i-st[len(st)-1] >= 2 {
-					res++
-				}
-				st = st[:len(st)-1]
+		// pop元素出来
+		for len(st) > 0 && nums[i] > nums[st[len(st)-1]] {
+			if i-st[len(st)-1] >= 2 {
+				res++
 			}
+			st = st[:len(st)-1]
 		}
+		st = append(st, i)
 	}
 	// 反方向再扫一遍，计算nums[r]<nums[l]的场景
 	st = st[:0]
 	for i := n - 1; i >= 0; i-- {
-		if len(st) == 0 || nums[i] < nums[st[len(st)-1]] {
-			st = append(st, i)
-		} else {
-			for len(st) > 0 && nums[i] > nums[st[len(st)-1]] {
-				if st[len(st)-1]-i >= 2 {
-					res++
-				}
-				st = st[:len(st)-1]
+		for len(st) > 0 && nums[i] > nums[st[len(st)-1]] {
+			if st[len(st)-1]-i >= 2 {
+				res++
 			}
+			st = st[:len(st)-1]
 		}
+		st = append(st, i)
 	}
 	return res
 }
