@@ -52,7 +52,9 @@ func spellchecker(wordlist []string, queries []string) []string {
 		return string(arr)
 	}
 	index1, index2, index3 := make(map[string]int), make(map[string]int), make(map[string]int)
-	for i, word := range wordlist {
+	n := len(wordlist)
+	for i := n - 1; i >= 0; i-- {
+		word := wordlist[i]
 		index1[word] = i
 		index2[strings.ToLower(word)] = i
 		index3[convert(strings.ToLower(word))] = i
