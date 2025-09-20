@@ -42,7 +42,8 @@ package wc467
 //1 <= nums[i] <= n
 //1 <= k <= 4000
 
-// f(n,k)=f(n-1,k)|f(n-1,k-nums[n-1])
+// 先尝试排序
+// 二分查找找到第一个大于等于x的数
 func subsequenceSumAfterCapping(nums []int, k int) []bool {
 	return nil
 }
