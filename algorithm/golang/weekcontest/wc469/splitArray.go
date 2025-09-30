@@ -89,7 +89,7 @@ func splitArray(nums []int) int64 {
 		return -1
 	}
 	res := abs(lSum - rSum)
-	if i > 0 {
+	if i > 0 && nums[i] < nums[i-1] {
 		lSum -= int64(nums[i-1])
 		rSum += int64(nums[i-1])
 	}
