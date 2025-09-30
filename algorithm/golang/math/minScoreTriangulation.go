@@ -49,3 +49,20 @@ func minScoreTriangulation(values []int) int {
 	values = append(values, values[0])
 	return max(cal(values[0:n]), cal(values[1:n+1]))
 }
+
+func minScoreTriangulation2(values []int) int {
+	n := len(values)
+	var cal func(arr []int) int
+	cal = func(arr []int) int {
+		if len(arr) < 3 {
+			return 0
+		}
+		res := 0
+		for i := 0; i < len(arr)-1; i += 2 {
+			res += values[i] * values[i+1] * values[(i+2)%len(arr)]
+		}
+		return res
+	}
+	values = append(values, values[0])
+	return max(cal(values[0:n]), cal(values[1:n+1]))
+}
