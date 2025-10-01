@@ -163,3 +163,33 @@ func zigZagArrays3(n int, l int, r int) int {
 	}
 	return (prefix0[k+1] + prefix1[k+1]) % mod
 }
+
+// 在上面基础上，我们可以发现dp0,dp1也是多余的，所以还能继续简化
+func zigZagArrays4(n int, l int, r int) int {
+	mod := 1_000_000_007
+	// [l,r]的范围可以简化成[0,r-l]
+	k := r - l
+	prefix0, prefix1 := make([]int, k+2), make([]int, k+2)
+	prefix0_, prefix1_ := make([]int, k+2), make([]int, k+2)
+	// dp初始化
+	for i := 0; i <= k; i++ {
+		prefix0[i+1] = prefix0[i] + 1
+		prefix1[i+1] = prefix1[i] + 1
+	}
+	// dp迭代
+	for i := 1; i < n; i++ {
+		for j := 0; j <= k; j++ {
+			// 这两个循环其实可以用前缀和来优化
+			// [0,j)
+			dp0 := prefix1[j]
+			// [j+1,k+1)
+			dp1 := (prefix0[k+1] - prefix0[j+1] + mod) % mod
+			// 更新前缀和
+			prefix0_[j+1] = (prefix0_[j] + dp0) % mod
+			prefix1_[j+1] = (prefix1_[j] + dp1) % mod
+		}
+		copy(prefix0, prefix0_)
+		copy(prefix1, prefix1_)
+	}
+	return (prefix0[k+1] + prefix1[k+1]) % mod
+}
