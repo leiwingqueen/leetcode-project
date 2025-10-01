@@ -70,6 +70,7 @@ func zigZagArrays(n int, l int, r int) int {
 	// dp迭代
 	for i := 1; i < n; i++ {
 		for j := 0; j <= k; j++ {
+			// 这两个循环其实可以用前缀和来优化
 			for m := 0; m < j; m++ {
 				dp0[i][j] = (dp0[i][j] + dp1[i-1][m]) % mod
 			}
@@ -84,4 +85,81 @@ func zigZagArrays(n int, l int, r int) int {
 		res = (res + dp1[n-1][i]) % mod
 	}
 	return res
+}
+
+// 先做一次空间优化，时间效率没变，自然还是超时
+func zigZagArrays2(n int, l int, r int) int {
+	mod := 1_000_000_007
+	// [l,r]的范围可以简化成[0,r-l]
+	k := r - l
+	dp0, dp1 := make([]int, k+1), make([]int, k+1)
+	dp0_, dp1_ := make([]int, k+1), make([]int, k+1)
+	// dp初始化
+	for i := 0; i <= k; i++ {
+		dp0[i] = 1
+		dp1[i] = 1
+	}
+	// dp迭代
+	for i := 1; i < n; i++ {
+		for j := 0; j <= k; j++ {
+			// 这两个循环其实可以用前缀和来优化
+			dp0_[j], dp1_[j] = 0, 0
+			for m := 0; m < j; m++ {
+				dp0_[j] = (dp0_[j] + dp1[m]) % mod
+			}
+			for m := j + 1; m <= k; m++ {
+				dp1_[j] = (dp1_[j] + dp0[m]) % mod
+			}
+		}
+		copy(dp0, dp0_)
+		copy(dp1, dp1_)
+	}
+	res := 0
+	for i := 0; i <= k; i++ {
+		res = (res + dp0[i]) % mod
+		res = (res + dp1[i]) % mod
+	}
+	return res
+}
+
+// 增加一个前缀和，通过了
+func zigZagArrays3(n int, l int, r int) int {
+	mod := 1_000_000_007
+	// [l,r]的范围可以简化成[0,r-l]
+	k := r - l
+	dp0, dp1 := make([]int, k+1), make([]int, k+1)
+	dp0_, dp1_ := make([]int, k+1), make([]int, k+1)
+	prefix0, prefix1 := make([]int, k+2), make([]int, k+2)
+	prefix0_, prefix1_ := make([]int, k+2), make([]int, k+2)
+	// dp初始化
+	for i := 0; i <= k; i++ {
+		dp0[i] = 1
+		dp1[i] = 1
+		prefix0[i+1] = prefix0[i] + 1
+		prefix1[i+1] = prefix1[i] + 1
+	}
+	// dp迭代
+	for i := 1; i < n; i++ {
+		for j := 0; j <= k; j++ {
+			// 这两个循环其实可以用前缀和来优化
+			// [0,j)
+			dp0_[j] = prefix1[j]
+			/*for m := 0; m < j; m++ {
+				dp0_[j] = (dp0_[j] + dp1[m]) % mod
+			}*/
+			// [j+1,k+1)
+			dp1_[j] = (prefix0[k+1] - prefix0[j+1] + mod) % mod
+			/*for m := j + 1; m <= k; m++ {
+				dp1_[j] = (dp1_[j] + dp0[m]) % mod
+			}*/
+			// 更新前缀和
+			prefix0_[j+1] = (prefix0_[j] + dp0_[j]) % mod
+			prefix1_[j+1] = (prefix1_[j] + dp1_[j]) % mod
+		}
+		copy(dp0, dp0_)
+		copy(dp1, dp1_)
+		copy(prefix0, prefix0_)
+		copy(prefix1, prefix1_)
+	}
+	return (prefix0[k+1] + prefix1[k+1]) % mod
 }
