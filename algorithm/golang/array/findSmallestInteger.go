@@ -43,13 +43,14 @@ func findSmallestInteger(nums []int, value int) int {
 		}
 	}
 	minVal := 0
-	for i := 0; i < value; i++ {
-		mod := i % value
-		if cnt[mod] == 0 {
-			return minVal
+	for {
+		for i := 0; i < value; i++ {
+			mod := i % value
+			if cnt[mod] == 0 {
+				return minVal
+			}
+			cnt[mod]--
+			minVal++
 		}
-		cnt[mod]--
-		minVal++
 	}
-	return 0
 }
