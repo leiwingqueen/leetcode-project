@@ -16,7 +16,7 @@ func Test_countStableSubarrays(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := countStableSubarrays(tt.args.capacity); got != tt.want {
+			if got := countStableSubarrays3(tt.args.capacity); got != tt.want {
 				t.Errorf("countStableSubarrays() = %v, want %v", got, tt.want)
 			}
 		})

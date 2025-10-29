@@ -68,7 +68,7 @@ func countStableSubarrays(capacity []int) int64 {
 	return res
 }
 
-// 优化解法
+// 优化解法，当然还是超时
 func countStableSubarrays2(capacity []int) int64 {
 	n := len(capacity)
 	prefix := make([]int64, n+1)
@@ -76,12 +76,43 @@ func countStableSubarrays2(capacity []int) int64 {
 		prefix[i+1] = prefix[i] + int64(capacity[i])
 	}
 	var res int64
+	idxMap := make(map[int][]int)
 	for i := 0; i < n; i++ {
-		for j := i + 2; j < n; j++ {
-			if capacity[i] == capacity[j] && capacity[i] == int(prefix[j]-prefix[i+1]) {
-				res++
+		num := capacity[i]
+		if i >= 2 {
+			for _, j := range idxMap[num] {
+				if j < i-1 && capacity[i] == int(prefix[i]-prefix[j+1]) {
+					res++
+				}
 			}
 		}
+		idxMap[num] = append(idxMap[num], i)
+	}
+	return res
+}
+
+func countStableSubarrays3(capacity []int) int64 {
+	n := len(capacity)
+	prefix := make([]int64, n+1)
+	for i := 0; i < n; i++ {
+		prefix[i+1] = prefix[i] + int64(capacity[i])
+	}
+	var res int64
+	idxMap := make(map[int]map[int64]int)
+	// 初始化前两个下标
+	idxMap[capacity[0]] = make(map[int64]int)
+	idxMap[capacity[0]][prefix[1]] = 1
+	for i := 2; i < n; i++ {
+		num := capacity[i]
+		expect := prefix[i] - int64(num)
+		if _, ok := idxMap[num]; ok {
+			res += int64(idxMap[num][expect])
+		}
+		last := capacity[i-1]
+		if _, ok := idxMap[last]; !ok {
+			idxMap[last] = make(map[int64]int)
+		}
+		idxMap[last][prefix[i]]++
 	}
 	return res
 }
