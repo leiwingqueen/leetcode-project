@@ -161,3 +161,63 @@ func countUnguarded2(m int, n int, guards [][]int, walls [][]int) int {
 	}
 	return cnt
 }
+
+// 如何避免一个格子不被重复扫描？
+// 如果一个格子被一个重复的方向扫描过，这就意味着它不需要继续往下扫描
+func countUnguarded3(m int, n int, guards [][]int, walls [][]int) int {
+	seen := make([][]int, m)
+	for i := 0; i < m; i++ {
+		seen[i] = make([]int, n)
+	}
+	wallMap := make(map[int]map[int]struct{})
+	for _, w := range walls {
+		x, y := w[0], w[1]
+		if _, ok := wallMap[x]; !ok {
+			wallMap[x] = make(map[int]struct{})
+		}
+		wallMap[x][y] = struct{}{}
+		// 特别的，4个方向标记为0~3，但是起始点比较特殊，我们认为他其实4个方向都会经过，因此为0x1111
+		seen[x][y] = 1<<4 - 1
+	}
+	isWall := func(x, y int) bool {
+		if _, ok := wallMap[x]; !ok {
+			return false
+		}
+		if _, ok := wallMap[x][y]; ok {
+			return true
+		}
+		return false
+	}
+	dirs := [][]int{
+		{-1, 0},
+		{1, 0},
+		{0, -1},
+		{0, 1},
+	}
+	bfs := func(x, y int) {
+		var queue [][]int
+		queue = append(queue, []int{x, y})
+		// 特别的，4个方向标记为0~3，但是起始点比较特殊，我们认为他其实4个方向都会经过，因此为0x1111
+		seen[x][y] = 1<<4 - 1
+		// 4个方向尝试
+		for i, dir := range dirs {
+			x1, y1 := x+dir[0], y+dir[1]
+			for x1 >= 0 && x1 < m && y1 >= 0 && y1 < n && !isWall(x1, y1) && seen[x1][y1]&(1<<i) == 0 {
+				seen[x1][y1] |= 1 << i
+				x1, y1 = x1+dir[0], y1+dir[1]
+			}
+		}
+	}
+	for _, g := range guards {
+		bfs(g[0], g[1])
+	}
+	cnt := 0
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if seen[i][j] == 0 {
+				cnt++
+			}
+		}
+	}
+	return cnt
+}
