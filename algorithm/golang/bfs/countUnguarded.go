@@ -104,3 +104,60 @@ func countUnguarded(m int, n int, guards [][]int, walls [][]int) int {
 	}
 	return cnt
 }
+
+// 正确，但是超时
+func countUnguarded2(m int, n int, guards [][]int, walls [][]int) int {
+	seen := make([][]bool, m)
+	for i := 0; i < m; i++ {
+		seen[i] = make([]bool, n)
+	}
+	wallMap := make(map[int]map[int]struct{})
+	for _, w := range walls {
+		x, y := w[0], w[1]
+		if _, ok := wallMap[x]; !ok {
+			wallMap[x] = make(map[int]struct{})
+		}
+		wallMap[x][y] = struct{}{}
+		seen[x][y] = true
+	}
+	isWall := func(x, y int) bool {
+		if _, ok := wallMap[x]; !ok {
+			return false
+		}
+		if _, ok := wallMap[x][y]; ok {
+			return true
+		}
+		return false
+	}
+	dirs := [][]int{
+		{-1, 0},
+		{1, 0},
+		{0, -1},
+		{0, 1},
+	}
+	bfs := func(x, y int) {
+		var queue [][]int
+		queue = append(queue, []int{x, y})
+		seen[x][y] = true
+		// 4个方向尝试
+		for _, dir := range dirs {
+			x1, y1 := x+dir[0], y+dir[1]
+			for x1 >= 0 && x1 < m && y1 >= 0 && y1 < n && !isWall(x1, y1) {
+				seen[x1][y1] = true
+				x1, y1 = x1+dir[0], y1+dir[1]
+			}
+		}
+	}
+	for _, g := range guards {
+		bfs(g[0], g[1])
+	}
+	cnt := 0
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if !seen[i][j] {
+				cnt++
+			}
+		}
+	}
+	return cnt
+}
