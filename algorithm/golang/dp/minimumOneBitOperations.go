@@ -60,7 +60,7 @@ func minimumOneBitOperations(n int) int {
 	return dfs(n)
 }
 
-// 超时
+// 超时，太难了
 func minimumOneBitOperations2(n int) int {
 	var queue []int
 	queue = append(queue, n)
