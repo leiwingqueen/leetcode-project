@@ -57,11 +57,12 @@ func longestSubarray(nums []int) int {
 			r++
 		} else {
 			segments = append(segments, []int{l, r - 1})
-			l = r
 			res = max(res, r-l)
+			l = r
 		}
 	}
 	segments = append(segments, []int{l, r - 1})
+	res = max(res, r-l)
 	if res == n {
 		return n
 	}
