@@ -56,6 +56,9 @@ func maxPathScore(grid [][]int, k int) int {
 	m, n := len(grid), len(grid[0])
 	var dfs func(x, y int, cost int) int
 	dfs = func(x, y int, cost int) int {
+		if cost < 0 {
+			return -1
+		}
 		if x == 0 && y == 0 {
 			return grid[0][0]
 		}
