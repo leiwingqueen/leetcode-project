@@ -83,11 +83,15 @@ func numberOfSubstrings2(s string) int {
 	var zeroPos []int
 	// 前缀和
 	prefixZero := make([]int, n+1)
+	prefixOne := make([]int, n+1)
 	for i := 0; i < n; i++ {
 		prefixZero[i+1] = prefixZero[i]
+		prefixOne[i+1] = prefixZero[i]
 		if s[i] == '0' {
 			zeroPos = append(zeroPos, i)
 			prefixZero[i+1]++
+		} else {
+			prefixOne[i+1]++
 		}
 	}
 	// 最大的0的数量
@@ -107,13 +111,22 @@ func numberOfSubstrings2(s string) int {
 		for j := 1; j <= maxZero; j++ {
 			// 找到第一个下标k,prefixZero[k]>=expect
 			expect := prefixZero[i] + j
-			k := sort.Search(n+1, func(i int) bool {
-				return prefixZero[i] >= expect
-			})
-			if k <= n {
-				// [i,k)刚好是j个0
-				// TODO:
-
+			if expect <= len(zeroPos) {
+				// [i,k]刚好是j个0
+				k := zeroPos[expect-1]
+				k2 := n
+				if expect < len(zeroPos) {
+					k2 = zeroPos[expect]
+				}
+				// 右边界的范围是[k,k2)
+				minOneCnt := j*j + prefixOne[i]
+				idx := sort.Search(n+1, func(i int) bool {
+					return prefixOne[i] >= minOneCnt
+				})
+				// idx-1为1的数量满足要求的最小下标
+				if idx <= n && idx-1 < k2 {
+					res += k2 - max(idx-1, k)
+				}
 			}
 		}
 	}
