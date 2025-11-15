@@ -1,5 +1,10 @@
 package wc408
 
+import (
+	"math"
+	"sort"
+)
+
 // 给你一个二进制字符串 s。
 //
 //请你统计并返回其中 1 显著 的 子字符串 的数量。
@@ -66,6 +71,49 @@ func numberOfSubstrings(s string) int {
 			cnt0 := j + 1 - i - cnt1
 			if cnt1 >= cnt0*cnt0 {
 				res++
+			}
+		}
+	}
+	return res
+}
+
+func numberOfSubstrings2(s string) int {
+	n := len(s)
+	// 记录0的位置
+	var zeroPos []int
+	// 前缀和
+	prefixZero := make([]int, n+1)
+	for i := 0; i < n; i++ {
+		prefixZero[i+1] = prefixZero[i]
+		if s[i] == '0' {
+			zeroPos = append(zeroPos, i)
+			prefixZero[i+1]++
+		}
+	}
+	// 最大的0的数量
+	maxZero := int(math.Sqrt(float64(n)))
+	res := 0
+	for i := 0; i < n; i++ {
+		// 没有0的场景
+		if s[i] == '1' {
+			// 找到>i下标的第一个0
+			firstZero := sort.Search(len(zeroPos), func(j int) bool {
+				return zeroPos[j] > i
+			})
+			// 右边界在[i,firstZero)范围都是正确答案
+			res += firstZero - i
+		}
+		// 枚举j个0的场景
+		for j := 1; j <= maxZero; j++ {
+			// 找到第一个下标k,prefixZero[k]>=expect
+			expect := prefixZero[i] + j
+			k := sort.Search(n+1, func(i int) bool {
+				return prefixZero[i] >= expect
+			})
+			if k <= n {
+				// [i,k)刚好是j个0
+				// TODO:
+
 			}
 		}
 	}
