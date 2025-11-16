@@ -77,7 +77,9 @@ func numberOfSubstrings(s string) int {
 	return res
 }
 
+// 还是超时
 func numberOfSubstrings2(s string) int {
+	// fmt.Printf("s:%s\n", s)
 	n := len(s)
 	// 记录0的位置
 	var zeroPos []int
@@ -86,7 +88,7 @@ func numberOfSubstrings2(s string) int {
 	prefixOne := make([]int, n+1)
 	for i := 0; i < n; i++ {
 		prefixZero[i+1] = prefixZero[i]
-		prefixOne[i+1] = prefixZero[i]
+		prefixOne[i+1] = prefixOne[i]
 		if s[i] == '0' {
 			zeroPos = append(zeroPos, i)
 			prefixZero[i+1]++
@@ -105,7 +107,12 @@ func numberOfSubstrings2(s string) int {
 				return zeroPos[j] > i
 			})
 			// 右边界在[i,firstZero)范围都是正确答案
-			res += firstZero - i
+			if firstZero < len(zeroPos) {
+				res += zeroPos[firstZero] - i
+				// fmt.Printf("以下标%d开头的全是1的子串有:%d\n", i, zeroPos[firstZero]-i)
+			} else {
+				res += n - i
+			}
 		}
 		// 枚举j个0的场景
 		for j := 1; j <= maxZero; j++ {
@@ -126,6 +133,7 @@ func numberOfSubstrings2(s string) int {
 				// idx-1为1的数量满足要求的最小下标
 				if idx <= n && idx-1 < k2 {
 					res += k2 - max(idx-1, k)
+					// fmt.Printf("以下标%d开头的0的数量有%d的子串有:%d\n", i, j, k2-max(idx-1, k))
 				}
 			}
 		}
