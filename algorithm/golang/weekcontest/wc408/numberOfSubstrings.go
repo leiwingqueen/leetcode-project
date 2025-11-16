@@ -97,7 +97,7 @@ func numberOfSubstrings2(s string) int {
 		}
 	}
 	// 最大的0的数量
-	maxZero := int(math.Sqrt(float64(n)))
+	maxZero := min(prefixZero[n], int(math.Sqrt(float64(n))))
 	res := 0
 	for i := 0; i < n; i++ {
 		// 没有0的场景
