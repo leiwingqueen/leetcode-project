@@ -16,7 +16,7 @@ func Test_numberOfSubstrings2(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := numberOfSubstrings2(tt.args.s); got != tt.want {
+			if got := numberOfSubstrings3(tt.args.s); got != tt.want {
 				t.Errorf("numberOfSubstrings2() = %v, want %v", got, tt.want)
 			}
 		})

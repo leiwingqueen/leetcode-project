@@ -118,23 +118,74 @@ func numberOfSubstrings2(s string) int {
 		for j := 1; j <= maxZero; j++ {
 			// 找到第一个下标k,prefixZero[k]>=expect
 			expect := prefixZero[i] + j
-			if expect <= len(zeroPos) {
-				// [i,k]刚好是j个0
-				k := zeroPos[expect-1]
-				k2 := n
-				if expect < len(zeroPos) {
-					k2 = zeroPos[expect]
-				}
-				// 右边界的范围是[k,k2)
-				minOneCnt := j*j + prefixOne[i]
-				idx := sort.Search(n+1, func(i int) bool {
-					return prefixOne[i] >= minOneCnt
-				})
-				// idx-1为1的数量满足要求的最小下标
-				if idx <= n && idx-1 < k2 {
-					res += k2 - max(idx-1, k)
-					// fmt.Printf("以下标%d开头的0的数量有%d的子串有:%d\n", i, j, k2-max(idx-1, k))
-				}
+			if expect > len(zeroPos) {
+				break
+			}
+			// [i,k]刚好是j个0
+			k := zeroPos[expect-1]
+			k2 := n
+			if expect < len(zeroPos) {
+				k2 = zeroPos[expect]
+			}
+			// 右边界的范围是[k,k2)
+			minOneCnt := j*j + prefixOne[i]
+			idx := sort.Search(n+1, func(i int) bool {
+				return prefixOne[i] >= minOneCnt
+			})
+			// idx-1为1的数量满足要求的最小下标
+			if idx <= n && idx-1 < k2 {
+				res += k2 - max(idx-1, k)
+				// fmt.Printf("以下标%d开头的0的数量有%d的子串有:%d\n", i, j, k2-max(idx-1, k))
+			}
+		}
+	}
+	return res
+}
+
+// 太难了，做了两天
+func numberOfSubstrings3(s string) int {
+	// fmt.Printf("s:%s\n", s)
+	n := len(s)
+	// 前缀和
+	nextZeroPos := make([]int, n+1)
+	nextZeroPos[n] = n
+	for i := n - 1; i >= 0; i-- {
+		nextZeroPos[i] = nextZeroPos[i+1]
+		if s[i] == '0' {
+			nextZeroPos[i] = i
+		}
+	}
+	// 最大的0的数量
+	maxZero := int(math.Sqrt(float64(n)))
+	res := 0
+	for i := 0; i < n; i++ {
+		// 没有0的场景
+		if s[i] == '1' {
+			// 找到>i下标的第一个0
+			firstZero := nextZeroPos[i]
+			res += firstZero - i
+			// fmt.Printf("以下标%d开头的全是1的子串有:%d\n", i, firstZero-i)
+		}
+		// 枚举j个0的场景
+		preIdx := i
+		for zeroCnt := 1; zeroCnt <= maxZero; zeroCnt++ {
+			// 找到第一个下标k,prefixZero[r1]>=expect
+			// 找到下一个满足要求0的下标位置
+			r1 := nextZeroPos[preIdx]
+			if r1 == n {
+				break
+			}
+			preIdx = r1 + 1
+			// [i,r1]刚好是j个0
+			r2 := nextZeroPos[preIdx]
+			// 1的数量为size-zeroCnt, size>=zeroCnt+zeroCnt*zeroCnt
+			minSize := zeroCnt + zeroCnt*zeroCnt
+			if i+minSize-1 >= n {
+				break
+			}
+			if i+minSize-1 < r2 {
+				res += r2 - max(r1, i+minSize-1)
+				// fmt.Printf("以下标%d开头的0的数量有%d的子串有:%d\n", i, zeroCnt, r2-max(r1, i+minSize-1))
 			}
 		}
 	}
