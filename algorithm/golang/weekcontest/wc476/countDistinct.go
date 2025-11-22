@@ -74,3 +74,59 @@ func countDistinct(n int64) int64 {
 	}
 	return dfs(k-1, true, true)
 }
+
+// 报错，为啥呢
+func countDistinct2(n int64) int64 {
+	num := n
+	var numArr []int
+	for num > 0 {
+		numArr = append(numArr, int(num%10))
+		num /= 10
+	}
+	k := len(numArr)
+	mem := make(map[int]int64)
+	buildKey := func(idx int, eq bool, firstZero bool) int {
+		res := idx << 2
+		if eq {
+			res |= 0x10
+		}
+		if firstZero {
+			res |= 0x01
+		}
+		return res
+	}
+	var dfs func(idx int, eq bool, firstZero bool) int64
+	dfs = func(idx int, eq bool, firstZero bool) int64 {
+		if idx == 0 {
+			if eq {
+				return int64(numArr[idx])
+			} else {
+				return 9
+			}
+		}
+		key := buildKey(idx, eq, firstZero)
+		if v, ok := mem[key]; ok {
+			return v
+		}
+		var res int64
+		if eq {
+			if firstZero {
+				res += dfs(idx-1, false, true)
+			}
+			for i := 1; i < numArr[idx]; i++ {
+				res += dfs(idx-1, false, false)
+			}
+			if numArr[idx] > 0 {
+				res += dfs(idx-1, true, false)
+			}
+		} else {
+			if firstZero {
+				res += dfs(idx-1, false, true)
+			}
+			res += 9 * dfs(idx-1, false, false)
+		}
+		mem[key] = res
+		return res
+	}
+	return dfs(k-1, true, true)
+}
