@@ -90,3 +90,20 @@ func minLengthAfterRemovals(s string) int {
 		return find('b', cntB-cntA)
 	}
 }
+
+func minLengthAfterRemovals2(s string) int {
+	cntA, cntB := 0, 0
+	n := len(s)
+	for i := 0; i < n; i++ {
+		if s[i] == 'a' {
+			cntA++
+		} else {
+			cntB++
+		}
+	}
+	if cntA >= cntB {
+		return cntA - cntB
+	} else {
+		return cntB - cntA
+	}
+}
