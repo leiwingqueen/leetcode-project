@@ -61,6 +61,7 @@ func maxEvents(events [][]int) int {
 	return res
 }
 
+// 错误
 func maxEvents2(events [][]int) int {
 	sort.Slice(events, func(i, j int) bool {
 		s1, e1 := events[i][0], events[i][1]
