@@ -71,26 +71,30 @@ func maximumProfit(prices []int, k int) int64 {
 	return dp[n][k]
 }
 
-// 空间优化
+// 需要区分两种状态，持有股票（做空 or 做多）或者没有持有股票
+// dp0,dp1,dp2分别是没有持有，持有一只做多的股票，持有一只做空的股票
+// dp0(i,j)= max(dp0(i-1,j),dp1(i-1,j)+prices[i-1],dp2(i-1,j)-prices[i-1])
+// dp1(i,j)= max(dp1(i-1,j),dp0(i,j-1)-prices[i-1])
+// dp2(i,j)= max(dp2(i-1,j),dp0(i,j-1)+prices[i-1])
 func maximumProfit2(prices []int, k int) int64 {
 	n := len(prices)
-	abs := func(num int) int {
-		if num < 0 {
-			return -num
-		} else {
-			return num
-		}
+	dp0, dp1, dp2 := make([]int64, k+1), make([]int64, k+1), make([]int64, k+1)
+	tmp0, tmp1, tmp2 := make([]int64, k+1), make([]int64, k+1), make([]int64, k+1)
+	for i := 1; i <= k; i++ {
+		tmp1[i] = -int64(prices[0])
+		tmp2[i] = int64(prices[0])
 	}
-	dp, tmp := make([]int64, k+1), make([]int64, k+1)
-	for i := 2; i <= n; i++ {
+	for i := 1; i <= n; i++ {
+		dp1[0] = max(tmp1[0], tmp0[0]-int64(prices[i-1]))
+		dp2[0] = max(tmp2[0], tmp0[0]+int64(prices[i-1]))
 		for j := 1; j <= k; j++ {
-			dp[j] = tmp[j]
-			// 选择长度为l作为购买的周期长度
-			for l := 2; l <= i; l++ {
-				dp[j] = max(dp[j], int64(abs(prices[i-1]-prices[i-l]))+tmp[j-1])
-			}
+			dp0[j] = max(tmp0[j], tmp1[j]+int64(prices[i-1]), tmp2[j]-int64(prices[i-1]))
+			dp1[j] = max(tmp1[j], tmp0[j-1]-int64(prices[i-1]))
+			dp2[j] = max(tmp2[j], tmp0[j-1]+int64(prices[i-1]))
 		}
-		copy(tmp, dp)
+		copy(tmp0, dp0)
+		copy(tmp1, dp1)
+		copy(tmp2, dp2)
 	}
-	return dp[k]
+	return dp0[k]
 }
