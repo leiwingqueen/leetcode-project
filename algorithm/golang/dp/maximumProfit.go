@@ -45,6 +45,7 @@ package dp
 //1 <= prices[i] <= 109
 //1 <= k <= prices.length / 2
 
+// 朴素的DP写法，超时
 func maximumProfit(prices []int, k int) int64 {
 	n := len(prices)
 	abs := func(num int) int {
@@ -67,5 +68,29 @@ func maximumProfit(prices []int, k int) int64 {
 			}
 		}
 	}
-	return dp[n-1][k]
+	return dp[n][k]
+}
+
+// 空间优化
+func maximumProfit2(prices []int, k int) int64 {
+	n := len(prices)
+	abs := func(num int) int {
+		if num < 0 {
+			return -num
+		} else {
+			return num
+		}
+	}
+	dp, tmp := make([]int64, k+1), make([]int64, k+1)
+	for i := 2; i <= n; i++ {
+		for j := 1; j <= k; j++ {
+			dp[j] = tmp[j]
+			// 选择长度为l作为购买的周期长度
+			for l := 2; l <= i; l++ {
+				dp[j] = max(dp[j], int64(abs(prices[i-1]-prices[i-l]))+tmp[j-1])
+			}
+		}
+		copy(tmp, dp)
+	}
+	return dp[k]
 }
