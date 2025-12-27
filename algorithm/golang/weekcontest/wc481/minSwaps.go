@@ -18,11 +18,11 @@ func minSwaps(nums []int, forbidden []int) int {
 	k := 0
 	mx := 0
 	cnt := make(map[int]int)
-	for i := 0; i < n; i++ {
-		if nums[i] == forbidden[i] {
+	for i, x := range nums {
+		if x == forbidden[i] {
 			k++
-			cnt[nums[i]]++
-			mx = max(mx, nums[i])
+			cnt[x]++
+			mx = max(mx, cnt[x])
 		}
 	}
 	return max((k+1)/2, mx)
