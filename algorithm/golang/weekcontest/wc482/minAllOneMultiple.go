@@ -47,7 +47,7 @@ import "math"
 //
 //2 <= k <= 105
 
-// 错误
+// 这样大概率是有问题的
 func minAllOneMultiple(k int) int {
 	num := int64(1)
 	cnt := 1
@@ -59,4 +59,25 @@ func minAllOneMultiple(k int) int {
 		cnt++
 	}
 	return -1
+}
+
+// 我们考虑下是否有规律，假设一个数字num%k=m
+// 那么(num*10+1)%k=(num*10)%k+1=(num%k*10%k)%k+1=(10*m)%k+1
+// 上一个余数决定下一个的余数，那么我们其实直接判断是否出现环即可
+func minAllOneMultiple2(k int) int {
+	m := 1
+	exist := make([]bool, k)
+	exist[m] = true
+	depth := 1
+	for {
+		m = (m*10 + 1) % k
+		depth++
+		if m == 0 {
+			return depth
+		}
+		if exist[m] {
+			return -1
+		}
+		exist[m] = true
+	}
 }
