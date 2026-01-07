@@ -16,6 +16,8 @@ func Test_wordSquares(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{"t1", args{[]string{"able", "area", "echo", "also"}}, [][]string{{"able", "area", "echo", "also"}, {"area", "able", "also", "echo"}}},
+		// ["aaay","dgzy","rrrh","aiir","yiih"]
+		{"t2", args{[]string{"aaay", "dgzy", "rrrh", "aiir", "yiih"}}, [][]string{{"aaay", "aiir", "irrh", "yhzy"}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

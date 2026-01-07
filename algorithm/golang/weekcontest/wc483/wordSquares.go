@@ -6,6 +6,7 @@ import "sort"
 // top[0] == left[0], top[3] == right[0]
 // bottom[0] == left[3], bottom[3] == right[3]
 func wordSquares(words []string) [][]string {
+	n := len(words)
 	var res [][]string
 	var dfs func(path []int, idx int, used []bool)
 	dfs = func(path []int, idx int, used []bool) {
@@ -16,7 +17,7 @@ func wordSquares(words []string) [][]string {
 			}
 			return
 		}
-		for i := 0; i < 4; i++ {
+		for i := 0; i < n; i++ {
 			if !used[i] {
 				used[i] = true
 				path[idx] = i
@@ -25,7 +26,7 @@ func wordSquares(words []string) [][]string {
 			}
 		}
 	}
-	dfs(make([]int, 4), 0, make([]bool, 4))
+	dfs(make([]int, n), 0, make([]bool, n))
 	sort.Slice(res, func(i, j int) bool {
 		for k := 0; k < 4; k++ {
 			if res[i][k] != res[j][k] {
