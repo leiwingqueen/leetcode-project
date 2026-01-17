@@ -43,14 +43,14 @@ package wc484
 func centeredSubarrays(nums []int) int {
 	n := len(nums)
 	prefixSum := make([]int, n+1)
-	mp := make(map[int]struct{})
 	for i := 0; i < n; i++ {
 		prefixSum[i+1] = prefixSum[i] + nums[i]
-		mp[nums[i]] = struct{}{}
 	}
 	res := 0
 	for i := 0; i < n; i++ {
+		mp := make(map[int]struct{})
 		for j := i; j < n; j++ {
+			mp[nums[j]] = struct{}{}
 			sum := prefixSum[j+1] - prefixSum[i]
 			if _, ok := mp[sum]; ok {
 				res++
