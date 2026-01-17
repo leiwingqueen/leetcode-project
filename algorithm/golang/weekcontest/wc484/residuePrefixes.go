@@ -61,7 +61,7 @@ func residuePrefixes(s string) int {
 	res := 0
 	for i := 0; i < n; i++ {
 		mp[s[i]]++
-		if len(s) == (i+1)%3 {
+		if len(mp) == (i+1)%3 {
 			res++
 		}
 	}
