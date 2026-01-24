@@ -16,38 +16,25 @@ func maxCapacity(costs []int, capacity []int, budget int) int {
 		if arr[i][0] != arr[j][0] {
 			return arr[i][0] < arr[j][0]
 		}
-		return arr[i][1] > arr[j][1]
+		return arr[i][1] < arr[j][1]
 	})
-	// 先做一次过滤，如果cost[i]<cost[j],但是capacity[i]>capacity[j]，那么可以完全不考虑j机器
-	var arr2 [][]int
-	for i := range arr {
-		cost, cp := arr[i][0], arr[i][1]
-		if len(arr2) == 0 {
-			arr2 = append(arr2, []int{cost, cp})
-		} else {
-			last := arr[len(arr)-1]
-			if cp > last[1] {
-				arr2 = append(arr2, []int{cost, cp})
-			}
-		}
-	}
 	// 假如只选一个
 	res := 0
 	// 选两个的场景
 	for i := 1; i < budget; i++ {
-		idx1 := sort.Search(len(arr2), func(j int) bool {
-			return arr2[j][0] > i
+		idx1 := sort.Search(n, func(j int) bool {
+			return arr[j][0] > i
 		})
 		if idx1 > 0 {
 			// 第一个选idx-1的下标
-			res = max(res, arr2[idx1-1][1])
+			res = max(res, arr[idx1-1][1])
 			if idx1-1 > 0 {
 				// 选第二个
-				idx2 := sort.Search(idx1, func(j int) bool {
-					return arr2[j][0] > budget-arr2[idx1-1][0]-1
+				idx2 := sort.Search(idx1-1, func(j int) bool {
+					return arr[j][0] > budget-arr[idx1-1][0]-1
 				})
 				if idx2 > 0 {
-					res = max(res, arr2[idx2-1][1]+arr2[idx1-1][1])
+					res = max(res, arr[idx2-1][1]+arr[idx1-1][1])
 				}
 			}
 		}
