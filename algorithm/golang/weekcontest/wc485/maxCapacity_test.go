@@ -29,6 +29,11 @@ func Test_maxCapacity(t *testing.T) {
 			[]int{3, 5, 4},
 			5,
 		}, 9},
+		{"t4", args{
+			[]int{7, 5, 2, 5},
+			[]int{7, 9, 9, 1},
+			13,
+		}, 18},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
