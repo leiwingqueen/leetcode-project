@@ -1,7 +1,5 @@
 package com.liyongquan.greedy;
 
-import javafx.util.Pair;
-
 import java.util.PriorityQueue;
 
 //如果字符串中不含有任何 'aaa'，'bbb' 或 'ccc' 这样的字符串作为子串，那么该字符串就是一个「快乐字符串」。
@@ -41,46 +39,55 @@ import java.util.PriorityQueue;
 //链接：https://leetcode-cn.com/problems/longest-happy-string
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 public class LongestDiverseString {
+
+    private static class Pair {
+        char key;
+        int value;
+        Pair(char key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     public String longestDiverseString(int a, int b, int c) {
-        PriorityQueue<Pair<Character, Integer>> pq = new PriorityQueue<>((o1, o2) -> o2.getValue() - o1.getValue());
+        PriorityQueue<Pair> pq = new PriorityQueue<>((o1, o2) -> o2.value - o1.value);
         if (a > 0) {
-            pq.add(new Pair<>('a', a));
+            pq.add(new Pair('a', a));
         }
         if (b > 0) {
-            pq.add(new Pair<>('b', b));
+            pq.add(new Pair('b', b));
         }
         if (c > 0) {
-            pq.add(new Pair<>('c', c));
+            pq.add(new Pair('c', c));
         }
         StringBuilder sb = new StringBuilder();
         char last = ' ';
         int cnt = 0;
         while (pq.size() > 0) {
-            Pair<Character, Integer> pair = pq.poll();
-            if (pair.getKey() != last) {
-                last = pair.getKey();
+            Pair pair = pq.poll();
+            if (pair.key != last) {
+                last = pair.key;
                 cnt = 1;
-                sb.append(pair.getKey());
-                if (pair.getValue() > 1) {
-                    pq.offer(new Pair<>(pair.getKey(), pair.getValue() - 1));
+                sb.append(pair.key);
+                if (pair.value > 1) {
+                    pq.offer(new Pair(pair.key, pair.value - 1));
                 }
             } else {
                 if (cnt < 2) {
                     cnt++;
-                    sb.append(pair.getKey());
-                    if (pair.getValue() > 1) {
-                        pq.offer(new Pair<>(pair.getKey(), pair.getValue() - 1));
+                    sb.append(pair.key);
+                    if (pair.value > 1) {
+                        pq.offer(new Pair(pair.key, pair.value - 1));
                     }
                 } else {
                     if (pq.isEmpty()) {
                         return sb.toString();
                     }
-                    Pair<Character, Integer> next = pq.poll();
-                    sb.append(next.getKey());
-                    last = next.getKey();
+                    Pair next = pq.poll();
+                    sb.append(next.key);
+                    last = next.key;
                     cnt = 1;
-                    if (next.getValue() > 1) {
-                        pq.offer(new Pair<>(next.getKey(), next.getValue() - 1));
+                    if (next.value > 1) {
+                        pq.offer(new Pair(next.key, next.value - 1));
                     }
                     pq.offer(pair);
                 }

@@ -1,7 +1,5 @@
 package com.liyongquan.prefixSum;
 
-import com.sun.deploy.uitoolkit.impl.fx.FXPreloader;
-
 import java.util.HashMap;
 import java.util.Map;
 

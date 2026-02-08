@@ -45,8 +45,6 @@ package com.liyongquan.math;
 //链接：https://leetcode-cn.com/problems/evaluate-division
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-import javafx.util.Pair;
-
 import java.util.*;
 
 /**
@@ -54,6 +52,15 @@ import java.util.*;
  * @date 2021/10/23
  */
 public class CalcEquation {
+
+    private static class Pair {
+        int key;
+        double value;
+        Pair(int key, double value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     /**
      * 这个解法是有问题的，不能通过
      *
@@ -152,20 +159,20 @@ public class CalcEquation {
         }
         int len = graph.length;
         boolean[] visit = new boolean[len];
-        Queue<Pair<Integer, Double>> queue = new LinkedList<>();
-        queue.add(new Pair<>(v1, 1D));
+        Queue<Pair> queue = new LinkedList<>();
+        queue.add(new Pair(v1, 1D));
         visit[v1] = true;
         while (!queue.isEmpty()) {
-            Pair<Integer, Double> poll = queue.poll();
+            Pair poll = queue.poll();
             for (int i = 0; i < len; i++) {
                 //存在线，访问下一个节点
-                if (!visit[i] && graph[poll.getKey()][i] > 0) {
+                if (!visit[i] && graph[poll.key][i] > 0) {
                     visit[i] = true;
-                    double r = poll.getValue() * graph[poll.getKey()][i];
+                    double r = poll.value * graph[poll.key][i];
                     if (i == v2) {
                         return r;
                     }
-                    queue.add(new Pair<>(i, r));
+                    queue.add(new Pair(i, r));
                 }
             }
         }

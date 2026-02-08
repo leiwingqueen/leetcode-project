@@ -1,7 +1,5 @@
 package com.liyongquan.tree;
 
-import javafx.util.Pair;
-
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,6 +30,15 @@ import java.util.Queue;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class NextRightPointers {
+
+    private static class Pair {
+        Node key;
+        int value;
+        Pair(Node key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     /**
      * 递归解法。
      * 假设节点的数量为n，时间复杂度O(n^2)。
@@ -92,24 +99,24 @@ public class NextRightPointers {
         if (root == null) {
             return null;
         }
-        Queue<Pair<Node, Integer>> queue = new LinkedList<>();
-        queue.add(new Pair<>(root, 0));
+        Queue<Pair> queue = new LinkedList<>();
+        queue.add(new Pair(root, 0));
         Node pre = null;
         int depth = 0;
         while (!queue.isEmpty()) {
-            Pair<Node, Integer> poll = queue.poll();
-            if (pre != null && depth == poll.getValue()) {
-                pre.next = poll.getKey();
+            Pair poll = queue.poll();
+            if (pre != null && depth == poll.value) {
+                pre.next = poll.key;
             }
-            if (depth != poll.getValue()) {
-                depth = poll.getValue();
+            if (depth != poll.value) {
+                depth = poll.value;
             }
-            pre = poll.getKey();
+            pre = poll.key;
             if (pre.left != null) {
-                queue.add(new Pair<>(pre.left, depth + 1));
+                queue.add(new Pair(pre.left, depth + 1));
             }
             if (pre.right != null) {
-                queue.add(new Pair<>(pre.right, depth + 1));
+                queue.add(new Pair(pre.right, depth + 1));
             }
         }
         return root;

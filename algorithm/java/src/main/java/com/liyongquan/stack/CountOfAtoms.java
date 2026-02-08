@@ -55,8 +55,6 @@ package com.liyongquan.stack;
 // 👍 119 👎 0
 
 
-import javafx.util.Pair;
-
 import java.util.*;
 
 public class CountOfAtoms {

@@ -44,8 +44,6 @@ package com.liyongquan.hash;
 //链接：https://leetcode-cn.com/problems/restore-the-array-from-adjacent-pairs
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-import javafx.util.Pair;
-
 import java.util.*;
 
 /**
@@ -53,6 +51,15 @@ import java.util.*;
  * @date 2021/7/25
  */
 public class RestoreArray {
+
+    private static class Pair {
+        int key;
+        int value;
+        Pair(int key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     /**
      * 超时
      *
@@ -64,12 +71,12 @@ public class RestoreArray {
         Deque<Integer> deque = new LinkedList<>();
         deque.offerLast(adjacentPairs[0][0]);
         deque.offerLast(adjacentPairs[0][1]);
-        Set<Pair<Integer, Integer>> remain = new HashSet<>();
+        Set<Pair> remain = new HashSet<>();
         for (int i = 1; i < n - 1; i++) {
-            remain.add(new Pair<>(adjacentPairs[i][0], adjacentPairs[i][1]));
+            remain.add(new Pair(adjacentPairs[i][0], adjacentPairs[i][1]));
         }
         while (remain.size() > 0) {
-            Pair<Integer, Integer> match = findMatch(deque, remain);
+            Pair match = findMatch(deque, remain);
             remain.remove(match);
         }
         int[] res = new int[n];
@@ -80,10 +87,10 @@ public class RestoreArray {
         return res;
     }
 
-    private Pair<Integer, Integer> findMatch(Deque<Integer> deque, Set<Pair<Integer, Integer>> remain) {
-        for (Pair<Integer, Integer> pair : remain) {
-            int n1 = pair.getKey();
-            int n2 = pair.getValue();
+    private Pair findMatch(Deque<Integer> deque, Set<Pair> remain) {
+        for (Pair pair : remain) {
+            int n1 = pair.key;
+            int n2 = pair.value;
             if (n1 == deque.peekFirst()) {
                 deque.offerFirst(n2);
                 return pair;

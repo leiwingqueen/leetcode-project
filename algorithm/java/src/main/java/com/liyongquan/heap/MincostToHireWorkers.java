@@ -32,23 +32,30 @@ package com.liyongquan.heap;
 //链接：https://leetcode.cn/problems/minimum-cost-to-hire-k-workers
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-import javafx.util.Pair;
-
 import java.util.Arrays;
 import java.util.PriorityQueue;
 
 public class MincostToHireWorkers {
+
+    private static class Pair {
+        int key;
+        double value;
+        Pair(int key, double value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     public double mincostToHireWorkers(int[] quality, int[] wage, int k) {
         int n = quality.length;
-        Pair<Integer, Double>[] arr = new Pair[n];
+        Pair[] arr = new Pair[n];
         for (int i = 0; i < n; i++) {
             double w = (double) wage[i] / quality[i];
-            arr[i] = new Pair<>(i, w);
+            arr[i] = new Pair(i, w);
         }
         Arrays.sort(arr, (o1, o2) -> {
-            if (o1.getValue() > o2.getValue()) {
+            if (o1.value > o2.value) {
                 return 1;
-            } else if (o1.getValue() == o2.getValue()) {
+            } else if (o1.value == o2.value) {
                 return 0;
             } else {
                 return -1;
@@ -58,12 +65,12 @@ public class MincostToHireWorkers {
         double res = Double.MAX_VALUE;
         int sum = 0;
         for (int i = 0; i < n; i++) {
-            int q = quality[arr[i].getKey()];
+            int q = quality[arr[i].key];
             if (i + 1 < k) {
                 pq.add(q);
                 sum += q;
             } else {
-                double t = (sum + quality[arr[i].getKey()]) * (arr[i].getValue());
+                double t = (sum + quality[arr[i].key]) * (arr[i].value);
                 if (t < res) {
                     res = t;
                 }

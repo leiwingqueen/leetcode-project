@@ -48,12 +48,19 @@ package com.liyongquan.weeklycontest.wc273;
 //链接：https://leetcode-cn.com/problems/recover-the-original-array
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-import javafx.util.Pair;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class RecoverArray {
+
+    private static class Pair {
+        boolean key;
+        int[] value;
+        Pair(boolean key, int[] value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     /**
      * 还差最后一个用例
      *
@@ -78,9 +85,9 @@ public class RecoverArray {
             int k = l[0];
             int cnt = l[1];
             if (k > 0 && k % 2 == 0 && cnt >= len / 2) {
-                Pair<Boolean, int[]> check = check(nums, k / 2);
-                if (check.getKey()) {
-                    return check.getValue();
+                Pair check = check(nums, k / 2);
+                if (check.key) {
+                    return check.value;
                 }
             }
         }
@@ -95,7 +102,7 @@ public class RecoverArray {
      * @param k
      * @return
      */
-    private Pair<Boolean, int[]> check(int[] nums, int k) {
+    private Pair check(int[] nums, int k) {
         int[] res = new int[nums.length / 2];
         TreeMap<Integer, Integer> mp = new TreeMap<>();
         for (int num : nums) {
@@ -106,7 +113,7 @@ public class RecoverArray {
             Integer low = mp.firstKey();
             int high = low + 2 * k;
             if (!mp.containsKey(high)) {
-                return new Pair<>(false, null);
+                return new Pair(false, null);
             }
             res[idx++] = low + k;
             if (mp.get(low) == 1) {
@@ -120,6 +127,6 @@ public class RecoverArray {
                 mp.put(high, mp.get(high) - 1);
             }
         }
-        return new Pair<>(true, res);
+        return new Pair(true, res);
     }
 }

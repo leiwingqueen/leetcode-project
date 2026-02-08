@@ -34,12 +34,19 @@ package com.liyongquan.bfs;
 //链接：https://leetcode-cn.com/problems/number-of-enclaves
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-import javafx.util.Pair;
-
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class NumEnclaves {
+
+    private static class Pair {
+        int key;
+        boolean value;
+        Pair(int key, boolean value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     public static final int[][] DIRS = {
             {-1, 0},
             {1, 0},
@@ -53,9 +60,9 @@ public class NumEnclaves {
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (grid[i][j] == 1) {
-                    Pair<Integer, Boolean> pair = bfs(grid, m, n, new int[]{i, j});
-                    if (!pair.getValue()) {
-                        cnt += pair.getKey();
+                    Pair pair = bfs(grid, m, n, new int[]{i, j});
+                    if (!pair.value) {
+                        cnt += pair.key;
                     }
                 }
             }
@@ -63,7 +70,7 @@ public class NumEnclaves {
         return cnt;
     }
 
-    private Pair<Integer, Boolean> bfs(int[][] grid, int m, int n, int[] pos) {
+    private Pair bfs(int[][] grid, int m, int n, int[] pos) {
         boolean flag = false;
         if (pos[0] == 0 || pos[0] == m - 1 || pos[1] == 0 || pos[1] == n - 1) {
             flag = true;
@@ -87,6 +94,6 @@ public class NumEnclaves {
                 }
             }
         }
-        return new Pair<>(cnt, flag);
+        return new Pair(cnt, flag);
     }
 }

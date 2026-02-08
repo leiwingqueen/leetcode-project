@@ -1,7 +1,5 @@
 package com.liyongquan.design;
 
-import javafx.util.Pair;
-
 import javax.swing.text.DefaultStyledDocument;
 import java.util.*;
 

@@ -1,7 +1,5 @@
 package com.liyongquan.bfs;
 
-import javafx.util.Pair;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -55,6 +53,15 @@ import java.util.Queue;
 //链接：https://leetcode-cn.com/problems/shortest-path-in-a-grid-with-obstacles-elimination
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 public class ShortestPath {
+
+    private static class Pair {
+        int[] key;
+        int value;
+        Pair(int[] key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     public static final int[][] DIR = {
             {-1, 0},
             {1, 0},
@@ -110,14 +117,14 @@ public class ShortestPath {
         if (row == 1 && col == 1) {
             return 0;
         }
-        Queue<Pair<int[], Integer>> queue = new LinkedList<>();
-        queue.add(new Pair<>(new int[]{0, 0}, 0));
+        Queue<Pair> queue = new LinkedList<>();
+        queue.add(new Pair(new int[]{0, 0}, 0));
         int[][] visit = new int[row][col];
         visit[0][0] = 1;
         while (!queue.isEmpty()) {
-            Pair<int[], Integer> poll = queue.poll();
-            int[] pos = poll.getKey();
-            Integer depth = poll.getValue();
+            Pair poll = queue.poll();
+            int[] pos = poll.key;
+            int depth = poll.value;
             for (int[] dir : DIR) {
                 int nx = pos[0] + dir[0];
                 int ny = pos[1] + dir[1];
@@ -125,7 +132,7 @@ public class ShortestPath {
                     if (nx == row - 1 && ny == col - 1) {
                         return depth + 1;
                     }
-                    queue.add(new Pair<>(new int[]{nx, ny}, depth + 1));
+                    queue.add(new Pair(new int[]{nx, ny}, depth + 1));
                     visit[nx][ny] = 1;
                 }
             }

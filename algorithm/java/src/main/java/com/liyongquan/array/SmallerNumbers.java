@@ -1,7 +1,5 @@
 package com.liyongquan.array;
 
-import javafx.util.Pair;
-
 import java.util.Arrays;
 
 /**
@@ -43,6 +41,15 @@ import java.util.Arrays;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class SmallerNumbers {
+
+    private static class Pair {
+        int key;
+        int value;
+        Pair(int key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     /**
      * 暴力解法
      *
@@ -73,20 +80,20 @@ public class SmallerNumbers {
      */
     public int[] smallerNumbersThanCurrent2(int[] nums) {
         //记录对应数字的位置
-        Pair<Integer, Integer>[] list = new Pair[nums.length];
+        Pair[] list = new Pair[nums.length];
         for (int i = 0; i < nums.length; i++) {
-            list[i] = new Pair<>(nums[i], i);
+            list[i] = new Pair(nums[i], i);
         }
         //排序
-        Arrays.sort(list, (o1, o2) -> o1.getKey() - o2.getKey());
+        Arrays.sort(list, (o1, o2) -> o1.key - o2.key);
         int pre = -1;
         int[] result = new int[nums.length];
         for (int i = 0; i < nums.length; i++) {
-            if (pre == -1 || list[i - 1].getKey() != list[i].getKey()) {
-                result[list[i].getValue()] = i;
+            if (pre == -1 || list[i - 1].key != list[i].key) {
+                result[list[i].value] = i;
                 pre = i;
             } else {
-                result[list[i].getValue()] = pre;
+                result[list[i].value] = pre;
             }
         }
         return result;

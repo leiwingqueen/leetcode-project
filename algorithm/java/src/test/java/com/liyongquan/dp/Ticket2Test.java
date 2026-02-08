@@ -1,6 +1,5 @@
 package com.liyongquan.dp;
 
-import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
@@ -39,8 +38,8 @@ public class Ticket2Test {
         Ticket2.MatchResult match = ticket.match(tickets, tz);
         System.out.println("A:能够单独出账的台账数量:" + match.greedPairList.size());
         builder = new StringBuilder();
-        for (Pair<Integer, Integer> pair : match.greedPairList) {
-            builder.append(pair.getKey() + "-" + pair.getValue() + ",");
+        for (Ticket2.Pair pair : match.greedPairList) {
+            builder.append(pair.key + "-" + pair.value + ",");
         }
         System.out.println("能够单独出账的台账下标映射([台账下标]-[发票下标]):[" + builder + "]");
         builder = new StringBuilder();
@@ -59,8 +58,8 @@ public class Ticket2Test {
             for (int i : tz) {
                 tzSum += i;
             }
-            for (Pair<Integer, Integer> pair : match.greedPairList) {
-                tzSum -= tz[pair.getKey()];
+            for (Ticket2.Pair pair : match.greedPairList) {
+                tzSum -= tz[pair.key];
             }
             wast = tSum - tzSum;
             //log.info("tSum:{},tzSum:{}", tSum, tzSum);

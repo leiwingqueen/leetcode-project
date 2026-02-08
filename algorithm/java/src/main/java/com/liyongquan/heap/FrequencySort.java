@@ -1,7 +1,6 @@
 package com.liyongquan.heap;
 
 import com.liyongquan.bit.HammingDistance;
-import javafx.util.Pair;
 
 import java.util.*;
 
@@ -47,6 +46,15 @@ import java.util.*;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class FrequencySort {
+
+    private static class Pair {
+        char key;
+        int value;
+        Pair(char key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     /**
      * 朴素解法
      * <p>
@@ -62,17 +70,17 @@ public class FrequencySort {
             char ch = s.charAt(i);
             map.put(ch, map.getOrDefault(ch, 0) + 1);
         }
-        List<Pair<Character, Integer>> list = new ArrayList<>(map.size());
+        List<Pair> list = new ArrayList<>(map.size());
         for (Map.Entry<Character, Integer> entry : map.entrySet()) {
-            list.add(new Pair<>(entry.getKey(), entry.getValue()));
+            list.add(new Pair(entry.getKey(), entry.getValue()));
         }
         //排序
-        Collections.sort(list, (p1, p2) -> p2.getValue() - p1.getValue());
+        Collections.sort(list, (p1, p2) -> p2.value - p1.value);
         //输出
         StringBuilder sb = new StringBuilder(s.length());
-        for (Pair<Character, Integer> pair : list) {
-            for (int i = 0; i < pair.getValue(); i++) {
-                sb.append(pair.getKey());
+        for (Pair pair : list) {
+            for (int i = 0; i < pair.value; i++) {
+                sb.append(pair.key);
             }
         }
         return sb.toString();
@@ -94,16 +102,16 @@ public class FrequencySort {
             char ch = s.charAt(i);
             map.put(ch, map.getOrDefault(ch, 0) + 1);
         }
-        PriorityQueue<Pair<Character, Integer>> pq = new PriorityQueue<>(map.size(), (p1, p2) -> p2.getValue() - p1.getValue());
+        PriorityQueue<Pair> pq = new PriorityQueue<>(map.size(), (p1, p2) -> p2.value - p1.value);
         for (Map.Entry<Character, Integer> entry : map.entrySet()) {
-            pq.add(new Pair<>(entry.getKey(), entry.getValue()));
+            pq.add(new Pair(entry.getKey(), entry.getValue()));
         }
         //输出
         StringBuilder sb = new StringBuilder(s.length());
         while (pq.size() > 0) {
-            Pair<Character, Integer> pair = pq.poll();
-            for (int i = 0; i < pair.getValue(); i++) {
-                sb.append(pair.getKey());
+            Pair pair = pq.poll();
+            for (int i = 0; i < pair.value; i++) {
+                sb.append(pair.key);
             }
         }
         return sb.toString();

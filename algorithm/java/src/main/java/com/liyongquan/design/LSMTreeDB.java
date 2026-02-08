@@ -1,7 +1,6 @@
 package com.liyongquan.design;
 
 import com.alibaba.fastjson.JSON;
-import javafx.util.Pair;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -18,6 +17,15 @@ import java.util.TreeMap;
  * https://yetanotherdevblog.com/lsm/
  */
 public class LSMTreeDB {
+
+    private static class Pair {
+        String key;
+        String value;
+        Pair(String key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     private static final String OP_PUT = "PUT";
     private static final String OP_RM = "RM";
 
@@ -39,7 +47,7 @@ public class LSMTreeDB {
         return Optional.empty();
     }
 
-    public Collection<Pair<String, String>> scan(String left, String right) {
+    public Collection<Pair> scan(String left, String right) {
         return null;
     }
 

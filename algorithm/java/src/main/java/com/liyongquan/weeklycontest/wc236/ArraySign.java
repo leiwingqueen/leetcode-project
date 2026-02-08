@@ -1,6 +1,5 @@
 package com.liyongquan.weeklycontest.wc236;
 
-import jdk.nashorn.internal.ir.IfNode;
 
 /**
  * 5726. 数组元素积的符号

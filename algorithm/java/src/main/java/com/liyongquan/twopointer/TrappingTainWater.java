@@ -1,7 +1,5 @@
 package com.liyongquan.twopointer;
 
-import javafx.util.Pair;
-
 import java.util.PriorityQueue;
 
 /**
@@ -34,6 +32,15 @@ import java.util.PriorityQueue;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class TrappingTainWater {
+
+    private static class Pair {
+        int key;
+        int value;
+        Pair(int key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     /**
      * 暴力解法，一个个格子计算能够装的水量
      * <p>
@@ -90,16 +97,16 @@ public class TrappingTainWater {
         int water = 0;
         int lmax = 0;
         //构造大顶堆
-        PriorityQueue<Pair<Integer, Integer>> pq = new PriorityQueue<>(height.length, (o1, o2) -> o2.getValue() - o1.getValue());
+        PriorityQueue<Pair> pq = new PriorityQueue<>(height.length, (o1, o2) -> o2.value - o1.value);
         for (int i = 0; i < height.length; i++) {
-            pq.add(new Pair<>(i, height[i]));
+            pq.add(new Pair(i, height[i]));
         }
         for (int i = 0; i < height.length - 1; i++) {
             //pop掉已经走过的节点
-            while (pq.size() > 0 && pq.peek().getKey() <= i) {
+            while (pq.size() > 0 && pq.peek().key <= i) {
                 pq.poll();
             }
-            int rmax = pq.size() == 0 ? 0 : pq.peek().getValue();
+            int rmax = pq.size() == 0 ? 0 : pq.peek().value;
             int min = Math.min(lmax, rmax);
             if (min > height[i]) {
                 water += min - height[i];

@@ -1,20 +1,28 @@
 package com.liyongquan.weeklycontest.wc309;
 
 import com.liyongquan.design.ParkingSystem;
-import javafx.util.Pair;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class MostBooked {
+
+    private static class Pair {
+        long key;
+        int value;
+        Pair(long key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     public int mostBooked(int n, int[][] meetings) {
-        PriorityQueue<Pair<Long, Integer>> pq = new PriorityQueue<Pair<Long, Integer>>((o1, o2) -> {
+        PriorityQueue<Pair> pq = new PriorityQueue<Pair>((o1, o2) -> {
             // 结束时间，房间ID
-            if (o1.getKey().longValue() != o2.getKey().longValue()) {
-                return o1.getKey().longValue() > o2.getKey().longValue() ? 1 : -1;
+            if (o1.key != o2.key) {
+                return o1.key > o2.key ? 1 : -1;
             }
-            return o1.getValue() - o2.getValue();
+            return o1.value - o2.value;
         });
         PriorityQueue<Integer> freelist = new PriorityQueue<>();
         for (int i = 0; i < n; i++) {
@@ -27,19 +35,19 @@ public class MostBooked {
         while (p < meetings.length) {
             int[] meeting = meetings[p];
             // 查看有没已经结束的会议
-            while (pq.size() > 0 && pq.peek().getKey() <= time) {
-                freelist.add(pq.poll().getValue());
+            while (pq.size() > 0 && pq.peek().key <= time) {
+                freelist.add(pq.poll().value);
             }
             if (time >= meeting[0]) {
                 //会议要开始
                 if (freelist.size() > 0) {
                     Integer room = freelist.poll();
-                    pq.offer(new Pair<>(time + meeting[1] - meeting[0], room));
+                    pq.offer(new Pair(time + meeting[1] - meeting[0], room));
                     cnt[room]++;
                     p++;
                 } else {
                     // 时间顺延
-                    time = pq.peek().getKey();
+                    time = pq.peek().key;
                 }
             } else {
                 time = meeting[0];

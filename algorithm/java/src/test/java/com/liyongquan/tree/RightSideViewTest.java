@@ -1,7 +1,6 @@
 package com.liyongquan.tree;
 
 import com.liyongquan.util.tree.BinaryTreeUtil;
-import com.sun.tools.hat.internal.model.Root;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 

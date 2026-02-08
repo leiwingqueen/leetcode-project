@@ -44,11 +44,18 @@ package com.liyongquan.bfs;
 // 👍 167 👎 0
 
 
-import javafx.util.Pair;
-
 import java.util.*;
 
 public class NumBusesToDestination {
+
+    private static class Pair {
+        int key;
+        int value;
+        Pair(int key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     public int numBusesToDestination(int[][] routes, int source, int target) {
         if (source == target) {
             return 0;
@@ -94,17 +101,17 @@ public class NumBusesToDestination {
     }
 
     private int bfs(int sourceIdx, int target, Set<Integer>[] arr, int len, int[][] edges) {
-        Queue<Pair<Integer, Integer>> queue = new LinkedList<>();
+        Queue<Pair> queue = new LinkedList<>();
         if (arr[sourceIdx].contains(target)) {
             return 1;
         }
-        queue.add(new Pair<>(sourceIdx, 1));
+        queue.add(new Pair(sourceIdx, 1));
         int[] visit = new int[len];
         visit[sourceIdx] = 1;
         while (!queue.isEmpty()) {
-            Pair<Integer, Integer> poll = queue.poll();
-            Integer idx = poll.getKey();
-            Integer depth = poll.getValue();
+            Pair poll = queue.poll();
+            int idx = poll.key;
+            int depth = poll.value;
             //找下一个关联点
             for (int i = 0; i < len; i++) {
                 if (i == idx) {
@@ -114,7 +121,7 @@ public class NumBusesToDestination {
                     if (arr[i].contains(target)) {
                         return depth + 1;
                     }
-                    queue.add(new Pair<>(i, depth + 1));
+                    queue.add(new Pair(i, depth + 1));
                     visit[i] = 1;
                 }
             }

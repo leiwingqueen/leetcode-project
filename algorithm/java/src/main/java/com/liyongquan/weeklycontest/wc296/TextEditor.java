@@ -1,7 +1,6 @@
 package com.liyongquan.weeklycontest.wc296;
 
 import com.liyongquan.tree.Node;
-import com.sun.xml.internal.txw2.TXW;
 
 public class TextEditor {
     Node head;

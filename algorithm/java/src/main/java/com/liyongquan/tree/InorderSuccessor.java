@@ -1,7 +1,5 @@
 package com.liyongquan.tree;
 
-import javafx.util.Pair;
-
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,6 +38,15 @@ import java.util.Stack;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class InorderSuccessor {
+
+    private static class Pair {
+        TreeNode key;
+        boolean value;
+        Pair(TreeNode key, boolean value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     /**
      * 傻瓜解法，先不考虑任何优化，先做一次中序遍历，把所有节点按中序遍历打印出来，再找到对应的中序后缀
      * <p>
@@ -87,22 +94,22 @@ public class InorderSuccessor {
      * @return
      */
     public TreeNode inorderSuccessor3(TreeNode root, TreeNode p) {
-        return findSuccessor(root, p).getKey();
+        return findSuccessor(root, p).key;
     }
 
-    public Pair<TreeNode, Boolean> findSuccessor(TreeNode root, TreeNode p) {
+    private Pair findSuccessor(TreeNode root, TreeNode p) {
         if (root == null || p == null) {
-            return new Pair<>(null, false);
+            return new Pair(null, false);
         }
         if (root == p) {
-            return new Pair<>(findFirst(root.right), true);
+            return new Pair(findFirst(root.right), true);
         }
-        Pair<TreeNode, Boolean> left = findSuccessor(root.left, p);
-        if (left.getKey() != null) {
+        Pair left = findSuccessor(root.left, p);
+        if (left.key != null) {
             return left;
         }
-        if (left.getValue()) {
-            return new Pair<>(root, true);
+        if (left.value) {
+            return new Pair(root, true);
         }
         return findSuccessor(root.right, p);
     }

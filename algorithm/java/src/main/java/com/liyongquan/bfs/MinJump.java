@@ -1,8 +1,6 @@
 package com.liyongquan.bfs;
 
-import javafx.util.Pair;
 
-import java.beans.Visibility;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -32,34 +30,44 @@ import java.util.Queue;
 // Related Topics 广度优先搜索 线段树 数组 动态规划
 // 👍 52 👎 0
 public class MinJump {
+
+    private static class Pair {
+        int idx;
+        int depth;
+        Pair(int idx, int depth) {
+            this.idx = idx;
+            this.depth = depth;
+        }
+    }
+
     public int minJump(int[] jump) {
         int len = jump.length;
-        Queue<Pair<Integer, Integer>> queue = new LinkedList<>();
-        queue.add(new Pair<>(0, 0));
+        Queue<Pair> queue = new LinkedList<>();
+        queue.add(new Pair(0, 0));
         int[] visit = new int[len];
         visit[0] = 1;
         int far = 1;
         while (!queue.isEmpty()) {
-            Pair<Integer, Integer> poll = queue.poll();
-            Integer idx = poll.getKey();
-            Integer depth = poll.getValue();
+            Pair poll = queue.poll();
+            int idx = poll.idx;
+            int depth = poll.depth;
             //向右移动
             if (jump[idx] + idx >= len) {
                 return depth + 1;
             }
             if (visit[jump[idx] + idx] == 0) {
-                queue.add(new Pair<>(jump[idx] + idx, depth + 1));
+                queue.add(new Pair(jump[idx] + idx, depth + 1));
                 visit[jump[idx] + idx] = 1;
             }
             //向左移动
             // 小优化，从后往前遍历遍历，如果某个节点已经被访问过，那么他前面的节点必然也已经加入队列
             /*for (int i = idx - 1; i >= 0 && visit[i] == 0; i--) {
-                queue.add(new Pair<>(i, depth + 1));
+                queue.add(new Pair(i, depth + 1));
                 visit[i] = 1;
             }*/
             for (int i = far; i < idx; i++) {
                 if (visit[i] == 0) {
-                    queue.add(new Pair<>(i, depth + 1));
+                    queue.add(new Pair(i, depth + 1));
                     visit[i] = 1;
                 }
             }

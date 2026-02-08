@@ -1,8 +1,6 @@
 package com.liyongquan.dp;
 
 
-import javafx.util.Pair;
-
 import java.util.*;
 
 /**
@@ -11,6 +9,15 @@ import java.util.*;
  * 先贪心，然后再dp
  */
 public class Ticket2 {
+
+    static class Pair {
+        int key;
+        int value;
+        Pair(int key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     /**
      * 贪心+dp
      *
@@ -31,7 +38,7 @@ public class Ticket2 {
                 map.put(s[i], set);
             }
         }
-        List<Pair<Integer, Integer>> greedPairList = new LinkedList<>();
+        List<Pair> greedPairList = new LinkedList<>();
         //后续需要dp的台账金额
         int tSum = 0;
         for (int i = 0; i < t.length; i++) {
@@ -40,7 +47,7 @@ public class Ticket2 {
             if (map.containsKey(price) && map.get(price).size() > 0) {
                 Set<Integer> set = map.get(price);
                 Integer idx = set.iterator().next();
-                greedPairList.add(new Pair<>(i, idx));
+                greedPairList.add(new Pair(i, idx));
                 set.remove(idx);
                 //匹配成功后把台账金额置为0，并把发票总额减少，方便后续dp求最优解
                 s[idx] = 0;
@@ -130,11 +137,11 @@ public class Ticket2 {
 
     public static class MatchResult {
         //贪心算法匹配的解(k--台账下标，v--发票的下标)
-        List<Pair<Integer, Integer>> greedPairList;
+        List<Pair> greedPairList;
         //dp对剩余台账返回的最优解
         TicketPair ticketPair;
 
-        public MatchResult(List<Pair<Integer, Integer>> greedPairList, TicketPair ticketPair) {
+        public MatchResult(List<Pair> greedPairList, TicketPair ticketPair) {
             this.greedPairList = greedPairList;
             this.ticketPair = ticketPair;
         }

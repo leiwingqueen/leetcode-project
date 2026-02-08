@@ -1,7 +1,5 @@
 package com.liyongquan.bfs;
 
-import javafx.util.Pair;
-
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -40,6 +38,15 @@ import java.util.Queue;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class MaxAreaOfIsland {
+
+    private static class Pair {
+        int[] key;
+        int value;
+        Pair(int[] key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     public int maxAreaOfIsland(int[][] grid) {
         if (grid.length == 0) {
             return 0;
@@ -61,46 +68,36 @@ public class MaxAreaOfIsland {
     }
 
     private int bfs(int[][] grid, int[][] visit, int x, int y) {
-        Queue<Position> queue = new LinkedList<>();
-        queue.add(new Position(x, y));
+        Queue<Pair> queue = new LinkedList<>();
+        queue.add(new Pair(new int[]{x, y}, 0));
         visit[x][y] = 1;
         int count = 1;
         while (!queue.isEmpty()) {
-            Position position = queue.poll();
+            Pair position = queue.poll();
             //写在这里会超时，这是由于在出栈的时候处理会导致重复入队，关键点，标红！
             //visit[position.x][position.y] = 1;
-            if (position.x - 1 >= 0 && visit[position.x - 1][position.y] == 0 && grid[position.x - 1][position.y] == 1) {
-                queue.add(new Position(position.x - 1, position.y));
-                visit[position.x - 1][position.y] = 1;
+            if (position.key[0] - 1 >= 0 && visit[position.key[0] - 1][position.key[1]] == 0 && grid[position.key[0] - 1][position.key[1]] == 1) {
+                queue.add(new Pair(new int[]{position.key[0] - 1, position.key[1]}, 0));
+                visit[position.key[0] - 1][position.key[1]] = 1;
                 count++;
             }
-            if (position.x + 1 < grid.length && visit[position.x + 1][position.y] == 0 && grid[position.x + 1][position.y] == 1) {
-                queue.add(new Position(position.x + 1, position.y));
-                visit[position.x + 1][position.y] = 1;
+            if (position.key[0] + 1 < grid.length && visit[position.key[0] + 1][position.key[1]] == 0 && grid[position.key[0] + 1][position.key[1]] == 1) {
+                queue.add(new Pair(new int[]{position.key[0] + 1, position.key[1]}, 0));
+                visit[position.key[0] + 1][position.key[1]] = 1;
                 count++;
             }
-            if (position.y - 1 >= 0 && visit[position.x][position.y - 1] == 0 && grid[position.x][position.y - 1] == 1) {
-                queue.add(new Position(position.x, position.y - 1));
-                visit[position.x][position.y - 1] = 1;
+            if (position.key[1] - 1 >= 0 && visit[position.key[0]][position.key[1] - 1] == 0 && grid[position.key[0]][position.key[1] - 1] == 1) {
+                queue.add(new Pair(new int[]{position.key[0], position.key[1] - 1}, 0));
+                visit[position.key[0]][position.key[1] - 1] = 1;
                 count++;
             }
-            if (position.y + 1 < grid[0].length && visit[position.x][position.y + 1] == 0 && grid[position.x][position.y + 1] == 1) {
-                queue.add(new Position(position.x, position.y + 1));
-                visit[position.x][position.y + 1] = 1;
+            if (position.key[1] + 1 < grid[0].length && visit[position.key[0]][position.key[1] + 1] == 0 && grid[position.key[0]][position.key[1] + 1] == 1) {
+                queue.add(new Pair(new int[]{position.key[0], position.key[1] + 1}, 0));
+                visit[position.key[0]][position.key[1] + 1] = 1;
                 count++;
             }
         }
         return count;
-    }
-
-    class Position {
-        int x;
-        int y;
-
-        public Position(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
     }
 
     /**

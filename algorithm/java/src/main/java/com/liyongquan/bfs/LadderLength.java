@@ -1,6 +1,5 @@
 package com.liyongquan.bfs;
 
-import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.annotation.Target;
@@ -47,6 +46,15 @@ import java.util.*;
  */
 @Slf4j
 public class LadderLength {
+
+    private static class Pair {
+        int key;
+        int value;
+        Pair(int key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     /**
      * 构造一个无向图，然后用bfs寻找最短路径
      *
@@ -102,14 +110,14 @@ public class LadderLength {
         Integer end = map.get(endWord);
         //log.info("end:{}", end);
         //bfs找到最短路径
-        Queue<Pair<Integer, Integer>> queue = new LinkedList();
+        Queue<Pair> queue = new LinkedList();
         int[] visit = new int[len + 1];
         visit[start] = 1;
-        queue.add(new Pair<>(start, 1));
+        queue.add(new Pair(start, 1));
         while (!queue.isEmpty()) {
-            Pair<Integer, Integer> poll = queue.poll();
-            Integer index = poll.getKey();
-            Integer depth = poll.getValue();
+            Pair poll = queue.poll();
+            Integer index = poll.key;
+            Integer depth = poll.value;
             if (edges.containsKey(index)) {
                 for (Integer next : edges.get(index)) {
                     if (visit[next] == 0) {
@@ -117,7 +125,7 @@ public class LadderLength {
                             return depth + 1;
                         }
                         visit[next] = 1;
-                        queue.add(new Pair<>(next, depth + 1));
+                        queue.add(new Pair(next, depth + 1));
                         //log.info("add node:{}", next);
                     }
                 }

@@ -1,7 +1,6 @@
 package com.liyongquan.tree;
 
 import com.liyongquan.util.tree.BinaryTreeUtil;
-import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +34,15 @@ import java.util.Map;
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
 public class BalanceBST {
+
+    private static class Pair {
+        TreeNode key;
+        int value;
+        Pair(TreeNode key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     /**
      * 不通过，这种旋转的方法真的不是那么简单
      *
@@ -42,25 +50,25 @@ public class BalanceBST {
      * @return
      */
     public TreeNode balanceBST(TreeNode root) {
-        return balance(root).getKey();
+        return balance(root).key;
     }
 
-    private Pair<TreeNode, Integer> balance(TreeNode root) {
+    private Pair balance(TreeNode root) {
         if (root == null) {
-            return new Pair<>(null, 0);
+            return new Pair(null, 0);
         }
-        Pair<TreeNode, Integer> l = balance(root.left);
-        Pair<TreeNode, Integer> r = balance(root.right);
+        Pair l = balance(root.left);
+        Pair r = balance(root.right);
         //不需要旋转
-        if (Math.abs(l.getValue() - r.getValue()) <= 1) {
-            return new Pair<>(root, Math.max(l.getValue(), r.getValue()) + 1);
+        if (Math.abs(l.value - r.value) <= 1) {
+            return new Pair(root, Math.max(l.value, r.value) + 1);
         }
         //左旋
         TreeNode nr;
-        if (l.getValue() < r.getValue()) {
+        if (l.value < r.value) {
             root.right = null;
-            root.left = l.getKey();
-            nr = r.getKey();
+            root.left = l.key;
+            nr = r.key;
             if (nr.left == null) {
                 nr.left = root;
             } else {
@@ -74,8 +82,8 @@ public class BalanceBST {
         } else {
             //右旋
             root.left = null;
-            root.right = r.getKey();
-            nr = l.getKey();
+            root.right = r.key;
+            nr = l.key;
             if (nr.right == null) {
                 nr.right = root;
             } else {
@@ -89,7 +97,7 @@ public class BalanceBST {
         }
         System.out.println(String.format("旋转前的根节点:%s,旋转后的根节点:%s", root.val, nr.val));
         BinaryTreeUtil.print(nr);
-        return new Pair<>(nr, Math.max(l.getValue(), r.getValue()));
+        return new Pair(nr, Math.max(l.value, r.value));
     }
 
     /**

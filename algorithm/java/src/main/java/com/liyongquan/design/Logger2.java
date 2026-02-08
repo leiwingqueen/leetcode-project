@@ -1,7 +1,5 @@
 package com.liyongquan.design;
 
-import javafx.util.Pair;
-
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -11,10 +9,20 @@ import java.util.Set;
  * 359. 日志速率限制器
  */
 public class Logger2 {
+
+    private static class Pair {
+        int key;
+        String value;
+        Pair(int key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
     /**
      * 使用滑动窗口定期清除过期的数据，只需要保留最近10s的数据
      */
-    private Deque<Pair<Integer, String>> queue = new LinkedList<>();
+    private Deque<Pair> queue = new LinkedList<>();
     private Set<String> set = new HashSet<>();
 
     public Logger2() {
@@ -27,14 +35,14 @@ public class Logger2 {
      */
     public boolean shouldPrintMessage(int timestamp, String message) {
         //清理过期数据
-        while (queue.size() > 0 && timestamp - queue.peekFirst().getKey() > 10) {
-            Pair<Integer, String> head = queue.pollFirst();
-            set.remove(head.getValue());
+        while (queue.size() > 0 && timestamp - queue.peekFirst().key > 10) {
+            Pair head = queue.pollFirst();
+            set.remove(head.value);
         }
         if (set.contains(message)) {
             return false;
         } else {
-            queue.offerLast(new Pair<>(timestamp, message));
+            queue.offerLast(new Pair(timestamp, message));
             set.add(message);
             return true;
         }
