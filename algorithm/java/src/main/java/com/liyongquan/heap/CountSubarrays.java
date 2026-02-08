@@ -75,9 +75,15 @@ public class CountSubarrays {
             // 尝试更新左边界
             while (l < r && (long) (map.lastKey() - map.firstKey()) * (r - l) > k) {
                 int c = map.getOrDefault(nums[l], 0);
-                map.put(nums[l], c - 1);
+                c--;
+                if (c==0){
+                    map.remove(nums[l]);
+                }else{
+                    map.put(nums[l], c);
+                }
                 l++;
             }
+            // [l,r)为满足条件子数组
             res += r - l;
             // 扩展右边界
             int c = map.getOrDefault(nums[r], 0);
@@ -87,7 +93,12 @@ public class CountSubarrays {
         // 更新左边界
         while (l < r && (long) (map.lastKey() - map.firstKey()) * (r - l) > k) {
             int c = map.getOrDefault(nums[l], 0);
-            map.put(nums[l], c - 1);
+            c--;
+            if (c==0){
+                map.remove(nums[l]);
+            }else{
+                map.put(nums[l], c);
+            }
             l++;
         }
         res += r - l;
