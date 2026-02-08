@@ -1,7 +1,6 @@
 package com.liyongquan.dp;
 
 import lombok.extern.slf4j.Slf4j;
-import sun.rmi.runtime.Log;
 
 /**
  * 810. 黑板异或游戏
