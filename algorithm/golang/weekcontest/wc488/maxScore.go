@@ -84,7 +84,13 @@ func maxScore(nums1 []int, nums2 []int, k int) int64 {
 				if l > min(i, j) {
 					break
 				}
-				dp[i][j][l] = max(dp[i-1][j][l], dp[i][j-1][l], dp[i-1][j-1][l-1]+int64(nums1[i-1])*int64(nums2[j-1]))
+				dp[i][j][l] = dp[i-1][j-1][l-1] + int64(nums1[i-1])*int64(nums2[j-1])
+				if min(i-1, j) >= l {
+					dp[i][j][l] = max(dp[i][j][l], dp[i-1][j][l])
+				}
+				if min(i, j-1) >= l {
+					dp[i][j][l] = max(dp[i][j][l], dp[i][j-1][l])
+				}
 			}
 		}
 	}
