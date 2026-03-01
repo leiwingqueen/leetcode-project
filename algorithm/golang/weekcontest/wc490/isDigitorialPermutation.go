@@ -44,6 +44,7 @@ package wc490
 func isDigitorialPermutation(n int) bool {
 	// 预处理
 	permutation := make([]int, 10)
+	permutation[0] = 1
 	permutation[1] = 1
 	for i := 2; i < 10; i++ {
 		permutation[i] = permutation[i-1] * i
