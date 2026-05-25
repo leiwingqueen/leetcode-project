@@ -57,7 +57,7 @@ func canReach3(s string, minJump int, maxJump int) bool {
 		if r > i {
 			r = i
 		}
-		// [l,r)区间只要有一个是true即可
+		// [l,r)区间只要有一个是true即可，这里其实也可以用前缀和优化
 		for j := l; j < r; j++ {
 			if reach[j] {
 				reach[i] = true
@@ -66,4 +66,41 @@ func canReach3(s string, minJump int, maxJump int) bool {
 		}
 	}
 	return reach[n-1]
+}
+
+func canReach4(s string, minJump int, maxJump int) bool {
+	if s[len(s)-1] == '1' {
+		return false
+	}
+	var arr []int
+	for i := 0; i < len(s); i++ {
+		if s[i] == '0' {
+			arr = append(arr, i)
+		}
+	}
+	n := len(arr)
+	prefix := make([]int, n+1)
+	prefix[1] = 1
+	for i := 1; i < n; i++ {
+		prefix[i+1] = prefix[i]
+		// 计算能够到arr[i]的左右边界。[arr[i]-maxJump,arr[i]-minJump]
+		l := sort.Search(n, func(j int) bool {
+			return arr[j] >= arr[i]-maxJump
+		})
+		if l >= i {
+			continue
+		}
+		r := sort.Search(n, func(j int) bool {
+			return arr[j] > arr[i]-minJump
+		})
+		if r > i {
+			r = i
+		}
+		// [l,r)区间只要有一个是true即可，这里其实也可以用前缀和优化
+		cnt := prefix[r] - prefix[l]
+		if cnt > 0 {
+			prefix[i+1]++
+		}
+	}
+	return prefix[n]-prefix[n-1] > 0
 }
