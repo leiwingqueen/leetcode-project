@@ -1,5 +1,7 @@
 package wc504
 
+import "math"
+
 // 给你一个二维整数数组 items，其中 items[i] = [factori, pricei] 表示下标为 i 的物品。同时给你一个整数 budget。
 //
 //每种物品都有无限个可供购买。你可以购买任意数量的任意物品，但购买物品的总花费最多为 budget。
@@ -74,4 +76,43 @@ func maximumSaleItems(items [][]int, budget int) int {
 		}
 	}
 	return dp[n][budget]
+}
+
+// 先按01背包的思路做，然后再做贪心
+func maximumSaleItems2(items [][]int, budget int) int {
+	n := len(items)
+	// 先计算购买一个item i，能获得多少份免费的商品
+	free := make([]int, n)
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			if i != j && items[j][0]%items[i][0] == 0 {
+				free[i]++
+			}
+		}
+	}
+	// 每个商品只买一次
+	dp := make([][]int, n+1)
+	for i := 0; i <= n; i++ {
+		dp[i] = make([]int, budget+1)
+	}
+	for i := 1; i <= n; i++ {
+		for j := 1; j <= budget; j++ {
+			price := items[i-1][1]
+			if j >= price {
+				dp[i][j] = max(dp[i-1][j-price]+1+free[i-1], dp[i-1][j])
+			} else {
+				dp[i][j] = dp[i-1][j]
+			}
+		}
+	}
+	// 接下来就是贪心
+	minPrice := math.MaxInt
+	for i := 0; i < n; i++ {
+		minPrice = min(minPrice, items[i][1])
+	}
+	res := 0
+	for i := 0; i <= budget; i++ {
+		res = max(res, dp[n][i]+(budget-i)/minPrice)
+	}
+	return res
 }
