@@ -32,6 +32,15 @@ func Test_filterOccupiedIntervals(t *testing.T) {
 		}, 2, 2}, [][]int{
 			{1, 1}, {3, 3},
 		}},
+		{"t4", args{
+			[][]int{
+				{28, 30}, {24, 26}, {40, 41}, {23, 40}, {64, 71},
+			}, 69, 69,
+		}, [][]int{
+			{23, 41},
+			{64, 68},
+			{70, 71},
+		}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
