@@ -58,7 +58,7 @@ func filterOccupiedIntervals(occupiedIntervals [][]int, freeStart int, freeEnd i
 	pre := occupiedIntervals[0]
 	var arr [][]int
 	for _, interval := range occupiedIntervals[1:] {
-		if interval[0] > pre[1] {
+		if interval[0] > pre[1]+1 {
 			arr = append(arr, []int{pre[0], pre[1]})
 			pre[0] = interval[0]
 			pre[1] = interval[1]
@@ -77,16 +77,18 @@ func filterOccupiedIntervals(occupiedIntervals [][]int, freeStart int, freeEnd i
 		return arr[i][1] >= freeEnd
 	})
 	// [id1,id2)下标的直接删掉，另外idx1-1和id2的需要处理边界
-	if id1 >= n {
-		return arr
+	var res [][]int
+	if id1-1 > 0 {
+		res = arr[:id1-1]
 	}
-	res := arr[:id1]
 	if id1 > 0 {
-		arr[id1-1][1] = min(arr[id1-1][1], freeStart-1)
+		res = append(res, []int{arr[id1-1][0], min(arr[id1-1][1], freeStart-1)})
 	}
 	if id2 < n {
-		arr[id2][0] = max(arr[id2][0], freeEnd+1)
-		res = append(res, arr[id2:]...)
+		res = append(res, []int{max(arr[id2][0], freeEnd+1), arr[id2][1]})
+		if id2+1 < n {
+			res = append(arr[id2+1:])
+		}
 	}
 	return res
 }
