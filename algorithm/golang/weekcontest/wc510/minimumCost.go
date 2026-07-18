@@ -54,9 +54,9 @@ func minimumCost3(nums []int, k int) int {
 		} else {
 			diff := num - resource
 			cnt := (diff + k - 1) / k
-			resource = k - diff%k
+			resource = (k - diff%k) % k
 			// [i+1,i+cnt]
-			sum := (i + 1 + i + cnt) * cnt / 2
+			sum := ((i + 1 + i + cnt) % mod) * (cnt % mod) / 2
 			cost = (cost + sum%mod) % mod
 			i += cnt
 		}
