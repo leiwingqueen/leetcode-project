@@ -17,6 +17,7 @@ func Test_minSumSquareDiff(t *testing.T) {
 		// TODO: Add test cases.
 		{"t1", args{[]int{1, 4, 10, 12}, []int{5, 8, 6, 9}, 10, 5}, 0},
 		{"t2", args{[]int{11, 12, 13, 14, 15}, []int{13, 16, 16, 12, 14}, 3, 6}, 3},
+		{"t3", args{[]int{19, 18, 19, 18, 18, 19, 19}, []int{1, 0, 1, 0, 0, 1, 1}, 10, 33}, 985},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
