@@ -83,10 +83,12 @@ func minSumSquareDiff(nums1 []int, nums2 []int, k1 int, k2 int) int64 {
 			if q > 0 {
 				k -= q * cnt
 				sum -= calDiff(diff[i], q) * int64(cnt)
+				diff[i] -= q
 			}
 			if k > 0 {
 				sum -= calDiff(diff[i], 1) * int64(k)
 			}
+			break
 		}
 	}
 	return sum
